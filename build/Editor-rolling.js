@@ -11183,7 +11183,8 @@ EditorUI.Initialize = function() {
     EditorUI.topmenu.add("File/New", {callback: () => {
         // TODO: Confirm Action
         Editor.createNewProgram()
-        EditorUI.hierarchy.updateTree({id: "Program"})
+        Editor.updateTreeView()
+        Editor.updateObjectHelper()
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
