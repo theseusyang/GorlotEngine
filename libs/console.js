@@ -12,7 +12,7 @@ console.log = function() {
 	for(var i = 0; i < arguments.length; i++) {
 		str += arguments[i] + " "
 	}
-	EditorUI.console.addMessage("Log: " + str, "con-log")
+	EditorUI.console.addMessage("Log: " + str.toString(), "con-log")
 	return _log.apply(console, arguments)
 }
 

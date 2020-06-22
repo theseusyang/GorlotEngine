@@ -349,14 +349,19 @@ EditorUI.Initialize = function() {
     EditorUI.hierarchy = new LiteGUI.Tree({
         id: "Program",
         children: []
-    }, {allow_drag: true})
+    }, {
+        allow_drag: true,
+        allow_rename: true
+    })
     EditorUI.hierarchy_panel.add(EditorUI.hierarchy)
 
+    // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
         Editor.selected_object = e.detail.data.attachedTo
         //console.log(e.detail)
     })
 
+    // When an item is moved, this will check if we should set a parent
     LiteGUI.bind(EditorUI.hierarchy.root, "item_moved", function(e) {
         //console.log(e.detail)
 
@@ -371,6 +376,7 @@ EditorUI.Initialize = function() {
         }
     })
 
+    // If an item in the hierarchy is double clicked and that object can add a new tab, this will open it
     LiteGUI.bind(EditorUI.hierarchy.root, "item_dblclicked", function(e) {
         //console.log(e.detail.data)
         var data = e.detail.data
@@ -385,6 +391,15 @@ EditorUI.Initialize = function() {
             EditorUI.code.updateInterface()
             EditorUI.code.attachScript(data.attachedTo)
         }
+    })
+
+    // When renaming an object, renaming it in the scene
+    LiteGUI.bind(EditorUI.hierarchy.root, "item_renamed", function(e) {
+        console.log(e.detail.data)
+    
+        var obj = e.detail.data.attachedTo
+        obj.name = e.detail.new_name
+        Editor.updateTreeView()
     })
 
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector"})

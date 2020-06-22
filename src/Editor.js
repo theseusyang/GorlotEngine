@@ -439,7 +439,7 @@ Editor.updateObjectHelper = function() {
 // Return object absolute position (not relative to parent)
 Editor.objectAbsolutePosition = function(obj) {
 	if (obj.parent != null) {
-		var position = obj.position.close()
+		var position = obj.position.clone()
 		position.add(Editor.objectAbsolutePosition(obj.parent))
 		return position
 	}
