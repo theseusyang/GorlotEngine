@@ -1,0 +1,12 @@
+/* Basically, this file contains some styles I needed to do something, I ain't good at css, so please forgive if this code is shit as freak */
+.con-log {
+	color: skyblue;
+}
+
+.con-warn {
+	color: yellow;
+}
+
+.con-error {
+	color: red;
+}
