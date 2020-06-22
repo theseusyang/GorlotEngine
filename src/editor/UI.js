@@ -351,9 +351,11 @@ EditorUI.Initialize = function() {
         children: []
     }, {
         allow_drag: true,
-        allow_rename: true
+        allow_rename: true,
+        height: EditorUI.right_area.getSection(0).getHeight(),
     })
     EditorUI.hierarchy_panel.add(EditorUI.hierarchy)
+    EditorUI.hierarchy.contextmenu = () => {console.log("a")}
 
     // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
@@ -423,6 +425,17 @@ EditorUI.hierarchyFromScene = function(scene) {
 
     for(var i = 0; i < scene.children.length; i++) {
         var it = EditorUI.hierarchy.insertItem({id: scene.children[i].name + Editor.scene.children[i].id, attachedTo: scene.children[i]})
+        it.addEventListener("contextmenu", function(e) {
+            var item = it
+            e.preventDefault()
+            e.stopPropagation()
+
+            if (e.button != 2) {
+                return
+            }
+
+            return EditorUI.hierarchyContext(e, {item: item, data: item.data})
+        })
 
         // The tree only displays a parent and a child, TODO: add support to infinite children
 
@@ -438,6 +451,23 @@ EditorUI.hierarchyFromScene = function(scene) {
         }
 
     }
+}
+
+EditorUI.hierarchyContext = function(e, data) {
+    var context = new LiteGUI.ContextMenu([
+        {title: "Copy", callback: () => {
+            // TODO: This
+        }},
+        {title: "Paste", callback: () => {
+            // TODO: This
+        }},
+        {title: "Duplicate", callback: () => {
+            // TODO: This
+        }},
+        {title: "Delete", callback: () => {
+            // TODO: This            
+        }}
+    ], {title: "Edit item", event: e})
 }
 
 EditorUI.Resize = function() {
