@@ -1227,7 +1227,7 @@ THREE.OBJLoader.prototype = {
 		// f vertex//normal vertex//normal vertex//normal ...
 		var face_pattern4 = /^f\s+((-?\d+)\/\/(-?\d+))\s+((-?\d+)\/\/(-?\d+))\s+((-?\d+)\/\/(-?\d+))(?:\s+((-?\d+)\/\/(-?\d+)))?/;
 
-		var object_pattern = /^[og]\s+(.+)/;
+		var object_pattern = /^[og]\s*(.+)?/;
 
 		var smoothing_pattern = /^s\s+(\d+|on|off)/;
 
@@ -1318,7 +1318,7 @@ THREE.OBJLoader.prototype = {
 				// or
 				// g group_name
 
-				var name = result[ 1 ].trim();
+				var name = result[ 0 ].substr( 1 ).trim();
 
 				if ( foundObjects === false ) {
 
@@ -1833,197 +1833,1382 @@ THREE.MTLLoader.MaterialCreator.prototype = {
 THREE.EventDispatcher.prototype.apply( THREE.MTLLoader.prototype );
 
 /**
- * Loads a Wavefront .obj file with materials
- *
- * @author mrdoob / http://mrdoob.com/
- * @author angelxuanchang
- */
+* @author Tim Knip / http://www.floorplanner.com/ / tim at floorplanner.com
+* @author Tony Parisi / http://www.tonyparisi.com/
+*/
 
-THREE.OBJMTLLoader = function ( manager ) {
+THREE.ColladaLoader = function () {
 
-	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
+	var COLLADA = null;
+	var scene = null;
+	var visualScene;
+	var kinematicsModel;
 
-};
+	var readyCallbackFunc = null;
 
-THREE.OBJMTLLoader.prototype = {
+	var sources = {};
+	var images = {};
+	var animations = {};
+	var controllers = {};
+	var geometries = {};
+	var materials = {};
+	var effects = {};
+	var cameras = {};
+	var lights = {};
 
-	constructor: THREE.OBJMTLLoader,
+	var animData;
+	var kinematics;
+	var visualScenes;
+	var kinematicsModels;
+	var baseUrl;
+	var morphs;
+	var skins;
 
-	load: function ( url, mtlurl, onLoad, onProgress, onError ) {
+	var flip_uv = true;
+	var preferredShading = THREE.SmoothShading;
 
-		var scope = this;
+	var options = {
+		// Force Geometry to always be centered at the local origin of the
+		// containing Mesh.
+		centerGeometry: false,
 
-		var mtlLoader = new THREE.MTLLoader( url.substr( 0, url.lastIndexOf( "/" ) + 1 ) );
-		mtlLoader.load( mtlurl, function ( materials ) {
+		// Axis conversion is done for geometries, animations, and controllers.
+		// If we ever pull cameras or lights out of the COLLADA file, they'll
+		// need extra work.
+		convertUpAxis: false,
 
-			var materialsCreator = materials;
-			materialsCreator.preload();
+		subdivideFaces: true,
 
-			var loader = new THREE.XHRLoader( scope.manager );
-			loader.setCrossOrigin( this.crossOrigin );
-			loader.load( url, function ( text ) {
+		upAxis: 'Y',
 
-				var object = scope.parse( text );
+		// For reflective or refractive materials we'll use this cubemap
+		defaultEnvMap: null
 
-				object.traverse( function ( object ) {
+	};
 
-					if ( object instanceof THREE.Mesh ) {
+	var colladaUnit = 1.0;
+	var colladaUp = 'Y';
+	var upConversion = null;
 
-						if ( object.material.name ) {
+	function load ( url, readyCallback, progressCallback, failCallback ) {
 
-							var material = materialsCreator.create( object.material.name );
+		var length = 0;
 
-							if ( material ) object.material = material;
+		if ( document.implementation && document.implementation.createDocument ) {
+
+			var request = new XMLHttpRequest();
+
+			request.onreadystatechange = function() {
+
+				if ( request.readyState === 4 ) {
+
+					if ( request.status === 0 || request.status === 200 ) {
+
+						if ( request.response ) {
+
+							readyCallbackFunc = readyCallback;
+							parse( request.response, undefined, url );
+
+						} else {
+
+							if ( failCallback ) {
+
+								failCallback();
+
+							} else {
+
+								console.error( "ColladaLoader: Empty or non-existing file (" + url + ")" );
+
+							}
 
 						}
 
 					}
 
+				} else if ( request.readyState === 3 ) {
+
+					if ( progressCallback ) {
+
+						if ( length === 0 ) {
+
+							length = request.getResponseHeader( "Content-Length" );
+
+						}
+
+						progressCallback( { total: length, loaded: request.responseText.length } );
+
+					}
+
+				}
+
+			};
+
+			request.open( "GET", url, true );
+			request.send( null );
+
+		} else {
+
+			alert( "Don't know how to parse XML!" );
+
+		}
+
+	}
+
+	function parse( text, callBack, url ) {
+
+		COLLADA = new DOMParser().parseFromString( text, 'text/xml' );
+		callBack = callBack || readyCallbackFunc;
+
+		if ( url !== undefined ) {
+
+			var parts = url.split( '/' );
+			parts.pop();
+			baseUrl = ( parts.length < 1 ? '.' : parts.join( '/' ) ) + '/';
+
+		}
+
+		parseAsset();
+		setUpConversion();
+		images = parseLib( "library_images image", _Image, "image" );
+		materials = parseLib( "library_materials material", Material, "material" );
+		effects = parseLib( "library_effects effect", Effect, "effect" );
+		geometries = parseLib( "library_geometries geometry", Geometry, "geometry" );
+		cameras = parseLib( "library_cameras camera", Camera, "camera" );
+		lights = parseLib( "library_lights light", Light, "light" );
+		controllers = parseLib( "library_controllers controller", Controller, "controller" );
+		animations = parseLib( "library_animations animation", Animation, "animation" );
+		visualScenes = parseLib( "library_visual_scenes visual_scene", VisualScene, "visual_scene" );
+		kinematicsModels = parseLib( "library_kinematics_models kinematics_model", KinematicsModel, "kinematics_model" );
+
+		morphs = [];
+		skins = [];
+
+		visualScene = parseScene();
+		scene = new THREE.Group();
+
+		for ( var i = 0; i < visualScene.nodes.length; i ++ ) {
+
+			scene.add( createSceneGraph( visualScene.nodes[ i ] ) );
+
+		}
+
+		// unit conversion
+		scene.scale.multiplyScalar( colladaUnit );
+
+		createAnimations();
+
+		kinematicsModel = parseKinematicsModel();
+		createKinematics();
+
+		var result = {
+
+			scene: scene,
+			morphs: morphs,
+			skins: skins,
+			animations: animData,
+			kinematics: kinematics,
+			dae: {
+				images: images,
+				materials: materials,
+				cameras: cameras,
+				lights: lights,
+				effects: effects,
+				geometries: geometries,
+				controllers: controllers,
+				animations: animations,
+				visualScenes: visualScenes,
+				visualScene: visualScene,
+				scene: visualScene,
+				kinematicsModels: kinematicsModels,
+				kinematicsModel: kinematicsModel
+			}
+
+		};
+
+		if ( callBack ) {
+
+			callBack( result );
+
+		}
+
+		return result;
+
+	}
+
+	function setPreferredShading ( shading ) {
+
+		preferredShading = shading;
+
+	}
+
+	function parseAsset () {
+
+		var elements = COLLADA.querySelectorAll('asset');
+
+		var element = elements[0];
+
+		if ( element && element.childNodes ) {
+
+			for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+				var child = element.childNodes[ i ];
+
+				switch ( child.nodeName ) {
+
+					case 'unit':
+
+						var meter = child.getAttribute( 'meter' );
+
+						if ( meter ) {
+
+							colladaUnit = parseFloat( meter );
+
+						}
+
+						break;
+
+					case 'up_axis':
+
+						colladaUp = child.textContent.charAt(0);
+						break;
+
+				}
+
+			}
+
+		}
+
+	}
+
+	function parseLib ( q, classSpec, prefix ) {
+
+		var elements = COLLADA.querySelectorAll(q);
+
+		var lib = {};
+
+		var i = 0;
+
+		var elementsLength = elements.length;
+
+		for ( var j = 0; j < elementsLength; j ++ ) {
+
+			var element = elements[j];
+			var daeElement = ( new classSpec() ).parse( element );
+
+			if ( !daeElement.id || daeElement.id.length === 0 ) daeElement.id = prefix + ( i ++ );
+			lib[ daeElement.id ] = daeElement;
+
+		}
+
+		return lib;
+
+	}
+
+	function parseScene() {
+
+		var sceneElement = COLLADA.querySelectorAll('scene instance_visual_scene')[0];
+
+		if ( sceneElement ) {
+
+			var url = sceneElement.getAttribute( 'url' ).replace( /^#/, '' );
+			return visualScenes[ url.length > 0 ? url : 'visual_scene0' ];
+
+		} else {
+
+			return null;
+
+		}
+
+	}
+
+	function parseKinematicsModel() {
+
+		var kinematicsModelElement = COLLADA.querySelectorAll('instance_kinematics_model')[0];
+
+		if ( kinematicsModelElement ) {
+
+			var url = kinematicsModelElement.getAttribute( 'url' ).replace(/^#/, '');
+			return kinematicsModels[ url.length > 0 ? url : 'kinematics_model0' ];
+
+		} else {
+
+			return null;
+
+		}
+
+	}
+
+	function createAnimations() {
+
+		animData = [];
+
+		// fill in the keys
+		recurseHierarchy( scene );
+
+	}
+
+	function recurseHierarchy( node ) {
+
+		var n = visualScene.getChildById( node.colladaId, true ),
+			newData = null;
+
+		if ( n && n.keys ) {
+
+			newData = {
+				fps: 60,
+				hierarchy: [ {
+					node: n,
+					keys: n.keys,
+					sids: n.sids
+				} ],
+				node: node,
+				name: 'animation_' + node.name,
+				length: 0
+			};
+
+			animData.push(newData);
+
+			for ( var i = 0, il = n.keys.length; i < il; i ++ ) {
+
+				newData.length = Math.max( newData.length, n.keys[i].time );
+
+			}
+
+		} else {
+
+			newData = {
+				hierarchy: [ {
+					keys: [],
+					sids: []
+				} ]
+			}
+
+		}
+
+		for ( var i = 0, il = node.children.length; i < il; i ++ ) {
+
+			var d = recurseHierarchy( node.children[i] );
+
+			for ( var j = 0, jl = d.hierarchy.length; j < jl; j ++ ) {
+
+				newData.hierarchy.push( {
+					keys: [],
+					sids: []
 				} );
 
-				onLoad( object );
-
-			}, onProgress, onError );
-
-		}, onProgress, onError );
-
-	},
-
-	/**
-	 * Parses loaded .obj file
-	 * @param data - content of .obj file
-	 * @param mtllibCallback - callback to handle mtllib declaration (optional)
-	 * @return {THREE.Object3D} - Object3D (with default material)
-	 */
-
-	parse: function ( data, mtllibCallback ) {
-
-		function vector( x, y, z ) {
-
-			return new THREE.Vector3( x, y, z );
-
-		}
-
-		function uv( u, v ) {
-
-			return new THREE.Vector2( u, v );
-
-		}
-
-		function face3( a, b, c, normals ) {
-
-			return new THREE.Face3( a, b, c, normals );
-
-		}
-
-		var face_offset = 0;
-
-		function meshN( meshName, materialName ) {
-
-			if ( vertices.length > 0 ) {
-
-				geometry.vertices = vertices;
-
-				geometry.mergeVertices();
-				geometry.computeFaceNormals();
-				geometry.computeBoundingSphere();
-
-				object.add( mesh );
-
-				geometry = new THREE.Geometry();
-				mesh = new THREE.Mesh( geometry, material );
-
 			}
 
-			if ( meshName !== undefined ) mesh.name = meshName;
+		}
 
-			if ( materialName !== undefined ) {
+		return newData;
 
-				material = new THREE.MeshLambertMaterial();
-				material.name = materialName;
+	}
 
-				mesh.material = material;
+	function calcAnimationBounds () {
+
+		var start = 1000000;
+		var end = -start;
+		var frames = 0;
+		var ID;
+		for ( var id in animations ) {
+
+			var animation = animations[ id ];
+			ID = ID || animation.id;
+			for ( var i = 0; i < animation.sampler.length; i ++ ) {
+
+				var sampler = animation.sampler[ i ];
+
+				sampler.create();
+
+				start = Math.min( start, sampler.startTime );
+				end = Math.max( end, sampler.endTime );
+				frames = Math.max( frames, sampler.input.length );
 
 			}
 
 		}
 
-		var group = new THREE.Group();
-		var object = group;
+		return { start:start, end:end, frames:frames,ID:ID };
 
-		var geometry = new THREE.Geometry();
-		var material = new THREE.MeshLambertMaterial();
-		var mesh = new THREE.Mesh( geometry, material );
+	}
 
-		var vertices = [];
-		var normals = [];
-		var uvs = [];
+	function createMorph ( geometry, ctrl ) {
 
-		function add_face( a, b, c, normals_inds ) {
+		var morphCtrl = ctrl instanceof InstanceController ? controllers[ ctrl.url ] : ctrl;
 
-			if ( normals_inds === undefined ) {
+		if ( !morphCtrl || !morphCtrl.morph ) {
 
-				geometry.faces.push( face3(
-					parseInt( a ) - (face_offset + 1),
-					parseInt( b ) - (face_offset + 1),
-					parseInt( c ) - (face_offset + 1)
-				) );
+			console.log("could not find morph controller!");
+			return;
 
-			} else {
+		}
 
-				geometry.faces.push( face3(
-					parseInt( a ) - (face_offset + 1),
-					parseInt( b ) - (face_offset + 1),
-					parseInt( c ) - (face_offset + 1),
-					[
-						normals[ parseInt( normals_inds[ 0 ] ) - 1 ].clone(),
-						normals[ parseInt( normals_inds[ 1 ] ) - 1 ].clone(),
-						normals[ parseInt( normals_inds[ 2 ] ) - 1 ].clone()
-					]
-				) );
+		var morph = morphCtrl.morph;
+
+		for ( var i = 0; i < morph.targets.length; i ++ ) {
+
+			var target_id = morph.targets[ i ];
+			var daeGeometry = geometries[ target_id ];
+
+			if ( !daeGeometry.mesh ||
+				 !daeGeometry.mesh.primitives ||
+				 !daeGeometry.mesh.primitives.length ) {
+				 continue;
+			}
+
+			var target = daeGeometry.mesh.primitives[ 0 ].geometry;
+
+			if ( target.vertices.length === geometry.vertices.length ) {
+
+				geometry.morphTargets.push( { name: "target_1", vertices: target.vertices } );
 
 			}
 
 		}
 
-		function add_uvs( a, b, c ) {
+		geometry.morphTargets.push( { name: "target_Z", vertices: geometry.vertices } );
 
-			geometry.faceVertexUvs[ 0 ].push( [
-				uvs[ parseInt( a ) - 1 ].clone(),
-				uvs[ parseInt( b ) - 1 ].clone(),
-				uvs[ parseInt( c ) - 1 ].clone()
-			] );
+	}
+
+	function createSkin ( geometry, ctrl, applyBindShape ) {
+
+		var skinCtrl = controllers[ ctrl.url ];
+
+		if ( !skinCtrl || !skinCtrl.skin ) {
+
+			console.log( "could not find skin controller!" );
+			return;
 
 		}
 
-		function handle_face_line(faces, uvs, normals_inds) {
+		if ( !ctrl.skeleton || !ctrl.skeleton.length ) {
 
-			if ( faces[ 3 ] === undefined ) {
+			console.log( "could not find the skeleton for the skin!" );
+			return;
 
-				add_face( faces[ 0 ], faces[ 1 ], faces[ 2 ], normals_inds );
+		}
 
-				if (!(uvs === undefined) && uvs.length > 0) {
-					add_uvs( uvs[ 0 ], uvs[ 1 ], uvs[ 2 ] );
+		var skin = skinCtrl.skin;
+		var skeleton = visualScene.getChildById( ctrl.skeleton[ 0 ] );
+		var hierarchy = [];
+
+		applyBindShape = applyBindShape !== undefined ? applyBindShape : true;
+
+		var bones = [];
+		geometry.skinWeights = [];
+		geometry.skinIndices = [];
+
+		//createBones( geometry.bones, skin, hierarchy, skeleton, null, -1 );
+		//createWeights( skin, geometry.bones, geometry.skinIndices, geometry.skinWeights );
+
+		/*
+		geometry.animation = {
+			name: 'take_001',
+			fps: 30,
+			length: 2,
+			JIT: true,
+			hierarchy: hierarchy
+		};
+		*/
+
+		if ( applyBindShape ) {
+
+			for ( var i = 0; i < geometry.vertices.length; i ++ ) {
+
+				geometry.vertices[ i ].applyMatrix4( skin.bindShapeMatrix );
+
+			}
+
+		}
+
+	}
+
+	function setupSkeleton ( node, bones, frame, parent ) {
+
+		node.world = node.world || new THREE.Matrix4();
+		node.localworld = node.localworld || new THREE.Matrix4();
+		node.world.copy( node.matrix );
+		node.localworld.copy( node.matrix );
+
+		if ( node.channels && node.channels.length ) {
+
+			var channel = node.channels[ 0 ];
+			var m = channel.sampler.output[ frame ];
+
+			if ( m instanceof THREE.Matrix4 ) {
+
+				node.world.copy( m );
+				node.localworld.copy(m);
+				if (frame === 0)
+					node.matrix.copy(m);
+			}
+
+		}
+
+		if ( parent ) {
+
+			node.world.multiplyMatrices( parent, node.world );
+
+		}
+
+		bones.push( node );
+
+		for ( var i = 0; i < node.nodes.length; i ++ ) {
+
+			setupSkeleton( node.nodes[ i ], bones, frame, node.world );
+
+		}
+
+	}
+
+	function setupSkinningMatrices ( bones, skin ) {
+
+		// FIXME: this is dumb...
+
+		for ( var i = 0; i < bones.length; i ++ ) {
+
+			var bone = bones[ i ];
+			var found = -1;
+
+			if ( bone.type != 'JOINT' ) continue;
+
+			for ( var j = 0; j < skin.joints.length; j ++ ) {
+
+				if ( bone.sid === skin.joints[ j ] ) {
+
+					found = j;
+					break;
+
+				}
+
+			}
+
+			if ( found >= 0 ) {
+
+				var inv = skin.invBindMatrices[ found ];
+
+				bone.invBindMatrix = inv;
+				bone.skinningMatrix = new THREE.Matrix4();
+				bone.skinningMatrix.multiplyMatrices(bone.world, inv); // (IBMi * JMi)
+				bone.animatrix = new THREE.Matrix4();
+
+				bone.animatrix.copy(bone.localworld);
+				bone.weights = [];
+
+				for ( var j = 0; j < skin.weights.length; j ++ ) {
+
+					for (var k = 0; k < skin.weights[ j ].length; k ++ ) {
+
+						var w = skin.weights[ j ][ k ];
+
+						if ( w.joint === found ) {
+
+							bone.weights.push( w );
+
+						}
+
+					}
+
 				}
 
 			} else {
 
-				if (!(normals_inds === undefined) && normals_inds.length > 0) {
+				console.warn( "ColladaLoader: Could not find joint '" + bone.sid + "'." );
 
-					add_face( faces[ 0 ], faces[ 1 ], faces[ 3 ], [ normals_inds[ 0 ], normals_inds[ 1 ], normals_inds[ 3 ] ]);
-					add_face( faces[ 1 ], faces[ 2 ], faces[ 3 ], [ normals_inds[ 1 ], normals_inds[ 2 ], normals_inds[ 3 ] ]);
+				bone.skinningMatrix = new THREE.Matrix4();
+				bone.weights = [];
+
+			}
+		}
+
+	}
+
+	//Walk the Collada tree and flatten the bones into a list, extract the position, quat and scale from the matrix
+	function flattenSkeleton(skeleton) {
+
+		var list = [];
+		var walk = function(parentid, node, list) {
+
+			var bone = {};
+			bone.name = node.sid;
+			bone.parent = parentid;
+			bone.matrix = node.matrix;
+			var data = [ new THREE.Vector3(),new THREE.Quaternion(),new THREE.Vector3() ];
+			bone.matrix.decompose(data[0], data[1], data[2]);
+
+			bone.pos = [ data[0].x,data[0].y,data[0].z ];
+
+			bone.scl = [ data[2].x,data[2].y,data[2].z ];
+			bone.rotq = [ data[1].x,data[1].y,data[1].z,data[1].w ];
+			list.push(bone);
+
+			for (var i in node.nodes) {
+
+				walk(node.sid, node.nodes[i], list);
+
+			}
+
+		};
+
+		walk(-1, skeleton, list);
+		return list;
+
+	}
+
+	//Move the vertices into the pose that is proper for the start of the animation
+	function skinToBindPose(geometry,skeleton,skinController) {
+
+		var bones = [];
+		setupSkeleton( skeleton, bones, -1 );
+		setupSkinningMatrices( bones, skinController.skin );
+		var v = new THREE.Vector3();
+		var skinned = [];
+
+		for (var i = 0; i < geometry.vertices.length; i ++) {
+
+			skinned.push(new THREE.Vector3());
+
+		}
+
+		for ( i = 0; i < bones.length; i ++ ) {
+
+			if ( bones[ i ].type != 'JOINT' ) continue;
+
+			for ( var j = 0; j < bones[ i ].weights.length; j ++ ) {
+
+				var w = bones[ i ].weights[ j ];
+				var vidx = w.index;
+				var weight = w.weight;
+
+				var o = geometry.vertices[vidx];
+				var s = skinned[vidx];
+
+				v.x = o.x;
+				v.y = o.y;
+				v.z = o.z;
+
+				v.applyMatrix4( bones[i].skinningMatrix );
+
+				s.x += (v.x * weight);
+				s.y += (v.y * weight);
+				s.z += (v.z * weight);
+			}
+
+		}
+
+		for (var i = 0; i < geometry.vertices.length; i ++) {
+
+			geometry.vertices[i] = skinned[i];
+
+		}
+
+	}
+
+	function applySkin ( geometry, instanceCtrl, frame ) {
+
+		var skinController = controllers[ instanceCtrl.url ];
+
+		frame = frame !== undefined ? frame : 40;
+
+		if ( !skinController || !skinController.skin ) {
+
+			console.log( 'ColladaLoader: Could not find skin controller.' );
+			return;
+
+		}
+
+		if ( !instanceCtrl.skeleton || !instanceCtrl.skeleton.length ) {
+
+			console.log( 'ColladaLoader: Could not find the skeleton for the skin. ' );
+			return;
+
+		}
+
+		var animationBounds = calcAnimationBounds();
+		var skeleton = visualScene.getChildById( instanceCtrl.skeleton[0], true ) || visualScene.getChildBySid( instanceCtrl.skeleton[0], true );
+
+		//flatten the skeleton into a list of bones
+		var bonelist = flattenSkeleton(skeleton);
+		var joints = skinController.skin.joints;
+
+		//sort that list so that the order reflects the order in the joint list
+		var sortedbones = [];
+		for (var i = 0; i < joints.length; i ++) {
+
+			for (var j = 0; j < bonelist.length; j ++) {
+
+				if (bonelist[j].name === joints[i]) {
+
+					sortedbones[i] = bonelist[j];
+
+				}
+
+			}
+
+		}
+
+		//hook up the parents by index instead of name
+		for (var i = 0; i < sortedbones.length; i ++) {
+
+			for (var j = 0; j < sortedbones.length; j ++) {
+
+				if (sortedbones[i].parent === sortedbones[j].name) {
+
+					sortedbones[i].parent = j;
+
+				}
+
+			}
+
+		}
+
+
+		var i, j, w, vidx, weight;
+		var v = new THREE.Vector3(), o, s;
+
+		// move vertices to bind shape
+		for ( i = 0; i < geometry.vertices.length; i ++ ) {
+			geometry.vertices[i].applyMatrix4( skinController.skin.bindShapeMatrix );
+		}
+
+		var skinIndices = [];
+		var skinWeights = [];
+		var weights = skinController.skin.weights;
+
+		// hook up the skin weights
+		// TODO - this might be a good place to choose greatest 4 weights
+		for ( var i =0; i < weights.length; i ++ ) {
+
+			var indicies = new THREE.Vector4(weights[i][0] ? weights[i][0].joint : 0,weights[i][1] ? weights[i][1].joint : 0,weights[i][2] ? weights[i][2].joint : 0,weights[i][3] ? weights[i][3].joint : 0);
+			var weight = new THREE.Vector4(weights[i][0] ? weights[i][0].weight : 0,weights[i][1] ? weights[i][1].weight : 0,weights[i][2] ? weights[i][2].weight : 0,weights[i][3] ? weights[i][3].weight : 0);
+
+			skinIndices.push(indicies);
+			skinWeights.push(weight);
+
+		}
+
+		geometry.skinIndices = skinIndices;
+		geometry.skinWeights = skinWeights;
+		geometry.bones = sortedbones;
+		// process animation, or simply pose the rig if no animation
+
+		//create an animation for the animated bones
+		//NOTE: this has no effect when using morphtargets
+		var animationdata = { "name":animationBounds.ID,"fps":30,"length":animationBounds.frames / 30,"hierarchy":[] };
+
+		for (var j = 0; j < sortedbones.length; j ++) {
+
+			animationdata.hierarchy.push({ parent:sortedbones[j].parent, name:sortedbones[j].name, keys:[] });
+
+		}
+
+		console.log( 'ColladaLoader:', animationBounds.ID + ' has ' + sortedbones.length + ' bones.' );
+
+
+
+		skinToBindPose(geometry, skeleton, skinController);
+
+
+		for ( frame = 0; frame < animationBounds.frames; frame ++ ) {
+
+			var bones = [];
+			var skinned = [];
+			// process the frame and setup the rig with a fresh
+			// transform, possibly from the bone's animation channel(s)
+
+			setupSkeleton( skeleton, bones, frame );
+			setupSkinningMatrices( bones, skinController.skin );
+
+			for (var i = 0; i < bones.length; i ++) {
+
+				for (var j = 0; j < animationdata.hierarchy.length; j ++) {
+
+					if (animationdata.hierarchy[j].name === bones[i].sid) {
+
+						var key = {};
+						key.time = (frame / 30);
+						key.matrix = bones[i].animatrix;
+
+						if (frame === 0)
+							bones[i].matrix = key.matrix;
+
+						var data = [ new THREE.Vector3(),new THREE.Quaternion(),new THREE.Vector3() ];
+						key.matrix.decompose(data[0], data[1], data[2]);
+
+						key.pos = [ data[0].x,data[0].y,data[0].z ];
+
+						key.scl = [ data[2].x,data[2].y,data[2].z ];
+						key.rot = data[1];
+
+						animationdata.hierarchy[j].keys.push(key);
+
+					}
+
+				}
+
+			}
+
+			geometry.animation = animationdata;
+
+		}
+
+	}
+
+	function createKinematics() {
+
+		if ( kinematicsModel && kinematicsModel.joints.length === 0 ) {
+			kinematics = undefined;
+			return;
+		}
+
+		var jointMap = {};
+
+		var _addToMap = function( jointIndex, parentVisualElement ) {
+
+			var parentVisualElementId = parentVisualElement.getAttribute( 'id' );
+			var colladaNode = visualScene.getChildById( parentVisualElementId, true );
+			var joint = kinematicsModel.joints[ jointIndex ];
+
+			scene.traverse(function( node ) {
+
+				if ( node.colladaId == parentVisualElementId ) {
+
+					jointMap[ jointIndex ] = {
+						node: node,
+						transforms: colladaNode.transforms,
+						joint: joint,
+						position: joint.zeroPosition
+					};
+
+				}
+
+			});
+
+		};
+
+		kinematics = {
+
+			joints: kinematicsModel && kinematicsModel.joints,
+
+			getJointValue: function( jointIndex ) {
+
+				var jointData = jointMap[ jointIndex ];
+
+				if ( jointData ) {
+
+					return jointData.position;
 
 				} else {
 
-					add_face( faces[ 0 ], faces[ 1 ], faces[ 3 ]);
-					add_face( faces[ 1 ], faces[ 2 ], faces[ 3 ]);
+					console.log( 'getJointValue: joint ' + jointIndex + ' doesn\'t exist' );
 
 				}
 
-				if (!(uvs === undefined) && uvs.length > 0) {
+			},
 
-					add_uvs( uvs[ 0 ], uvs[ 1 ], uvs[ 3 ] );
-					add_uvs( uvs[ 1 ], uvs[ 2 ], uvs[ 3 ] );
+			setJointValue: function( jointIndex, value ) {
+
+				var jointData = jointMap[ jointIndex ];
+
+				if ( jointData ) {
+
+					var joint = jointData.joint;
+
+					if ( value > joint.limits.max || value < joint.limits.min ) {
+
+						console.log( 'setJointValue: joint ' + jointIndex + ' value ' + value + ' outside of limits (min: ' + joint.limits.min + ', max: ' + joint.limits.max + ')' );
+
+					} else if ( joint.static ) {
+
+						console.log( 'setJointValue: joint ' + jointIndex + ' is static' );
+
+					} else {
+
+						var threejsNode = jointData.node;
+						var axis = joint.axis;
+						var transforms = jointData.transforms;
+
+						var matrix = new THREE.Matrix4();
+
+						for (i = 0; i < transforms.length; i ++ ) {
+
+							var transform = transforms[ i ];
+
+							// kinda ghetto joint detection
+							if ( transform.sid && transform.sid.indexOf( 'joint' + jointIndex ) !== -1 ) {
+
+								// apply actual joint value here
+								switch ( joint.type ) {
+
+									case 'revolute':
+
+										matrix.multiply( m1.makeRotationAxis( axis, THREE.Math.degToRad(value) ) );
+										break;
+
+									case 'prismatic':
+
+										matrix.multiply( m1.makeTranslation(axis.x * value, axis.y * value, axis.z * value ) );
+										break;
+
+									default:
+
+										console.warn( 'setJointValue: unknown joint type: ' + joint.type );
+										break;
+
+								}
+
+							} else {
+
+								var m1 = new THREE.Matrix4();
+
+								switch ( transform.type ) {
+
+									case 'matrix':
+
+										matrix.multiply( transform.obj );
+
+										break;
+
+									case 'translate':
+
+										matrix.multiply( m1.makeTranslation( transform.obj.x, transform.obj.y, transform.obj.z ) );
+
+										break;
+
+									case 'rotate':
+
+										matrix.multiply( m1.makeRotationAxis( transform.obj, transform.angle ) );
+
+										break;
+
+								}
+							}
+						}
+
+						// apply the matrix to the threejs node
+						var elementsFloat32Arr = matrix.elements;
+						var elements = Array.prototype.slice.call( elementsFloat32Arr );
+
+						var elementsRowMajor = [
+							elements[ 0 ],
+							elements[ 4 ],
+							elements[ 8 ],
+							elements[ 12 ],
+							elements[ 1 ],
+							elements[ 5 ],
+							elements[ 9 ],
+							elements[ 13 ],
+							elements[ 2 ],
+							elements[ 6 ],
+							elements[ 10 ],
+							elements[ 14 ],
+							elements[ 3 ],
+							elements[ 7 ],
+							elements[ 11 ],
+							elements[ 15 ]
+						];
+
+						threejsNode.matrix.set.apply( threejsNode.matrix, elementsRowMajor );
+						threejsNode.matrix.decompose( threejsNode.position, threejsNode.quaternion, threejsNode.scale );
+					}
+
+				} else {
+
+					console.log( 'setJointValue: joint ' + jointIndex + ' doesn\'t exist' );
+
+				}
+
+			}
+
+		};
+
+		var element = COLLADA.querySelector('scene instance_kinematics_scene');
+
+		if ( element ) {
+
+			for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+				var child = element.childNodes[ i ];
+
+				if ( child.nodeType != 1 ) continue;
+
+				switch ( child.nodeName ) {
+
+					case 'bind_joint_axis':
+
+						var visualTarget = child.getAttribute( 'target' ).split( '/' ).pop();
+						var axis = child.querySelector('axis param').textContent;
+						var jointIndex = parseInt( axis.split( 'joint' ).pop().split( '.' )[0] );
+						var visualTargetElement = COLLADA.querySelector( '[sid="' + visualTarget + '"]' );
+
+						if ( visualTargetElement ) {
+							var parentVisualElement = visualTargetElement.parentElement;
+							_addToMap(jointIndex, parentVisualElement);
+						}
+
+						break;
+
+					default:
+
+						break;
+
+				}
+
+			}
+		}
+
+	}
+
+	function createSceneGraph ( node, parent ) {
+
+		var obj = new THREE.Object3D();
+		var skinned = false;
+		var skinController;
+		var morphController;
+		var i, j;
+
+		// FIXME: controllers
+
+		for ( i = 0; i < node.controllers.length; i ++ ) {
+
+			var controller = controllers[ node.controllers[ i ].url ];
+
+			switch ( controller.type ) {
+
+				case 'skin':
+
+					if ( geometries[ controller.skin.source ] ) {
+
+						var inst_geom = new InstanceGeometry();
+
+						inst_geom.url = controller.skin.source;
+						inst_geom.instance_material = node.controllers[ i ].instance_material;
+
+						node.geometries.push( inst_geom );
+						skinned = true;
+						skinController = node.controllers[ i ];
+
+					} else if ( controllers[ controller.skin.source ] ) {
+
+						// urgh: controller can be chained
+						// handle the most basic case...
+
+						var second = controllers[ controller.skin.source ];
+						morphController = second;
+					//	skinController = node.controllers[i];
+
+						if ( second.morph && geometries[ second.morph.source ] ) {
+
+							var inst_geom = new InstanceGeometry();
+
+							inst_geom.url = second.morph.source;
+							inst_geom.instance_material = node.controllers[ i ].instance_material;
+
+							node.geometries.push( inst_geom );
+
+						}
+
+					}
+
+					break;
+
+				case 'morph':
+
+					if ( geometries[ controller.morph.source ] ) {
+
+						var inst_geom = new InstanceGeometry();
+
+						inst_geom.url = controller.morph.source;
+						inst_geom.instance_material = node.controllers[ i ].instance_material;
+
+						node.geometries.push( inst_geom );
+						morphController = node.controllers[ i ];
+
+					}
+
+					console.log( 'ColladaLoader: Morph-controller partially supported.' );
+
+				default:
+					break;
+
+			}
+
+		}
+
+		// geometries
+
+		var double_sided_materials = {};
+
+		for ( i = 0; i < node.geometries.length; i ++ ) {
+
+			var instance_geometry = node.geometries[i];
+			var instance_materials = instance_geometry.instance_material;
+			var geometry = geometries[ instance_geometry.url ];
+			var used_materials = {};
+			var used_materials_array = [];
+			var num_materials = 0;
+			var first_material;
+
+			if ( geometry ) {
+
+				if ( !geometry.mesh || !geometry.mesh.primitives )
+					continue;
+
+				if ( obj.name.length === 0 ) {
+
+					obj.name = geometry.id;
+
+				}
+
+				// collect used fx for this geometry-instance
+
+				if ( instance_materials ) {
+
+					for ( j = 0; j < instance_materials.length; j ++ ) {
+
+						var instance_material = instance_materials[ j ];
+						var mat = materials[ instance_material.target ];
+						var effect_id = mat.instance_effect.url;
+						var shader = effects[ effect_id ].shader;
+						var material3js = shader.material;
+
+						if ( geometry.doubleSided ) {
+
+							if ( !( instance_material.symbol in double_sided_materials ) ) {
+
+								var _copied_material = material3js.clone();
+								_copied_material.side = THREE.DoubleSide;
+								double_sided_materials[ instance_material.symbol ] = _copied_material;
+
+							}
+
+							material3js = double_sided_materials[ instance_material.symbol ];
+
+						}
+
+						material3js.opacity = !material3js.opacity ? 1 : material3js.opacity;
+						used_materials[ instance_material.symbol ] = num_materials;
+						used_materials_array.push( material3js );
+						first_material = material3js;
+						first_material.name = mat.name === null || mat.name === '' ? mat.id : mat.name;
+						num_materials ++;
+
+					}
+
+				}
+
+				var mesh;
+				var material = first_material || new THREE.MeshLambertMaterial( { color: 0xdddddd, side: geometry.doubleSided ? THREE.DoubleSide : THREE.FrontSide } );
+				var geom = geometry.mesh.geometry3js;
+
+				if ( num_materials > 1 ) {
+
+					material = new THREE.MultiMaterial( used_materials_array );
+
+				}
+
+				if ( skinController !== undefined ) {
+
+
+					applySkin( geom, skinController );
+
+					if ( geom.morphTargets.length > 0 ) {
+
+						material.morphTargets = true;
+						material.skinning = false;
+
+					} else {
+
+						material.morphTargets = false;
+						material.skinning = true;
+
+					}
+
+
+					mesh = new THREE.SkinnedMesh( geom, material, false );
+
+
+					//mesh.skeleton = skinController.skeleton;
+					//mesh.skinController = controllers[ skinController.url ];
+					//mesh.skinInstanceController = skinController;
+					mesh.name = 'skin_' + skins.length;
+
+
+
+					//mesh.animationHandle.setKey(0);
+					skins.push( mesh );
+
+				} else if ( morphController !== undefined ) {
+
+					createMorph( geom, morphController );
+
+					material.morphTargets = true;
+
+					mesh = new THREE.Mesh( geom, material );
+					mesh.name = 'morph_' + morphs.length;
+
+					morphs.push( mesh );
+
+				} else {
+
+					if ( geom.isLineStrip === true ) {
+
+						mesh = new THREE.Line( geom );
+
+					} else {
+
+						mesh = new THREE.Mesh( geom, material );
+
+					}
+
+				}
+
+				obj.add(mesh);
+
+			}
+
+		}
+
+		for ( i = 0; i < node.cameras.length; i ++ ) {
+
+			var instance_camera = node.cameras[i];
+			var cparams = cameras[instance_camera.url];
+
+			var cam = new THREE.PerspectiveCamera(cparams.yfov, parseFloat(cparams.aspect_ratio),
+					parseFloat(cparams.znear), parseFloat(cparams.zfar));
+
+			obj.add(cam);
+		}
+
+		for ( i = 0; i < node.lights.length; i ++ ) {
+
+			var light = null;
+			var instance_light = node.lights[i];
+			var lparams = lights[instance_light.url];
+
+			if ( lparams && lparams.technique ) {
+
+				var color = lparams.color.getHex();
+				var intensity = lparams.intensity;
+				var distance = lparams.distance;
+				var angle = lparams.falloff_angle;
+
+				switch ( lparams.technique ) {
+
+					case 'directional':
+
+						light = new THREE.DirectionalLight( color, intensity, distance );
+						light.position.set(0, 0, 1);
+						break;
+
+					case 'point':
+
+						light = new THREE.PointLight( color, intensity, distance );
+						break;
+
+					case 'spot':
+
+						light = new THREE.SpotLight( color, intensity, distance, angle );
+						light.position.set(0, 0, 1);
+						break;
+
+					case 'ambient':
+
+						light = new THREE.AmbientLight( color );
+						break;
+
+				}
+
+			}
+
+			if (light) {
+				obj.add(light);
+			}
+		}
+
+		obj.name = node.name || node.id || "";
+		obj.colladaId = node.id || "";
+		obj.layer = node.layer || "";
+		obj.matrix = node.matrix;
+		obj.matrix.decompose( obj.position, obj.quaternion, obj.scale );
+
+		if ( options.centerGeometry && obj.geometry ) {
+
+			var delta = obj.geometry.center();
+			delta.multiply( obj.scale );
+			delta.applyQuaternion( obj.quaternion );
+
+			obj.position.sub( delta );
+
+		}
+
+		for ( i = 0; i < node.nodes.length; i ++ ) {
+
+			obj.add( createSceneGraph( node.nodes[i], node ) );
+
+		}
+
+		return obj;
+
+	}
+
+	function getJointId( skin, id ) {
+
+		for ( var i = 0; i < skin.joints.length; i ++ ) {
+
+			if ( skin.joints[ i ] === id ) {
+
+				return i;
+
+			}
+
+		}
+
+	}
+
+	function getLibraryNode( id ) {
+
+		var nodes = COLLADA.querySelectorAll('library_nodes node');
+
+		for ( var i = 0; i < nodes.length; i++ ) {
+
+			var attObj = nodes[i].attributes.getNamedItem('id');
+
+			if ( attObj && attObj.value === id ) {
+
+				return nodes[i];
+
+			}
+
+		}
+
+		return undefined;
+
+	}
+
+	function getChannelsForNode ( node ) {
+
+		var channels = [];
+		var startTime = 1000000;
+		var endTime = -1000000;
+
+		for ( var id in animations ) {
+
+			var animation = animations[id];
+
+			for ( var i = 0; i < animation.channel.length; i ++ ) {
+
+				var channel = animation.channel[i];
+				var sampler = animation.sampler[i];
+				var id = channel.target.split('/')[0];
+
+				if ( id == node.id ) {
+
+					sampler.create();
+					channel.sampler = sampler;
+					startTime = Math.min(startTime, sampler.startTime);
+					endTime = Math.max(endTime, sampler.endTime);
+					channels.push(channel);
 
 				}
 
@@ -2031,171 +3216,4988 @@ THREE.OBJMTLLoader.prototype = {
 
 		}
 
+		if ( channels.length ) {
 
-		// v float float float
+			node.startTime = startTime;
+			node.endTime = endTime;
 
-		var vertex_pattern = /v( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
+		}
 
-		// vn float float float
+		return channels;
 
-		var normal_pattern = /vn( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
+	}
 
-		// vt float float
+	function calcFrameDuration( node ) {
 
-		var uv_pattern = /vt( +[\d|\.|\+|\-|e]+)( +[\d|\.|\+|\-|e]+)/;
+		var minT = 10000000;
 
-		// f vertex vertex vertex ...
+		for ( var i = 0; i < node.channels.length; i ++ ) {
 
-		var face_pattern1 = /f( +\d+)( +\d+)( +\d+)( +\d+)?/;
+			var sampler = node.channels[i].sampler;
 
-		// f vertex/uv vertex/uv vertex/uv ...
+			for ( var j = 0; j < sampler.input.length - 1; j ++ ) {
 
-		var face_pattern2 = /f( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))( +(\d+)\/(\d+))?/;
+				var t0 = sampler.input[ j ];
+				var t1 = sampler.input[ j + 1 ];
+				minT = Math.min( minT, t1 - t0 );
 
-		// f vertex/uv/normal vertex/uv/normal vertex/uv/normal ...
+			}
+		}
 
-		var face_pattern3 = /f( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))( +(\d+)\/(\d+)\/(\d+))?/;
+		return minT;
 
-		// f vertex//normal vertex//normal vertex//normal ...
+	}
 
-		var face_pattern4 = /f( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))( +(\d+)\/\/(\d+))?/
+	function calcMatrixAt( node, t ) {
 
-		//
+		var animated = {};
 
-		var lines = data.split( "\n" );
+		var i, j;
 
-		for ( var i = 0; i < lines.length; i ++ ) {
+		for ( i = 0; i < node.channels.length; i ++ ) {
 
-			var line = lines[ i ];
-			line = line.trim();
+			var channel = node.channels[ i ];
+			animated[ channel.sid ] = channel;
 
-			var result;
+		}
 
-			if ( line.length === 0 || line.charAt( 0 ) === '#' ) {
+		var matrix = new THREE.Matrix4();
 
-				continue;
+		for ( i = 0; i < node.transforms.length; i ++ ) {
 
-			} else if ( ( result = vertex_pattern.exec( line ) ) !== null ) {
+			var transform = node.transforms[ i ];
+			var channel = animated[ transform.sid ];
 
-				// ["v 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
+			if ( channel !== undefined ) {
 
-				vertices.push( vector(
-					parseFloat( result[ 1 ] ),
-					parseFloat( result[ 2 ] ),
-					parseFloat( result[ 3 ] )
-				) );
+				var sampler = channel.sampler;
+				var value;
 
-			} else if ( ( result = normal_pattern.exec( line ) ) !== null ) {
+				for ( j = 0; j < sampler.input.length - 1; j ++ ) {
 
-				// ["vn 1.0 2.0 3.0", "1.0", "2.0", "3.0"]
+					if ( sampler.input[ j + 1 ] > t ) {
 
-				normals.push( vector(
-					parseFloat( result[ 1 ] ),
-					parseFloat( result[ 2 ] ),
-					parseFloat( result[ 3 ] )
-				) );
+						value = sampler.output[ j ];
+						//console.log(value.flatten)
+						break;
 
-			} else if ( ( result = uv_pattern.exec( line ) ) !== null ) {
-
-				// ["vt 0.1 0.2", "0.1", "0.2"]
-
-				uvs.push( uv(
-					parseFloat( result[ 1 ] ),
-					parseFloat( result[ 2 ] )
-				) );
-
-			} else if ( ( result = face_pattern1.exec( line ) ) !== null ) {
-
-				// ["f 1 2 3", "1", "2", "3", undefined]
-
-				handle_face_line([ result[ 1 ], result[ 2 ], result[ 3 ], result[ 4 ] ]);
-
-			} else if ( ( result = face_pattern2.exec( line ) ) !== null ) {
-
-				// ["f 1/1 2/2 3/3", " 1/1", "1", "1", " 2/2", "2", "2", " 3/3", "3", "3", undefined, undefined, undefined]
-
-				handle_face_line(
-					[ result[ 2 ], result[ 5 ], result[ 8 ], result[ 11 ] ], //faces
-					[ result[ 3 ], result[ 6 ], result[ 9 ], result[ 12 ] ] //uv
-				);
-
-			} else if ( ( result = face_pattern3.exec( line ) ) !== null ) {
-
-				// ["f 1/1/1 2/2/2 3/3/3", " 1/1/1", "1", "1", "1", " 2/2/2", "2", "2", "2", " 3/3/3", "3", "3", "3", undefined, undefined, undefined, undefined]
-
-				handle_face_line(
-					[ result[ 2 ], result[ 6 ], result[ 10 ], result[ 14 ] ], //faces
-					[ result[ 3 ], result[ 7 ], result[ 11 ], result[ 15 ] ], //uv
-					[ result[ 4 ], result[ 8 ], result[ 12 ], result[ 16 ] ] //normal
-				);
-
-			} else if ( ( result = face_pattern4.exec( line ) ) !== null ) {
-
-				// ["f 1//1 2//2 3//3", " 1//1", "1", "1", " 2//2", "2", "2", " 3//3", "3", "3", undefined, undefined, undefined]
-
-				handle_face_line(
-					[ result[ 2 ], result[ 5 ], result[ 8 ], result[ 11 ] ], //faces
-					[ ], //uv
-					[ result[ 3 ], result[ 6 ], result[ 9 ], result[ 12 ] ] //normal
-				);
-
-			} else if ( /^o /.test( line ) ) {
-
-				// object
-
-				meshN();
-				face_offset = face_offset + vertices.length;
-				vertices = [];
-				object = new THREE.Object3D();
-				object.name = line.substring( 2 ).trim();
-				group.add( object );
-
-			} else if ( /^g /.test( line ) ) {
-
-				// group
-
-				meshN( line.substring( 2 ).trim(), undefined );
-
-			} else if ( /^usemtl /.test( line ) ) {
-
-				// material
-
-				meshN( undefined, line.substring( 7 ).trim() );
-
-			} else if ( /^mtllib /.test( line ) ) {
-
-				// mtl file
-
-				if ( mtllibCallback ) {
-
-					var mtlfile = line.substring( 7 );
-					mtlfile = mtlfile.trim();
-					mtllibCallback( mtlfile );
+					}
 
 				}
 
-			} else if ( /^s /.test( line ) ) {
+				if ( value !== undefined ) {
 
-				// Smooth shading
+					if ( value instanceof THREE.Matrix4 ) {
+
+						matrix.multiplyMatrices( matrix, value );
+
+					} else {
+
+						// FIXME: handle other types
+
+						matrix.multiplyMatrices( matrix, transform.matrix );
+
+					}
+
+				} else {
+
+					matrix.multiplyMatrices( matrix, transform.matrix );
+
+				}
 
 			} else {
 
-				console.log( "THREE.OBJMTLLoader: Unhandled line " + line );
+				matrix.multiplyMatrices( matrix, transform.matrix );
 
 			}
 
 		}
 
-		//Add last object
-		meshN(undefined, undefined);
+		return matrix;
 
-		return group;
+	}
+
+	function bakeAnimations ( node ) {
+
+		if ( node.channels && node.channels.length ) {
+
+			var keys = [],
+				sids = [];
+
+			for ( var i = 0, il = node.channels.length; i < il; i ++ ) {
+
+				var channel = node.channels[i],
+					fullSid = channel.fullSid,
+					sampler = channel.sampler,
+					input = sampler.input,
+					transform = node.getTransformBySid( channel.sid ),
+					member;
+
+				if ( channel.arrIndices ) {
+
+					member = [];
+
+					for ( var j = 0, jl = channel.arrIndices.length; j < jl; j ++ ) {
+
+						member[ j ] = getConvertedIndex( channel.arrIndices[ j ] );
+
+					}
+
+				} else {
+
+					member = getConvertedMember( channel.member );
+
+				}
+
+				if ( transform ) {
+
+					if ( sids.indexOf( fullSid ) === -1 ) {
+
+						sids.push( fullSid );
+
+					}
+
+					for ( var j = 0, jl = input.length; j < jl; j ++ ) {
+
+						var time = input[j],
+							data = sampler.getData( transform.type, j, member ),
+							key = findKey( keys, time );
+
+						if ( !key ) {
+
+							key = new Key( time );
+							var timeNdx = findTimeNdx( keys, time );
+							keys.splice( timeNdx === -1 ? keys.length : timeNdx, 0, key );
+
+						}
+
+						key.addTarget( fullSid, transform, member, data );
+
+					}
+
+				} else {
+
+					console.log( 'Could not find transform "' + channel.sid + '" in node ' + node.id );
+
+				}
+
+			}
+
+			// post process
+			for ( var i = 0; i < sids.length; i ++ ) {
+
+				var sid = sids[ i ];
+
+				for ( var j = 0; j < keys.length; j ++ ) {
+
+					var key = keys[ j ];
+
+					if ( !key.hasTarget( sid ) ) {
+
+						interpolateKeys( keys, key, j, sid );
+
+					}
+
+				}
+
+			}
+
+			node.keys = keys;
+			node.sids = sids;
+
+		}
+
+	}
+
+	function findKey ( keys, time) {
+
+		var retVal = null;
+
+		for ( var i = 0, il = keys.length; i < il && retVal === null; i ++ ) {
+
+			var key = keys[i];
+
+			if ( key.time === time ) {
+
+				retVal = key;
+
+			} else if ( key.time > time ) {
+
+				break;
+
+			}
+
+		}
+
+		return retVal;
+
+	}
+
+	function findTimeNdx ( keys, time) {
+
+		var ndx = -1;
+
+		for ( var i = 0, il = keys.length; i < il && ndx === -1; i ++ ) {
+
+			var key = keys[i];
+
+			if ( key.time >= time ) {
+
+				ndx = i;
+
+			}
+
+		}
+
+		return ndx;
+
+	}
+
+	function interpolateKeys ( keys, key, ndx, fullSid ) {
+
+		var prevKey = getPrevKeyWith( keys, fullSid, ndx ? ndx - 1 : 0 ),
+			nextKey = getNextKeyWith( keys, fullSid, ndx + 1 );
+
+		if ( prevKey && nextKey ) {
+
+			var scale = (key.time - prevKey.time) / (nextKey.time - prevKey.time),
+				prevTarget = prevKey.getTarget( fullSid ),
+				nextData = nextKey.getTarget( fullSid ).data,
+				prevData = prevTarget.data,
+				data;
+
+			if ( prevTarget.type === 'matrix' ) {
+
+				data = prevData;
+
+			} else if ( prevData.length ) {
+
+				data = [];
+
+				for ( var i = 0; i < prevData.length; ++ i ) {
+
+					data[ i ] = prevData[ i ] + ( nextData[ i ] - prevData[ i ] ) * scale;
+
+				}
+
+			} else {
+
+				data = prevData + ( nextData - prevData ) * scale;
+
+			}
+
+			key.addTarget( fullSid, prevTarget.transform, prevTarget.member, data );
+
+		}
+
+	}
+
+	// Get next key with given sid
+
+	function getNextKeyWith( keys, fullSid, ndx ) {
+
+		for ( ; ndx < keys.length; ndx ++ ) {
+
+			var key = keys[ ndx ];
+
+			if ( key.hasTarget( fullSid ) ) {
+
+				return key;
+
+			}
+
+		}
+
+		return null;
+
+	}
+
+	// Get previous key with given sid
+
+	function getPrevKeyWith( keys, fullSid, ndx ) {
+
+		ndx = ndx >= 0 ? ndx : ndx + keys.length;
+
+		for ( ; ndx >= 0; ndx -- ) {
+
+			var key = keys[ ndx ];
+
+			if ( key.hasTarget( fullSid ) ) {
+
+				return key;
+
+			}
+
+		}
+
+		return null;
+
+	}
+
+	function _Image() {
+
+		this.id = "";
+		this.init_from = "";
+
+	}
+
+	_Image.prototype.parse = function(element) {
+
+		this.id = element.getAttribute('id');
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			if ( child.nodeName === 'init_from' ) {
+
+				this.init_from = child.textContent;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Controller() {
+
+		this.id = "";
+		this.name = "";
+		this.type = "";
+		this.skin = null;
+		this.morph = null;
+
+	}
+
+	Controller.prototype.parse = function( element ) {
+
+		this.id = element.getAttribute('id');
+		this.name = element.getAttribute('name');
+		this.type = "none";
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			switch ( child.nodeName ) {
+
+				case 'skin':
+
+					this.skin = (new Skin()).parse(child);
+					this.type = child.nodeName;
+					break;
+
+				case 'morph':
+
+					this.morph = (new Morph()).parse(child);
+					this.type = child.nodeName;
+					break;
+
+				default:
+					break;
+
+			}
+		}
+
+		return this;
+
+	};
+
+	function Morph() {
+
+		this.method = null;
+		this.source = null;
+		this.targets = null;
+		this.weights = null;
+
+	}
+
+	Morph.prototype.parse = function( element ) {
+
+		var sources = {};
+		var inputs = [];
+		var i;
+
+		this.method = element.getAttribute( 'method' );
+		this.source = element.getAttribute( 'source' ).replace( /^#/, '' );
+
+		for ( i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'source':
+
+					var source = ( new Source() ).parse( child );
+					sources[ source.id ] = source;
+					break;
+
+				case 'targets':
+
+					inputs = this.parseInputs( child );
+					break;
+
+				default:
+
+					console.log( child.nodeName );
+					break;
+
+			}
+
+		}
+
+		for ( i = 0; i < inputs.length; i ++ ) {
+
+			var input = inputs[ i ];
+			var source = sources[ input.source ];
+
+			switch ( input.semantic ) {
+
+				case 'MORPH_TARGET':
+
+					this.targets = source.read();
+					break;
+
+				case 'MORPH_WEIGHT':
+
+					this.weights = source.read();
+					break;
+
+				default:
+					break;
+
+			}
+		}
+
+		return this;
+
+	};
+
+	Morph.prototype.parseInputs = function(element) {
+
+		var inputs = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+			if ( child.nodeType != 1) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'input':
+
+					inputs.push( (new Input()).parse(child) );
+					break;
+
+				default:
+					break;
+			}
+		}
+
+		return inputs;
+
+	};
+
+	function Skin() {
+
+		this.source = "";
+		this.bindShapeMatrix = null;
+		this.invBindMatrices = [];
+		this.joints = [];
+		this.weights = [];
+
+	}
+
+	Skin.prototype.parse = function( element ) {
+
+		var sources = {};
+		var joints, weights;
+
+		this.source = element.getAttribute( 'source' ).replace( /^#/, '' );
+		this.invBindMatrices = [];
+		this.joints = [];
+		this.weights = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'bind_shape_matrix':
+
+					var f = _floats(child.textContent);
+					this.bindShapeMatrix = getConvertedMat4( f );
+					break;
+
+				case 'source':
+
+					var src = new Source().parse(child);
+					sources[ src.id ] = src;
+					break;
+
+				case 'joints':
+
+					joints = child;
+					break;
+
+				case 'vertex_weights':
+
+					weights = child;
+					break;
+
+				default:
+
+					console.log( child.nodeName );
+					break;
+
+			}
+		}
+
+		this.parseJoints( joints, sources );
+		this.parseWeights( weights, sources );
+
+		return this;
+
+	};
+
+	Skin.prototype.parseJoints = function ( element, sources ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'input':
+
+					var input = ( new Input() ).parse( child );
+					var source = sources[ input.source ];
+
+					if ( input.semantic === 'JOINT' ) {
+
+						this.joints = source.read();
+
+					} else if ( input.semantic === 'INV_BIND_MATRIX' ) {
+
+						this.invBindMatrices = source.read();
+
+					}
+
+					break;
+
+				default:
+					break;
+			}
+
+		}
+
+	};
+
+	Skin.prototype.parseWeights = function ( element, sources ) {
+
+		var v, vcount, inputs = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'input':
+
+					inputs.push( ( new Input() ).parse( child ) );
+					break;
+
+				case 'v':
+
+					v = _ints( child.textContent );
+					break;
+
+				case 'vcount':
+
+					vcount = _ints( child.textContent );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		var index = 0;
+
+		for ( var i = 0; i < vcount.length; i ++ ) {
+
+			var numBones = vcount[i];
+			var vertex_weights = [];
+
+			for ( var j = 0; j < numBones; j ++ ) {
+
+				var influence = {};
+
+				for ( var k = 0; k < inputs.length; k ++ ) {
+
+					var input = inputs[ k ];
+					var value = v[ index + input.offset ];
+
+					switch ( input.semantic ) {
+
+						case 'JOINT':
+
+							influence.joint = value;//this.joints[value];
+							break;
+
+						case 'WEIGHT':
+
+							influence.weight = sources[ input.source ].data[ value ];
+							break;
+
+						default:
+							break;
+
+					}
+
+				}
+
+				vertex_weights.push( influence );
+				index += inputs.length;
+			}
+
+			for ( var j = 0; j < vertex_weights.length; j ++ ) {
+
+				vertex_weights[ j ].index = i;
+
+			}
+
+			this.weights.push( vertex_weights );
+
+		}
+
+	};
+
+	function VisualScene () {
+
+		this.id = "";
+		this.name = "";
+		this.nodes = [];
+		this.scene = new THREE.Group();
+
+	}
+
+	VisualScene.prototype.getChildById = function( id, recursive ) {
+
+		for ( var i = 0; i < this.nodes.length; i ++ ) {
+
+			var node = this.nodes[ i ].getChildById( id, recursive );
+
+			if ( node ) {
+
+				return node;
+
+			}
+
+		}
+
+		return null;
+
+	};
+
+	VisualScene.prototype.getChildBySid = function( sid, recursive ) {
+
+		for ( var i = 0; i < this.nodes.length; i ++ ) {
+
+			var node = this.nodes[ i ].getChildBySid( sid, recursive );
+
+			if ( node ) {
+
+				return node;
+
+			}
+
+		}
+
+		return null;
+
+	};
+
+	VisualScene.prototype.parse = function( element ) {
+
+		this.id = element.getAttribute( 'id' );
+		this.name = element.getAttribute( 'name' );
+		this.nodes = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'node':
+
+					this.nodes.push( ( new Node() ).parse( child ) );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Node() {
+
+		this.id = "";
+		this.name = "";
+		this.sid = "";
+		this.nodes = [];
+		this.controllers = [];
+		this.transforms = [];
+		this.geometries = [];
+		this.channels = [];
+		this.matrix = new THREE.Matrix4();
+
+	}
+
+	Node.prototype.getChannelForTransform = function( transformSid ) {
+
+		for ( var i = 0; i < this.channels.length; i ++ ) {
+
+			var channel = this.channels[i];
+			var parts = channel.target.split('/');
+			var id = parts.shift();
+			var sid = parts.shift();
+			var dotSyntax = (sid.indexOf(".") >= 0);
+			var arrSyntax = (sid.indexOf("(") >= 0);
+			var arrIndices;
+			var member;
+
+			if ( dotSyntax ) {
+
+				parts = sid.split(".");
+				sid = parts.shift();
+				member = parts.shift();
+
+			} else if ( arrSyntax ) {
+
+				arrIndices = sid.split("(");
+				sid = arrIndices.shift();
+
+				for ( var j = 0; j < arrIndices.length; j ++ ) {
+
+					arrIndices[ j ] = parseInt( arrIndices[ j ].replace( /\)/, '' ) );
+
+				}
+
+			}
+
+			if ( sid === transformSid ) {
+
+				channel.info = { sid: sid, dotSyntax: dotSyntax, arrSyntax: arrSyntax, arrIndices: arrIndices };
+				return channel;
+
+			}
+
+		}
+
+		return null;
+
+	};
+
+	Node.prototype.getChildById = function ( id, recursive ) {
+
+		if ( this.id === id ) {
+
+			return this;
+
+		}
+
+		if ( recursive ) {
+
+			for ( var i = 0; i < this.nodes.length; i ++ ) {
+
+				var n = this.nodes[ i ].getChildById( id, recursive );
+
+				if ( n ) {
+
+					return n;
+
+				}
+
+			}
+
+		}
+
+		return null;
+
+	};
+
+	Node.prototype.getChildBySid = function ( sid, recursive ) {
+
+		if ( this.sid === sid ) {
+
+			return this;
+
+		}
+
+		if ( recursive ) {
+
+			for ( var i = 0; i < this.nodes.length; i ++ ) {
+
+				var n = this.nodes[ i ].getChildBySid( sid, recursive );
+
+				if ( n ) {
+
+					return n;
+
+				}
+
+			}
+		}
+
+		return null;
+
+	};
+
+	Node.prototype.getTransformBySid = function ( sid ) {
+
+		for ( var i = 0; i < this.transforms.length; i ++ ) {
+
+			if ( this.transforms[ i ].sid === sid ) return this.transforms[ i ];
+
+		}
+
+		return null;
+
+	};
+
+	Node.prototype.parse = function( element ) {
+
+		var url;
+
+		this.id = element.getAttribute('id');
+		this.sid = element.getAttribute('sid');
+		this.name = element.getAttribute('name');
+		this.type = element.getAttribute('type');
+		this.layer = element.getAttribute('layer');
+
+		this.type = this.type === 'JOINT' ? this.type : 'NODE';
+
+		this.nodes = [];
+		this.transforms = [];
+		this.geometries = [];
+		this.cameras = [];
+		this.lights = [];
+		this.controllers = [];
+		this.matrix = new THREE.Matrix4();
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'node':
+
+					this.nodes.push( ( new Node() ).parse( child ) );
+					break;
+
+				case 'instance_camera':
+
+					this.cameras.push( ( new InstanceCamera() ).parse( child ) );
+					break;
+
+				case 'instance_controller':
+
+					this.controllers.push( ( new InstanceController() ).parse( child ) );
+					break;
+
+				case 'instance_geometry':
+
+					this.geometries.push( ( new InstanceGeometry() ).parse( child ) );
+					break;
+
+				case 'instance_light':
+
+					this.lights.push( ( new InstanceLight() ).parse( child ) );
+					break;
+
+				case 'instance_node':
+
+					url = child.getAttribute( 'url' ).replace( /^#/, '' );
+					var iNode = getLibraryNode( url );
+
+					if ( iNode ) {
+
+						this.nodes.push( ( new Node() ).parse( iNode )) ;
+
+					}
+
+					break;
+
+				case 'rotate':
+				case 'translate':
+				case 'scale':
+				case 'matrix':
+				case 'lookat':
+				case 'skew':
+
+					this.transforms.push( ( new Transform() ).parse( child ) );
+					break;
+
+				case 'extra':
+					break;
+
+				default:
+
+					console.log( child.nodeName );
+					break;
+
+			}
+
+		}
+
+		this.channels = getChannelsForNode( this );
+		bakeAnimations( this );
+
+		this.updateMatrix();
+
+		return this;
+
+	};
+
+	Node.prototype.updateMatrix = function () {
+
+		this.matrix.identity();
+
+		for ( var i = 0; i < this.transforms.length; i ++ ) {
+
+			this.transforms[ i ].apply( this.matrix );
+
+		}
+
+	};
+
+	function Transform () {
+
+		this.sid = "";
+		this.type = "";
+		this.data = [];
+		this.obj = null;
+
+	}
+
+	Transform.prototype.parse = function ( element ) {
+
+		this.sid = element.getAttribute( 'sid' );
+		this.type = element.nodeName;
+		this.data = _floats( element.textContent );
+		this.convert();
+
+		return this;
+
+	};
+
+	Transform.prototype.convert = function () {
+
+		switch ( this.type ) {
+
+			case 'matrix':
+
+				this.obj = getConvertedMat4( this.data );
+				break;
+
+			case 'rotate':
+
+				this.angle = THREE.Math.degToRad( this.data[3] );
+
+			case 'translate':
+
+				fixCoords( this.data, -1 );
+				this.obj = new THREE.Vector3( this.data[ 0 ], this.data[ 1 ], this.data[ 2 ] );
+				break;
+
+			case 'scale':
+
+				fixCoords( this.data, 1 );
+				this.obj = new THREE.Vector3( this.data[ 0 ], this.data[ 1 ], this.data[ 2 ] );
+				break;
+
+			default:
+				console.log( 'Can not convert Transform of type ' + this.type );
+				break;
+
+		}
+
+	};
+
+	Transform.prototype.apply = function () {
+
+		var m1 = new THREE.Matrix4();
+
+		return function ( matrix ) {
+
+			switch ( this.type ) {
+
+				case 'matrix':
+
+					matrix.multiply( this.obj );
+
+					break;
+
+				case 'translate':
+
+					matrix.multiply( m1.makeTranslation( this.obj.x, this.obj.y, this.obj.z ) );
+
+					break;
+
+				case 'rotate':
+
+					matrix.multiply( m1.makeRotationAxis( this.obj, this.angle ) );
+
+					break;
+
+				case 'scale':
+
+					matrix.scale( this.obj );
+
+					break;
+
+			}
+
+		};
+
+	}();
+
+	Transform.prototype.update = function ( data, member ) {
+
+		var members = [ 'X', 'Y', 'Z', 'ANGLE' ];
+
+		switch ( this.type ) {
+
+			case 'matrix':
+
+				if ( ! member ) {
+
+					this.obj.copy( data );
+
+				} else if ( member.length === 1 ) {
+
+					switch ( member[ 0 ] ) {
+
+						case 0:
+
+							this.obj.n11 = data[ 0 ];
+							this.obj.n21 = data[ 1 ];
+							this.obj.n31 = data[ 2 ];
+							this.obj.n41 = data[ 3 ];
+
+							break;
+
+						case 1:
+
+							this.obj.n12 = data[ 0 ];
+							this.obj.n22 = data[ 1 ];
+							this.obj.n32 = data[ 2 ];
+							this.obj.n42 = data[ 3 ];
+
+							break;
+
+						case 2:
+
+							this.obj.n13 = data[ 0 ];
+							this.obj.n23 = data[ 1 ];
+							this.obj.n33 = data[ 2 ];
+							this.obj.n43 = data[ 3 ];
+
+							break;
+
+						case 3:
+
+							this.obj.n14 = data[ 0 ];
+							this.obj.n24 = data[ 1 ];
+							this.obj.n34 = data[ 2 ];
+							this.obj.n44 = data[ 3 ];
+
+							break;
+
+					}
+
+				} else if ( member.length === 2 ) {
+
+					var propName = 'n' + ( member[ 0 ] + 1 ) + ( member[ 1 ] + 1 );
+					this.obj[ propName ] = data;
+
+				} else {
+
+					console.log('Incorrect addressing of matrix in transform.');
+
+				}
+
+				break;
+
+			case 'translate':
+			case 'scale':
+
+				if ( Object.prototype.toString.call( member ) === '[object Array]' ) {
+
+					member = members[ member[ 0 ] ];
+
+				}
+
+				switch ( member ) {
+
+					case 'X':
+
+						this.obj.x = data;
+						break;
+
+					case 'Y':
+
+						this.obj.y = data;
+						break;
+
+					case 'Z':
+
+						this.obj.z = data;
+						break;
+
+					default:
+
+						this.obj.x = data[ 0 ];
+						this.obj.y = data[ 1 ];
+						this.obj.z = data[ 2 ];
+						break;
+
+				}
+
+				break;
+
+			case 'rotate':
+
+				if ( Object.prototype.toString.call( member ) === '[object Array]' ) {
+
+					member = members[ member[ 0 ] ];
+
+				}
+
+				switch ( member ) {
+
+					case 'X':
+
+						this.obj.x = data;
+						break;
+
+					case 'Y':
+
+						this.obj.y = data;
+						break;
+
+					case 'Z':
+
+						this.obj.z = data;
+						break;
+
+					case 'ANGLE':
+
+						this.angle = THREE.Math.degToRad( data );
+						break;
+
+					default:
+
+						this.obj.x = data[ 0 ];
+						this.obj.y = data[ 1 ];
+						this.obj.z = data[ 2 ];
+						this.angle = THREE.Math.degToRad( data[ 3 ] );
+						break;
+
+				}
+				break;
+
+		}
+
+	};
+
+	function InstanceController() {
+
+		this.url = "";
+		this.skeleton = [];
+		this.instance_material = [];
+
+	}
+
+	InstanceController.prototype.parse = function ( element ) {
+
+		this.url = element.getAttribute('url').replace(/^#/, '');
+		this.skeleton = [];
+		this.instance_material = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType !== 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'skeleton':
+
+					this.skeleton.push( child.textContent.replace(/^#/, '') );
+					break;
+
+				case 'bind_material':
+
+					var instances = child.querySelectorAll('instance_material');
+
+					for ( var j = 0; j < instances.length; j ++ ) {
+
+						var instance = instances[j];
+						this.instance_material.push( (new InstanceMaterial()).parse(instance) );
+
+					}
+
+
+					break;
+
+				case 'extra':
+					break;
+
+				default:
+					break;
+
+			}
+		}
+
+		return this;
+
+	};
+
+	function InstanceMaterial () {
+
+		this.symbol = "";
+		this.target = "";
+
+	}
+
+	InstanceMaterial.prototype.parse = function ( element ) {
+
+		this.symbol = element.getAttribute('symbol');
+		this.target = element.getAttribute('target').replace(/^#/, '');
+		return this;
+
+	};
+
+	function InstanceGeometry() {
+
+		this.url = "";
+		this.instance_material = [];
+
+	}
+
+	InstanceGeometry.prototype.parse = function ( element ) {
+
+		this.url = element.getAttribute('url').replace(/^#/, '');
+		this.instance_material = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+			if ( child.nodeType != 1 ) continue;
+
+			if ( child.nodeName === 'bind_material' ) {
+
+				var instances = child.querySelectorAll('instance_material');
+
+				for ( var j = 0; j < instances.length; j ++ ) {
+
+					var instance = instances[j];
+					this.instance_material.push( (new InstanceMaterial()).parse(instance) );
+
+				}
+
+				break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Geometry() {
+
+		this.id = "";
+		this.mesh = null;
+
+	}
+
+	Geometry.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute('id');
+
+		extractDoubleSided( this, element );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+
+			switch ( child.nodeName ) {
+
+				case 'mesh':
+
+					this.mesh = (new Mesh(this)).parse(child);
+					break;
+
+				case 'extra':
+
+					// console.log( child );
+					break;
+
+				default:
+					break;
+			}
+		}
+
+		return this;
+
+	};
+
+	function Mesh( geometry ) {
+
+		this.geometry = geometry.id;
+		this.primitives = [];
+		this.vertices = null;
+		this.geometry3js = null;
+
+	}
+
+	Mesh.prototype.parse = function ( element ) {
+
+		this.primitives = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			switch ( child.nodeName ) {
+
+				case 'source':
+
+					_source( child );
+					break;
+
+				case 'vertices':
+
+					this.vertices = ( new Vertices() ).parse( child );
+					break;
+
+				case 'linestrips':
+
+					this.primitives.push( ( new LineStrips().parse( child ) ) );
+					break;
+
+				case 'triangles':
+
+					this.primitives.push( ( new Triangles().parse( child ) ) );
+					break;
+
+				case 'polygons':
+
+					this.primitives.push( ( new Polygons().parse( child ) ) );
+					break;
+
+				case 'polylist':
+
+					this.primitives.push( ( new Polylist().parse( child ) ) );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		this.geometry3js = new THREE.Geometry();
+
+		if ( this.vertices === null ) {
+
+			// TODO (mrdoob): Study case when this is null (carrier.dae)
+
+			return this;
+
+		}
+
+		var vertexData = sources[ this.vertices.input['POSITION'].source ].data;
+
+		for ( var i = 0; i < vertexData.length; i += 3 ) {
+
+			this.geometry3js.vertices.push( getConvertedVec3( vertexData, i ).clone() );
+
+		}
+
+		for ( var i = 0; i < this.primitives.length; i ++ ) {
+
+			var primitive = this.primitives[ i ];
+			primitive.setVertices( this.vertices );
+			this.handlePrimitive( primitive, this.geometry3js );
+
+		}
+
+		if ( this.geometry3js.calcNormals ) {
+
+			this.geometry3js.computeVertexNormals();
+			delete this.geometry3js.calcNormals;
+
+		}
+
+		return this;
+
+	};
+
+	Mesh.prototype.handlePrimitive = function ( primitive, geom ) {
+
+		if ( primitive instanceof LineStrips ) {
+
+			// TODO: Handle indices. Maybe easier with BufferGeometry?
+
+			geom.isLineStrip = true;
+			return;
+
+		}
+
+		var j, k, pList = primitive.p, inputs = primitive.inputs;
+		var input, index, idx32;
+		var source, numParams;
+		var vcIndex = 0, vcount = 3, maxOffset = 0;
+		var texture_sets = [];
+
+		for ( j = 0; j < inputs.length; j ++ ) {
+
+			input = inputs[ j ];
+
+			var offset = input.offset + 1;
+			maxOffset = (maxOffset < offset) ? offset : maxOffset;
+
+			switch ( input.semantic ) {
+
+				case 'TEXCOORD':
+					texture_sets.push( input.set );
+					break;
+
+			}
+
+		}
+
+		for ( var pCount = 0; pCount < pList.length; ++ pCount ) {
+
+			var p = pList[ pCount ], i = 0;
+
+			while ( i < p.length ) {
+
+				var vs = [];
+				var ns = [];
+				var ts = null;
+				var cs = [];
+
+				if ( primitive.vcount ) {
+
+					vcount = primitive.vcount.length ? primitive.vcount[ vcIndex ++ ] : primitive.vcount;
+
+				} else {
+
+					vcount = p.length / maxOffset;
+
+				}
+
+
+				for ( j = 0; j < vcount; j ++ ) {
+
+					for ( k = 0; k < inputs.length; k ++ ) {
+
+						input = inputs[ k ];
+						source = sources[ input.source ];
+
+						index = p[ i + ( j * maxOffset ) + input.offset ];
+						numParams = source.accessor.params.length;
+						idx32 = index * numParams;
+
+						switch ( input.semantic ) {
+
+							case 'VERTEX':
+
+								vs.push( index );
+
+								break;
+
+							case 'NORMAL':
+
+								ns.push( getConvertedVec3( source.data, idx32 ) );
+
+								break;
+
+							case 'TEXCOORD':
+
+								ts = ts || { };
+								if ( ts[ input.set ] === undefined ) ts[ input.set ] = [];
+								// invert the V
+								ts[ input.set ].push( new THREE.Vector2( source.data[ idx32 ], source.data[ idx32 + 1 ] ) );
+
+								break;
+
+							case 'COLOR':
+
+								cs.push( new THREE.Color().setRGB( source.data[ idx32 ], source.data[ idx32 + 1 ], source.data[ idx32 + 2 ] ) );
+
+								break;
+
+							default:
+
+								break;
+
+						}
+
+					}
+
+				}
+
+				if ( ns.length === 0 ) {
+
+					// check the vertices inputs
+					input = this.vertices.input.NORMAL;
+
+					if ( input ) {
+
+						source = sources[ input.source ];
+						numParams = source.accessor.params.length;
+
+						for ( var ndx = 0, len = vs.length; ndx < len; ndx ++ ) {
+
+							ns.push( getConvertedVec3( source.data, vs[ ndx ] * numParams ) );
+
+						}
+
+					} else {
+
+						geom.calcNormals = true;
+
+					}
+
+				}
+
+				if ( !ts ) {
+
+					ts = { };
+					// check the vertices inputs
+					input = this.vertices.input.TEXCOORD;
+
+					if ( input ) {
+
+						texture_sets.push( input.set );
+						source = sources[ input.source ];
+						numParams = source.accessor.params.length;
+
+						for ( var ndx = 0, len = vs.length; ndx < len; ndx ++ ) {
+
+							idx32 = vs[ ndx ] * numParams;
+							if ( ts[ input.set ] === undefined ) ts[ input.set ] = [ ];
+							// invert the V
+							ts[ input.set ].push( new THREE.Vector2( source.data[ idx32 ], 1.0 - source.data[ idx32 + 1 ] ) );
+
+						}
+
+					}
+
+				}
+
+				if ( cs.length === 0 ) {
+
+					// check the vertices inputs
+					input = this.vertices.input.COLOR;
+
+					if ( input ) {
+
+						source = sources[ input.source ];
+						numParams = source.accessor.params.length;
+
+						for ( var ndx = 0, len = vs.length; ndx < len; ndx ++ ) {
+
+							idx32 = vs[ ndx ] * numParams;
+							cs.push( new THREE.Color().setRGB( source.data[ idx32 ], source.data[ idx32 + 1 ], source.data[ idx32 + 2 ] ) );
+
+						}
+
+					}
+
+				}
+
+				var face = null, faces = [], uv, uvArr;
+
+				if ( vcount === 3 ) {
+
+					faces.push( new THREE.Face3( vs[0], vs[1], vs[2], ns, cs.length ? cs : new THREE.Color() ) );
+
+				} else if ( vcount === 4 ) {
+
+					faces.push( new THREE.Face3( vs[0], vs[1], vs[3], ns.length ? [ ns[0].clone(), ns[1].clone(), ns[3].clone() ] : [], cs.length ? [ cs[0], cs[1], cs[3] ] : new THREE.Color() ) );
+
+					faces.push( new THREE.Face3( vs[1], vs[2], vs[3], ns.length ? [ ns[1].clone(), ns[2].clone(), ns[3].clone() ] : [], cs.length ? [ cs[1], cs[2], cs[3] ] : new THREE.Color() ) );
+
+				} else if ( vcount > 4 && options.subdivideFaces ) {
+
+					var clr = cs.length ? cs : new THREE.Color(),
+						vec1, vec2, vec3, v1, v2, norm;
+
+					// subdivide into multiple Face3s
+
+					for ( k = 1; k < vcount - 1; ) {
+
+						faces.push( new THREE.Face3( vs[0], vs[k], vs[k + 1], ns.length ? [ ns[0].clone(), ns[k ++].clone(), ns[k].clone() ] : [], clr ) );
+
+					}
+
+				}
+
+				if ( faces.length ) {
+
+					for ( var ndx = 0, len = faces.length; ndx < len; ndx ++ ) {
+
+						face = faces[ndx];
+						face.daeMaterial = primitive.material;
+						geom.faces.push( face );
+
+						for ( k = 0; k < texture_sets.length; k ++ ) {
+
+							uv = ts[ texture_sets[k] ];
+
+							if ( vcount > 4 ) {
+
+								// Grab the right UVs for the vertices in this face
+								uvArr = [ uv[0], uv[ndx + 1], uv[ndx + 2] ];
+
+							} else if ( vcount === 4 ) {
+
+								if ( ndx === 0 ) {
+
+									uvArr = [ uv[0], uv[1], uv[3] ];
+
+								} else {
+
+									uvArr = [ uv[1].clone(), uv[2], uv[3].clone() ];
+
+								}
+
+							} else {
+
+								uvArr = [ uv[0], uv[1], uv[2] ];
+
+							}
+
+							if ( geom.faceVertexUvs[k] === undefined ) {
+
+								geom.faceVertexUvs[k] = [];
+
+							}
+
+							geom.faceVertexUvs[k].push( uvArr );
+
+						}
+
+					}
+
+				} else {
+
+					console.log( 'dropped face with vcount ' + vcount + ' for geometry with id: ' + geom.id );
+
+				}
+
+				i += maxOffset * vcount;
+
+			}
+
+		}
+
+	};
+
+	function Polygons () {
+
+		this.material = "";
+		this.count = 0;
+		this.inputs = [];
+		this.vcount = null;
+		this.p = [];
+		this.geometry = new THREE.Geometry();
+
+	}
+
+	Polygons.prototype.setVertices = function ( vertices ) {
+
+		for ( var i = 0; i < this.inputs.length; i ++ ) {
+
+			if ( this.inputs[ i ].source === vertices.id ) {
+
+				this.inputs[ i ].source = vertices.input[ 'POSITION' ].source;
+
+			}
+
+		}
+
+	};
+
+	Polygons.prototype.parse = function ( element ) {
+
+		this.material = element.getAttribute( 'material' );
+		this.count = _attr_as_int( element, 'count', 0 );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			switch ( child.nodeName ) {
+
+				case 'input':
+
+					this.inputs.push( ( new Input() ).parse( element.childNodes[ i ] ) );
+					break;
+
+				case 'vcount':
+
+					this.vcount = _ints( child.textContent );
+					break;
+
+				case 'p':
+
+					this.p.push( _ints( child.textContent ) );
+					break;
+
+				case 'ph':
+
+					console.warn( 'polygon holes not yet supported!' );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Polylist () {
+
+		Polygons.call( this );
+
+		this.vcount = [];
+
+	}
+
+	Polylist.prototype = Object.create( Polygons.prototype );
+	Polylist.prototype.constructor = Polylist;
+
+	function LineStrips() {
+
+		Polygons.call( this );
+
+		this.vcount = 1;
+
+	}
+
+	LineStrips.prototype = Object.create( Polygons.prototype );
+	LineStrips.prototype.constructor = LineStrips;
+
+	function Triangles () {
+
+		Polygons.call( this );
+
+		this.vcount = 3;
+
+	}
+
+	Triangles.prototype = Object.create( Polygons.prototype );
+	Triangles.prototype.constructor = Triangles;
+
+	function Accessor() {
+
+		this.source = "";
+		this.count = 0;
+		this.stride = 0;
+		this.params = [];
+
+	}
+
+	Accessor.prototype.parse = function ( element ) {
+
+		this.params = [];
+		this.source = element.getAttribute( 'source' );
+		this.count = _attr_as_int( element, 'count', 0 );
+		this.stride = _attr_as_int( element, 'stride', 0 );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			if ( child.nodeName === 'param' ) {
+
+				var param = {};
+				param[ 'name' ] = child.getAttribute( 'name' );
+				param[ 'type' ] = child.getAttribute( 'type' );
+				this.params.push( param );
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Vertices() {
+
+		this.input = {};
+
+	}
+
+	Vertices.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute('id');
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			if ( element.childNodes[i].nodeName === 'input' ) {
+
+				var input = ( new Input() ).parse( element.childNodes[ i ] );
+				this.input[ input.semantic ] = input;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Input () {
+
+		this.semantic = "";
+		this.offset = 0;
+		this.source = "";
+		this.set = 0;
+
+	}
+
+	Input.prototype.parse = function ( element ) {
+
+		this.semantic = element.getAttribute('semantic');
+		this.source = element.getAttribute('source').replace(/^#/, '');
+		this.set = _attr_as_int(element, 'set', -1);
+		this.offset = _attr_as_int(element, 'offset', 0);
+
+		if ( this.semantic === 'TEXCOORD' && this.set < 0 ) {
+
+			this.set = 0;
+
+		}
+
+		return this;
+
+	};
+
+	function Source ( id ) {
+
+		this.id = id;
+		this.type = null;
+
+	}
+
+	Source.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute( 'id' );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+
+			switch ( child.nodeName ) {
+
+				case 'bool_array':
+
+					this.data = _bools( child.textContent );
+					this.type = child.nodeName;
+					break;
+
+				case 'float_array':
+
+					this.data = _floats( child.textContent );
+					this.type = child.nodeName;
+					break;
+
+				case 'int_array':
+
+					this.data = _ints( child.textContent );
+					this.type = child.nodeName;
+					break;
+
+				case 'IDREF_array':
+				case 'Name_array':
+
+					this.data = _strings( child.textContent );
+					this.type = child.nodeName;
+					break;
+
+				case 'technique_common':
+
+					for ( var j = 0; j < child.childNodes.length; j ++ ) {
+
+						if ( child.childNodes[ j ].nodeName === 'accessor' ) {
+
+							this.accessor = ( new Accessor() ).parse( child.childNodes[ j ] );
+							break;
+
+						}
+					}
+					break;
+
+				default:
+					// console.log(child.nodeName);
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	Source.prototype.read = function () {
+
+		var result = [];
+
+		//for (var i = 0; i < this.accessor.params.length; i++) {
+
+		var param = this.accessor.params[ 0 ];
+
+			//console.log(param.name + " " + param.type);
+
+		switch ( param.type ) {
+
+			case 'IDREF':
+			case 'Name': case 'name':
+			case 'float':
+
+				return this.data;
+
+			case 'float4x4':
+
+				for ( var j = 0; j < this.data.length; j += 16 ) {
+
+					var s = this.data.slice( j, j + 16 );
+					var m = getConvertedMat4( s );
+					result.push( m );
+				}
+
+				break;
+
+			default:
+
+				console.log( 'ColladaLoader: Source: Read dont know how to read ' + param.type + '.' );
+				break;
+
+		}
+
+		//}
+
+		return result;
+
+	};
+
+	function Material () {
+
+		this.id = "";
+		this.name = "";
+		this.instance_effect = null;
+
+	}
+
+	Material.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute( 'id' );
+		this.name = element.getAttribute( 'name' );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			if ( element.childNodes[ i ].nodeName === 'instance_effect' ) {
+
+				this.instance_effect = ( new InstanceEffect() ).parse( element.childNodes[ i ] );
+				break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function ColorOrTexture () {
+
+		this.color = new THREE.Color();
+		this.color.setRGB( Math.random(), Math.random(), Math.random() );
+		this.color.a = 1.0;
+
+		this.texture = null;
+		this.texcoord = null;
+		this.texOpts = null;
+
+	}
+
+	ColorOrTexture.prototype.isColor = function () {
+
+		return ( this.texture === null );
+
+	};
+
+	ColorOrTexture.prototype.isTexture = function () {
+
+		return ( this.texture != null );
+
+	};
+
+	ColorOrTexture.prototype.parse = function ( element ) {
+
+		if (element.nodeName === 'transparent') {
+
+			this.opaque = element.getAttribute('opaque');
+
+		}
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'color':
+
+					var rgba = _floats( child.textContent );
+					this.color = new THREE.Color();
+					this.color.setRGB( rgba[0], rgba[1], rgba[2] );
+					this.color.a = rgba[3];
+					break;
+
+				case 'texture':
+
+					this.texture = child.getAttribute('texture');
+					this.texcoord = child.getAttribute('texcoord');
+					// Defaults from:
+					// https://collada.org/mediawiki/index.php/Maya_texture_placement_MAYA_extension
+					this.texOpts = {
+						offsetU: 0,
+						offsetV: 0,
+						repeatU: 1,
+						repeatV: 1,
+						wrapU: 1,
+						wrapV: 1
+					};
+					this.parseTexture( child );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	ColorOrTexture.prototype.parseTexture = function ( element ) {
+
+		if ( ! element.childNodes ) return this;
+
+		// This should be supported by Maya, 3dsMax, and MotionBuilder
+
+		if ( element.childNodes[1] && element.childNodes[1].nodeName === 'extra' ) {
+
+			element = element.childNodes[1];
+
+			if ( element.childNodes[1] && element.childNodes[1].nodeName === 'technique' ) {
+
+				element = element.childNodes[1];
+
+			}
+
+		}
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			switch ( child.nodeName ) {
+
+				case 'offsetU':
+				case 'offsetV':
+				case 'repeatU':
+				case 'repeatV':
+
+					this.texOpts[ child.nodeName ] = parseFloat( child.textContent );
+
+					break;
+
+				case 'wrapU':
+				case 'wrapV':
+
+					// some dae have a value of true which becomes NaN via parseInt
+
+					if ( child.textContent.toUpperCase() === 'TRUE' ) {
+
+						this.texOpts[ child.nodeName ] = 1;
+
+					} else {
+
+						this.texOpts[ child.nodeName ] = parseInt( child.textContent );
+
+					}
+					break;
+
+				default:
+
+					this.texOpts[ child.nodeName ] = child.textContent;
+
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Shader ( type, effect ) {
+
+		this.type = type;
+		this.effect = effect;
+		this.material = null;
+
+	}
+
+	Shader.prototype.parse = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'emission':
+				case 'diffuse':
+				case 'specular':
+				case 'transparent':
+
+					this[ child.nodeName ] = ( new ColorOrTexture() ).parse( child );
+					break;
+
+				case 'bump':
+
+					// If 'bumptype' is 'heightfield', create a 'bump' property
+					// Else if 'bumptype' is 'normalmap', create a 'normal' property
+					// (Default to 'bump')
+					var bumpType = child.getAttribute( 'bumptype' );
+					if ( bumpType ) {
+						if ( bumpType.toLowerCase() === "heightfield" ) {
+							this[ 'bump' ] = ( new ColorOrTexture() ).parse( child );
+						} else if ( bumpType.toLowerCase() === "normalmap" ) {
+							this[ 'normal' ] = ( new ColorOrTexture() ).parse( child );
+						} else {
+							console.error( "Shader.prototype.parse: Invalid value for attribute 'bumptype' (" + bumpType + ") - valid bumptypes are 'HEIGHTFIELD' and 'NORMALMAP' - defaulting to 'HEIGHTFIELD'" );
+							this[ 'bump' ] = ( new ColorOrTexture() ).parse( child );
+						}
+					} else {
+						console.warn( "Shader.prototype.parse: Attribute 'bumptype' missing from bump node - defaulting to 'HEIGHTFIELD'" );
+						this[ 'bump' ] = ( new ColorOrTexture() ).parse( child );
+					}
+
+					break;
+
+				case 'shininess':
+				case 'reflectivity':
+				case 'index_of_refraction':
+				case 'transparency':
+
+					var f = child.querySelectorAll('float');
+
+					if ( f.length > 0 )
+						this[ child.nodeName ] = parseFloat( f[ 0 ].textContent );
+
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		this.create();
+		return this;
+
+	};
+
+	Shader.prototype.create = function() {
+
+		var props = {};
+
+		var transparent = false;
+
+		if (this['transparency'] !== undefined && this['transparent'] !== undefined) {
+			// convert transparent color RBG to average value
+			var transparentColor = this['transparent'];
+			var transparencyLevel = (this.transparent.color.r + this.transparent.color.g + this.transparent.color.b) / 3 * this.transparency;
+
+			if (transparencyLevel > 0) {
+				transparent = true;
+				props[ 'transparent' ] = true;
+				props[ 'opacity' ] = 1 - transparencyLevel;
+
+			}
+
+		}
+
+		var keys = {
+			'diffuse':'map',
+			'ambient':'lightMap',
+			'specular':'specularMap',
+			'emission':'emissionMap',
+			'bump':'bumpMap',
+			'normal':'normalMap'
+			};
+
+		for ( var prop in this ) {
+
+			switch ( prop ) {
+
+				case 'ambient':
+				case 'emission':
+				case 'diffuse':
+				case 'specular':
+				case 'bump':
+				case 'normal':
+
+					var cot = this[ prop ];
+
+					if ( cot instanceof ColorOrTexture ) {
+
+						if ( cot.isTexture() ) {
+
+							var samplerId = cot.texture;
+							var surfaceId = this.effect.sampler[samplerId];
+
+							if ( surfaceId !== undefined && surfaceId.source !== undefined ) {
+
+								var surface = this.effect.surface[surfaceId.source];
+
+								if ( surface !== undefined ) {
+
+									var image = images[ surface.init_from ];
+
+									if ( image ) {
+
+										var url = baseUrl + image.init_from;
+
+										var texture;
+										var loader = THREE.Loader.Handlers.get( url );
+
+										if ( loader !== null ) {
+
+											texture = loader.load( url );
+
+										} else {
+
+											texture = new THREE.Texture();
+
+											loadTextureImage( texture, url );
+
+										}
+
+										texture.wrapS = cot.texOpts.wrapU ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+										texture.wrapT = cot.texOpts.wrapV ? THREE.RepeatWrapping : THREE.ClampToEdgeWrapping;
+										texture.offset.x = cot.texOpts.offsetU;
+										texture.offset.y = cot.texOpts.offsetV;
+										texture.repeat.x = cot.texOpts.repeatU;
+										texture.repeat.y = cot.texOpts.repeatV;
+										props[keys[prop]] = texture;
+
+										// Texture with baked lighting?
+										if (prop === 'emission') props['emissive'] = 0xffffff;
+
+									}
+
+								}
+
+							}
+
+						} else if ( prop === 'diffuse' || !transparent ) {
+
+							if ( prop === 'emission' ) {
+
+								props[ 'emissive' ] = cot.color.getHex();
+
+							} else {
+
+								props[ prop ] = cot.color.getHex();
+
+							}
+
+						}
+
+					}
+
+					break;
+
+				case 'shininess':
+
+					props[ prop ] = this[ prop ];
+					break;
+
+				case 'reflectivity':
+
+					props[ prop ] = this[ prop ];
+					if ( props[ prop ] > 0.0 ) props['envMap'] = options.defaultEnvMap;
+					props['combine'] = THREE.MixOperation;	//mix regular shading with reflective component
+					break;
+
+				case 'index_of_refraction':
+
+					props[ 'refractionRatio' ] = this[ prop ]; //TODO: "index_of_refraction" becomes "refractionRatio" in shader, but I'm not sure if the two are actually comparable
+					if ( this[ prop ] !== 1.0 ) props['envMap'] = options.defaultEnvMap;
+					break;
+
+				case 'transparency':
+					// gets figured out up top
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		props[ 'shading' ] = preferredShading;
+		props[ 'side' ] = this.effect.doubleSided ? THREE.DoubleSide : THREE.FrontSide;
+
+		if ( props.diffuse !== undefined ) {
+
+			props.color = props.diffuse;
+			delete props.diffuse;
+
+		}
+
+		switch ( this.type ) {
+
+			case 'constant':
+
+				if (props.emissive != undefined) props.color = props.emissive;
+				this.material = new THREE.MeshBasicMaterial( props );
+				break;
+
+			case 'phong':
+			case 'blinn':
+
+				this.material = new THREE.MeshPhongMaterial( props );
+				break;
+
+			case 'lambert':
+			default:
+
+				this.material = new THREE.MeshLambertMaterial( props );
+				break;
+
+		}
+
+		return this.material;
+
+	};
+
+	function Surface ( effect ) {
+
+		this.effect = effect;
+		this.init_from = null;
+		this.format = null;
+
+	}
+
+	Surface.prototype.parse = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'init_from':
+
+					this.init_from = child.textContent;
+					break;
+
+				case 'format':
+
+					this.format = child.textContent;
+					break;
+
+				default:
+
+					console.log( "unhandled Surface prop: " + child.nodeName );
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Sampler2D ( effect ) {
+
+		this.effect = effect;
+		this.source = null;
+		this.wrap_s = null;
+		this.wrap_t = null;
+		this.minfilter = null;
+		this.magfilter = null;
+		this.mipfilter = null;
+
+	}
+
+	Sampler2D.prototype.parse = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'source':
+
+					this.source = child.textContent;
+					break;
+
+				case 'minfilter':
+
+					this.minfilter = child.textContent;
+					break;
+
+				case 'magfilter':
+
+					this.magfilter = child.textContent;
+					break;
+
+				case 'mipfilter':
+
+					this.mipfilter = child.textContent;
+					break;
+
+				case 'wrap_s':
+
+					this.wrap_s = child.textContent;
+					break;
+
+				case 'wrap_t':
+
+					this.wrap_t = child.textContent;
+					break;
+
+				default:
+
+					console.log( "unhandled Sampler2D prop: " + child.nodeName );
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Effect () {
+
+		this.id = "";
+		this.name = "";
+		this.shader = null;
+		this.surface = {};
+		this.sampler = {};
+
+	}
+
+	Effect.prototype.create = function () {
+
+		if ( this.shader === null ) {
+
+			return null;
+
+		}
+
+	};
+
+	Effect.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute( 'id' );
+		this.name = element.getAttribute( 'name' );
+
+		extractDoubleSided( this, element );
+
+		this.shader = null;
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'profile_COMMON':
+
+					this.parseTechnique( this.parseProfileCOMMON( child ) );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	Effect.prototype.parseNewparam = function ( element ) {
+
+		var sid = element.getAttribute( 'sid' );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'surface':
+
+					this.surface[sid] = ( new Surface( this ) ).parse( child );
+					break;
+
+				case 'sampler2D':
+
+					this.sampler[sid] = ( new Sampler2D( this ) ).parse( child );
+					break;
+
+				case 'extra':
+
+					break;
+
+				default:
+
+					console.log( child.nodeName );
+					break;
+
+			}
+
+		}
+
+	};
+
+	Effect.prototype.parseProfileCOMMON = function ( element ) {
+
+		var technique;
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'profile_COMMON':
+
+					this.parseProfileCOMMON( child );
+					break;
+
+				case 'technique':
+
+					technique = child;
+					break;
+
+				case 'newparam':
+
+					this.parseNewparam( child );
+					break;
+
+				case 'image':
+
+					var _image = ( new _Image() ).parse( child );
+					images[ _image.id ] = _image;
+					break;
+
+				case 'extra':
+					break;
+
+				default:
+
+					console.log( child.nodeName );
+					break;
+
+			}
+
+		}
+
+		return technique;
+
+	};
+
+	Effect.prototype.parseTechnique = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'constant':
+				case 'lambert':
+				case 'blinn':
+				case 'phong':
+
+					this.shader = ( new Shader( child.nodeName, this ) ).parse( child );
+					break;
+				case 'extra':
+					this.parseExtra(child);
+					break;
+				default:
+					break;
+
+			}
+
+		}
+
+	};
+
+	Effect.prototype.parseExtra = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'technique':
+					this.parseExtraTechnique( child );
+					break;
+				default:
+					break;
+
+			}
+
+		}
+
+	};
+
+	Effect.prototype.parseExtraTechnique = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[i];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'bump':
+					this.shader.parse( element );
+					break;
+				default:
+					break;
+
+			}
+
+		}
+
+	};
+
+	function InstanceEffect () {
+
+		this.url = "";
+
+	}
+
+	InstanceEffect.prototype.parse = function ( element ) {
+
+		this.url = element.getAttribute( 'url' ).replace( /^#/, '' );
+		return this;
+
+	};
+
+	function Animation() {
+
+		this.id = "";
+		this.name = "";
+		this.source = {};
+		this.sampler = [];
+		this.channel = [];
+
+	}
+
+	Animation.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute( 'id' );
+		this.name = element.getAttribute( 'name' );
+		this.source = {};
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'animation':
+
+					var anim = ( new Animation() ).parse( child );
+
+					for ( var src in anim.source ) {
+
+						this.source[ src ] = anim.source[ src ];
+
+					}
+
+					for ( var j = 0; j < anim.channel.length; j ++ ) {
+
+						this.channel.push( anim.channel[ j ] );
+						this.sampler.push( anim.sampler[ j ] );
+
+					}
+
+					break;
+
+				case 'source':
+
+					var src = ( new Source() ).parse( child );
+					this.source[ src.id ] = src;
+					break;
+
+				case 'sampler':
+
+					this.sampler.push( ( new Sampler( this ) ).parse( child ) );
+					break;
+
+				case 'channel':
+
+					this.channel.push( ( new Channel( this ) ).parse( child ) );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Channel( animation ) {
+
+		this.animation = animation;
+		this.source = "";
+		this.target = "";
+		this.fullSid = null;
+		this.sid = null;
+		this.dotSyntax = null;
+		this.arrSyntax = null;
+		this.arrIndices = null;
+		this.member = null;
+
+	}
+
+	Channel.prototype.parse = function ( element ) {
+
+		this.source = element.getAttribute( 'source' ).replace( /^#/, '' );
+		this.target = element.getAttribute( 'target' );
+
+		var parts = this.target.split( '/' );
+
+		var id = parts.shift();
+		var sid = parts.shift();
+
+		var dotSyntax = ( sid.indexOf(".") >= 0 );
+		var arrSyntax = ( sid.indexOf("(") >= 0 );
+
+		if ( dotSyntax ) {
+
+			parts = sid.split(".");
+			this.sid = parts.shift();
+			this.member = parts.shift();
+
+		} else if ( arrSyntax ) {
+
+			var arrIndices = sid.split("(");
+			this.sid = arrIndices.shift();
+
+			for (var j = 0; j < arrIndices.length; j ++ ) {
+
+				arrIndices[j] = parseInt( arrIndices[j].replace(/\)/, '') );
+
+			}
+
+			this.arrIndices = arrIndices;
+
+		} else {
+
+			this.sid = sid;
+
+		}
+
+		this.fullSid = sid;
+		this.dotSyntax = dotSyntax;
+		this.arrSyntax = arrSyntax;
+
+		return this;
+
+	};
+
+	function Sampler ( animation ) {
+
+		this.id = "";
+		this.animation = animation;
+		this.inputs = [];
+		this.input = null;
+		this.output = null;
+		this.strideOut = null;
+		this.interpolation = null;
+		this.startTime = null;
+		this.endTime = null;
+		this.duration = 0;
+
+	}
+
+	Sampler.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute( 'id' );
+		this.inputs = [];
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'input':
+
+					this.inputs.push( (new Input()).parse( child ) );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	Sampler.prototype.create = function () {
+
+		for ( var i = 0; i < this.inputs.length; i ++ ) {
+
+			var input = this.inputs[ i ];
+			var source = this.animation.source[ input.source ];
+
+			switch ( input.semantic ) {
+
+				case 'INPUT':
+
+					this.input = source.read();
+					break;
+
+				case 'OUTPUT':
+
+					this.output = source.read();
+					this.strideOut = source.accessor.stride;
+					break;
+
+				case 'INTERPOLATION':
+
+					this.interpolation = source.read();
+					break;
+
+				case 'IN_TANGENT':
+
+					break;
+
+				case 'OUT_TANGENT':
+
+					break;
+
+				default:
+
+					console.log(input.semantic);
+					break;
+
+			}
+
+		}
+
+		this.startTime = 0;
+		this.endTime = 0;
+		this.duration = 0;
+
+		if ( this.input.length ) {
+
+			this.startTime = 100000000;
+			this.endTime = -100000000;
+
+			for ( var i = 0; i < this.input.length; i ++ ) {
+
+				this.startTime = Math.min( this.startTime, this.input[ i ] );
+				this.endTime = Math.max( this.endTime, this.input[ i ] );
+
+			}
+
+			this.duration = this.endTime - this.startTime;
+
+		}
+
+	};
+
+	Sampler.prototype.getData = function ( type, ndx, member ) {
+
+		var data;
+
+		if ( type === 'matrix' && this.strideOut === 16 ) {
+
+			data = this.output[ ndx ];
+
+		} else if ( this.strideOut > 1 ) {
+
+			data = [];
+			ndx *= this.strideOut;
+
+			for ( var i = 0; i < this.strideOut; ++ i ) {
+
+				data[ i ] = this.output[ ndx + i ];
+
+			}
+
+			if ( this.strideOut === 3 ) {
+
+				switch ( type ) {
+
+					case 'rotate':
+					case 'translate':
+
+						fixCoords( data, -1 );
+						break;
+
+					case 'scale':
+
+						fixCoords( data, 1 );
+						break;
+
+				}
+
+			} else if ( this.strideOut === 4 && type === 'matrix' ) {
+
+				fixCoords( data, -1 );
+
+			}
+
+		} else {
+
+			data = this.output[ ndx ];
+
+			if ( member && type === 'translate' ) {
+				data = getConvertedTranslation( member, data );
+			}
+
+		}
+
+		return data;
+
+	};
+
+	function Key ( time ) {
+
+		this.targets = [];
+		this.time = time;
+
+	}
+
+	Key.prototype.addTarget = function ( fullSid, transform, member, data ) {
+
+		this.targets.push( {
+			sid: fullSid,
+			member: member,
+			transform: transform,
+			data: data
+		} );
+
+	};
+
+	Key.prototype.apply = function ( opt_sid ) {
+
+		for ( var i = 0; i < this.targets.length; ++ i ) {
+
+			var target = this.targets[ i ];
+
+			if ( !opt_sid || target.sid === opt_sid ) {
+
+				target.transform.update( target.data, target.member );
+
+			}
+
+		}
+
+	};
+
+	Key.prototype.getTarget = function ( fullSid ) {
+
+		for ( var i = 0; i < this.targets.length; ++ i ) {
+
+			if ( this.targets[ i ].sid === fullSid ) {
+
+				return this.targets[ i ];
+
+			}
+
+		}
+
+		return null;
+
+	};
+
+	Key.prototype.hasTarget = function ( fullSid ) {
+
+		for ( var i = 0; i < this.targets.length; ++ i ) {
+
+			if ( this.targets[ i ].sid === fullSid ) {
+
+				return true;
+
+			}
+
+		}
+
+		return false;
+
+	};
+
+	// TODO: Currently only doing linear interpolation. Should support full COLLADA spec.
+	Key.prototype.interpolate = function ( nextKey, time ) {
+
+		for ( var i = 0, l = this.targets.length; i < l; i ++ ) {
+
+			var target = this.targets[ i ],
+				nextTarget = nextKey.getTarget( target.sid ),
+				data;
+
+			if ( target.transform.type !== 'matrix' && nextTarget ) {
+
+				var scale = ( time - this.time ) / ( nextKey.time - this.time ),
+					nextData = nextTarget.data,
+					prevData = target.data;
+
+				if ( scale < 0 ) scale = 0;
+				if ( scale > 1 ) scale = 1;
+
+				if ( prevData.length ) {
+
+					data = [];
+
+					for ( var j = 0; j < prevData.length; ++ j ) {
+
+						data[ j ] = prevData[ j ] + ( nextData[ j ] - prevData[ j ] ) * scale;
+
+					}
+
+				} else {
+
+					data = prevData + ( nextData - prevData ) * scale;
+
+				}
+
+			} else {
+
+				data = target.data;
+
+			}
+
+			target.transform.update( data, target.member );
+
+		}
+
+	};
+
+	// Camera
+	function Camera() {
+
+		this.id = "";
+		this.name = "";
+		this.technique = "";
+
+	}
+
+	Camera.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute( 'id' );
+		this.name = element.getAttribute( 'name' );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'optics':
+
+					this.parseOptics( child );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	Camera.prototype.parseOptics = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			if ( element.childNodes[ i ].nodeName === 'technique_common' ) {
+
+				var technique = element.childNodes[ i ];
+
+				for ( var j = 0; j < technique.childNodes.length; j ++ ) {
+
+					this.technique = technique.childNodes[ j ].nodeName;
+
+					if ( this.technique === 'perspective' ) {
+
+						var perspective = technique.childNodes[ j ];
+
+						for ( var k = 0; k < perspective.childNodes.length; k ++ ) {
+
+							var param = perspective.childNodes[ k ];
+
+							switch ( param.nodeName ) {
+
+								case 'yfov':
+									this.yfov = param.textContent;
+									break;
+								case 'xfov':
+									this.xfov = param.textContent;
+									break;
+								case 'znear':
+									this.znear = param.textContent;
+									break;
+								case 'zfar':
+									this.zfar = param.textContent;
+									break;
+								case 'aspect_ratio':
+									this.aspect_ratio = param.textContent;
+									break;
+
+							}
+
+						}
+
+					} else if ( this.technique === 'orthographic' ) {
+
+						var orthographic = technique.childNodes[ j ];
+
+						for ( var k = 0; k < orthographic.childNodes.length; k ++ ) {
+
+							var param = orthographic.childNodes[ k ];
+
+							switch ( param.nodeName ) {
+
+								case 'xmag':
+									this.xmag = param.textContent;
+									break;
+								case 'ymag':
+									this.ymag = param.textContent;
+									break;
+								case 'znear':
+									this.znear = param.textContent;
+									break;
+								case 'zfar':
+									this.zfar = param.textContent;
+									break;
+								case 'aspect_ratio':
+									this.aspect_ratio = param.textContent;
+									break;
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function InstanceCamera() {
+
+		this.url = "";
+
+	}
+
+	InstanceCamera.prototype.parse = function ( element ) {
+
+		this.url = element.getAttribute('url').replace(/^#/, '');
+
+		return this;
+
+	};
+
+	// Light
+
+	function Light() {
+
+		this.id = "";
+		this.name = "";
+		this.technique = "";
+
+	}
+
+	Light.prototype.parse = function ( element ) {
+
+		this.id = element.getAttribute( 'id' );
+		this.name = element.getAttribute( 'name' );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'technique_common':
+
+					this.parseCommon( child );
+					break;
+
+				case 'technique':
+
+					this.parseTechnique( child );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	Light.prototype.parseCommon = function ( element ) {
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			switch ( element.childNodes[ i ].nodeName ) {
+
+				case 'directional':
+				case 'point':
+				case 'spot':
+				case 'ambient':
+
+					this.technique = element.childNodes[ i ].nodeName;
+
+					var light = element.childNodes[ i ];
+
+					for ( var j = 0; j < light.childNodes.length; j ++ ) {
+
+						var child = light.childNodes[j];
+
+						switch ( child.nodeName ) {
+
+							case 'color':
+
+								var rgba = _floats( child.textContent );
+								this.color = new THREE.Color(0);
+								this.color.setRGB( rgba[0], rgba[1], rgba[2] );
+								this.color.a = rgba[3];
+								break;
+
+							case 'falloff_angle':
+
+								this.falloff_angle = parseFloat( child.textContent );
+								break;
+
+							case 'quadratic_attenuation':
+								var f = parseFloat( child.textContent );
+								this.distance = f ? Math.sqrt( 1 / f ) : 0;
+						}
+
+					}
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	Light.prototype.parseTechnique = function ( element ) {
+
+		this.profile = element.getAttribute( 'profile' );
+
+		for ( var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+
+			switch ( child.nodeName ) {
+
+				case 'intensity':
+
+					this.intensity = parseFloat(child.textContent);
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function InstanceLight() {
+
+		this.url = "";
+
+	}
+
+	InstanceLight.prototype.parse = function ( element ) {
+
+		this.url = element.getAttribute('url').replace(/^#/, '');
+
+		return this;
+
+	};
+
+	function KinematicsModel( ) {
+
+		this.id = '';
+		this.name = '';
+		this.joints = [];
+		this.links = [];
+
+	}
+
+	KinematicsModel.prototype.parse = function( element ) {
+
+		this.id = element.getAttribute('id');
+		this.name = element.getAttribute('name');
+		this.joints = [];
+		this.links = [];
+
+		for (var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'technique_common':
+
+					this.parseCommon(child);
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	KinematicsModel.prototype.parseCommon = function( element ) {
+
+		for (var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( element.childNodes[ i ].nodeName ) {
+
+				case 'joint':
+					this.joints.push( (new Joint()).parse(child) );
+					break;
+
+				case 'link':
+					this.links.push( (new Link()).parse(child) );
+					break;
+
+				default:
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Joint( ) {
+
+		this.sid = '';
+		this.name = '';
+		this.axis = new THREE.Vector3();
+		this.limits = {
+			min: 0,
+			max: 0
+		};
+		this.type = '';
+		this.static = false;
+		this.zeroPosition = 0.0;
+		this.middlePosition = 0.0;
+
+	}
+
+	Joint.prototype.parse = function( element ) {
+
+		this.sid = element.getAttribute('sid');
+		this.name = element.getAttribute('name');
+		this.axis = new THREE.Vector3();
+		this.limits = {
+			min: 0,
+			max: 0
+		};
+		this.type = '';
+		this.static = false;
+		this.zeroPosition = 0.0;
+		this.middlePosition = 0.0;
+
+		var axisElement = element.querySelector('axis');
+		var _axis = _floats(axisElement.textContent);
+		this.axis = getConvertedVec3(_axis, 0);
+
+		var min = element.querySelector('limits min') ? parseFloat(element.querySelector('limits min').textContent) : -360;
+		var max = element.querySelector('limits max') ? parseFloat(element.querySelector('limits max').textContent) : 360;
+
+		this.limits = {
+			min: min,
+			max: max
+		};
+
+		var jointTypes = [ 'prismatic', 'revolute' ];
+		for (var i = 0; i < jointTypes.length; i ++ ) {
+
+			var type = jointTypes[ i ];
+
+			var jointElement = element.querySelector(type);
+
+			if ( jointElement ) {
+
+				this.type = type;
+
+			}
+
+		}
+
+		// if the min is equal to or somehow greater than the max, consider the joint static
+		if ( this.limits.min >= this.limits.max ) {
+
+			this.static = true;
+
+		}
+
+		this.middlePosition = (this.limits.min + this.limits.max) / 2.0;
+		return this;
+
+	};
+
+	function Link( ) {
+
+		this.sid = '';
+		this.name = '';
+		this.transforms = [];
+		this.attachments = [];
+
+	}
+
+	Link.prototype.parse = function( element ) {
+
+		this.sid = element.getAttribute('sid');
+		this.name = element.getAttribute('name');
+		this.transforms = [];
+		this.attachments = [];
+
+		for (var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'attachment_full':
+					this.attachments.push( (new Attachment()).parse(child) );
+					break;
+
+				case 'rotate':
+				case 'translate':
+				case 'matrix':
+
+					this.transforms.push( (new Transform()).parse(child) );
+					break;
+
+				default:
+
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function Attachment( ) {
+
+		this.joint = '';
+		this.transforms = [];
+		this.links = [];
+
+	}
+
+	Attachment.prototype.parse = function( element ) {
+
+		this.joint = element.getAttribute('joint').split('/').pop();
+		this.links = [];
+
+		for (var i = 0; i < element.childNodes.length; i ++ ) {
+
+			var child = element.childNodes[ i ];
+			if ( child.nodeType != 1 ) continue;
+
+			switch ( child.nodeName ) {
+
+				case 'link':
+					this.links.push( (new Link()).parse(child) );
+					break;
+
+				case 'rotate':
+				case 'translate':
+				case 'matrix':
+
+					this.transforms.push( (new Transform()).parse(child) );
+					break;
+
+				default:
+
+					break;
+
+			}
+
+		}
+
+		return this;
+
+	};
+
+	function _source( element ) {
+
+		var id = element.getAttribute( 'id' );
+
+		if ( sources[ id ] != undefined ) {
+
+			return sources[ id ];
+
+		}
+
+		sources[ id ] = ( new Source(id )).parse( element );
+		return sources[ id ];
+
+	}
+
+	function _nsResolver( nsPrefix ) {
+
+		if ( nsPrefix === "dae" ) {
+
+			return "http://www.collada.org/2005/11/COLLADASchema";
+
+		}
+
+		return null;
+
+	}
+
+	function _bools( str ) {
+
+		var raw = _strings( str );
+		var data = [];
+
+		for ( var i = 0, l = raw.length; i < l; i ++ ) {
+
+			data.push( (raw[i] === 'true' || raw[i] === '1') ? true : false );
+
+		}
+
+		return data;
+
+	}
+
+	function _floats( str ) {
+
+		var raw = _strings(str);
+		var data = [];
+
+		for ( var i = 0, l = raw.length; i < l; i ++ ) {
+
+			data.push( parseFloat( raw[ i ] ) );
+
+		}
+
+		return data;
+
+	}
+
+	function _ints( str ) {
+
+		var raw = _strings( str );
+		var data = [];
+
+		for ( var i = 0, l = raw.length; i < l; i ++ ) {
+
+			data.push( parseInt( raw[ i ], 10 ) );
+
+		}
+
+		return data;
+
+	}
+
+	function _strings( str ) {
+
+		return ( str.length > 0 ) ? _trimString( str ).split( /\s+/ ) : [];
+
+	}
+
+	function _trimString( str ) {
+
+		return str.replace( /^\s+/, "" ).replace( /\s+$/, "" );
+
+	}
+
+	function _attr_as_float( element, name, defaultValue ) {
+
+		if ( element.hasAttribute( name ) ) {
+
+			return parseFloat( element.getAttribute( name ) );
+
+		} else {
+
+			return defaultValue;
+
+		}
+
+	}
+
+	function _attr_as_int( element, name, defaultValue ) {
+
+		if ( element.hasAttribute( name ) ) {
+
+			return parseInt( element.getAttribute( name ), 10) ;
+
+		} else {
+
+			return defaultValue;
+
+		}
+
+	}
+
+	function _attr_as_string( element, name, defaultValue ) {
+
+		if ( element.hasAttribute( name ) ) {
+
+			return element.getAttribute( name );
+
+		} else {
+
+			return defaultValue;
+
+		}
+
+	}
+
+	function _format_float( f, num ) {
+
+		if ( f === undefined ) {
+
+			var s = '0.';
+
+			while ( s.length < num + 2 ) {
+
+				s += '0';
+
+			}
+
+			return s;
+
+		}
+
+		num = num || 2;
+
+		var parts = f.toString().split( '.' );
+		parts[ 1 ] = parts.length > 1 ? parts[ 1 ].substr( 0, num ) : "0";
+
+		while ( parts[ 1 ].length < num ) {
+
+			parts[ 1 ] += '0';
+
+		}
+
+		return parts.join( '.' );
+
+	}
+
+	function loadTextureImage ( texture, url ) {
+
+		var loader = new THREE.ImageLoader();
+
+		loader.load( url, function ( image ) {
+
+			texture.image = image;
+			texture.needsUpdate = true;
+
+		} );
+
+	}
+
+	function extractDoubleSided( obj, element ) {
+
+		obj.doubleSided = false;
+
+		var node = element.querySelectorAll('extra double_sided')[0];
+
+		if ( node ) {
+
+			if ( node && parseInt( node.textContent, 10 ) === 1 ) {
+
+				obj.doubleSided = true;
+
+			}
+
+		}
+
+	}
+
+	// Up axis conversion
+
+	function setUpConversion() {
+
+		if ( options.convertUpAxis !== true || colladaUp === options.upAxis ) {
+
+			upConversion = null;
+
+		} else {
+
+			switch ( colladaUp ) {
+
+				case 'X':
+
+					upConversion = options.upAxis === 'Y' ? 'XtoY' : 'XtoZ';
+					break;
+
+				case 'Y':
+
+					upConversion = options.upAxis === 'X' ? 'YtoX' : 'YtoZ';
+					break;
+
+				case 'Z':
+
+					upConversion = options.upAxis === 'X' ? 'ZtoX' : 'ZtoY';
+					break;
+
+			}
+
+		}
+
+	}
+
+	function fixCoords( data, sign ) {
+
+		if ( options.convertUpAxis !== true || colladaUp === options.upAxis ) {
+
+			return;
+
+		}
+
+		switch ( upConversion ) {
+
+			case 'XtoY':
+
+				var tmp = data[ 0 ];
+				data[ 0 ] = sign * data[ 1 ];
+				data[ 1 ] = tmp;
+				break;
+
+			case 'XtoZ':
+
+				var tmp = data[ 2 ];
+				data[ 2 ] = data[ 1 ];
+				data[ 1 ] = data[ 0 ];
+				data[ 0 ] = tmp;
+				break;
+
+			case 'YtoX':
+
+				var tmp = data[ 0 ];
+				data[ 0 ] = data[ 1 ];
+				data[ 1 ] = sign * tmp;
+				break;
+
+			case 'YtoZ':
+
+				var tmp = data[ 1 ];
+				data[ 1 ] = sign * data[ 2 ];
+				data[ 2 ] = tmp;
+				break;
+
+			case 'ZtoX':
+
+				var tmp = data[ 0 ];
+				data[ 0 ] = data[ 1 ];
+				data[ 1 ] = data[ 2 ];
+				data[ 2 ] = tmp;
+				break;
+
+			case 'ZtoY':
+
+				var tmp = data[ 1 ];
+				data[ 1 ] = data[ 2 ];
+				data[ 2 ] = sign * tmp;
+				break;
+
+		}
+
+	}
+
+	function getConvertedTranslation( axis, data ) {
+
+		if ( options.convertUpAxis !== true || colladaUp === options.upAxis ) {
+
+			return data;
+
+		}
+
+		switch ( axis ) {
+			case 'X':
+				data = upConversion === 'XtoY' ? data * -1 : data;
+				break;
+			case 'Y':
+				data = upConversion === 'YtoZ' || upConversion === 'YtoX' ? data * -1 : data;
+				break;
+			case 'Z':
+				data = upConversion === 'ZtoY' ? data * -1 : data ;
+				break;
+			default:
+				break;
+		}
+
+		return data;
+	}
+
+	function getConvertedVec3( data, offset ) {
+
+		var arr = [ data[ offset ], data[ offset + 1 ], data[ offset + 2 ] ];
+		fixCoords( arr, -1 );
+		return new THREE.Vector3( arr[ 0 ], arr[ 1 ], arr[ 2 ] );
+
+	}
+
+	function getConvertedMat4( data ) {
+
+		if ( options.convertUpAxis ) {
+
+			// First fix rotation and scale
+
+			// Columns first
+			var arr = [ data[ 0 ], data[ 4 ], data[ 8 ] ];
+			fixCoords( arr, -1 );
+			data[ 0 ] = arr[ 0 ];
+			data[ 4 ] = arr[ 1 ];
+			data[ 8 ] = arr[ 2 ];
+			arr = [ data[ 1 ], data[ 5 ], data[ 9 ] ];
+			fixCoords( arr, -1 );
+			data[ 1 ] = arr[ 0 ];
+			data[ 5 ] = arr[ 1 ];
+			data[ 9 ] = arr[ 2 ];
+			arr = [ data[ 2 ], data[ 6 ], data[ 10 ] ];
+			fixCoords( arr, -1 );
+			data[ 2 ] = arr[ 0 ];
+			data[ 6 ] = arr[ 1 ];
+			data[ 10 ] = arr[ 2 ];
+			// Rows second
+			arr = [ data[ 0 ], data[ 1 ], data[ 2 ] ];
+			fixCoords( arr, -1 );
+			data[ 0 ] = arr[ 0 ];
+			data[ 1 ] = arr[ 1 ];
+			data[ 2 ] = arr[ 2 ];
+			arr = [ data[ 4 ], data[ 5 ], data[ 6 ] ];
+			fixCoords( arr, -1 );
+			data[ 4 ] = arr[ 0 ];
+			data[ 5 ] = arr[ 1 ];
+			data[ 6 ] = arr[ 2 ];
+			arr = [ data[ 8 ], data[ 9 ], data[ 10 ] ];
+			fixCoords( arr, -1 );
+			data[ 8 ] = arr[ 0 ];
+			data[ 9 ] = arr[ 1 ];
+			data[ 10 ] = arr[ 2 ];
+
+			// Now fix translation
+			arr = [ data[ 3 ], data[ 7 ], data[ 11 ] ];
+			fixCoords( arr, -1 );
+			data[ 3 ] = arr[ 0 ];
+			data[ 7 ] = arr[ 1 ];
+			data[ 11 ] = arr[ 2 ];
+
+		}
+
+		return new THREE.Matrix4().set(
+			data[0], data[1], data[2], data[3],
+			data[4], data[5], data[6], data[7],
+			data[8], data[9], data[10], data[11],
+			data[12], data[13], data[14], data[15]
+			);
+
+	}
+
+	function getConvertedIndex( index ) {
+
+		if ( index > -1 && index < 3 ) {
+
+			var members = [ 'X', 'Y', 'Z' ],
+				indices = { X: 0, Y: 1, Z: 2 };
+
+			index = getConvertedMember( members[ index ] );
+			index = indices[ index ];
+
+		}
+
+		return index;
+
+	}
+
+	function getConvertedMember( member ) {
+
+		if ( options.convertUpAxis ) {
+
+			switch ( member ) {
+
+				case 'X':
+
+					switch ( upConversion ) {
+
+						case 'XtoY':
+						case 'XtoZ':
+						case 'YtoX':
+
+							member = 'Y';
+							break;
+
+						case 'ZtoX':
+
+							member = 'Z';
+							break;
+
+					}
+
+					break;
+
+				case 'Y':
+
+					switch ( upConversion ) {
+
+						case 'XtoY':
+						case 'YtoX':
+						case 'ZtoX':
+
+							member = 'X';
+							break;
+
+						case 'XtoZ':
+						case 'YtoZ':
+						case 'ZtoY':
+
+							member = 'Z';
+							break;
+
+					}
+
+					break;
+
+				case 'Z':
+
+					switch ( upConversion ) {
+
+						case 'XtoZ':
+
+							member = 'X';
+							break;
+
+						case 'YtoZ':
+						case 'ZtoX':
+						case 'ZtoY':
+
+							member = 'Y';
+							break;
+
+					}
+
+					break;
+
+			}
+
+		}
+
+		return member;
+
+	}
+
+	return {
+
+		load: load,
+		parse: parse,
+		setPreferredShading: setPreferredShading,
+		applySkin: applySkin,
+		geometries : geometries,
+		options: options
+
+	};
+
+};
+
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ */
+
+THREE.Animation = function ( root, data ) {
+
+	this.root = root;
+	this.data = THREE.AnimationHandler.init( data );
+	this.hierarchy = THREE.AnimationHandler.parse( root );
+
+	this.currentTime = 0;
+	this.timeScale = 1;
+
+	this.isPlaying = false;
+	this.loop = true;
+	this.weight = 0;
+
+	this.interpolationType = THREE.AnimationHandler.LINEAR;
+
+};
+
+THREE.Animation.prototype = {
+
+	constructor: THREE.Animation,
+
+	keyTypes:  [ "pos", "rot", "scl" ],
+
+	play: function ( startTime, weight ) {
+
+		this.currentTime = startTime !== undefined ? startTime : 0;
+		this.weight = weight !== undefined ? weight : 1;
+
+		this.isPlaying = true;
+
+		this.reset();
+
+		THREE.AnimationHandler.play( this );
+
+	},
+
+	stop: function() {
+
+		this.isPlaying = false;
+
+		THREE.AnimationHandler.stop( this );
+
+	},
+
+	reset: function () {
+
+		for ( var h = 0, hl = this.hierarchy.length; h < hl; h ++ ) {
+
+			var object = this.hierarchy[ h ];
+
+			if ( object.animationCache === undefined ) {
+
+				object.animationCache = {
+					animations: {},
+					blending: {
+						positionWeight: 0.0,
+						quaternionWeight: 0.0,
+						scaleWeight: 0.0
+					}
+				};
+
+			}
+
+			var name = this.data.name;
+			var animations = object.animationCache.animations;
+			var animationCache = animations[ name ];
+
+			if ( animationCache === undefined ) {
+
+				animationCache = {
+					prevKey: { pos: 0, rot: 0, scl: 0 },
+					nextKey: { pos: 0, rot: 0, scl: 0 },
+					originalMatrix: object.matrix
+				};
+
+				animations[ name ] = animationCache;
+
+			}
+
+			// Get keys to match our current time
+
+			for ( var t = 0; t < 3; t ++ ) {
+
+				var type = this.keyTypes[ t ];
+
+				var prevKey = this.data.hierarchy[ h ].keys[ 0 ];
+				var nextKey = this.getNextKeyWith( type, h, 1 );
+
+				while ( nextKey.time < this.currentTime && nextKey.index > prevKey.index ) {
+
+					prevKey = nextKey;
+					nextKey = this.getNextKeyWith( type, h, nextKey.index + 1 );
+
+				}
+
+				animationCache.prevKey[ type ] = prevKey;
+				animationCache.nextKey[ type ] = nextKey;
+
+			}
+
+		}
+
+	},
+
+	resetBlendWeights: function () {
+
+		for ( var h = 0, hl = this.hierarchy.length; h < hl; h ++ ) {
+
+			var object = this.hierarchy[ h ];
+			var animationCache = object.animationCache;
+
+			if ( animationCache !== undefined ) {
+
+				var blending = animationCache.blending;
+
+				blending.positionWeight = 0.0;
+				blending.quaternionWeight = 0.0;
+				blending.scaleWeight = 0.0;
+
+			}
+
+		}
+
+	},
+
+	update: ( function() {
+
+		var points = [];
+		var target = new THREE.Vector3();
+		var newVector = new THREE.Vector3();
+		var newQuat = new THREE.Quaternion();
+
+		// Catmull-Rom spline
+
+		var interpolateCatmullRom = function ( points, scale ) {
+
+			var c = [], v3 = [],
+			point, intPoint, weight, w2, w3,
+			pa, pb, pc, pd;
+
+			point = ( points.length - 1 ) * scale;
+			intPoint = Math.floor( point );
+			weight = point - intPoint;
+
+			c[ 0 ] = intPoint === 0 ? intPoint : intPoint - 1;
+			c[ 1 ] = intPoint;
+			c[ 2 ] = intPoint > points.length - 2 ? intPoint : intPoint + 1;
+			c[ 3 ] = intPoint > points.length - 3 ? intPoint : intPoint + 2;
+
+			pa = points[ c[ 0 ] ];
+			pb = points[ c[ 1 ] ];
+			pc = points[ c[ 2 ] ];
+			pd = points[ c[ 3 ] ];
+
+			w2 = weight * weight;
+			w3 = weight * w2;
+
+			v3[ 0 ] = interpolate( pa[ 0 ], pb[ 0 ], pc[ 0 ], pd[ 0 ], weight, w2, w3 );
+			v3[ 1 ] = interpolate( pa[ 1 ], pb[ 1 ], pc[ 1 ], pd[ 1 ], weight, w2, w3 );
+			v3[ 2 ] = interpolate( pa[ 2 ], pb[ 2 ], pc[ 2 ], pd[ 2 ], weight, w2, w3 );
+
+			return v3;
+
+		};
+
+		var interpolate = function ( p0, p1, p2, p3, t, t2, t3 ) {
+
+			var v0 = ( p2 - p0 ) * 0.5,
+				v1 = ( p3 - p1 ) * 0.5;
+
+			return ( 2 * ( p1 - p2 ) + v0 + v1 ) * t3 + ( - 3 * ( p1 - p2 ) - 2 * v0 - v1 ) * t2 + v0 * t + p1;
+
+		};
+
+		return function ( delta ) {
+
+			if ( this.isPlaying === false ) return;
+
+			this.currentTime += delta * this.timeScale;
+
+			if ( this.weight === 0 )
+				return;
+
+			//
+
+			var duration = this.data.length;
+
+			if ( this.currentTime > duration || this.currentTime < 0 ) {
+
+				if ( this.loop ) {
+
+					this.currentTime %= duration;
+
+					if ( this.currentTime < 0 )
+						this.currentTime += duration;
+
+					this.reset();
+
+				} else {
+
+					this.stop();
+
+				}
+
+			}
+
+			for ( var h = 0, hl = this.hierarchy.length; h < hl; h ++ ) {
+
+				var object = this.hierarchy[ h ];
+				var animationCache = object.animationCache.animations[ this.data.name ];
+				var blending = object.animationCache.blending;
+
+				// loop through pos/rot/scl
+
+				for ( var t = 0; t < 3; t ++ ) {
+
+					// get keys
+
+					var type    = this.keyTypes[ t ];
+					var prevKey = animationCache.prevKey[ type ];
+					var nextKey = animationCache.nextKey[ type ];
+
+					if ( ( this.timeScale > 0 && nextKey.time <= this.currentTime ) ||
+						( this.timeScale < 0 && prevKey.time >= this.currentTime ) ) {
+
+						prevKey = this.data.hierarchy[ h ].keys[ 0 ];
+						nextKey = this.getNextKeyWith( type, h, 1 );
+
+						while ( nextKey.time < this.currentTime && nextKey.index > prevKey.index ) {
+
+							prevKey = nextKey;
+							nextKey = this.getNextKeyWith( type, h, nextKey.index + 1 );
+
+						}
+
+						animationCache.prevKey[ type ] = prevKey;
+						animationCache.nextKey[ type ] = nextKey;
+
+					}
+
+					var scale = ( this.currentTime - prevKey.time ) / ( nextKey.time - prevKey.time );
+
+					var prevXYZ = prevKey[ type ];
+					var nextXYZ = nextKey[ type ];
+
+					if ( scale < 0 ) scale = 0;
+					if ( scale > 1 ) scale = 1;
+
+					// interpolate
+
+					if ( type === "pos" ) {
+
+						if ( this.interpolationType === THREE.AnimationHandler.LINEAR ) {
+
+							newVector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
+							newVector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
+							newVector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
+
+							// blend
+							var proportionalWeight = this.weight / ( this.weight + blending.positionWeight );
+							object.position.lerp( newVector, proportionalWeight );
+							blending.positionWeight += this.weight;
+
+						} else if ( this.interpolationType === THREE.AnimationHandler.CATMULLROM ||
+									this.interpolationType === THREE.AnimationHandler.CATMULLROM_FORWARD ) {
+
+							points[ 0 ] = this.getPrevKeyWith( "pos", h, prevKey.index - 1 )[ "pos" ];
+							points[ 1 ] = prevXYZ;
+							points[ 2 ] = nextXYZ;
+							points[ 3 ] = this.getNextKeyWith( "pos", h, nextKey.index + 1 )[ "pos" ];
+
+							scale = scale * 0.33 + 0.33;
+
+							var currentPoint = interpolateCatmullRom( points, scale );
+							var proportionalWeight = this.weight / ( this.weight + blending.positionWeight );
+							blending.positionWeight += this.weight;
+
+							// blend
+
+							var vector = object.position;
+
+							vector.x = vector.x + ( currentPoint[ 0 ] - vector.x ) * proportionalWeight;
+							vector.y = vector.y + ( currentPoint[ 1 ] - vector.y ) * proportionalWeight;
+							vector.z = vector.z + ( currentPoint[ 2 ] - vector.z ) * proportionalWeight;
+
+							if ( this.interpolationType === THREE.AnimationHandler.CATMULLROM_FORWARD ) {
+
+								var forwardPoint = interpolateCatmullRom( points, scale * 1.01 );
+
+								target.set( forwardPoint[ 0 ], forwardPoint[ 1 ], forwardPoint[ 2 ] );
+								target.sub( vector );
+								target.y = 0;
+								target.normalize();
+
+								var angle = Math.atan2( target.x, target.z );
+								object.rotation.set( 0, angle, 0 );
+
+							}
+
+						}
+
+					} else if ( type === "rot" ) {
+
+						THREE.Quaternion.slerp( prevXYZ, nextXYZ, newQuat, scale );
+
+						// Avoid paying the cost of an additional slerp if we don't have to
+						if ( blending.quaternionWeight === 0 ) {
+
+							object.quaternion.copy( newQuat );
+							blending.quaternionWeight = this.weight;
+
+						} else {
+
+							var proportionalWeight = this.weight / ( this.weight + blending.quaternionWeight );
+							THREE.Quaternion.slerp( object.quaternion, newQuat, object.quaternion, proportionalWeight );
+							blending.quaternionWeight += this.weight;
+
+						}
+
+					} else if ( type === "scl" ) {
+
+						newVector.x = prevXYZ[ 0 ] + ( nextXYZ[ 0 ] - prevXYZ[ 0 ] ) * scale;
+						newVector.y = prevXYZ[ 1 ] + ( nextXYZ[ 1 ] - prevXYZ[ 1 ] ) * scale;
+						newVector.z = prevXYZ[ 2 ] + ( nextXYZ[ 2 ] - prevXYZ[ 2 ] ) * scale;
+
+						var proportionalWeight = this.weight / ( this.weight + blending.scaleWeight );
+						object.scale.lerp( newVector, proportionalWeight );
+						blending.scaleWeight += this.weight;
+
+					}
+
+				}
+
+			}
+
+			return true;
+
+		};
+
+	} )(),
+
+	getNextKeyWith: function ( type, h, key ) {
+
+		var keys = this.data.hierarchy[ h ].keys;
+
+		if ( this.interpolationType === THREE.AnimationHandler.CATMULLROM ||
+			 this.interpolationType === THREE.AnimationHandler.CATMULLROM_FORWARD ) {
+
+			key = key < keys.length - 1 ? key : keys.length - 1;
+
+		} else {
+
+			key = key % keys.length;
+
+		}
+
+		for ( ; key < keys.length; key ++ ) {
+
+			if ( keys[ key ][ type ] !== undefined ) {
+
+				return keys[ key ];
+
+			}
+
+		}
+
+		return this.data.hierarchy[ h ].keys[ 0 ];
+
+	},
+
+	getPrevKeyWith: function ( type, h, key ) {
+
+		var keys = this.data.hierarchy[ h ].keys;
+
+		if ( this.interpolationType === THREE.AnimationHandler.CATMULLROM ||
+			this.interpolationType === THREE.AnimationHandler.CATMULLROM_FORWARD ) {
+
+			key = key > 0 ? key : 0;
+
+		} else {
+
+			key = key >= 0 ? key : key + keys.length;
+
+		}
+
+
+		for ( ; key >= 0; key -- ) {
+
+			if ( keys[ key ][ type ] !== undefined ) {
+
+				return keys[ key ];
+
+			}
+
+		}
+
+		return this.data.hierarchy[ h ].keys[ keys.length - 1 ];
 
 	}
 
 };
 
-THREE.EventDispatcher.prototype.apply( THREE.OBJMTLLoader.prototype );
+/**
+ * @author mikael emtinger / http://gomo.se/
+ */
+
+THREE.AnimationHandler = {
+
+	LINEAR: 0,
+	CATMULLROM: 1,
+	CATMULLROM_FORWARD: 2,
+
+	//
+
+	add: function () {
+
+		console.warn( 'THREE.AnimationHandler.add() has been deprecated.' );
+
+	},
+	get: function () {
+
+		console.warn( 'THREE.AnimationHandler.get() has been deprecated.' );
+
+	},
+	remove: function () {
+
+		console.warn( 'THREE.AnimationHandler.remove() has been deprecated.' );
+
+	},
+
+	//
+
+	animations: [],
+
+	init: function ( data ) {
+
+		if ( data.initialized === true ) return data;
+
+		// loop through all keys
+
+		for ( var h = 0; h < data.hierarchy.length; h ++ ) {
+
+			for ( var k = 0; k < data.hierarchy[ h ].keys.length; k ++ ) {
+
+				// remove minus times
+
+				if ( data.hierarchy[ h ].keys[ k ].time < 0 ) {
+
+					 data.hierarchy[ h ].keys[ k ].time = 0;
+
+				}
+
+				// create quaternions
+
+				if ( data.hierarchy[ h ].keys[ k ].rot !== undefined &&
+				  ! ( data.hierarchy[ h ].keys[ k ].rot instanceof THREE.Quaternion ) ) {
+
+					var quat = data.hierarchy[ h ].keys[ k ].rot;
+					data.hierarchy[ h ].keys[ k ].rot = new THREE.Quaternion().fromArray( quat );
+
+				}
+
+			}
+
+			// prepare morph target keys
+
+			if ( data.hierarchy[ h ].keys.length && data.hierarchy[ h ].keys[ 0 ].morphTargets !== undefined ) {
+
+				// get all used
+
+				var usedMorphTargets = {};
+
+				for ( var k = 0; k < data.hierarchy[ h ].keys.length; k ++ ) {
+
+					for ( var m = 0; m < data.hierarchy[ h ].keys[ k ].morphTargets.length; m ++ ) {
+
+						var morphTargetName = data.hierarchy[ h ].keys[ k ].morphTargets[ m ];
+						usedMorphTargets[ morphTargetName ] = - 1;
+
+					}
+
+				}
+
+				data.hierarchy[ h ].usedMorphTargets = usedMorphTargets;
+
+
+				// set all used on all frames
+
+				for ( var k = 0; k < data.hierarchy[ h ].keys.length; k ++ ) {
+
+					var influences = {};
+
+					for ( var morphTargetName in usedMorphTargets ) {
+
+						for ( var m = 0; m < data.hierarchy[ h ].keys[ k ].morphTargets.length; m ++ ) {
+
+							if ( data.hierarchy[ h ].keys[ k ].morphTargets[ m ] === morphTargetName ) {
+
+								influences[ morphTargetName ] = data.hierarchy[ h ].keys[ k ].morphTargetsInfluences[ m ];
+								break;
+
+							}
+
+						}
+
+						if ( m === data.hierarchy[ h ].keys[ k ].morphTargets.length ) {
+
+							influences[ morphTargetName ] = 0;
+
+						}
+
+					}
+
+					data.hierarchy[ h ].keys[ k ].morphTargetsInfluences = influences;
+
+				}
+
+			}
+
+
+			// remove all keys that are on the same time
+
+			for ( var k = 1; k < data.hierarchy[ h ].keys.length; k ++ ) {
+
+				if ( data.hierarchy[ h ].keys[ k ].time === data.hierarchy[ h ].keys[ k - 1 ].time ) {
+
+					data.hierarchy[ h ].keys.splice( k, 1 );
+					k --;
+
+				}
+
+			}
+
+
+			// set index
+
+			for ( var k = 0; k < data.hierarchy[ h ].keys.length; k ++ ) {
+
+				data.hierarchy[ h ].keys[ k ].index = k;
+
+			}
+
+		}
+
+		data.initialized = true;
+
+		return data;
+
+	},
+
+	parse: function ( root ) {
+
+		var parseRecurseHierarchy = function ( root, hierarchy ) {
+
+			hierarchy.push( root );
+
+			for ( var c = 0; c < root.children.length; c ++ )
+				parseRecurseHierarchy( root.children[ c ], hierarchy );
+
+		};
+
+		// setup hierarchy
+
+		var hierarchy = [];
+
+		if ( root instanceof THREE.SkinnedMesh ) {
+
+			for ( var b = 0; b < root.skeleton.bones.length; b ++ ) {
+
+				hierarchy.push( root.skeleton.bones[ b ] );
+
+			}
+
+		} else {
+
+			parseRecurseHierarchy( root, hierarchy );
+
+		}
+
+		return hierarchy;
+
+	},
+
+	play: function ( animation ) {
+
+		if ( this.animations.indexOf( animation ) === - 1 ) {
+
+			this.animations.push( animation );
+
+		}
+
+	},
+
+	stop: function ( animation ) {
+
+		var index = this.animations.indexOf( animation );
+
+		if ( index !== - 1 ) {
+
+			this.animations.splice( index, 1 );
+
+		}
+
+	},
+
+	update: function ( deltaTimeMS ) {
+
+		for ( var i = 0; i < this.animations.length; i ++ ) {
+
+			this.animations[ i ].resetBlendWeights();
+
+		}
+
+		for ( var i = 0; i < this.animations.length; i ++ ) {
+
+			this.animations[ i ].update( deltaTimeMS );
+
+		}
+
+	}
+
+};
+
+/**
+ * @author mikael emtinger / http://gomo.se/
+ * @author mrdoob / http://mrdoob.com/
+ * @author alteredq / http://alteredqualia.com/
+ * @author khang duong
+ * @author erik kitson
+ */
+
+THREE.KeyFrameAnimation = function ( data ) {
+
+	this.root = data.node;
+	this.data = THREE.AnimationHandler.init( data );
+	this.hierarchy = THREE.AnimationHandler.parse( this.root );
+	this.currentTime = 0;
+	this.timeScale = 0.001;
+	this.isPlaying = false;
+	this.isPaused = true;
+	this.loop = true;
+
+	// initialize to first keyframes
+
+	for ( var h = 0, hl = this.hierarchy.length; h < hl; h ++ ) {
+
+		var keys = this.data.hierarchy[ h ].keys,
+			sids = this.data.hierarchy[ h ].sids,
+			obj = this.hierarchy[ h ];
+
+		if ( keys.length && sids ) {
+
+			for ( var s = 0; s < sids.length; s ++ ) {
+
+				var sid = sids[ s ],
+					next = this.getNextKeyWith( sid, h, 0 );
+
+				if ( next ) {
+
+					next.apply( sid );
+
+				}
+
+			}
+
+			obj.matrixAutoUpdate = false;
+			this.data.hierarchy[ h ].node.updateMatrix();
+			obj.matrixWorldNeedsUpdate = true;
+
+		}
+
+	}
+
+};
+
+THREE.KeyFrameAnimation.prototype = {
+
+	constructor: THREE.KeyFrameAnimation,
+
+	play: function ( startTime ) {
+
+		this.currentTime = startTime !== undefined ? startTime : 0;
+
+		if ( this.isPlaying === false ) {
+
+			this.isPlaying = true;
+
+			// reset key cache
+
+			var h, hl = this.hierarchy.length,
+				object,
+				node;
+
+			for ( h = 0; h < hl; h ++ ) {
+
+				object = this.hierarchy[ h ];
+				node = this.data.hierarchy[ h ];
+
+				if ( node.animationCache === undefined ) {
+
+					node.animationCache = {};
+					node.animationCache.prevKey = null;
+					node.animationCache.nextKey = null;
+					node.animationCache.originalMatrix = object.matrix;
+
+				}
+
+				var keys = this.data.hierarchy[ h ].keys;
+
+				if ( keys.length > 1 ) {
+
+					node.animationCache.prevKey = keys[ 0 ];
+					node.animationCache.nextKey = keys[ 1 ];
+
+					this.startTime = Math.min( keys[ 0 ].time, this.startTime );
+					this.endTime = Math.max( keys[ keys.length - 1 ].time, this.endTime );
+
+				}
+
+			}
+
+			this.update( 0 );
+
+		}
+
+		this.isPaused = false;
+	},
+
+	stop: function () {
+
+		this.isPlaying = false;
+		this.isPaused  = false;
+
+		// reset JIT matrix and remove cache
+
+		for ( var h = 0; h < this.data.hierarchy.length; h ++ ) {
+
+			var obj = this.hierarchy[ h ];
+			var node = this.data.hierarchy[ h ];
+
+			if ( node.animationCache !== undefined ) {
+
+				var original = node.animationCache.originalMatrix;
+
+				original.copy( obj.matrix );
+				obj.matrix = original;
+
+				delete node.animationCache;
+
+			}
+
+		}
+
+	},
+
+	update: function ( delta ) {
+
+		if ( this.isPlaying === false ) return;
+
+		this.currentTime += delta * this.timeScale;
+
+		//
+
+		var duration = this.data.length;
+
+		if ( this.loop === true && this.currentTime > duration ) {
+
+			this.currentTime %= duration;
+
+		}
+
+		this.currentTime = Math.min( this.currentTime, duration );
+
+		for ( var h = 0, hl = this.hierarchy.length; h < hl; h ++ ) {
+
+			var object = this.hierarchy[ h ];
+			var node = this.data.hierarchy[ h ];
+
+			var keys = node.keys,
+				animationCache = node.animationCache;
+
+
+			if ( keys.length ) {
+
+				var prevKey = animationCache.prevKey;
+				var nextKey = animationCache.nextKey;
+
+				if ( nextKey.time <= this.currentTime ) {
+
+					while ( nextKey.time < this.currentTime && nextKey.index > prevKey.index ) {
+
+						prevKey = nextKey;
+						nextKey = keys[ prevKey.index + 1 ];
+
+					}
+
+					animationCache.prevKey = prevKey;
+					animationCache.nextKey = nextKey;
+
+				}
+
+				if ( nextKey.time >= this.currentTime ) {
+
+					prevKey.interpolate( nextKey, this.currentTime );
+
+				} else {
+
+					prevKey.interpolate( nextKey, nextKey.time );
+
+				}
+
+				this.data.hierarchy[ h ].node.updateMatrix();
+				object.matrixWorldNeedsUpdate = true;
+
+			}
+
+		}
+
+	},
+
+	getNextKeyWith: function ( sid, h, key ) {
+
+		var keys = this.data.hierarchy[ h ].keys;
+		key = key % keys.length;
+
+		for ( ; key < keys.length; key ++ ) {
+
+			if ( keys[ key ].hasTarget( sid ) ) {
+
+				return keys[ key ];
+
+			}
+
+		}
+
+		return keys[ 0 ];
+
+	},
+
+	getPrevKeyWith: function ( sid, h, key ) {
+
+		var keys = this.data.hierarchy[ h ].keys;
+		key = key >= 0 ? key : key + keys.length;
+
+		for ( ; key >= 0; key -- ) {
+
+			if ( keys[ key ].hasTarget( sid ) ) {
+
+				return keys[ key ];
+
+			}
+
+		}
+
+		return keys[ keys.length - 1 ];
+
+	}
+
+};
 
 /*
  * Copyright (c) 2015 cannon.js Authors
@@ -16347,132 +22349,4689 @@ THREE.CannonDebugRenderer.prototype = {
         }
     }
 };
-function LeapHand(){}
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.opentype = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+// Run-time checking of preconditions.
+
+'use strict';
+
+// Precondition function that checks if the given predicate is true.
+// If not, it will throw an error.
+exports.argument = function (predicate, message) {
+    if (!predicate) {
+        throw new Error(message);
+    }
+};
+
+// Precondition function that checks if the given assertion is true.
+// If not, it will throw an error.
+exports.assert = exports.argument;
+
+},{}],2:[function(require,module,exports){
+// Drawing utility functions.
+
+'use strict';
+
+// Draw a line on the given context from point `x1,y1` to point `x2,y2`.
+function line(ctx, x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
+
+exports.line = line;
+
+},{}],3:[function(require,module,exports){
+// Glyph encoding
+
+'use strict';
+
+var cffStandardStrings = [
+    '.notdef', 'space', 'exclam', 'quotedbl', 'numbersign', 'dollar', 'percent', 'ampersand', 'quoteright',
+    'parenleft', 'parenright', 'asterisk', 'plus', 'comma', 'hyphen', 'period', 'slash', 'zero', 'one', 'two',
+    'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'colon', 'semicolon', 'less', 'equal', 'greater',
+    'question', 'at', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'bracketleft', 'backslash', 'bracketright', 'asciicircum', 'underscore',
+    'quoteleft', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+    'u', 'v', 'w', 'x', 'y', 'z', 'braceleft', 'bar', 'braceright', 'asciitilde', 'exclamdown', 'cent', 'sterling',
+    'fraction', 'yen', 'florin', 'section', 'currency', 'quotesingle', 'quotedblleft', 'guillemotleft',
+    'guilsinglleft', 'guilsinglright', 'fi', 'fl', 'endash', 'dagger', 'daggerdbl', 'periodcentered', 'paragraph',
+    'bullet', 'quotesinglbase', 'quotedblbase', 'quotedblright', 'guillemotright', 'ellipsis', 'perthousand',
+    'questiondown', 'grave', 'acute', 'circumflex', 'tilde', 'macron', 'breve', 'dotaccent', 'dieresis', 'ring',
+    'cedilla', 'hungarumlaut', 'ogonek', 'caron', 'emdash', 'AE', 'ordfeminine', 'Lslash', 'Oslash', 'OE',
+    'ordmasculine', 'ae', 'dotlessi', 'lslash', 'oslash', 'oe', 'germandbls', 'onesuperior', 'logicalnot', 'mu',
+    'trademark', 'Eth', 'onehalf', 'plusminus', 'Thorn', 'onequarter', 'divide', 'brokenbar', 'degree', 'thorn',
+    'threequarters', 'twosuperior', 'registered', 'minus', 'eth', 'multiply', 'threesuperior', 'copyright',
+    'Aacute', 'Acircumflex', 'Adieresis', 'Agrave', 'Aring', 'Atilde', 'Ccedilla', 'Eacute', 'Ecircumflex',
+    'Edieresis', 'Egrave', 'Iacute', 'Icircumflex', 'Idieresis', 'Igrave', 'Ntilde', 'Oacute', 'Ocircumflex',
+    'Odieresis', 'Ograve', 'Otilde', 'Scaron', 'Uacute', 'Ucircumflex', 'Udieresis', 'Ugrave', 'Yacute',
+    'Ydieresis', 'Zcaron', 'aacute', 'acircumflex', 'adieresis', 'agrave', 'aring', 'atilde', 'ccedilla', 'eacute',
+    'ecircumflex', 'edieresis', 'egrave', 'iacute', 'icircumflex', 'idieresis', 'igrave', 'ntilde', 'oacute',
+    'ocircumflex', 'odieresis', 'ograve', 'otilde', 'scaron', 'uacute', 'ucircumflex', 'udieresis', 'ugrave',
+    'yacute', 'ydieresis', 'zcaron', 'exclamsmall', 'Hungarumlautsmall', 'dollaroldstyle', 'dollarsuperior',
+    'ampersandsmall', 'Acutesmall', 'parenleftsuperior', 'parenrightsuperior', '266 ff', 'onedotenleader',
+    'zerooldstyle', 'oneoldstyle', 'twooldstyle', 'threeoldstyle', 'fouroldstyle', 'fiveoldstyle', 'sixoldstyle',
+    'sevenoldstyle', 'eightoldstyle', 'nineoldstyle', 'commasuperior', 'threequartersemdash', 'periodsuperior',
+    'questionsmall', 'asuperior', 'bsuperior', 'centsuperior', 'dsuperior', 'esuperior', 'isuperior', 'lsuperior',
+    'msuperior', 'nsuperior', 'osuperior', 'rsuperior', 'ssuperior', 'tsuperior', 'ff', 'ffi', 'ffl',
+    'parenleftinferior', 'parenrightinferior', 'Circumflexsmall', 'hyphensuperior', 'Gravesmall', 'Asmall',
+    'Bsmall', 'Csmall', 'Dsmall', 'Esmall', 'Fsmall', 'Gsmall', 'Hsmall', 'Ismall', 'Jsmall', 'Ksmall', 'Lsmall',
+    'Msmall', 'Nsmall', 'Osmall', 'Psmall', 'Qsmall', 'Rsmall', 'Ssmall', 'Tsmall', 'Usmall', 'Vsmall', 'Wsmall',
+    'Xsmall', 'Ysmall', 'Zsmall', 'colonmonetary', 'onefitted', 'rupiah', 'Tildesmall', 'exclamdownsmall',
+    'centoldstyle', 'Lslashsmall', 'Scaronsmall', 'Zcaronsmall', 'Dieresissmall', 'Brevesmall', 'Caronsmall',
+    'Dotaccentsmall', 'Macronsmall', 'figuredash', 'hypheninferior', 'Ogoneksmall', 'Ringsmall', 'Cedillasmall',
+    'questiondownsmall', 'oneeighth', 'threeeighths', 'fiveeighths', 'seveneighths', 'onethird', 'twothirds',
+    'zerosuperior', 'foursuperior', 'fivesuperior', 'sixsuperior', 'sevensuperior', 'eightsuperior', 'ninesuperior',
+    'zeroinferior', 'oneinferior', 'twoinferior', 'threeinferior', 'fourinferior', 'fiveinferior', 'sixinferior',
+    'seveninferior', 'eightinferior', 'nineinferior', 'centinferior', 'dollarinferior', 'periodinferior',
+    'commainferior', 'Agravesmall', 'Aacutesmall', 'Acircumflexsmall', 'Atildesmall', 'Adieresissmall',
+    'Aringsmall', 'AEsmall', 'Ccedillasmall', 'Egravesmall', 'Eacutesmall', 'Ecircumflexsmall', 'Edieresissmall',
+    'Igravesmall', 'Iacutesmall', 'Icircumflexsmall', 'Idieresissmall', 'Ethsmall', 'Ntildesmall', 'Ogravesmall',
+    'Oacutesmall', 'Ocircumflexsmall', 'Otildesmall', 'Odieresissmall', 'OEsmall', 'Oslashsmall', 'Ugravesmall',
+    'Uacutesmall', 'Ucircumflexsmall', 'Udieresissmall', 'Yacutesmall', 'Thornsmall', 'Ydieresissmall', '001.000',
+    '001.001', '001.002', '001.003', 'Black', 'Bold', 'Book', 'Light', 'Medium', 'Regular', 'Roman', 'Semibold'];
+
+var cffStandardEncoding = [
+    '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+    '', '', '', '', 'space', 'exclam', 'quotedbl', 'numbersign', 'dollar', 'percent', 'ampersand', 'quoteright',
+    'parenleft', 'parenright', 'asterisk', 'plus', 'comma', 'hyphen', 'period', 'slash', 'zero', 'one', 'two',
+    'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'colon', 'semicolon', 'less', 'equal', 'greater',
+    'question', 'at', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
+    'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'bracketleft', 'backslash', 'bracketright', 'asciicircum', 'underscore',
+    'quoteleft', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+    'u', 'v', 'w', 'x', 'y', 'z', 'braceleft', 'bar', 'braceright', 'asciitilde', '', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+    'exclamdown', 'cent', 'sterling', 'fraction', 'yen', 'florin', 'section', 'currency', 'quotesingle',
+    'quotedblleft', 'guillemotleft', 'guilsinglleft', 'guilsinglright', 'fi', 'fl', '', 'endash', 'dagger',
+    'daggerdbl', 'periodcentered', '', 'paragraph', 'bullet', 'quotesinglbase', 'quotedblbase', 'quotedblright',
+    'guillemotright', 'ellipsis', 'perthousand', '', 'questiondown', '', 'grave', 'acute', 'circumflex', 'tilde',
+    'macron', 'breve', 'dotaccent', 'dieresis', '', 'ring', 'cedilla', '', 'hungarumlaut', 'ogonek', 'caron',
+    'emdash', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'AE', '', 'ordfeminine', '', '', '',
+    '', 'Lslash', 'Oslash', 'OE', 'ordmasculine', '', '', '', '', '', 'ae', '', '', '', 'dotlessi', '', '',
+    'lslash', 'oslash', 'oe', 'germandbls'];
+
+var cffExpertEncoding = [
+    '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+    '', '', '', '', 'space', 'exclamsmall', 'Hungarumlautsmall', '', 'dollaroldstyle', 'dollarsuperior',
+    'ampersandsmall', 'Acutesmall', 'parenleftsuperior', 'parenrightsuperior', 'twodotenleader', 'onedotenleader',
+    'comma', 'hyphen', 'period', 'fraction', 'zerooldstyle', 'oneoldstyle', 'twooldstyle', 'threeoldstyle',
+    'fouroldstyle', 'fiveoldstyle', 'sixoldstyle', 'sevenoldstyle', 'eightoldstyle', 'nineoldstyle', 'colon',
+    'semicolon', 'commasuperior', 'threequartersemdash', 'periodsuperior', 'questionsmall', '', 'asuperior',
+    'bsuperior', 'centsuperior', 'dsuperior', 'esuperior', '', '', 'isuperior', '', '', 'lsuperior', 'msuperior',
+    'nsuperior', 'osuperior', '', '', 'rsuperior', 'ssuperior', 'tsuperior', '', 'ff', 'fi', 'fl', 'ffi', 'ffl',
+    'parenleftinferior', '', 'parenrightinferior', 'Circumflexsmall', 'hyphensuperior', 'Gravesmall', 'Asmall',
+    'Bsmall', 'Csmall', 'Dsmall', 'Esmall', 'Fsmall', 'Gsmall', 'Hsmall', 'Ismall', 'Jsmall', 'Ksmall', 'Lsmall',
+    'Msmall', 'Nsmall', 'Osmall', 'Psmall', 'Qsmall', 'Rsmall', 'Ssmall', 'Tsmall', 'Usmall', 'Vsmall', 'Wsmall',
+    'Xsmall', 'Ysmall', 'Zsmall', 'colonmonetary', 'onefitted', 'rupiah', 'Tildesmall', '', '', '', '', '', '', '',
+    '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
+    'exclamdownsmall', 'centoldstyle', 'Lslashsmall', '', '', 'Scaronsmall', 'Zcaronsmall', 'Dieresissmall',
+    'Brevesmall', 'Caronsmall', '', 'Dotaccentsmall', '', '', 'Macronsmall', '', '', 'figuredash', 'hypheninferior',
+    '', '', 'Ogoneksmall', 'Ringsmall', 'Cedillasmall', '', '', '', 'onequarter', 'onehalf', 'threequarters',
+    'questiondownsmall', 'oneeighth', 'threeeighths', 'fiveeighths', 'seveneighths', 'onethird', 'twothirds', '',
+    '', 'zerosuperior', 'onesuperior', 'twosuperior', 'threesuperior', 'foursuperior', 'fivesuperior',
+    'sixsuperior', 'sevensuperior', 'eightsuperior', 'ninesuperior', 'zeroinferior', 'oneinferior', 'twoinferior',
+    'threeinferior', 'fourinferior', 'fiveinferior', 'sixinferior', 'seveninferior', 'eightinferior',
+    'nineinferior', 'centinferior', 'dollarinferior', 'periodinferior', 'commainferior', 'Agravesmall',
+    'Aacutesmall', 'Acircumflexsmall', 'Atildesmall', 'Adieresissmall', 'Aringsmall', 'AEsmall', 'Ccedillasmall',
+    'Egravesmall', 'Eacutesmall', 'Ecircumflexsmall', 'Edieresissmall', 'Igravesmall', 'Iacutesmall',
+    'Icircumflexsmall', 'Idieresissmall', 'Ethsmall', 'Ntildesmall', 'Ogravesmall', 'Oacutesmall',
+    'Ocircumflexsmall', 'Otildesmall', 'Odieresissmall', 'OEsmall', 'Oslashsmall', 'Ugravesmall', 'Uacutesmall',
+    'Ucircumflexsmall', 'Udieresissmall', 'Yacutesmall', 'Thornsmall', 'Ydieresissmall'];
+
+var standardNames = [
+    '.notdef', '.null', 'nonmarkingreturn', 'space', 'exclam', 'quotedbl', 'numbersign', 'dollar', 'percent',
+    'ampersand', 'quotesingle', 'parenleft', 'parenright', 'asterisk', 'plus', 'comma', 'hyphen', 'period', 'slash',
+    'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'colon', 'semicolon', 'less',
+    'equal', 'greater', 'question', 'at', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+    'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'bracketleft', 'backslash', 'bracketright',
+    'asciicircum', 'underscore', 'grave', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
+    'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'braceleft', 'bar', 'braceright', 'asciitilde',
+    'Adieresis', 'Aring', 'Ccedilla', 'Eacute', 'Ntilde', 'Odieresis', 'Udieresis', 'aacute', 'agrave',
+    'acircumflex', 'adieresis', 'atilde', 'aring', 'ccedilla', 'eacute', 'egrave', 'ecircumflex', 'edieresis',
+    'iacute', 'igrave', 'icircumflex', 'idieresis', 'ntilde', 'oacute', 'ograve', 'ocircumflex', 'odieresis',
+    'otilde', 'uacute', 'ugrave', 'ucircumflex', 'udieresis', 'dagger', 'degree', 'cent', 'sterling', 'section',
+    'bullet', 'paragraph', 'germandbls', 'registered', 'copyright', 'trademark', 'acute', 'dieresis', 'notequal',
+    'AE', 'Oslash', 'infinity', 'plusminus', 'lessequal', 'greaterequal', 'yen', 'mu', 'partialdiff', 'summation',
+    'product', 'pi', 'integral', 'ordfeminine', 'ordmasculine', 'Omega', 'ae', 'oslash', 'questiondown',
+    'exclamdown', 'logicalnot', 'radical', 'florin', 'approxequal', 'Delta', 'guillemotleft', 'guillemotright',
+    'ellipsis', 'nonbreakingspace', 'Agrave', 'Atilde', 'Otilde', 'OE', 'oe', 'endash', 'emdash', 'quotedblleft',
+    'quotedblright', 'quoteleft', 'quoteright', 'divide', 'lozenge', 'ydieresis', 'Ydieresis', 'fraction',
+    'currency', 'guilsinglleft', 'guilsinglright', 'fi', 'fl', 'daggerdbl', 'periodcentered', 'quotesinglbase',
+    'quotedblbase', 'perthousand', 'Acircumflex', 'Ecircumflex', 'Aacute', 'Edieresis', 'Egrave', 'Iacute',
+    'Icircumflex', 'Idieresis', 'Igrave', 'Oacute', 'Ocircumflex', 'apple', 'Ograve', 'Uacute', 'Ucircumflex',
+    'Ugrave', 'dotlessi', 'circumflex', 'tilde', 'macron', 'breve', 'dotaccent', 'ring', 'cedilla', 'hungarumlaut',
+    'ogonek', 'caron', 'Lslash', 'lslash', 'Scaron', 'scaron', 'Zcaron', 'zcaron', 'brokenbar', 'Eth', 'eth',
+    'Yacute', 'yacute', 'Thorn', 'thorn', 'minus', 'multiply', 'onesuperior', 'twosuperior', 'threesuperior',
+    'onehalf', 'onequarter', 'threequarters', 'franc', 'Gbreve', 'gbreve', 'Idotaccent', 'Scedilla', 'scedilla',
+    'Cacute', 'cacute', 'Ccaron', 'ccaron', 'dcroat'];
+
+// This is the encoding used for fonts created from scratch.
+// It loops through all glyphs and finds the appropriate unicode value.
+// Since it's linear time, other encodings will be faster.
+function DefaultEncoding(font) {
+    this.font = font;
+}
+
+DefaultEncoding.prototype.charToGlyphIndex = function (c) {
+    var code, glyphs, i, glyph, j;
+    code = c.charCodeAt(0);
+    glyphs = this.font.glyphs;
+    if (glyphs) {
+        for (i = 0; i < glyphs.length; i += 1) {
+            glyph = glyphs[i];
+            for (j = 0; j < glyph.unicodes.length; j += 1) {
+                if (glyph.unicodes[j] === code) {
+                    return i;
+                }
+            }
+        }
+    } else {
+        return null;
+    }
+};
+
+function CmapEncoding(cmap) {
+    this.cmap = cmap;
+}
+
+CmapEncoding.prototype.charToGlyphIndex = function (c) {
+    return this.cmap.glyphIndexMap[c.charCodeAt(0)] || 0;
+};
+
+function CffEncoding(encoding, charset) {
+    this.encoding = encoding;
+    this.charset = charset;
+}
+
+CffEncoding.prototype.charToGlyphIndex = function (s) {
+    var code, charName;
+    code = s.charCodeAt(0);
+    charName = this.encoding[code];
+    return this.charset.indexOf(charName);
+};
+
+function GlyphNames(post) {
+    var i;
+    switch (post.version) {
+    case 1:
+        this.names = exports.standardNames.slice();
+        break;
+    case 2:
+        this.names = new Array(post.numberOfGlyphs);
+        for (i = 0; i < post.numberOfGlyphs; i++) {
+            if (post.glyphNameIndex[i] < exports.standardNames.length) {
+                this.names[i] = exports.standardNames[post.glyphNameIndex[i]];
+            } else {
+                this.names[i] = post.names[post.glyphNameIndex[i] - exports.standardNames.length];
+            }
+        }
+        break;
+    case 2.5:
+        this.names = new Array(post.numberOfGlyphs);
+        for (i = 0; i < post.numberOfGlyphs; i++) {
+            this.names[i] = exports.standardNames[i + post.glyphNameIndex[i]];
+        }
+        break;
+    case 3:
+        this.names = [];
+        break;
+    }
+}
+
+GlyphNames.prototype.nameToGlyphIndex = function (name) {
+    return this.names.indexOf(name);
+};
+
+GlyphNames.prototype.glyphIndexToName = function (gid) {
+    return this.names[gid];
+};
+
+function addGlyphNames(font) {
+    var glyphIndexMap, charCodes, i, c, glyphIndex, glyph;
+    glyphIndexMap = font.tables.cmap.glyphIndexMap;
+    charCodes = Object.keys(glyphIndexMap);
+    for (i = 0; i < charCodes.length; i += 1) {
+        c = charCodes[i];
+        glyphIndex = glyphIndexMap[c];
+        glyph = font.glyphs[glyphIndex];
+        glyph.addUnicode(parseInt(c));
+    }
+    for (i = 0; i < font.glyphs.length; i += 1) {
+        glyph = font.glyphs[i];
+        if (font.cffEncoding) {
+            glyph.name = font.cffEncoding.charset[i];
+        } else {
+            glyph.name = font.glyphNames.glyphIndexToName(i);
+        }
+    }
+}
+
+exports.cffStandardStrings = cffStandardStrings;
+exports.cffStandardEncoding = cffStandardEncoding;
+exports.cffExpertEncoding = cffExpertEncoding;
+exports.standardNames = standardNames;
+exports.DefaultEncoding = DefaultEncoding;
+exports.CmapEncoding = CmapEncoding;
+exports.CffEncoding = CffEncoding;
+exports.GlyphNames = GlyphNames;
+exports.addGlyphNames = addGlyphNames;
+
+},{}],4:[function(require,module,exports){
+// The Font object
+
+'use strict';
+
+var path = require('./path');
+var sfnt = require('./tables/sfnt');
+var encoding = require('./encoding');
+
+// A Font represents a loaded OpenType font file.
+// It contains a set of glyphs and methods to draw text on a drawing context,
+// or to get a path representing the text.
+function Font(options) {
+    options = options || {};
+    // OS X will complain if the names are empty, so we put a single space everywhere by default.
+    this.familyName = options.familyName || ' ';
+    this.styleName = options.styleName || ' ';
+    this.designer = options.designer || ' ';
+    this.designerURL = options.designerURL || ' ';
+    this.manufacturer = options.manufacturer || ' ';
+    this.manufacturerURL = options.manufacturerURL || ' ';
+    this.license = options.license || ' ';
+    this.licenseURL = options.licenseURL || ' ';
+    this.version = options.version || 'Version 0.1';
+    this.description = options.description || ' ';
+    this.copyright = options.copyright || ' ';
+    this.trademark = options.trademark || ' ';
+    this.unitsPerEm = options.unitsPerEm || 1000;
+    this.supported = true;
+    this.glyphs = options.glyphs || [];
+    this.encoding = new encoding.DefaultEncoding(this);
+    this.tables = {};
+}
+
+// Check if the font has a glyph for the given character.
+Font.prototype.hasChar = function (c) {
+    return this.encoding.charToGlyphIndex(c) !== null;
+};
+
+// Convert the given character to a single glyph index.
+// Note that this function assumes that there is a one-to-one mapping between
+// the given character and a glyph; for complex scripts this might not be the case.
+Font.prototype.charToGlyphIndex = function (s) {
+    return this.encoding.charToGlyphIndex(s);
+};
+
+// Convert the given character to a single Glyph object.
+// Note that this function assumes that there is a one-to-one mapping between
+// the given character and a glyph; for complex scripts this might not be the case.
+Font.prototype.charToGlyph = function (c) {
+    var glyphIndex, glyph;
+    glyphIndex = this.charToGlyphIndex(c);
+    glyph = this.glyphs[glyphIndex];
+    if (!glyph) {
+        glyph = this.glyphs[0]; // .notdef
+    }
+    return glyph;
+};
+
+// Convert the given text to a list of Glyph objects.
+// Note that there is no strict one-to-one mapping between characters and
+// glyphs, so the list of returned glyphs can be larger or smaller than the
+// length of the given string.
+Font.prototype.stringToGlyphs = function (s) {
+    var i, c, glyphs;
+    glyphs = [];
+    for (i = 0; i < s.length; i += 1) {
+        c = s[i];
+        glyphs.push(this.charToGlyph(c));
+    }
+    return glyphs;
+};
+
+Font.prototype.nameToGlyphIndex = function (name) {
+    return this.glyphNames.nameToGlyphIndex(name);
+};
+
+Font.prototype.nameToGlyph = function (name) {
+    var glyphIndex, glyph;
+    glyphIndex = this.nametoGlyphIndex(name);
+    glyph = this.glyphs[glyphIndex];
+    if (!glyph) {
+        glyph = this.glyphs[0]; // .notdef
+    }
+    return glyph;
+};
+
+Font.prototype.glyphIndexToName = function (gid) {
+    if (!this.glyphNames.glyphIndexToName) {
+        return '';
+    }
+    return this.glyphNames.glyphIndexToName(gid);
+};
+
+// Retrieve the value of the kerning pair between the left glyph (or its index)
+// and the right glyph (or its index). If no kerning pair is found, return 0.
+// The kerning value gets added to the advance width when calculating the spacing
+// between glyphs.
+Font.prototype.getKerningValue = function (leftGlyph, rightGlyph) {
+    leftGlyph = leftGlyph.index || leftGlyph;
+    rightGlyph = rightGlyph.index || rightGlyph;
+    var gposKerning = this.getGposKerningValue;
+    return gposKerning ? gposKerning(leftGlyph, rightGlyph) :
+        (this.kerningPairs[leftGlyph + ',' + rightGlyph] || 0);
+};
+
+// Helper function that invokes the given callback for each glyph in the given text.
+// The callback gets `(glyph, x, y, fontSize, options)`.
+Font.prototype.forEachGlyph = function (text, x, y, fontSize, options, callback) {
+    var kerning, fontScale, glyphs, i, glyph, kerningValue;
+    if (!this.supported) {
+        return;
+    }
+    x = x !== undefined ? x : 0;
+    y = y !== undefined ? y : 0;
+    fontSize = fontSize !== undefined ? fontSize : 72;
+    options = options || {};
+    kerning = options.kerning === undefined ? true : options.kerning;
+    fontScale = 1 / this.unitsPerEm * fontSize;
+    glyphs = this.stringToGlyphs(text);
+    for (i = 0; i < glyphs.length; i += 1) {
+        glyph = glyphs[i];
+        callback(glyph, x, y, fontSize, options);
+        if (glyph.advanceWidth) {
+            x += glyph.advanceWidth * fontScale;
+        }
+        if (kerning && i < glyphs.length - 1) {
+            kerningValue = this.getKerningValue(glyph, glyphs[i + 1]);
+            x += kerningValue * fontScale;
+        }
+    }
+};
+
+// Create a Path object that represents the given text.
+//
+// text - The text to create.
+// x - Horizontal position of the beginning of the text. (default: 0)
+// y - Vertical position of the *baseline* of the text. (default: 0)
+// fontSize - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`. (default: 72)
+// Options is an optional object that contains:
+// - kerning - Whether to take kerning information into account. (default: true)
+//
+// Returns a Path object.
+Font.prototype.getPath = function (text, x, y, fontSize, options) {
+    var fullPath = new path.Path();
+    this.forEachGlyph(text, x, y, fontSize, options, function (glyph, gX, gY, gFontSize) {
+        var glyphPath = glyph.getPath(gX, gY, gFontSize);
+        fullPath.extend(glyphPath);
+    });
+    return fullPath;
+};
+
+// Draw the text on the given drawing context.
+//
+// ctx - A 2D drawing context, like Canvas.
+// text - The text to create.
+// x - Horizontal position of the beginning of the text. (default: 0)
+// y - Vertical position of the *baseline* of the text. (default: 0)
+// fontSize - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`. (default: 72)
+// Options is an optional object that contains:
+// - kerning - Whether to take kerning information into account. (default: true)
+Font.prototype.draw = function (ctx, text, x, y, fontSize, options) {
+    this.getPath(text, x, y, fontSize, options).draw(ctx);
+};
+
+// Draw the points of all glyphs in the text.
+// On-curve points will be drawn in blue, off-curve points will be drawn in red.
+//
+// ctx - A 2D drawing context, like Canvas.
+// text - The text to create.
+// x - Horizontal position of the beginning of the text. (default: 0)
+// y - Vertical position of the *baseline* of the text. (default: 0)
+// fontSize - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`. (default: 72)
+// Options is an optional object that contains:
+// - kerning - Whether to take kerning information into account. (default: true)
+Font.prototype.drawPoints = function (ctx, text, x, y, fontSize, options) {
+    this.forEachGlyph(text, x, y, fontSize, options, function (glyph, gX, gY, gFontSize) {
+        glyph.drawPoints(ctx, gX, gY, gFontSize);
+    });
+};
+
+// Draw lines indicating important font measurements for all glyphs in the text.
+// Black lines indicate the origin of the coordinate system (point 0,0).
+// Blue lines indicate the glyph bounding box.
+// Green line indicates the advance width of the glyph.
+//
+// ctx - A 2D drawing context, like Canvas.
+// text - The text to create.
+// x - Horizontal position of the beginning of the text. (default: 0)
+// y - Vertical position of the *baseline* of the text. (default: 0)
+// fontSize - Font size in pixels. We scale the glyph units by `1 / unitsPerEm * fontSize`. (default: 72)
+// Options is an optional object that contains:
+// - kerning - Whether to take kerning information into account. (default: true)
+Font.prototype.drawMetrics = function (ctx, text, x, y, fontSize, options) {
+    this.forEachGlyph(text, x, y, fontSize, options, function (glyph, gX, gY, gFontSize) {
+        glyph.drawMetrics(ctx, gX, gY, gFontSize);
+    });
+};
+
+// Validate
+Font.prototype.validate = function () {
+    var warnings = [];
+    var font = this;
+
+    function assert(predicate, message) {
+        if (!predicate) {
+            warnings.push(message);
+        }
+    }
+
+    function assertStringAttribute(attrName) {
+        assert(font[attrName] && font[attrName].trim().length > 0, 'No ' + attrName + ' specified.');
+    }
+
+    // Identification information
+    assertStringAttribute('familyName');
+    assertStringAttribute('weightName');
+    assertStringAttribute('manufacturer');
+    assertStringAttribute('copyright');
+    assertStringAttribute('version');
+
+    // Dimension information
+    assert(this.unitsPerEm > 0, 'No unitsPerEm specified.');
+};
+
+// Convert the font object to a SFNT data structure.
+// This structure contains all the necessary tables and metadata to create a binary OTF file.
+Font.prototype.toTables = function () {
+    return sfnt.fontToTable(this);
+};
+
+Font.prototype.toBuffer = function () {
+    var sfntTable = this.toTables();
+    var bytes = sfntTable.encode();
+    var buffer = new ArrayBuffer(bytes.length);
+    var intArray = new Uint8Array(buffer);
+    for (var i = 0; i < bytes.length; i++) {
+        intArray[i] = bytes[i];
+    }
+    return buffer;
+};
+
+// Initiate a download of the OpenType font.
+Font.prototype.download = function () {
+    var fileName = this.familyName.replace(/\s/g, '') + '-' + this.styleName + '.otf';
+    var buffer = this.toBuffer();
+
+    window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+    window.requestFileSystem(window.TEMPORARY, buffer.byteLength, function (fs) {
+        fs.root.getFile(fileName, {create: true}, function (fileEntry) {
+            fileEntry.createWriter(function (writer) {
+                var dataView = new DataView(buffer);
+                var blob = new Blob([dataView], {type: 'font/opentype'});
+                writer.write(blob);
+
+                 writer.addEventListener('writeend', function () {
+                    // Navigating to the file will download it.
+                    location.href = fileEntry.toURL();
+                 }, false);
+            });
+        });
+    }, function (err) {
+        throw err;
+    });
+};
+
+exports.Font = Font;
+
+},{"./encoding":3,"./path":8,"./tables/sfnt":23}],5:[function(require,module,exports){
+// The Glyph object
+
+'use strict';
+
+var check = require('./check');
+var draw = require('./draw');
+var path = require('./path');
+
+// A Glyph is an individual mark that often corresponds to a character.
+// Some glyphs, such as ligatures, are a combination of many characters.
+// Glyphs are the basic building blocks of a font.
+//
+// The `Glyph` class contains utility methods for drawing the path and its points.
+function Glyph(options) {
+    this.font = options.font || null;
+    this.index = options.index || 0;
+    this.name = options.name || null;
+    this.unicode = options.unicode || undefined;
+    this.unicodes = options.unicodes || options.unicode !== undefined ? [options.unicode] : [];
+    this.xMin = options.xMin || 0;
+    this.yMin = options.yMin || 0;
+    this.xMax = options.xMax || 0;
+    this.yMax = options.yMax || 0;
+    this.advanceWidth = options.advanceWidth || 0;
+    this.path = options.path || null;
+}
+
+Glyph.prototype.addUnicode = function (unicode) {
+    if (this.unicodes.length === 0) {
+        this.unicode = unicode;
+    }
+    this.unicodes.push(unicode);
+};
+
+// Convert the glyph to a Path we can draw on a drawing context.
+//
+// x - Horizontal position of the glyph. (default: 0)
+// y - Vertical position of the *baseline* of the glyph. (default: 0)
+// fontSize - Font size, in pixels (default: 72).
+Glyph.prototype.getPath = function (x, y, fontSize) {
+    var scale, p, commands, cmd;
+    x = x !== undefined ? x : 0;
+    y = y !== undefined ? y : 0;
+    fontSize = fontSize !== undefined ? fontSize : 72;
+    scale = 1 / this.font.unitsPerEm * fontSize;
+    p = new path.Path();
+    commands = this.path.commands;
+    for (var i = 0; i < commands.length; i += 1) {
+        cmd = commands[i];
+        if (cmd.type === 'M') {
+            p.moveTo(x + (cmd.x * scale), y + (-cmd.y * scale));
+        } else if (cmd.type === 'L') {
+            p.lineTo(x + (cmd.x * scale), y + (-cmd.y * scale));
+        } else if (cmd.type === 'Q') {
+            p.quadraticCurveTo(x + (cmd.x1 * scale), y + (-cmd.y1 * scale),
+                               x + (cmd.x * scale), y + (-cmd.y * scale));
+        } else if (cmd.type === 'C') {
+            p.curveTo(x + (cmd.x1 * scale), y + (-cmd.y1 * scale),
+                      x + (cmd.x2 * scale), y + (-cmd.y2 * scale),
+                      x + (cmd.x * scale), y + (-cmd.y * scale));
+        } else if (cmd.type === 'Z') {
+            p.closePath();
+        }
+    }
+    return p;
+};
+
+// Split the glyph into contours.
+// This function is here for backwards compatibility, and to
+// provide raw access to the TrueType glyph outlines.
+Glyph.prototype.getContours = function () {
+    var contours, currentContour, i, pt;
+    if (this.points === undefined) {
+        return [];
+    }
+    contours = [];
+    currentContour = [];
+    for (i = 0; i < this.points.length; i += 1) {
+        pt = this.points[i];
+        currentContour.push(pt);
+        if (pt.lastPointOfContour) {
+            contours.push(currentContour);
+            currentContour = [];
+        }
+    }
+    check.argument(currentContour.length === 0, 'There are still points left in the current contour.');
+    return contours;
+};
+
+// Calculate the xMin/yMin/xMax/yMax/lsb/rsb for a Glyph.
+Glyph.prototype.getMetrics = function () {
+    var commands = this.path.commands;
+    var xCoords = [];
+    var yCoords = [];
+    for (var i = 0; i < commands.length; i += 1) {
+        var cmd = commands[i];
+        if (cmd.type !== 'Z') {
+            xCoords.push(cmd.x);
+            yCoords.push(cmd.y);
+        }
+        if (cmd.type === 'Q' || cmd.type === 'C') {
+            xCoords.push(cmd.x1);
+            yCoords.push(cmd.y1);
+        }
+        if (cmd.type === 'C') {
+            xCoords.push(cmd.x2);
+            yCoords.push(cmd.y2);
+        }
+    }
+    var metrics = {
+        xMin: Math.min.apply(null, xCoords),
+        yMin: Math.min.apply(null, yCoords),
+        xMax: Math.max.apply(null, xCoords),
+        yMax: Math.max.apply(null, yCoords),
+        leftSideBearing: 0
+    };
+    metrics.rightSideBearing = this.advanceWidth - metrics.leftSideBearing - (metrics.xMax - metrics.xMin);
+    return metrics;
+};
+
+// Draw the glyph on the given context.
+//
+// ctx - The drawing context.
+// x - Horizontal position of the glyph. (default: 0)
+// y - Vertical position of the *baseline* of the glyph. (default: 0)
+// fontSize - Font size, in pixels (default: 72).
+Glyph.prototype.draw = function (ctx, x, y, fontSize) {
+    this.getPath(x, y, fontSize).draw(ctx);
+};
+
+// Draw the points of the glyph.
+// On-curve points will be drawn in blue, off-curve points will be drawn in red.
+//
+// ctx - The drawing context.
+// x - Horizontal position of the glyph. (default: 0)
+// y - Vertical position of the *baseline* of the glyph. (default: 0)
+// fontSize - Font size, in pixels (default: 72).
+Glyph.prototype.drawPoints = function (ctx, x, y, fontSize) {
+
+    function drawCircles(l, x, y, scale) {
+        var j, PI_SQ = Math.PI * 2;
+        ctx.beginPath();
+        for (j = 0; j < l.length; j += 1) {
+            ctx.moveTo(x + (l[j].x * scale), y + (l[j].y * scale));
+            ctx.arc(x + (l[j].x * scale), y + (l[j].y * scale), 2, 0, PI_SQ, false);
+        }
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    var scale, i, blueCircles, redCircles, path, cmd;
+    x = x !== undefined ? x : 0;
+    y = y !== undefined ? y : 0;
+    fontSize = fontSize !== undefined ? fontSize : 24;
+    scale = 1 / this.font.unitsPerEm * fontSize;
+
+    blueCircles = [];
+    redCircles = [];
+    path = this.path;
+    for (i = 0; i < path.commands.length; i += 1) {
+        cmd = path.commands[i];
+        if (cmd.x !== undefined) {
+            blueCircles.push({x: cmd.x, y: -cmd.y});
+        }
+        if (cmd.x1 !== undefined) {
+            redCircles.push({x: cmd.x1, y: -cmd.y1});
+        }
+        if (cmd.x2 !== undefined) {
+            redCircles.push({x: cmd.x2, y: -cmd.y2});
+        }
+    }
+
+    ctx.fillStyle = 'blue';
+    drawCircles(blueCircles, x, y, scale);
+    ctx.fillStyle = 'red';
+    drawCircles(redCircles, x, y, scale);
+};
+
+// Draw lines indicating important font measurements.
+// Black lines indicate the origin of the coordinate system (point 0,0).
+// Blue lines indicate the glyph bounding box.
+// Green line indicates the advance width of the glyph.
+//
+// ctx - The drawing context.
+// x - Horizontal position of the glyph. (default: 0)
+// y - Vertical position of the *baseline* of the glyph. (default: 0)
+// fontSize - Font size, in pixels (default: 72).
+Glyph.prototype.drawMetrics = function (ctx, x, y, fontSize) {
+    var scale;
+    x = x !== undefined ? x : 0;
+    y = y !== undefined ? y : 0;
+    fontSize = fontSize !== undefined ? fontSize : 24;
+    scale = 1 / this.font.unitsPerEm * fontSize;
+    ctx.lineWidth = 1;
+    // Draw the origin
+    ctx.strokeStyle = 'black';
+    draw.line(ctx, x, -10000, x, 10000);
+    draw.line(ctx, -10000, y, 10000, y);
+    // Draw the glyph box
+    ctx.strokeStyle = 'blue';
+    draw.line(ctx, x + (this.xMin * scale), -10000, x + (this.xMin * scale), 10000);
+    draw.line(ctx, x + (this.xMax * scale), -10000, x + (this.xMax * scale), 10000);
+    draw.line(ctx, -10000, y + (-this.yMin * scale), 10000, y + (-this.yMin * scale));
+    draw.line(ctx, -10000, y + (-this.yMax * scale), 10000, y + (-this.yMax * scale));
+    // Draw the advance width
+    ctx.strokeStyle = 'green';
+    draw.line(ctx, x + (this.advanceWidth * scale), -10000, x + (this.advanceWidth * scale), 10000);
+};
+
+exports.Glyph = Glyph;
+
+},{"./check":1,"./draw":2,"./path":8}],6:[function(require,module,exports){
+// opentype.js
+// https://github.com/nodebox/opentype.js
+// (c) 2014 Frederik De Bleser
+// opentype.js may be freely distributed under the MIT license.
+
+/* global ArrayBuffer, DataView, Uint8Array, XMLHttpRequest  */
+
+'use strict';
+
+var encoding = require('./encoding');
+var _font = require('./font');
+var glyph = require('./glyph');
+var parse = require('./parse');
+var path = require('./path');
+
+var cmap = require('./tables/cmap');
+var cff = require('./tables/cff');
+var glyf = require('./tables/glyf');
+var gpos = require('./tables/gpos');
+var head = require('./tables/head');
+var hhea = require('./tables/hhea');
+var hmtx = require('./tables/hmtx');
+var kern = require('./tables/kern');
+var loca = require('./tables/loca');
+var maxp = require('./tables/maxp');
+var _name = require('./tables/name');
+var os2 = require('./tables/os2');
+var post = require('./tables/post');
+
+// File loaders /////////////////////////////////////////////////////////
+
+// Convert a Node.js Buffer to an ArrayBuffer
+function toArrayBuffer(buffer) {
+    var i,
+        arrayBuffer = new ArrayBuffer(buffer.length),
+        data = new Uint8Array(arrayBuffer);
+
+    for (i = 0; i < buffer.length; i += 1) {
+        data[i] = buffer[i];
+    }
+
+    return arrayBuffer;
+}
+
+function loadFromFile(path, callback) {
+    var fs = require('fs');
+    fs.readFile(path, function (err, buffer) {
+        if (err) {
+            return callback(err.message);
+        }
+
+        callback(null, toArrayBuffer(buffer));
+    });
+}
+
+function loadFromUrl(url, callback) {
+    var request = new XMLHttpRequest();
+    request.open('get', url, true);
+    request.responseType = 'arraybuffer';
+    request.onload = function () {
+        if (request.status !== 200) {
+            return callback('Font could not be loaded: ' + request.statusText);
+        }
+        return callback(null, request.response);
+    };
+    request.send();
+}
+
+// Public API ///////////////////////////////////////////////////////////
+
+// Parse the OpenType file data (as an ArrayBuffer) and return a Font object.
+// If the file could not be parsed (most likely because it contains Postscript outlines)
+// we return an empty Font object with the `supported` flag set to `false`.
+function parseBuffer(buffer) {
+    var font, data, version, numTables, i, p, tag, offset, hmtxOffset, glyfOffset, locaOffset,
+        cffOffset, kernOffset, gposOffset, indexToLocFormat, numGlyphs, locaTable,
+        shortVersion;
+    // OpenType fonts use big endian byte ordering.
+    // We can't rely on typed array view types, because they operate with the endianness of the host computer.
+    // Instead we use DataViews where we can specify endianness.
+
+    font = new _font.Font();
+    data = new DataView(buffer, 0);
+
+    version = parse.getFixed(data, 0);
+    if (version === 1.0) {
+        font.outlinesFormat = 'truetype';
+    } else {
+        version = parse.getTag(data, 0);
+        if (version === 'OTTO') {
+            font.outlinesFormat = 'cff';
+        } else {
+            throw new Error('Unsupported OpenType version ' + version);
+        }
+    }
+
+    numTables = parse.getUShort(data, 4);
+
+    // Offset into the table records.
+    p = 12;
+    for (i = 0; i < numTables; i += 1) {
+        tag = parse.getTag(data, p);
+        offset = parse.getULong(data, p + 8);
+        switch (tag) {
+        case 'cmap':
+            font.tables.cmap = cmap.parse(data, offset);
+            font.encoding = new encoding.CmapEncoding(font.tables.cmap);
+            if (!font.encoding) {
+                font.supported = false;
+            }
+            break;
+        case 'head':
+            font.tables.head = head.parse(data, offset);
+            font.unitsPerEm = font.tables.head.unitsPerEm;
+            indexToLocFormat = font.tables.head.indexToLocFormat;
+            break;
+        case 'hhea':
+            font.tables.hhea = hhea.parse(data, offset);
+            font.ascender = font.tables.hhea.ascender;
+            font.descender = font.tables.hhea.descender;
+            font.numberOfHMetrics = font.tables.hhea.numberOfHMetrics;
+            break;
+        case 'hmtx':
+            hmtxOffset = offset;
+            break;
+        case 'maxp':
+            font.tables.maxp = maxp.parse(data, offset);
+            font.numGlyphs = numGlyphs = font.tables.maxp.numGlyphs;
+            break;
+        case 'name':
+            font.tables.name = _name.parse(data, offset);
+            font.familyName = font.tables.name.fontFamily;
+            font.styleName = font.tables.name.fontSubfamily;
+            break;
+        case 'OS/2':
+            font.tables.os2 = os2.parse(data, offset);
+            break;
+        case 'post':
+            font.tables.post = post.parse(data, offset);
+            font.glyphNames = new encoding.GlyphNames(font.tables.post);
+            break;
+        case 'glyf':
+            glyfOffset = offset;
+            break;
+        case 'loca':
+            locaOffset = offset;
+            break;
+        case 'CFF ':
+            cffOffset = offset;
+            break;
+        case 'kern':
+            kernOffset = offset;
+            break;
+        case 'GPOS':
+            gposOffset = offset;
+            break;
+        }
+        p += 16;
+    }
+
+    if (glyfOffset && locaOffset) {
+        shortVersion = indexToLocFormat === 0;
+        locaTable = loca.parse(data, locaOffset, numGlyphs, shortVersion);
+        font.glyphs = glyf.parse(data, glyfOffset, locaTable, font);
+        hmtx.parse(data, hmtxOffset, font.numberOfHMetrics, font.numGlyphs, font.glyphs);
+        encoding.addGlyphNames(font);
+    } else if (cffOffset) {
+        cff.parse(data, cffOffset, font);
+        encoding.addGlyphNames(font);
+    } else {
+        font.supported = false;
+    }
+
+    if (font.supported) {
+        if (kernOffset) {
+            font.kerningPairs = kern.parse(data, kernOffset);
+        } else {
+            font.kerningPairs = {};
+        }
+        if (gposOffset) {
+            gpos.parse(data, gposOffset, font);
+        }
+    }
+
+    return font;
+}
+
+// Asynchronously load the font from a URL or a filesystem. When done, call the callback
+// with two arguments `(err, font)`. The `err` will be null on success,
+// the `font` is a Font object.
+//
+// We use the node.js callback convention so that
+// opentype.js can integrate with frameworks like async.js.
+function load(url, callback) {
+    var isNode = typeof window === 'undefined';
+    var loadFn = isNode ? loadFromFile : loadFromUrl;
+    loadFn(url, function (err, arrayBuffer) {
+        if (err) {
+            return callback(err);
+        }
+        var font = parseBuffer(arrayBuffer);
+        if (!font.supported) {
+            return callback('Font is not supported (is this a Postscript font?)');
+        }
+        return callback(null, font);
+    });
+}
+
+exports._parse = parse;
+exports.Font = _font.Font;
+exports.Glyph = glyph.Glyph;
+exports.Path = path.Path;
+exports.parse = parseBuffer;
+exports.load = load;
+
+},{"./encoding":3,"./font":4,"./glyph":5,"./parse":7,"./path":8,"./tables/cff":10,"./tables/cmap":11,"./tables/glyf":12,"./tables/gpos":13,"./tables/head":14,"./tables/hhea":15,"./tables/hmtx":16,"./tables/kern":17,"./tables/loca":18,"./tables/maxp":19,"./tables/name":20,"./tables/os2":21,"./tables/post":22,"fs":undefined}],7:[function(require,module,exports){
+// Parsing utility functions
+
+'use strict';
+
+// Retrieve an unsigned byte from the DataView.
+exports.getByte = function getByte(dataView, offset) {
+    return dataView.getUint8(offset);
+};
+
+exports.getCard8 = exports.getByte;
+
+// Retrieve an unsigned 16-bit short from the DataView.
+// The value is stored in big endian.
+exports.getUShort = function (dataView, offset) {
+    return dataView.getUint16(offset, false);
+};
+
+exports.getCard16 = exports.getUShort;
+
+// Retrieve a signed 16-bit short from the DataView.
+// The value is stored in big endian.
+exports.getShort = function (dataView, offset) {
+    return dataView.getInt16(offset, false);
+};
+
+// Retrieve an unsigned 32-bit long from the DataView.
+// The value is stored in big endian.
+exports.getULong = function (dataView, offset) {
+    return dataView.getUint32(offset, false);
+};
+
+// Retrieve a 32-bit signed fixed-point number (16.16) from the DataView.
+// The value is stored in big endian.
+exports.getFixed = function (dataView, offset) {
+    var decimal, fraction;
+    decimal = dataView.getInt16(offset, false);
+    fraction = dataView.getUint16(offset + 2, false);
+    return decimal + fraction / 65535;
+};
+
+// Retrieve a 4-character tag from the DataView.
+// Tags are used to identify tables.
+exports.getTag = function (dataView, offset) {
+    var tag = '', i;
+    for (i = offset; i < offset + 4; i += 1) {
+        tag += String.fromCharCode(dataView.getInt8(i));
+    }
+    return tag;
+};
+
+// Retrieve an offset from the DataView.
+// Offsets are 1 to 4 bytes in length, depending on the offSize argument.
+exports.getOffset = function (dataView, offset, offSize) {
+    var i, v;
+    v = 0;
+    for (i = 0; i < offSize; i += 1) {
+        v <<= 8;
+        v += dataView.getUint8(offset + i);
+    }
+    return v;
+};
+
+// Retrieve a number of bytes from start offset to the end offset from the DataView.
+exports.getBytes = function (dataView, startOffset, endOffset) {
+    var bytes, i;
+    bytes = [];
+    for (i = startOffset; i < endOffset; i += 1) {
+        bytes.push(dataView.getUint8(i));
+    }
+    return bytes;
+};
+
+// Convert the list of bytes to a string.
+exports.bytesToString = function (bytes) {
+    var s, i;
+    s = '';
+    for (i = 0; i < bytes.length; i += 1) {
+        s += String.fromCharCode(bytes[i]);
+    }
+    return s;
+};
+
+var typeOffsets = {
+    byte: 1,
+    uShort: 2,
+    short: 2,
+    uLong: 4,
+    fixed: 4,
+    longDateTime: 8,
+    tag: 4
+};
+
+// A stateful parser that changes the offset whenever a value is retrieved.
+// The data is a DataView.
+function Parser(data, offset) {
+    this.data = data;
+    this.offset = offset;
+    this.relativeOffset = 0;
+}
+
+Parser.prototype.parseByte = function () {
+    var v = this.data.getUint8(this.offset + this.relativeOffset);
+    this.relativeOffset += 1;
+    return v;
+};
+
+Parser.prototype.parseChar = function () {
+    var v = this.data.getInt8(this.offset + this.relativeOffset);
+    this.relativeOffset += 1;
+    return v;
+};
+
+Parser.prototype.parseCard8 = Parser.prototype.parseByte;
+
+Parser.prototype.parseUShort = function () {
+    var v = this.data.getUint16(this.offset + this.relativeOffset);
+    this.relativeOffset += 2;
+    return v;
+};
+Parser.prototype.parseCard16 = Parser.prototype.parseUShort;
+Parser.prototype.parseSID = Parser.prototype.parseUShort;
+Parser.prototype.parseOffset16 = Parser.prototype.parseUShort;
+
+Parser.prototype.parseShort = function () {
+    var v = this.data.getInt16(this.offset + this.relativeOffset);
+    this.relativeOffset += 2;
+    return v;
+};
+
+Parser.prototype.parseF2Dot14 = function () {
+    var v = this.data.getInt16(this.offset + this.relativeOffset) / 16384;
+    this.relativeOffset += 2;
+    return v;
+};
+
+Parser.prototype.parseULong = function () {
+    var v = exports.getULong(this.data, this.offset + this.relativeOffset);
+    this.relativeOffset += 4;
+    return v;
+};
+
+Parser.prototype.parseFixed = function () {
+    var v = exports.getFixed(this.data, this.offset + this.relativeOffset);
+    this.relativeOffset += 4;
+    return v;
+};
+
+Parser.prototype.parseOffset16List =
+Parser.prototype.parseUShortList = function (count) {
+    var offsets = new Array(count),
+        dataView = this.data,
+        offset = this.offset + this.relativeOffset;
+    for (var i = 0; i < count; i++) {
+        offsets[i] = exports.getUShort(dataView, offset);
+        offset += 2;
+    }
+    this.relativeOffset += count * 2;
+    return offsets;
+};
+
+Parser.prototype.parseString = function (length) {
+    var dataView = this.data,
+        offset = this.offset + this.relativeOffset,
+        string = '';
+    this.relativeOffset += length;
+    for (var i = 0; i < length; i++) {
+        string += String.fromCharCode(dataView.getUint8(offset + i));
+    }
+    return string;
+};
+
+Parser.prototype.parseTag = function () {
+    return this.parseString(4);
+};
+
+// LONGDATETIME is a 64-bit integer.
+// JavaScript and unix timestamps traditionally use 32 bits, so we
+// only take the last 32 bits.
+Parser.prototype.parseLongDateTime = function() {
+    var v = exports.getULong(this.data, this.offset + this.relativeOffset + 4);
+    this.relativeOffset += 8;
+    return v;
+};
+
+Parser.prototype.parseFixed = function() {
+    var v = exports.getULong(this.data, this.offset + this.relativeOffset);
+    this.relativeOffset += 4;
+    return v / 65536;
+};
+
+Parser.prototype.parseVersion = function() {
+    var major = exports.getUShort(this.data, this.offset + this.relativeOffset);
+    // How to interpret the minor version is very vague in the spec. 0x5000 is 5, 0x1000 is 1
+    // This returns the correct number if minor = 0xN000 where N is 0-9
+    var minor = exports.getUShort(this.data, this.offset + this.relativeOffset + 2);
+    this.relativeOffset += 4;
+    return major + minor / 0x1000 / 10;
+};
+
+Parser.prototype.skip = function (type, amount) {
+    if (amount === undefined) {
+        amount = 1;
+    }
+    this.relativeOffset += typeOffsets[type] * amount;
+};
+
+exports.Parser = Parser;
+
+},{}],8:[function(require,module,exports){
+// Geometric objects
+
+'use strict';
+
+// A bézier path containing a set of path commands similar to a SVG path.
+// Paths can be drawn on a context using `draw`.
+function Path() {
+    this.commands = [];
+    this.fill = 'black';
+    this.stroke = null;
+    this.strokeWidth = 1;
+}
+
+Path.prototype.moveTo = function (x, y) {
+    this.commands.push({
+        type: 'M',
+        x: x,
+        y: y
+    });
+};
+
+Path.prototype.lineTo = function (x, y) {
+    this.commands.push({
+        type: 'L',
+        x: x,
+        y: y
+    });
+};
+
+Path.prototype.curveTo = Path.prototype.bezierCurveTo = function (x1, y1, x2, y2, x, y) {
+    this.commands.push({
+        type: 'C',
+        x1: x1,
+        y1: y1,
+        x2: x2,
+        y2: y2,
+        x: x,
+        y: y
+    });
+};
+
+Path.prototype.quadTo = Path.prototype.quadraticCurveTo = function (x1, y1, x, y) {
+    this.commands.push({
+        type: 'Q',
+        x1: x1,
+        y1: y1,
+        x: x,
+        y: y
+    });
+};
+
+Path.prototype.close = Path.prototype.closePath = function () {
+    this.commands.push({
+        type: 'Z'
+    });
+};
+
+// Add the given path or list of commands to the commands of this path.
+Path.prototype.extend = function (pathOrCommands) {
+    if (pathOrCommands.commands) {
+        pathOrCommands = pathOrCommands.commands;
+    }
+    Array.prototype.push.apply(this.commands, pathOrCommands);
+};
+
+// Draw the path to a 2D context.
+Path.prototype.draw = function (ctx) {
+    var i, cmd;
+    ctx.beginPath();
+    for (i = 0; i < this.commands.length; i += 1) {
+        cmd = this.commands[i];
+        if (cmd.type === 'M') {
+            ctx.moveTo(cmd.x, cmd.y);
+        } else if (cmd.type === 'L') {
+            ctx.lineTo(cmd.x, cmd.y);
+        } else if (cmd.type === 'C') {
+            ctx.bezierCurveTo(cmd.x1, cmd.y1, cmd.x2, cmd.y2, cmd.x, cmd.y);
+        } else if (cmd.type === 'Q') {
+            ctx.quadraticCurveTo(cmd.x1, cmd.y1, cmd.x, cmd.y);
+        } else if (cmd.type === 'Z') {
+            ctx.closePath();
+        }
+    }
+    if (this.fill) {
+        ctx.fillStyle = this.fill;
+        ctx.fill();
+    }
+    if (this.stroke) {
+        ctx.strokeStyle = this.stroke;
+        ctx.lineWidth = this.strokeWidth;
+        ctx.stroke();
+    }
+};
+
+// Convert the Path to a string of path data instructions
+// See http://www.w3.org/TR/SVG/paths.html#PathData
+// Parameters:
+// - decimalPlaces: The amount of decimal places for floating-point values (default: 2)
+Path.prototype.toPathData = function (decimalPlaces) {
+    decimalPlaces = decimalPlaces !== undefined ? decimalPlaces : 2;
+
+    function floatToString(v) {
+        if (Math.round(v) === v) {
+            return '' + Math.round(v);
+        } else {
+            return v.toFixed(decimalPlaces);
+        }
+    }
+
+    function packValues() {
+        var s = '';
+        for (var i = 0; i < arguments.length; i += 1) {
+            var v = arguments[i];
+            if (v >= 0 && i > 0) {
+                s += ' ';
+            }
+            s += floatToString(v);
+        }
+        return s;
+    }
+
+    var d = '';
+    for (var i = 0; i < this.commands.length; i += 1) {
+        var cmd = this.commands[i];
+        if (cmd.type === 'M') {
+            d += 'M' + packValues(cmd.x, cmd.y);
+        } else if (cmd.type === 'L') {
+            d += 'L' + packValues(cmd.x, cmd.y);
+        } else if (cmd.type === 'C') {
+            d += 'C' + packValues(cmd.x1, cmd.y1, cmd.x2, cmd.y2, cmd.x, cmd.y);
+        } else if (cmd.type === 'Q') {
+            d += 'Q' + packValues(cmd.x1, cmd.y1, cmd.x, cmd.y);
+        } else if (cmd.type === 'Z') {
+            d += 'Z';
+        }
+    }
+    return d;
+};
+
+// Convert the path to a SVG <path> element, as a string.
+// Parameters:
+// - decimalPlaces: The amount of decimal places for floating-point values (default: 2)
+Path.prototype.toSVG = function (decimalPlaces) {
+    var svg = '<path d="';
+    svg += this.toPathData(decimalPlaces);
+    svg += '"';
+    if (this.fill & this.fill !== 'black') {
+        if (this.fill === null) {
+            svg += ' fill="none"';
+        } else {
+            svg += ' fill="' + this.fill + '"';
+        }
+    }
+    if (this.stroke) {
+        svg += ' stroke="' + this.stroke + '" stroke-width="' + this.strokeWidth + '"';
+    }
+    svg += '/>';
+    return svg;
+};
+
+exports.Path = Path;
+
+},{}],9:[function(require,module,exports){
+// Table metadata
+
+'use strict';
+
+var check = require('./check');
+var encode = require('./types').encode;
+var sizeOf = require('./types').sizeOf;
+
+function Table(tableName, fields, options) {
+    var i;
+    for (i = 0; i < fields.length; i += 1) {
+        var field = fields[i];
+        this[field.name] = field.value;
+    }
+    this.tableName = tableName;
+    this.fields = fields;
+    if (options) {
+        var optionKeys = Object.keys(options);
+        for (i = 0; i < optionKeys.length; i += 1) {
+            var k = optionKeys[i];
+            var v = options[k];
+            if (this[k] !== undefined) {
+                this[k] = v;
+            }
+        }
+    }
+}
+
+Table.prototype.sizeOf = function () {
+    var v = 0;
+    for (var i = 0; i < this.fields.length; i += 1) {
+        var field = this.fields[i];
+        var value = this[field.name];
+        if (value === undefined) {
+            value = field.value;
+        }
+        if (typeof value.sizeOf === 'function') {
+            v += value.sizeOf();
+        } else {
+            var sizeOfFunction = sizeOf[field.type];
+            check.assert(typeof sizeOfFunction === 'function', 'Could not find sizeOf function for field' + field.name);
+            v += sizeOfFunction(value);
+        }
+    }
+    return v;
+};
+
+Table.prototype.encode = function () {
+    return encode.TABLE(this);
+};
+
+exports.Table = Table;
+
+},{"./check":1,"./types":24}],10:[function(require,module,exports){
+// The `CFF` table contains the glyph outlines in PostScript format.
+// https://www.microsoft.com/typography/OTSPEC/cff.htm
+// http://download.microsoft.com/download/8/0/1/801a191c-029d-4af3-9642-555f6fe514ee/cff.pdf
+// http://download.microsoft.com/download/8/0/1/801a191c-029d-4af3-9642-555f6fe514ee/type2.pdf
+
+'use strict';
+
+var encoding = require('../encoding');
+var _glyph = require('../glyph');
+var parse = require('../parse');
+var path = require('../path');
+var table = require('../table');
+
+// Custom equals function that can also check lists.
+function equals(a, b) {
+    if (a === b) {
+        return true;
+    } else if (Array.isArray(a) && Array.isArray(b)) {
+        if (a.length !== b.length) {
+            return false;
+        }
+        for (var i = 0; i < a.length; i += 1) {
+            if (!equals(a[i], b[i])) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Parse a `CFF` INDEX array.
+// An index array consists of a list of offsets, then a list of objects at those offsets.
+function parseCFFIndex(data, start, conversionFn) {
+    var offsets, objects, count, endOffset, offsetSize, objectOffset, pos, i, value;
+    offsets = [];
+    objects = [];
+    count = parse.getCard16(data, start);
+    if (count !== 0) {
+        offsetSize = parse.getByte(data, start + 2);
+        objectOffset = start + ((count + 1) * offsetSize) + 2;
+        pos = start + 3;
+        for (i = 0; i < count + 1; i += 1) {
+            offsets.push(parse.getOffset(data, pos, offsetSize));
+            pos += offsetSize;
+        }
+        // The total size of the index array is 4 header bytes + the value of the last offset.
+        endOffset = objectOffset + offsets[count];
+    } else {
+        endOffset = start + 2;
+    }
+    for (i = 0; i < offsets.length - 1; i += 1) {
+        value = parse.getBytes(data, objectOffset + offsets[i], objectOffset + offsets[i + 1]);
+        if (conversionFn) {
+            value = conversionFn(value);
+        }
+        objects.push(value);
+    }
+    return {objects: objects, startOffset: start, endOffset: endOffset};
+}
+
+// Parse a `CFF` DICT real value.
+function parseFloatOperand(parser) {
+    var s, eof, lookup, b, n1, n2;
+    s = '';
+    eof = 15;
+    lookup = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', 'E', 'E-', null, '-'];
+    while (true) {
+        b = parser.parseByte();
+        n1 = b >> 4;
+        n2 = b & 15;
+
+        if (n1 === eof) {
+            break;
+        }
+        s += lookup[n1];
+
+        if (n2 === eof) {
+            break;
+        }
+        s += lookup[n2];
+    }
+    return parseFloat(s);
+}
+
+// Parse a `CFF` DICT operand.
+function parseOperand(parser, b0) {
+    var b1, b2, b3, b4;
+    if (b0 === 28) {
+        b1 = parser.parseByte();
+        b2 = parser.parseByte();
+        return b1 << 8 | b2;
+    }
+    if (b0 === 29) {
+        b1 = parser.parseByte();
+        b2 = parser.parseByte();
+        b3 = parser.parseByte();
+        b4 = parser.parseByte();
+        return b1 << 24 | b2 << 16 | b3 << 8 | b4;
+    }
+    if (b0 === 30) {
+        return parseFloatOperand(parser);
+    }
+    if (b0 >= 32 && b0 <= 246) {
+        return b0 - 139;
+    }
+    if (b0 >= 247 && b0 <= 250) {
+        b1 = parser.parseByte();
+        return (b0 - 247) * 256 + b1 + 108;
+    }
+    if (b0 >= 251 && b0 <= 254) {
+        b1 = parser.parseByte();
+        return -(b0 - 251) * 256 - b1 - 108;
+    }
+    throw new Error('Invalid b0 ' + b0);
+}
+
+// Convert the entries returned by `parseDict` to a proper dictionary.
+// If a value is a list of one, it is unpacked.
+function entriesToObject(entries) {
+    var o, key, values, i, value;
+    o = {};
+    for (i = 0; i < entries.length; i += 1) {
+        key = entries[i][0];
+        values = entries[i][1];
+        if (values.length === 1) {
+            value = values[0];
+        } else {
+            value = values;
+        }
+        if (o.hasOwnProperty(key)) {
+            throw new Error('Object ' + o + ' already has key ' + key);
+        }
+        o[key] = value;
+    }
+    return o;
+}
+
+// Parse a `CFF` DICT object.
+// A dictionary contains key-value pairs in a compact tokenized format.
+function parseCFFDict(data, start, size) {
+    var parser, entries, operands, op;
+    start = start !== undefined ? start : 0;
+    parser = new parse.Parser(data, start);
+    entries = [];
+    operands = [];
+    size = size !== undefined ? size : data.length;
+
+    while (parser.relativeOffset < size) {
+        op = parser.parseByte();
+        // The first byte for each dict item distinguishes between operator (key) and operand (value).
+        // Values <= 21 are operators.
+        if (op <= 21) {
+            // Two-byte operators have an initial escape byte of 12.
+            if (op === 12) {
+                op = 1200 + parser.parseByte();
+            }
+            entries.push([op, operands]);
+            operands = [];
+        } else {
+            // Since the operands (values) come before the operators (keys), we store all operands in a list
+            // until we encounter an operator.
+            operands.push(parseOperand(parser, op));
+        }
+    }
+    return entriesToObject(entries);
+}
+
+// Given a String Index (SID), return the value of the string.
+// Strings below index 392 are standard CFF strings and are not encoded in the font.
+function getCFFString(strings, index) {
+    if (index <= 390) {
+        index = encoding.cffStandardStrings[index];
+    } else {
+        index = strings[index - 391];
+    }
+    return index;
+}
+
+// Interpret a dictionary and return a new dictionary with readable keys and values for missing entries.
+// This function takes `meta` which is a list of objects containing `operand`, `name` and `default`.
+function interpretDict(dict, meta, strings) {
+    var i, m, value, newDict;
+    newDict = {};
+    // Because we also want to include missing values, we start out from the meta list
+    // and lookup values in the dict.
+    for (i = 0; i < meta.length; i += 1) {
+        m = meta[i];
+        value = dict[m.op];
+        if (value === undefined) {
+            value = m.value !== undefined ? m.value : null;
+        }
+        if (m.type === 'SID') {
+            value = getCFFString(strings, value);
+        }
+        newDict[m.name] = value;
+    }
+    return newDict;
+}
+
+// Parse the CFF header.
+function parseCFFHeader(data, start) {
+    var header = {};
+    header.formatMajor = parse.getCard8(data, start);
+    header.formatMinor = parse.getCard8(data, start + 1);
+    header.size = parse.getCard8(data, start + 2);
+    header.offsetSize = parse.getCard8(data, start + 3);
+    header.startOffset = start;
+    header.endOffset = start + 4;
+    return header;
+}
+
+var TOP_DICT_META = [
+    {name: 'version', op: 0, type: 'SID'},
+    {name: 'notice', op: 1, type: 'SID'},
+    {name: 'copyright', op: 1200, type: 'SID'},
+    {name: 'fullName', op: 2, type: 'SID'},
+    {name: 'familyName', op: 3, type: 'SID'},
+    {name: 'weight', op: 4, type: 'SID'},
+    {name: 'isFixedPitch', op: 1201, type: 'number', value: 0},
+    {name: 'italicAngle', op: 1202, type: 'number', value: 0},
+    {name: 'underlinePosition', op: 1203, type: 'number', value: -100},
+    {name: 'underlineThickness', op: 1204, type: 'number', value: 50},
+    {name: 'paintType', op: 1205, type: 'number', value: 0},
+    {name: 'charstringType', op: 1206, type: 'number', value: 2},
+    {name: 'fontMatrix', op: 1207, type: ['real', 'real', 'real', 'real', 'real', 'real'], value: [0.001, 0, 0, 0.001, 0, 0]},
+    {name: 'uniqueId', op: 13, type: 'number'},
+    {name: 'fontBBox', op: 5, type: ['number', 'number', 'number', 'number'], value: [0, 0, 0, 0]},
+    {name: 'strokeWidth', op: 1208, type: 'number', value: 0},
+    {name: 'xuid', op: 14, type: [], value: null},
+    {name: 'charset', op: 15, type: 'offset', value: 0},
+    {name: 'encoding', op: 16, type: 'offset', value: 0},
+    {name: 'charStrings', op: 17, type: 'offset', value: 0},
+    {name: 'private', op: 18, type: ['number', 'offset'], value: [0, 0]}
+];
+
+var PRIVATE_DICT_META = [
+    {name: 'subrs', op: 19, type: 'offset', value: 0},
+    {name: 'defaultWidthX', op: 20, type: 'number', value: 0},
+    {name: 'nominalWidthX', op: 21, type: 'number', value: 0}
+];
+
+// Parse the CFF top dictionary. A CFF table can contain multiple fonts, each with their own top dictionary.
+// The top dictionary contains the essential metadata for the font, together with the private dictionary.
+function parseCFFTopDict(data, strings) {
+    var dict;
+    dict = parseCFFDict(data, 0, data.byteLength);
+    return interpretDict(dict, TOP_DICT_META, strings);
+}
+
+// Parse the CFF private dictionary. We don't fully parse out all the values, only the ones we need.
+function parseCFFPrivateDict(data, start, size, strings) {
+    var dict;
+    dict = parseCFFDict(data, start, size);
+    return interpretDict(dict, PRIVATE_DICT_META, strings);
+}
+
+// Parse the CFF charset table, which contains internal names for all the glyphs.
+// This function will return a list of glyph names.
+// See Adobe TN #5176 chapter 13, "Charsets".
+function parseCFFCharset(data, start, nGlyphs, strings) {
+    var parser, format, charset, i, sid, count;
+    parser = new parse.Parser(data, start);
+    // The .notdef glyph is not included, so subtract 1.
+    nGlyphs -= 1;
+    charset = ['.notdef'];
+
+    format = parser.parseCard8();
+    if (format === 0) {
+        for (i = 0; i < nGlyphs; i += 1) {
+            sid = parser.parseSID();
+            charset.push(getCFFString(strings, sid));
+        }
+    } else if (format === 1) {
+        while (charset.length <= nGlyphs) {
+            sid = parser.parseSID();
+            count = parser.parseCard8();
+            for (i = 0; i <= count; i += 1) {
+                charset.push(getCFFString(strings, sid));
+                sid += 1;
+            }
+        }
+    } else if (format === 2) {
+        while (charset.length <= nGlyphs) {
+            sid = parser.parseSID();
+            count = parser.parseCard16();
+            for (i = 0; i <= count; i += 1) {
+                charset.push(getCFFString(strings, sid));
+                sid += 1;
+            }
+        }
+    } else {
+        throw new Error('Unknown charset format ' + format);
+    }
+
+    return charset;
+}
+
+// Parse the CFF encoding data. Only one encoding can be specified per font.
+// See Adobe TN #5176 chapter 12, "Encodings".
+function parseCFFEncoding(data, start, charset) {
+    var enc, parser, format, nCodes, i, code, nRanges, first, nLeft, j;
+    enc = {};
+    parser = new parse.Parser(data, start);
+    format = parser.parseCard8();
+    if (format === 0) {
+        nCodes = parser.parseCard8();
+        for (i = 0; i < nCodes; i += 1) {
+            code = parser.parseCard8();
+            enc[code] = i;
+        }
+    } else if (format === 1) {
+        nRanges = parser.parseCard8();
+        code = 1;
+        for (i = 0; i < nRanges; i += 1) {
+            first = parser.parseCard8();
+            nLeft = parser.parseCard8();
+            for (j = first; j <= first + nLeft; j += 1) {
+                enc[j] = code;
+                code += 1;
+            }
+        }
+    } else {
+        throw new Error('Unknown encoding format ' + format);
+    }
+    return new encoding.CffEncoding(enc, charset);
+}
+
+// Take in charstring code and return a Glyph object.
+// The encoding is described in the Type 2 Charstring Format
+// https://www.microsoft.com/typography/OTSPEC/charstr2.htm
+function parseCFFCharstring(code, font, index) {
+    var p, glyph, stack, nStems, haveWidth, width, open, x, y, c1x, c1y, c2x, c2y, v;
+    p = new path.Path();
+    stack = [];
+    nStems = 0;
+    haveWidth = false;
+    width = font.defaultWidthX;
+    open = false;
+    x = y = 0;
+
+    function newContour(x, y) {
+        if (open) {
+            p.closePath();
+        }
+        p.moveTo(x, y);
+        open = true;
+    }
+
+    function parseStems() {
+        var hasWidthArg;
+        // The number of stem operators on the stack is always even.
+        // If the value is uneven, that means a width is specified.
+        hasWidthArg = stack.length % 2 !== 0;
+        if (hasWidthArg && !haveWidth) {
+            width = stack.shift() + font.nominalWidthX;
+        }
+        nStems += stack.length >> 1;
+        stack.length = 0;
+        haveWidth = true;
+    }
+
+    function parse(code) {
+        var i, b1, b2, b3, b4, codeIndex, subrCode;
+        i = 0;
+        while (i < code.length) {
+            v = code[i];
+            i += 1;
+            switch (v) {
+            case 1: // hstem
+                parseStems();
+                break;
+            case 3: // vstem
+                parseStems();
+                break;
+            case 4: // vmoveto
+                if (stack.length > 1 && !haveWidth) {
+                    width = stack.shift() + font.nominalWidthX;
+                    haveWidth = true;
+                }
+                y += stack.pop();
+                newContour(x, y);
+                break;
+            case 5: // rlineto
+                while (stack.length > 0) {
+                    x += stack.shift();
+                    y += stack.shift();
+                    p.lineTo(x, y);
+                }
+                break;
+            case 6: // hlineto
+                while (stack.length > 0) {
+                    x += stack.shift();
+                    p.lineTo(x, y);
+                    if (stack.length === 0) {
+                        break;
+                    }
+                    y += stack.shift();
+                    p.lineTo(x, y);
+                }
+                break;
+            case 7: // vlineto
+                while (stack.length > 0) {
+                    y += stack.shift();
+                    p.lineTo(x, y);
+                    if (stack.length === 0) {
+                        break;
+                    }
+                    x += stack.shift();
+                    p.lineTo(x, y);
+                }
+                break;
+            case 8: // rrcurveto
+                while (stack.length > 0) {
+                    c1x = x + stack.shift();
+                    c1y = y + stack.shift();
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    x = c2x + stack.shift();
+                    y = c2y + stack.shift();
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                }
+                break;
+            case 10: // callsubr
+                codeIndex = stack.pop() + font.subrsBias;
+                subrCode = font.subrs[codeIndex];
+                if (subrCode) {
+                    parse(subrCode);
+                }
+                break;
+            case 11: // return
+                return;
+            case 12: // flex operators
+                v = code[i];
+                i += 1;
+                var jpx, jpy, c3x, c3y, c4x, c4y, fd;
+                switch (v) {
+                case 35: // flex
+                    // |- dx1 dy1 dx2 dy2 dx3 dy3 dx4 dy4 dx5 dy5 dx6 dy6 fd flex (12 35) |-
+                    c1x = x   + stack.shift();    // dx1
+                    c1y = y   + stack.shift();    // dy1
+                    c2x = c1x + stack.shift();    // dx2
+                    c2y = c1y + stack.shift();    // dy2
+                    jpx = c2x + stack.shift();    // dx3
+                    jpy = c2y + stack.shift();    // dy3
+                    c3x = jpx + stack.shift();    // dx4
+                    c3y = jpy + stack.shift();    // dy4
+                    c4x = c3x + stack.shift();    // dx5
+                    c4y = c3y + stack.shift();    // dy5
+                    x = c4x + stack.shift();      // dx6
+                    y = c4y + stack.shift();      // dy6
+                    fd = stack.shift();           // flex depth
+                    p.curveTo(c1x, c1y, c2x, c2y, jpx, jpy);
+                    p.curveTo(c3x, c3y, c4x, c4y, x, y);
+                    break;
+                case 34: // hflex
+                    // |- dx1 dx2 dy2 dx3 dx4 dx5 dx6 hflex (12 34) |-
+                    c1x = x   + stack.shift();    // dx1
+                    c1y = y;                      // dy1
+                    c2x = c1x + stack.shift();    // dx2
+                    c2y = c1y + stack.shift();    // dy2
+                    jpx = c2x + stack.shift();    // dx3
+                    jpy = c2y;                    // dy3
+                    c3x = jpx + stack.shift();    // dx4
+                    c3y = c2y;                    // dy4
+                    c4x = c3x + stack.shift();    // dx5
+                    c4y = y;                      // dy5
+                    x = c4x + stack.shift();      // dx6
+                    // y = y;                     // dy6
+                    p.curveTo(c1x, c1y, c2x, c2y, jpx, jpy);
+                    p.curveTo(c3x, c3y, c4x, c4y, x, y);
+                    break;
+                case 36: // hflex1
+                    // |- dx1 dy1 dx2 dy2 dx3 dx4 dx5 dy5 dx6 hflex1 (12 36) |-
+                    c1x = x   + stack.shift();    // dx1
+                    c1y = y   + stack.shift();    // dy1
+                    c2x = c1x + stack.shift();    // dx2
+                    c2y = c1y + stack.shift();    // dy2
+                    jpx = c2x + stack.shift();    // dx3
+                    jpy = c2y;                    // dy3
+                    c3x = jpx + stack.shift();    // dx4
+                    c3y = c2y;                    // dy4
+                    c4x = c3x + stack.shift();    // dx5
+                    c4y = c3y + stack.shift();    // dy5
+                    x = c4x + stack.shift();      // dx6
+                    // y = y;                     // dy6
+                    p.curveTo(c1x, c1y, c2x, c2y, jpx, jpy);
+                    p.curveTo(c3x, c3y, c4x, c4y, x, y);
+                    break;
+                case 37: // flex1
+                    // |- dx1 dy1 dx2 dy2 dx3 dy3 dx4 dy4 dx5 dy5 d6 flex1 (12 37) |-
+                    c1x = x   + stack.shift();    // dx1
+                    c1y = y   + stack.shift();    // dy1
+                    c2x = c1x + stack.shift();    // dx2
+                    c2y = c1y + stack.shift();    // dy2
+                    jpx = c2x + stack.shift();    // dx3
+                    jpy = c2y + stack.shift();    // dy3
+                    c3x = jpx + stack.shift();    // dx4
+                    c3y = jpy + stack.shift();    // dy4
+                    c4x = c3x + stack.shift();    // dx5
+                    c4y = c3y + stack.shift();    // dy5
+
+                    if (Math.abs(c4x - x) > Math.abs(c4y - y)) {
+                        x = c4x + stack.shift();  // d6
+                    } else {
+                        y = c4y + stack.shift();  // d6
+                    }
+                    p.curveTo(c1x, c1y, c2x, c2y, jpx, jpy);
+                    p.curveTo(c3x, c3y, c4x, c4y, x, y);
+                    break;
+                default:
+                    console.log('Glyph ' + index + ': unknown operator ' + 1200 + v);
+                    stack.length = 0;
+                }
+                break;
+            case 14: // endchar
+                if (stack.length > 0 && !haveWidth) {
+                    width = stack.shift() + font.nominalWidthX;
+                    haveWidth = true;
+                }
+                if (open) {
+                    p.closePath();
+                    open = false;
+                }
+                break;
+            case 18: // hstemhm
+                parseStems();
+                break;
+            case 19: // hintmask
+            case 20: // cntrmask
+                parseStems();
+                i += (nStems + 7) >> 3;
+                break;
+            case 21: // rmoveto
+                if (stack.length > 2 && !haveWidth) {
+                    width = stack.shift() + font.nominalWidthX;
+                    haveWidth = true;
+                }
+                y += stack.pop();
+                x += stack.pop();
+                newContour(x, y);
+                break;
+            case 22: // hmoveto
+                if (stack.length > 1 && !haveWidth) {
+                    width = stack.shift() + font.nominalWidthX;
+                    haveWidth = true;
+                }
+                x += stack.pop();
+                newContour(x, y);
+                break;
+            case 23: // vstemhm
+                parseStems();
+                break;
+            case 24: // rcurveline
+                while (stack.length > 2) {
+                    c1x = x + stack.shift();
+                    c1y = y + stack.shift();
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    x = c2x + stack.shift();
+                    y = c2y + stack.shift();
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                }
+                x += stack.shift();
+                y += stack.shift();
+                p.lineTo(x, y);
+                break;
+            case 25: // rlinecurve
+                while (stack.length > 6) {
+                    x += stack.shift();
+                    y += stack.shift();
+                    p.lineTo(x, y);
+                }
+                c1x = x + stack.shift();
+                c1y = y + stack.shift();
+                c2x = c1x + stack.shift();
+                c2y = c1y + stack.shift();
+                x = c2x + stack.shift();
+                y = c2y + stack.shift();
+                p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                break;
+            case 26: // vvcurveto
+                if (stack.length % 2) {
+                    x += stack.shift();
+                }
+                while (stack.length > 0) {
+                    c1x = x;
+                    c1y = y + stack.shift();
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    x = c2x;
+                    y = c2y + stack.shift();
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                }
+                break;
+            case 27: // hhcurveto
+                if (stack.length % 2) {
+                    y += stack.shift();
+                }
+                while (stack.length > 0) {
+                    c1x = x + stack.shift();
+                    c1y = y;
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    x = c2x + stack.shift();
+                    y = c2y;
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                }
+                break;
+            case 28: // shortint
+                b1 = code[i];
+                b2 = code[i + 1];
+                stack.push(((b1 << 24) | (b2 << 16)) >> 16);
+                i += 2;
+                break;
+            case 29: // callgsubr
+                codeIndex = stack.pop() + font.gsubrsBias;
+                subrCode = font.gsubrs[codeIndex];
+                if (subrCode) {
+                    parse(subrCode);
+                }
+                break;
+            case 30: // vhcurveto
+                while (stack.length > 0) {
+                    c1x = x;
+                    c1y = y + stack.shift();
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    x = c2x + stack.shift();
+                    y = c2y + (stack.length === 1 ? stack.shift() : 0);
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                    if (stack.length === 0) {
+                        break;
+                    }
+                    c1x = x + stack.shift();
+                    c1y = y;
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    y = c2y + stack.shift();
+                    x = c2x + (stack.length === 1 ? stack.shift() : 0);
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                }
+                break;
+            case 31: // hvcurveto
+                while (stack.length > 0) {
+                    c1x = x + stack.shift();
+                    c1y = y;
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    y = c2y + stack.shift();
+                    x = c2x + (stack.length === 1 ? stack.shift() : 0);
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                    if (stack.length === 0) {
+                        break;
+                    }
+                    c1x = x;
+                    c1y = y + stack.shift();
+                    c2x = c1x + stack.shift();
+                    c2y = c1y + stack.shift();
+                    x = c2x + stack.shift();
+                    y = c2y + (stack.length === 1 ? stack.shift() : 0);
+                    p.curveTo(c1x, c1y, c2x, c2y, x, y);
+                }
+                break;
+            default:
+                if (v < 32) {
+                    console.log('Glyph ' + index + ': unknown operator ' + v);
+                } else if (v < 247) {
+                    stack.push(v - 139);
+                } else if (v < 251) {
+                    b1 = code[i];
+                    i += 1;
+                    stack.push((v - 247) * 256 + b1 + 108);
+                } else if (v < 255) {
+                    b1 = code[i];
+                    i += 1;
+                    stack.push(-(v - 251) * 256 - b1 - 108);
+                } else {
+                    b1 = code[i];
+                    b2 = code[i + 1];
+                    b3 = code[i + 2];
+                    b4 = code[i + 3];
+                    i += 4;
+                    stack.push(((b1 << 24) | (b2 << 16) | (b3 << 8) | b4) / 65536);
+                }
+            }
+        }
+    }
+
+    parse(code);
+    glyph = new _glyph.Glyph({font: font, index: index});
+    glyph.path = p;
+    glyph.advanceWidth = width;
+    return glyph;
+}
+
+// Subroutines are encoded using the negative half of the number space.
+// See type 2 chapter 4.7 "Subroutine operators".
+function calcCFFSubroutineBias(subrs) {
+    var bias;
+    if (subrs.length < 1240) {
+        bias = 107;
+    } else if (subrs.length < 33900) {
+        bias = 1131;
+    } else {
+        bias = 32768;
+    }
+    return bias;
+}
+
+// Parse the `CFF` table, which contains the glyph outlines in PostScript format.
+function parseCFFTable(data, start, font) {
+    var header, nameIndex, topDictIndex, stringIndex, globalSubrIndex, topDict, privateDictOffset, privateDict,
+        subrOffset, subrIndex, charString, charStringsIndex, charset, i;
+    font.tables.cff = {};
+    header = parseCFFHeader(data, start);
+    nameIndex = parseCFFIndex(data, header.endOffset, parse.bytesToString);
+    topDictIndex = parseCFFIndex(data, nameIndex.endOffset);
+    stringIndex = parseCFFIndex(data, topDictIndex.endOffset, parse.bytesToString);
+    globalSubrIndex = parseCFFIndex(data, stringIndex.endOffset);
+    font.gsubrs = globalSubrIndex.objects;
+    font.gsubrsBias = calcCFFSubroutineBias(font.gsubrs);
+
+    var topDictData = new DataView(new Uint8Array(topDictIndex.objects[0]).buffer);
+    topDict = parseCFFTopDict(topDictData, stringIndex.objects);
+    font.tables.cff.topDict = topDict;
+
+    privateDictOffset = start + topDict['private'][1];
+    privateDict = parseCFFPrivateDict(data, privateDictOffset, topDict['private'][0], stringIndex.objects);
+    font.defaultWidthX = privateDict.defaultWidthX;
+    font.nominalWidthX = privateDict.nominalWidthX;
+
+    if (privateDict.subrs !== 0) {
+        subrOffset = privateDictOffset + privateDict.subrs;
+        subrIndex = parseCFFIndex(data, subrOffset);
+        font.subrs = subrIndex.objects;
+        font.subrsBias = calcCFFSubroutineBias(font.subrs);
+    } else {
+        font.subrs = [];
+        font.subrsBias = 0;
+    }
+
+    // Offsets in the top dict are relative to the beginning of the CFF data, so add the CFF start offset.
+    charStringsIndex = parseCFFIndex(data, start + topDict.charStrings);
+    font.nGlyphs = charStringsIndex.objects.length;
+
+    charset = parseCFFCharset(data, start + topDict.charset, font.nGlyphs, stringIndex.objects);
+    if (topDict.encoding === 0) { // Standard encoding
+        font.cffEncoding = new encoding.CffEncoding(encoding.cffStandardEncoding, charset);
+    } else if (topDict.encoding === 1) { // Expert encoding
+        font.cffEncoding = new encoding.CffEncoding(encoding.cffExpertEncoding, charset);
+    } else {
+        font.cffEncoding = parseCFFEncoding(data, start + topDict.encoding, charset);
+    }
+    // Prefer the CMAP encoding to the CFF encoding.
+    font.encoding = font.encoding || font.cffEncoding;
+
+    font.glyphs = [];
+    for (i = 0; i < font.nGlyphs; i += 1) {
+        charString = charStringsIndex.objects[i];
+        font.glyphs.push(parseCFFCharstring(charString, font, i));
+    }
+}
+
+
+// Convert a string to a String ID (SID).
+// The list of strings is modified in place.
+function encodeString(s, strings) {
+    var i, sid;
+    // Is the string in the CFF standard strings?
+    i = encoding.cffStandardStrings.indexOf(s);
+    if (i >= 0) {
+        sid = i;
+    }
+    // Is the string already in the string index?
+    i = strings.indexOf(s);
+    if (i >= 0) {
+        sid = i + encoding.cffStandardStrings.length;
+    } else {
+        sid = encoding.cffStandardStrings.length + strings.length;
+        strings.push(s);
+    }
+    return sid;
+}
+
+function makeHeader() {
+    return new table.Table('Header', [
+        {name: 'major', type: 'Card8', value: 1},
+        {name: 'minor', type: 'Card8', value: 0},
+        {name: 'hdrSize', type: 'Card8', value: 4},
+        {name: 'major', type: 'Card8', value: 1}
+    ]);
+}
+
+function makeNameIndex(fontNames) {
+    var t = new table.Table('Name INDEX', [
+        {name: 'names', type: 'INDEX', value: []}
+    ]);
+    t.names = [];
+    for (var i = 0; i < fontNames.length; i += 1) {
+        t.names.push({name: 'name_' + i, type: 'NAME', value: fontNames[i]});
+    }
+    return t;
+}
+
+// Given a dictionary's metadata, create a DICT structure.
+function makeDict(meta, attrs, strings) {
+    var m = {}, i, entry, value;
+    for (i = 0; i < meta.length; i += 1) {
+        entry = meta[i];
+        value = attrs[entry.name];
+        if (value !== undefined && !equals(value, entry.value)) {
+            if (entry.type === 'SID') {
+                value = encodeString(value, strings);
+            }
+            m[entry.op] = {name: entry.name, type: entry.type, value: value};
+        }
+    }
+    return m;
+}
+
+// The Top DICT houses the global font attributes.
+function makeTopDict(attrs, strings) {
+    var t = new table.Table('Top DICT', [
+        {name: 'dict', type: 'DICT', value: {}}
+    ]);
+    t.dict = makeDict(TOP_DICT_META, attrs, strings);
+    return t;
+}
+
+function makeTopDictIndex(topDict) {
+    var t = new table.Table('Top DICT INDEX', [
+        {name: 'topDicts', type: 'INDEX', value: []}
+    ]);
+    t.topDicts = [{name: 'topDict_0', type: 'TABLE', value: topDict}];
+    return t;
+}
+
+function makeStringIndex(strings) {
+    var t = new table.Table('String INDEX', [
+        {name: 'strings', type: 'INDEX', value: []}
+    ]);
+    t.strings = [];
+    for (var i = 0; i < strings.length; i += 1) {
+        t.strings.push({name: 'string_' + i, type: 'STRING', value: strings[i]});
+    }
+    return t;
+}
+
+function makeGlobalSubrIndex() {
+    // Currently we don't use subroutines.
+    return new table.Table('Global Subr INDEX', [
+        {name: 'subrs', type: 'INDEX', value: []}
+    ]);
+}
+
+function makeCharsets(glyphNames, strings) {
+    var t = new table.Table('Charsets', [
+        {name: 'format', type: 'Card8', value: 0}
+    ]);
+    for (var i = 0; i < glyphNames.length; i += 1) {
+        var glyphName = glyphNames[i];
+        var glyphSID = encodeString(glyphName, strings);
+        t.fields.push({name: 'glyph_' + i, type: 'SID', value: glyphSID});
+    }
+    return t;
+}
+
+function glyphToOps(glyph) {
+    var ops = [], path = glyph.path, x, y, i, cmd, dx, dy, dx1, dy1, dx2, dy2;
+    ops.push({name: 'width', type: 'NUMBER', value: glyph.advanceWidth});
+    x = 0;
+    y = 0;
+    for (i = 0; i < path.commands.length; i += 1) {
+        cmd = path.commands[i];
+        if (cmd.type === 'Q') {
+            // CFF only supports bézier curves, so convert the quad to a bézier.
+            var _13 = 1 / 3;
+            var _23 = 2 / 3;
+            // We're going to create a new command so we don't change the original path.
+            cmd = {
+                type: 'C',
+                x: cmd.x,
+                y: cmd.y,
+                x1: _13 * x + _23 * cmd.x1,
+                y1: _13 * y + _23 * cmd.y1,
+                x2: _13 * cmd.x + _23 * cmd.x1,
+                y2: _13 * cmd.y + _23 * cmd.y1
+            };
+        }
+
+        if (cmd.type === 'M') {
+            dx = Math.round(cmd.x - x);
+            dy = Math.round(cmd.y - y);
+            ops.push({name: 'dx', type: 'NUMBER', value: dx});
+            ops.push({name: 'dy', type: 'NUMBER', value: dy});
+            ops.push({name: 'rmoveto', type: 'OP', value: 21});
+            x = Math.round(cmd.x);
+            y = Math.round(cmd.y);
+        } else if (cmd.type === 'L') {
+            dx = Math.round(cmd.x - x);
+            dy = Math.round(cmd.y - y);
+            ops.push({name: 'dx', type: 'NUMBER', value: dx});
+            ops.push({name: 'dy', type: 'NUMBER', value: dy});
+            ops.push({name: 'rlineto', type: 'OP', value: 5});
+            x = Math.round(cmd.x);
+            y = Math.round(cmd.y);
+        } else if (cmd.type === 'C') {
+            dx1 = Math.round(cmd.x1 - x);
+            dy1 = Math.round(cmd.y1 - y);
+            dx2 = Math.round(cmd.x2 - cmd.x1);
+            dy2 = Math.round(cmd.y2 - cmd.y1);
+            dx = Math.round(cmd.x - cmd.x2);
+            dy = Math.round(cmd.y - cmd.y2);
+            ops.push({name: 'dx1', type: 'NUMBER', value: dx1});
+            ops.push({name: 'dy1', type: 'NUMBER', value: dy1});
+            ops.push({name: 'dx2', type: 'NUMBER', value: dx2});
+            ops.push({name: 'dy2', type: 'NUMBER', value: dy2});
+            ops.push({name: 'dx', type: 'NUMBER', value: dx});
+            ops.push({name: 'dy', type: 'NUMBER', value: dy});
+            ops.push({name: 'rrcurveto', type: 'OP', value: 8});
+            x = Math.round(cmd.x);
+            y = Math.round(cmd.y);
+        } else if (cmd.type === 'Z') {
+            // Contours are closed automatically.
+        }
+    }
+    ops.push({name: 'endchar', type: 'OP', value: 14});
+    return ops;
+}
+
+function makeCharStringsIndex(glyphs) {
+    var t = new table.Table('CharStrings INDEX', [
+        {name: 'charStrings', type: 'INDEX', value: []}
+    ]);
+    for (var i = 0; i < glyphs.length; i += 1) {
+        var glyph = glyphs[i];
+        var ops = glyphToOps(glyph);
+        t.charStrings.push({name: glyph.name, type: 'CHARSTRING', value: ops});
+    }
+    return t;
+}
+
+function makePrivateDict(attrs, strings) {
+    var t = new table.Table('Private DICT', [
+        {name: 'dict', type: 'DICT', value: {}}
+    ]);
+    t.dict = makeDict(PRIVATE_DICT_META, attrs, strings);
+    return t;
+}
+
+function makePrivateDictIndex(privateDict) {
+    var t = new table.Table('Private DICT INDEX', [
+        {name: 'privateDicts', type: 'INDEX', value: []}
+    ]);
+    t.privateDicts = [{name: 'privateDict_0', type: 'TABLE', value: privateDict}];
+    return t;
+}
+
+function makeCFFTable(glyphs, options) {
+    var t = new table.Table('CFF ', [
+        {name: 'header', type: 'TABLE'},
+        {name: 'nameIndex', type: 'TABLE'},
+        {name: 'topDictIndex', type: 'TABLE'},
+        {name: 'stringIndex', type: 'TABLE'},
+        {name: 'globalSubrIndex', type: 'TABLE'},
+        {name: 'charsets', type: 'TABLE'},
+        {name: 'charStringsIndex', type: 'TABLE'},
+        {name: 'privateDictIndex', type: 'TABLE'}
+    ]);
+
+    // We use non-zero values for the offsets so that the DICT encodes them.
+    // This is important because the size of the Top DICT plays a role in offset calculation,
+    // and the size shouldn't change after we've written correct offsets.
+    var attrs = {
+        version: options.version,
+        fullName: options.fullName,
+        familyName: options.familyName,
+        weight: options.weightName,
+        charset: 999,
+        encoding: 0,
+        charStrings: 999,
+        private: [0, 999]
+    };
+
+    var privateAttrs = {};
+
+    var glyphNames = [];
+    // Skip first glyph (.notdef)
+    for (var i = 1; i < glyphs.length; i += 1) {
+        glyphNames.push(glyphs[i].name);
+    }
+
+    var strings = [];
+
+    t.header = makeHeader();
+    t.nameIndex = makeNameIndex([options.postScriptName]);
+    var topDict = makeTopDict(attrs, strings);
+    t.topDictIndex = makeTopDictIndex(topDict);
+    t.globalSubrIndex = makeGlobalSubrIndex();
+    t.charsets = makeCharsets(glyphNames, strings);
+    t.charStringsIndex = makeCharStringsIndex(glyphs);
+    var privateDict = makePrivateDict(privateAttrs, strings);
+    t.privateDictIndex = makePrivateDictIndex(privateDict);
+
+    // Needs to come at the end, to encode all custom strings used in the font.
+    t.stringIndex = makeStringIndex(strings);
+
+    var startOffset = t.header.sizeOf() +
+        t.nameIndex.sizeOf() +
+        t.topDictIndex.sizeOf() +
+        t.stringIndex.sizeOf() +
+        t.globalSubrIndex.sizeOf();
+    attrs.charset = startOffset;
+    attrs.encoding = 0; // We use the CFF standard encoding; proper encoding will be handled in cmap.
+    attrs.charStrings = attrs.charset + t.charsets.sizeOf();
+    attrs.private[1] = attrs.charStrings + t.charStringsIndex.sizeOf();
+
+    // Recreate the Top DICT INDEX with the correct offsets.
+    topDict = makeTopDict(attrs, strings);
+    t.topDictIndex = makeTopDictIndex(topDict);
+
+    return t;
+}
+
+exports.parse = parseCFFTable;
+exports.make = makeCFFTable;
+
+},{"../encoding":3,"../glyph":5,"../parse":7,"../path":8,"../table":9}],11:[function(require,module,exports){
+// The `cmap` table stores the mappings from characters to glyphs.
+// https://www.microsoft.com/typography/OTSPEC/cmap.htm
+
+'use strict';
+
+var check = require('../check');
+var parse = require('../parse');
+var table = require('../table');
+
+// Parse the `cmap` table. This table stores the mappings from characters to glyphs.
+// There are many available formats, but we only support the Windows format 4.
+// This function returns a `CmapEncoding` object or null if no supported format could be found.
+function parseCmapTable(data, start) {
+    var version, numTables, offset, platformId, encodingId, format, segCount,
+        endCountParser, startCountParser, idDeltaParser, idRangeOffsetParser, glyphIndexOffset,
+        endCount, startCount, i, c, idDelta, idRangeOffset, p, glyphIndex;
+    var cmap = {};
+    cmap.version = version = parse.getUShort(data, start);
+    check.argument(version === 0, 'cmap table version should be 0.');
+
+    // The cmap table can contain many sub-tables, each with their own format.
+    // We're only interested in a "platform 3" table. This is a Windows format.
+    cmap.numtables = numTables = parse.getUShort(data, start + 2);
+    offset = -1;
+    for (i = 0; i < numTables; i += 1) {
+        platformId = parse.getUShort(data, start + 4 + (i * 8));
+        encodingId = parse.getUShort(data, start + 4 + (i * 8) + 2);
+        if (platformId === 3 && (encodingId === 1 || encodingId === 0)) {
+            offset = parse.getULong(data, start + 4 + (i * 8) + 4);
+            break;
+        }
+    }
+    if (offset === -1) {
+        // There is no cmap table in the font that we support, so return null.
+        // This font will be marked as unsupported.
+        return null;
+    }
+
+    p = new parse.Parser(data, start + offset);
+    cmap.format = format = p.parseUShort();
+    check.argument(format === 4, 'Only format 4 cmap tables are supported.');
+    // Length in bytes of the sub-tables.
+    cmap.length = p.parseUShort();
+    cmap.language = p.parseUShort();
+    // segCount is stored x 2.
+    cmap.segCount = segCount = p.parseUShort() >> 1;
+    // Skip searchRange, entrySelector, rangeShift.
+    p.skip('uShort', 3);
+
+    // The "unrolled" mapping from character codes to glyph indices.
+    cmap.glyphIndexMap = {};
+
+    endCountParser = new parse.Parser(data, start + offset + 14);
+    startCountParser = new parse.Parser(data, start + offset + 16 + segCount * 2);
+    idDeltaParser = new parse.Parser(data, start + offset + 16 + segCount * 4);
+    idRangeOffsetParser = new parse.Parser(data, start + offset + 16 + segCount * 6);
+    glyphIndexOffset = start + offset + 16 + segCount * 8;
+    for (i = 0; i < segCount - 1; i += 1) {
+        endCount = endCountParser.parseUShort();
+        startCount = startCountParser.parseUShort();
+        idDelta = idDeltaParser.parseShort();
+        idRangeOffset = idRangeOffsetParser.parseUShort();
+        for (c = startCount; c <= endCount; c += 1) {
+            if (idRangeOffset !== 0) {
+                // The idRangeOffset is relative to the current position in the idRangeOffset array.
+                // Take the current offset in the idRangeOffset array.
+                glyphIndexOffset = (idRangeOffsetParser.offset + idRangeOffsetParser.relativeOffset - 2);
+                // Add the value of the idRangeOffset, which will move us into the glyphIndex array.
+                glyphIndexOffset += idRangeOffset;
+                // Then add the character index of the current segment, multiplied by 2 for USHORTs.
+                glyphIndexOffset += (c - startCount) * 2;
+                glyphIndex = parse.getUShort(data, glyphIndexOffset);
+                if (glyphIndex !== 0) {
+                    glyphIndex = (glyphIndex + idDelta) & 0xFFFF;
+                }
+            } else {
+                glyphIndex = (c + idDelta) & 0xFFFF;
+            }
+            cmap.glyphIndexMap[c] = glyphIndex;
+        }
+    }
+    return cmap;
+}
+
+function addSegment(t, code, glyphIndex) {
+    t.segments.push({
+        end: code,
+        start: code,
+        delta: -(code - glyphIndex),
+        offset: 0
+    });
+}
+
+function addTerminatorSegment(t) {
+    t.segments.push({
+        end: 0xFFFF,
+        start: 0xFFFF,
+        delta: 1,
+        offset: 0
+    });
+}
+
+function makeCmapTable(glyphs) {
+    var i, j, glyph;
+    var t = new table.Table('cmap', [
+        {name: 'version', type: 'USHORT', value: 0},
+        {name: 'numTables', type: 'USHORT', value: 1},
+        {name: 'platformID', type: 'USHORT', value: 3},
+        {name: 'encodingID', type: 'USHORT', value: 1},
+        {name: 'offset', type: 'ULONG', value: 12},
+        {name: 'format', type: 'USHORT', value: 4},
+        {name: 'length', type: 'USHORT', value: 0},
+        {name: 'language', type: 'USHORT', value: 0},
+        {name: 'segCountX2', type: 'USHORT', value: 0},
+        {name: 'searchRange', type: 'USHORT', value: 0},
+        {name: 'entrySelector', type: 'USHORT', value: 0},
+        {name: 'rangeShift', type: 'USHORT', value: 0}
+    ]);
+
+    t.segments = [];
+    for (i = 0; i < glyphs.length; i += 1) {
+        glyph = glyphs[i];
+        for (j = 0; j < glyph.unicodes.length; j += 1) {
+            addSegment(t, glyph.unicodes[j], i);
+        }
+        t.segments = t.segments.sort(function (a, b) {
+            return a.start - b.start;
+        });
+    }
+    addTerminatorSegment(t);
+
+    var segCount;
+    segCount = t.segments.length;
+    t.segCountX2 = segCount * 2;
+    t.searchRange = Math.pow(2, Math.floor(Math.log(segCount) / Math.log(2))) * 2;
+    t.entrySelector = Math.log(t.searchRange / 2) / Math.log(2);
+    t.rangeShift = t.segCountX2 - t.searchRange;
+
+     // Set up parallel segment arrays.
+    var endCounts = [],
+        startCounts = [],
+        idDeltas = [],
+        idRangeOffsets = [],
+        glyphIds = [];
+
+    for (i = 0; i < segCount; i += 1) {
+        var segment = t.segments[i];
+        endCounts = endCounts.concat({name: 'end_' + i, type: 'USHORT', value: segment.end});
+        startCounts = startCounts.concat({name: 'start_' + i, type: 'USHORT', value: segment.start});
+        idDeltas = idDeltas.concat({name: 'idDelta_' + i, type: 'SHORT', value: segment.delta});
+        idRangeOffsets = idRangeOffsets.concat({name: 'idRangeOffset_' + i, type: 'USHORT', value: segment.offset});
+        if (segment.glyphId !== undefined) {
+            glyphIds = glyphIds.concat({name: 'glyph_' + i, type: 'USHORT', value: segment.glyphId});
+        }
+    }
+    t.fields = t.fields.concat(endCounts);
+    t.fields.push({name: 'reservedPad', type: 'USHORT', value: 0});
+    t.fields = t.fields.concat(startCounts);
+    t.fields = t.fields.concat(idDeltas);
+    t.fields = t.fields.concat(idRangeOffsets);
+    t.fields = t.fields.concat(glyphIds);
+
+    t.length = 14 + // Subtable header
+        endCounts.length * 2 +
+        2 + // reservedPad
+        startCounts.length * 2 +
+        idDeltas.length * 2 +
+        idRangeOffsets.length * 2 +
+        glyphIds.length * 2;
+    return t;
+}
+
+exports.parse = parseCmapTable;
+exports.make = makeCmapTable;
+
+},{"../check":1,"../parse":7,"../table":9}],12:[function(require,module,exports){
+// The `glyf` table describes the glyphs in TrueType outline format.
+// http://www.microsoft.com/typography/otspec/glyf.htm
+
+'use strict';
+
+var check = require('../check');
+var _glyph = require('../glyph');
+var parse = require('../parse');
+var path = require('../path');
+
+// Parse the coordinate data for a glyph.
+function parseGlyphCoordinate(p, flag, previousValue, shortVectorBitMask, sameBitMask) {
+    var v;
+    if ((flag & shortVectorBitMask) > 0) {
+        // The coordinate is 1 byte long.
+        v = p.parseByte();
+        // The `same` bit is re-used for short values to signify the sign of the value.
+        if ((flag & sameBitMask) === 0) {
+            v = -v;
+        }
+        v = previousValue + v;
+    } else {
+        //  The coordinate is 2 bytes long.
+        // If the `same` bit is set, the coordinate is the same as the previous coordinate.
+        if ((flag & sameBitMask) > 0) {
+            v = previousValue;
+        } else {
+            // Parse the coordinate as a signed 16-bit delta value.
+            v = previousValue + p.parseShort();
+        }
+    }
+    return v;
+}
+
+// Parse a TrueType glyph.
+function parseGlyph(data, start, index, font) {
+    var p, glyph, flag, i, j, flags,
+        endPointIndices, numberOfCoordinates, repeatCount, points, point, px, py,
+        component, moreComponents;
+    p = new parse.Parser(data, start);
+    glyph = new _glyph.Glyph({font: font, index: index});
+    glyph.numberOfContours = p.parseShort();
+    glyph.xMin = p.parseShort();
+    glyph.yMin = p.parseShort();
+    glyph.xMax = p.parseShort();
+    glyph.yMax = p.parseShort();
+    if (glyph.numberOfContours > 0) {
+        // This glyph is not a composite.
+        endPointIndices = glyph.endPointIndices = [];
+        for (i = 0; i < glyph.numberOfContours; i += 1) {
+            endPointIndices.push(p.parseUShort());
+        }
+
+        glyph.instructionLength = p.parseUShort();
+        glyph.instructions = [];
+        for (i = 0; i < glyph.instructionLength; i += 1) {
+            glyph.instructions.push(p.parseByte());
+        }
+
+        numberOfCoordinates = endPointIndices[endPointIndices.length - 1] + 1;
+        flags = [];
+        for (i = 0; i < numberOfCoordinates; i += 1) {
+            flag = p.parseByte();
+            flags.push(flag);
+            // If bit 3 is set, we repeat this flag n times, where n is the next byte.
+            if ((flag & 8) > 0) {
+                repeatCount = p.parseByte();
+                for (j = 0; j < repeatCount; j += 1) {
+                    flags.push(flag);
+                    i += 1;
+                }
+            }
+        }
+        check.argument(flags.length === numberOfCoordinates, 'Bad flags.');
+
+        if (endPointIndices.length > 0) {
+            points = [];
+            // X/Y coordinates are relative to the previous point, except for the first point which is relative to 0,0.
+            if (numberOfCoordinates > 0) {
+                for (i = 0; i < numberOfCoordinates; i += 1) {
+                    flag = flags[i];
+                    point = {};
+                    point.onCurve = !!(flag & 1);
+                    point.lastPointOfContour = endPointIndices.indexOf(i) >= 0;
+                    points.push(point);
+                }
+                px = 0;
+                for (i = 0; i < numberOfCoordinates; i += 1) {
+                    flag = flags[i];
+                    point = points[i];
+                    point.x = parseGlyphCoordinate(p, flag, px, 2, 16);
+                    px = point.x;
+                }
+
+                py = 0;
+                for (i = 0; i < numberOfCoordinates; i += 1) {
+                    flag = flags[i];
+                    point = points[i];
+                    point.y = parseGlyphCoordinate(p, flag, py, 4, 32);
+                    py = point.y;
+                }
+            }
+            glyph.points = points;
+        } else {
+            glyph.points = [];
+        }
+    } else if (glyph.numberOfContours === 0) {
+        glyph.points = [];
+    } else {
+        glyph.isComposite = true;
+        glyph.points = [];
+        glyph.components = [];
+        moreComponents = true;
+        while (moreComponents) {
+            flags = p.parseUShort();
+            component = {
+                glyphIndex: p.parseUShort(),
+                 xScale: 1,
+                 scale01: 0,
+                 scale10: 0,
+                 yScale: 1,
+                 dx: 0,
+                 dy: 0
+             };
+            if ((flags & 1) > 0) {
+                // The arguments are words
+                component.dx = p.parseShort();
+                component.dy = p.parseShort();
+            } else {
+                // The arguments are bytes
+                component.dx = p.parseChar();
+                component.dy = p.parseChar();
+            }
+            if ((flags & 8) > 0) {
+                // We have a scale
+                component.xScale = component.yScale = p.parseF2Dot14();
+            } else if ((flags & 64) > 0) {
+                // We have an X / Y scale
+                component.xScale = p.parseF2Dot14();
+                component.yScale = p.parseF2Dot14();
+            } else if ((flags & 128) > 0) {
+                // We have a 2x2 transformation
+                component.xScale = p.parseF2Dot14();
+                component.scale01 = p.parseF2Dot14();
+                component.scale10 = p.parseF2Dot14();
+                component.yScale = p.parseF2Dot14();
+            }
+
+            glyph.components.push(component);
+            moreComponents = !!(flags & 32);
+        }
+    }
+    return glyph;
+}
+
+// Transform an array of points and return a new array.
+function transformPoints(points, transform) {
+    var newPoints, i, pt, newPt;
+    newPoints = [];
+    for (i = 0; i < points.length; i += 1) {
+        pt = points[i];
+        newPt = {
+            x: transform.xScale * pt.x + transform.scale01 * pt.y + transform.dx,
+            y: transform.scale10 * pt.x + transform.yScale * pt.y + transform.dy,
+            onCurve: pt.onCurve,
+            lastPointOfContour: pt.lastPointOfContour
+        };
+        newPoints.push(newPt);
+    }
+    return newPoints;
+}
+
+
+function getContours(points) {
+    var contours, currentContour, i, pt;
+    contours = [];
+    currentContour = [];
+    for (i = 0; i < points.length; i += 1) {
+        pt = points[i];
+        currentContour.push(pt);
+        if (pt.lastPointOfContour) {
+            contours.push(currentContour);
+            currentContour = [];
+        }
+    }
+    check.argument(currentContour.length === 0, 'There are still points left in the current contour.');
+    return contours;
+}
+
+// Convert the TrueType glyph outline to a Path.
+function getPath(points) {
+    var p, contours, i, realFirstPoint, j, contour, pt, firstPt,
+        prevPt, midPt, curvePt, lastPt;
+    p = new path.Path();
+    if (!points) {
+        return p;
+    }
+    contours = getContours(points);
+    for (i = 0; i < contours.length; i += 1) {
+        contour = contours[i];
+        firstPt = contour[0];
+        lastPt = contour[contour.length - 1];
+        if (firstPt.onCurve) {
+            curvePt = null;
+            // The first point will be consumed by the moveTo command,
+            // so skip it in the loop.
+            realFirstPoint = true;
+        } else {
+            if (lastPt.onCurve) {
+                // If the first point is off-curve and the last point is on-curve,
+                // start at the last point.
+                firstPt = lastPt;
+            } else {
+                // If both first and last points are off-curve, start at their middle.
+                firstPt = { x: (firstPt.x + lastPt.x) / 2, y: (firstPt.y + lastPt.y) / 2 };
+            }
+            curvePt = firstPt;
+            // The first point is synthesized, so don't skip the real first point.
+            realFirstPoint = false;
+        }
+        p.moveTo(firstPt.x, firstPt.y);
+
+        for (j = realFirstPoint ? 1 : 0; j < contour.length; j += 1) {
+            pt = contour[j];
+            prevPt = j === 0 ? firstPt : contour[j - 1];
+            if (prevPt.onCurve && pt.onCurve) {
+                // This is a straight line.
+                p.lineTo(pt.x, pt.y);
+            } else if (prevPt.onCurve && !pt.onCurve) {
+                curvePt = pt;
+            } else if (!prevPt.onCurve && !pt.onCurve) {
+                midPt = { x: (prevPt.x + pt.x) / 2, y: (prevPt.y + pt.y) / 2 };
+                p.quadraticCurveTo(prevPt.x, prevPt.y, midPt.x, midPt.y);
+                curvePt = pt;
+            } else if (!prevPt.onCurve && pt.onCurve) {
+                // Previous point off-curve, this point on-curve.
+                p.quadraticCurveTo(curvePt.x, curvePt.y, pt.x, pt.y);
+                curvePt = null;
+            } else {
+                throw new Error('Invalid state.');
+            }
+        }
+        if (firstPt !== lastPt) {
+            // Connect the last and first points
+            if (curvePt) {
+                p.quadraticCurveTo(curvePt.x, curvePt.y, firstPt.x, firstPt.y);
+            } else {
+                p.lineTo(firstPt.x, firstPt.y);
+            }
+        }
+    }
+    p.closePath();
+    return p;
+}
+
+// Parse all the glyphs according to the offsets from the `loca` table.
+function parseGlyfTable(data, start, loca, font) {
+    var glyphs, i, j, offset, nextOffset, glyph,
+        component, componentGlyph, transformedPoints;
+    glyphs = [];
+    // The last element of the loca table is invalid.
+    for (i = 0; i < loca.length - 1; i += 1) {
+        offset = loca[i];
+        nextOffset = loca[i + 1];
+        if (offset !== nextOffset) {
+            glyphs.push(parseGlyph(data, start + offset, i, font));
+        } else {
+            glyphs.push(new _glyph.Glyph({font: font, index: i}));
+        }
+    }
+    // Go over the glyphs again, resolving the composite glyphs.
+    for (i = 0; i < glyphs.length; i += 1) {
+        glyph = glyphs[i];
+        if (glyph.isComposite) {
+            for (j = 0; j < glyph.components.length; j += 1) {
+                component = glyph.components[j];
+                componentGlyph = glyphs[component.glyphIndex];
+                if (componentGlyph.points) {
+                    transformedPoints = transformPoints(componentGlyph.points, component);
+                    glyph.points = glyph.points.concat(transformedPoints);
+                }
+            }
+        }
+        glyph.path = getPath(glyph.points);
+    }
+    return glyphs;
+}
+
+exports.parse = parseGlyfTable;
+
+},{"../check":1,"../glyph":5,"../parse":7,"../path":8}],13:[function(require,module,exports){
+// The `GPOS` table contains kerning pairs, among other things.
+// https://www.microsoft.com/typography/OTSPEC/gpos.htm
+
+'use strict';
+
+var check = require('../check');
+var parse = require('../parse');
+
+// Parse ScriptList and FeatureList tables of GPOS, GSUB, GDEF, BASE, JSTF tables.
+// These lists are unused by now, this function is just the basis for a real parsing.
+function parseTaggedListTable(data, start) {
+    var p = new parse.Parser(data, start),
+        n = p.parseUShort(),
+        list = [];
+    for (var i = 0; i < n; i++) {
+        list[p.parseTag()] = { offset: p.parseUShort() };
+    }
+    return list;
+}
+
+// Parse a coverage table in a GSUB, GPOS or GDEF table.
+// Format 1 is a simple list of glyph ids,
+// Format 2 is a list of ranges. It is expanded in a list of glyphs, maybe not the best idea.
+function parseCoverageTable(data, start) {
+    var p = new parse.Parser(data, start),
+        format = p.parseUShort(),
+        count =  p.parseUShort();
+    if (format === 1) {
+        return p.parseUShortList(count);
+    }
+    else if (format === 2) {
+        var i, begin, end, index, coverage = [];
+        for (; count--;) {
+            begin = p.parseUShort();
+            end = p.parseUShort();
+            index = p.parseUShort();
+            for (i = begin; i <= end; i++) {
+                coverage[index++] = i;
+            }
+        }
+        return coverage;
+    }
+}
+
+// Parse a Class Definition Table in a GSUB, GPOS or GDEF table.
+// Returns a function that gets a class value from a glyph ID.
+function parseClassDefTable(data, start) {
+    var p = new parse.Parser(data, start),
+        format = p.parseUShort();
+    if (format === 1) {
+        // Format 1 specifies a range of consecutive glyph indices, one class per glyph ID.
+        var startGlyph = p.parseUShort(),
+            glyphCount = p.parseUShort(),
+            classes = p.parseUShortList(glyphCount);
+        return function(glyphID) {
+            return classes[glyphID - startGlyph] || 0;
+        };
+    }
+    else if (format === 2) {
+        // Format 2 defines multiple groups of glyph indices that belong to the same class.
+        var rangeCount = p.parseUShort(),
+            startGlyphs = [],
+            endGlyphs = [],
+            classValues = [];
+        for (var i = 0; i < rangeCount; i++) {
+            startGlyphs[i] = p.parseUShort();
+            endGlyphs[i] = p.parseUShort();
+            classValues[i] = p.parseUShort();
+        }
+        return function(glyphID) {
+            var l, c, r;
+            l = 0;
+            r = startGlyphs.length - 1;
+            while (l < r) {
+                c = (l + r + 1) >> 1;
+                if (glyphID < startGlyphs[c]) {
+                    r = c - 1;
+                } else {
+                    l = c;
+                }
+            }
+            if (startGlyphs[l] <= glyphID && glyphID <= endGlyphs[l]) {
+                return classValues[l] || 0;
+            }
+            return 0;
+        };
+    }
+}
+
+// Parse a pair adjustment positioning subtable, format 1 or format 2
+// The subtable is returned in the form of a lookup function.
+function parsePairPosSubTable(data, start) {
+    var p = new parse.Parser(data, start);
+    var format, coverageOffset, coverage, valueFormat1, valueFormat2,
+        sharedPairSets, firstGlyph, secondGlyph, value1, value2;
+    // This part is common to format 1 and format 2 subtables
+    format = p.parseUShort();
+    coverageOffset = p.parseUShort();
+    coverage = parseCoverageTable(data, start + coverageOffset);
+    // valueFormat 4: XAdvance only, 1: XPlacement only, 0: no ValueRecord for second glyph
+    // Only valueFormat1=4 and valueFormat2=0 is supported.
+    valueFormat1 = p.parseUShort();
+    valueFormat2 = p.parseUShort();
+    if (valueFormat1 !== 4 || valueFormat2 !== 0) return;
+    sharedPairSets = {};
+    if (format === 1) {
+        // Pair Positioning Adjustment: Format 1
+        var pairSetCount, pairSetOffsets, pairSetOffset, sharedPairSet, pairValueCount, pairSet;
+        pairSetCount = p.parseUShort();
+        pairSet = [];
+        // Array of offsets to PairSet tables-from beginning of PairPos subtable-ordered by Coverage Index
+        pairSetOffsets = p.parseOffset16List(pairSetCount);
+        for (firstGlyph = 0; firstGlyph < pairSetCount; firstGlyph++) {
+            pairSetOffset = pairSetOffsets[firstGlyph];
+            sharedPairSet = sharedPairSets[pairSetOffset];
+            if (!sharedPairSet) {
+                // Parse a pairset table in a pair adjustment subtable format 1
+                sharedPairSet = {};
+                p.relativeOffset = pairSetOffset;
+                pairValueCount = p.parseUShort();
+                for (; pairValueCount--;) {
+                    secondGlyph = p.parseUShort();
+                    if (valueFormat1) value1 = p.parseShort();
+                    if (valueFormat2) value2 = p.parseShort();
+                    // We only support valueFormat1 = 4 and valueFormat2 = 0,
+                    // so value1 is the XAdvance and value2 is empty.
+                    sharedPairSet[secondGlyph] = value1;
+                }
+            }
+            pairSet[coverage[firstGlyph]] = sharedPairSet;
+        }
+        return function(leftGlyph, rightGlyph) {
+            var pairs = pairSet[leftGlyph];
+            if (pairs) return pairs[rightGlyph];
+        };
+    }
+    else if (format === 2) {
+        // Pair Positioning Adjustment: Format 2
+        var classDef1Offset, classDef2Offset, class1Count, class2Count, i, j,
+            getClass1, getClass2, kerningMatrix, kerningRow, covered;
+        classDef1Offset = p.parseUShort();
+        classDef2Offset = p.parseUShort();
+        class1Count = p.parseUShort();
+        class2Count = p.parseUShort();
+        getClass1 = parseClassDefTable(data, start+classDef1Offset);
+        getClass2 = parseClassDefTable(data, start+classDef2Offset);
+
+        // Parse kerning values by class pair.
+        kerningMatrix = [];
+        for (i = 0; i < class1Count; i++) {
+            kerningRow = kerningMatrix[i] = [];
+            for (j = 0; j < class2Count; j++) {
+                if (valueFormat1) value1 = p.parseShort();
+                if (valueFormat2) value2 = p.parseShort();
+                // We only support valueFormat1 = 4 and valueFormat2 = 0,
+                // so value1 is the XAdvance and value2 is empty.
+                kerningRow[j] = value1;
+            }
+        }
+
+        // Convert coverage list to a hash
+        covered = {};
+        for(i = 0; i < coverage.length; i++) covered[coverage[i]] = 1;
+
+        // Get the kerning value for a specific glyph pair.
+        return function(leftGlyph, rightGlyph) {
+            if (!covered[leftGlyph]) return;
+            var class1 = getClass1(leftGlyph),
+                class2 = getClass2(rightGlyph),
+                kerningRow = kerningMatrix[class1];
+
+            if (kerningRow) {
+                return kerningRow[class2];
+            }
+        };
+    }
+}
+
+// Parse a LookupTable (present in of GPOS, GSUB, GDEF, BASE, JSTF tables).
+function parseLookupTable(data, start) {
+    var p = new parse.Parser(data, start);
+    var table, lookupType, lookupFlag, useMarkFilteringSet, subTableCount, subTableOffsets, subtables, i;
+    lookupType = p.parseUShort();
+    lookupFlag = p.parseUShort();
+    useMarkFilteringSet = lookupFlag & 0x10;
+    subTableCount = p.parseUShort();
+    subTableOffsets = p.parseOffset16List(subTableCount);
+    table = {
+        lookupType: lookupType,
+        lookupFlag: lookupFlag,
+        markFilteringSet: useMarkFilteringSet ? p.parseUShort() : -1
+    };
+    // LookupType 2, Pair adjustment
+    if (lookupType === 2) {
+        subtables = [];
+        for (i = 0; i < subTableCount; i++) {
+            subtables.push(parsePairPosSubTable(data, start + subTableOffsets[i]));
+        }
+        // Return a function which finds the kerning values in the subtables.
+        table.getKerningValue = function(leftGlyph, rightGlyph) {
+            for (var i = subtables.length; i--;) {
+                var value = subtables[i](leftGlyph, rightGlyph);
+                if (value !== undefined) return value;
+            }
+            return 0;
+        };
+    }
+    return table;
+}
+
+// Parse the `GPOS` table which contains, among other things, kerning pairs.
+// https://www.microsoft.com/typography/OTSPEC/gpos.htm
+function parseGposTable(data, start, font) {
+    var p, tableVersion, lookupListOffset, scriptList, i, featureList, lookupCount,
+        lookupTableOffsets, lookupListAbsoluteOffset, table;
+
+    p = new parse.Parser(data, start);
+    tableVersion = p.parseFixed();
+    check.argument(tableVersion === 1, 'Unsupported GPOS table version.');
+
+    // ScriptList and FeatureList - ignored for now
+    scriptList = parseTaggedListTable(data, start+p.parseUShort());
+    // 'kern' is the feature we are looking for.
+    featureList = parseTaggedListTable(data, start+p.parseUShort());
+
+    // LookupList
+    lookupListOffset = p.parseUShort();
+    p.relativeOffset = lookupListOffset;
+    lookupCount = p.parseUShort();
+    lookupTableOffsets = p.parseOffset16List(lookupCount);
+    lookupListAbsoluteOffset = start + lookupListOffset;
+    for (i = 0; i < lookupCount; i++) {
+        table = parseLookupTable(data, lookupListAbsoluteOffset + lookupTableOffsets[i]);
+        if (table.lookupType === 2 && !font.getGposKerningValue) font.getGposKerningValue = table.getKerningValue;
+    }
+}
+
+exports.parse = parseGposTable;
+
+},{"../check":1,"../parse":7}],14:[function(require,module,exports){
+// The `head` table contains global information about the font.
+// https://www.microsoft.com/typography/OTSPEC/head.htm
+
+'use strict';
+
+var check = require('../check');
+var parse = require('../parse');
+var table = require('../table');
+
+// Parse the header `head` table
+function parseHeadTable(data, start) {
+    var head = {},
+        p = new parse.Parser(data, start);
+    head.version = p.parseVersion();
+    head.fontRevision = Math.round(p.parseFixed() * 1000) / 1000;
+    head.checkSumAdjustment = p.parseULong();
+    head.magicNumber = p.parseULong();
+    check.argument(head.magicNumber === 0x5F0F3CF5, 'Font header has wrong magic number.');
+    head.flags = p.parseUShort();
+    head.unitsPerEm = p.parseUShort();
+    head.created = p.parseLongDateTime();
+    head.modified = p.parseLongDateTime();
+    head.xMin = p.parseShort();
+    head.yMin = p.parseShort();
+    head.xMax = p.parseShort();
+    head.yMax = p.parseShort();
+    head.macStyle = p.parseUShort();
+    head.lowestRecPPEM = p.parseUShort();
+    head.fontDirectionHint = p.parseShort();
+    head.indexToLocFormat = p.parseShort();     // 50
+    head.glyphDataFormat = p.parseShort();
+    return head;
+}
+
+function makeHeadTable(options) {
+    return new table.Table('head', [
+        {name: 'version', type: 'FIXED', value: 0x00010000},
+        {name: 'fontRevision', type: 'FIXED', value: 0x00010000},
+        {name: 'checkSumAdjustment', type: 'ULONG', value: 0},
+        {name: 'magicNumber', type: 'ULONG', value: 0x5F0F3CF5},
+        {name: 'flags', type: 'USHORT', value: 0},
+        {name: 'unitsPerEm', type: 'USHORT', value: 1000},
+        {name: 'created', type: 'LONGDATETIME', value: 0},
+        {name: 'modified', type: 'LONGDATETIME', value: 0},
+        {name: 'xMin', type: 'SHORT', value: 0},
+        {name: 'yMin', type: 'SHORT', value: 0},
+        {name: 'xMax', type: 'SHORT', value: 0},
+        {name: 'yMax', type: 'SHORT', value: 0},
+        {name: 'macStyle', type: 'USHORT', value: 0},
+        {name: 'lowestRecPPEM', type: 'USHORT', value: 0},
+        {name: 'fontDirectionHint', type: 'SHORT', value: 2},
+        {name: 'indexToLocFormat', type: 'SHORT', value: 0},
+        {name: 'glyphDataFormat', type: 'SHORT', value: 0}
+    ], options);
+}
+
+exports.parse = parseHeadTable;
+exports.make = makeHeadTable;
+
+},{"../check":1,"../parse":7,"../table":9}],15:[function(require,module,exports){
+// The `hhea` table contains information for horizontal layout.
+// https://www.microsoft.com/typography/OTSPEC/hhea.htm
+
+'use strict';
+
+var parse = require('../parse');
+var table = require('../table');
+
+// Parse the horizontal header `hhea` table
+function parseHheaTable(data, start) {
+    var hhea = {},
+        p = new parse.Parser(data, start);
+    hhea.version = p.parseVersion();
+    hhea.ascender = p.parseShort();
+    hhea.descender = p.parseShort();
+    hhea.lineGap = p.parseShort();
+    hhea.advanceWidthMax = p.parseUShort();
+    hhea.minLeftSideBearing = p.parseShort();
+    hhea.minRightSideBearing = p.parseShort();
+    hhea.xMaxExtent = p.parseShort();
+    hhea.caretSlopeRise = p.parseShort();
+    hhea.caretSlopeRun = p.parseShort();
+    hhea.caretOffset = p.parseShort();
+    p.relativeOffset += 8;
+    hhea.metricDataFormat = p.parseShort();
+    hhea.numberOfHMetrics = p.parseUShort();
+    return hhea;
+}
+
+function makeHheaTable(options) {
+    return new table.Table('hhea', [
+        {name: 'version', type: 'FIXED', value: 0x00010000},
+        {name: 'ascender', type: 'FWORD', value: 0},
+        {name: 'descender', type: 'FWORD', value: 0},
+        {name: 'lineGap', type: 'FWORD', value: 0},
+        {name: 'advanceWidthMax', type: 'UFWORD', value: 0},
+        {name: 'minLeftSideBearing', type: 'FWORD', value: 0},
+        {name: 'minRightSideBearing', type: 'FWORD', value: 0},
+        {name: 'xMaxExtent', type: 'FWORD', value: 0},
+        {name: 'caretSlopeRise', type: 'SHORT', value: 1},
+        {name: 'caretSlopeRun', type: 'SHORT', value: 0},
+        {name: 'caretOffset', type: 'SHORT', value: 0},
+        {name: 'reserved1', type: 'SHORT', value: 0},
+        {name: 'reserved2', type: 'SHORT', value: 0},
+        {name: 'reserved3', type: 'SHORT', value: 0},
+        {name: 'reserved4', type: 'SHORT', value: 0},
+        {name: 'metricDataFormat', type: 'SHORT', value: 0},
+        {name: 'numberOfHMetrics', type: 'USHORT', value: 0}
+    ], options);
+}
+
+exports.parse = parseHheaTable;
+exports.make = makeHheaTable;
+
+},{"../parse":7,"../table":9}],16:[function(require,module,exports){
+// The `hmtx` table contains the horizontal metrics for all glyphs.
+// https://www.microsoft.com/typography/OTSPEC/hmtx.htm
+
+'use strict';
+
+var parse = require('../parse');
+var table = require('../table');
+
+// Parse the `hmtx` table, which contains the horizontal metrics for all glyphs.
+// This function augments the glyph array, adding the advanceWidth and leftSideBearing to each glyph.
+function parseHmtxTable(data, start, numMetrics, numGlyphs, glyphs) {
+    var p, i, glyph, advanceWidth, leftSideBearing;
+    p = new parse.Parser(data, start);
+    for (i = 0; i < numGlyphs; i += 1) {
+        // If the font is monospaced, only one entry is needed. This last entry applies to all subsequent glyphs.
+        if (i < numMetrics) {
+            advanceWidth = p.parseUShort();
+            leftSideBearing = p.parseShort();
+        }
+        glyph = glyphs[i];
+        glyph.advanceWidth = advanceWidth;
+        glyph.leftSideBearing = leftSideBearing;
+    }
+}
+
+function makeHmtxTable(glyphs) {
+    var t = new table.Table('hmtx', []);
+    for (var i = 0; i < glyphs.length; i += 1) {
+        var glyph = glyphs[i];
+        var advanceWidth = glyph.advanceWidth || 0;
+        var leftSideBearing = glyph.leftSideBearing || 0;
+        t.fields.push({name: 'advanceWidth_' + i, type: 'USHORT', value: advanceWidth});
+        t.fields.push({name: 'leftSideBearing_' + i, type: 'SHORT', value: leftSideBearing});
+    }
+    return t;
+}
+
+exports.parse = parseHmtxTable;
+exports.make = makeHmtxTable;
+
+
+
+
+},{"../parse":7,"../table":9}],17:[function(require,module,exports){
+// The `kern` table contains kerning pairs.
+// Note that some fonts use the GPOS OpenType layout table to specify kerning.
+// https://www.microsoft.com/typography/OTSPEC/kern.htm
+
+'use strict';
+
+var check = require('../check');
+var parse = require('../parse');
+
+// Parse the `kern` table which contains kerning pairs.
+function parseKernTable(data, start) {
+    var pairs, p, tableVersion, subTableVersion, nPairs,
+        i, leftIndex, rightIndex, value;
+    pairs = {};
+    p = new parse.Parser(data, start);
+    tableVersion = p.parseUShort();
+    check.argument(tableVersion === 0, 'Unsupported kern table version.');
+    // Skip nTables.
+    p.skip('uShort', 1);
+    subTableVersion = p.parseUShort();
+    check.argument(subTableVersion === 0, 'Unsupported kern sub-table version.');
+    // Skip subTableLength, subTableCoverage
+    p.skip('uShort', 2);
+    nPairs = p.parseUShort();
+    // Skip searchRange, entrySelector, rangeShift.
+    p.skip('uShort', 3);
+    for (i = 0; i < nPairs; i += 1) {
+        leftIndex = p.parseUShort();
+        rightIndex = p.parseUShort();
+        value = p.parseShort();
+        pairs[leftIndex + ',' + rightIndex] = value;
+    }
+    return pairs;
+}
+
+exports.parse = parseKernTable;
+
+},{"../check":1,"../parse":7}],18:[function(require,module,exports){
+// The `loca` table stores the offsets to the locations of the glyphs in the font.
+// https://www.microsoft.com/typography/OTSPEC/loca.htm
+
+'use strict';
+
+var parse = require('../parse');
+
+// Parse the `loca` table. This table stores the offsets to the locations of the glyphs in the font,
+// relative to the beginning of the glyphData table.
+// The number of glyphs stored in the `loca` table is specified in the `maxp` table (under numGlyphs)
+// The loca table has two versions: a short version where offsets are stored as uShorts, and a long
+// version where offsets are stored as uLongs. The `head` table specifies which version to use
+// (under indexToLocFormat).
+function parseLocaTable(data, start, numGlyphs, shortVersion) {
+    var p, parseFn, glyphOffsets, glyphOffset, i;
+    p = new parse.Parser(data, start);
+    parseFn = shortVersion ? p.parseUShort : p.parseULong;
+    // There is an extra entry after the last index element to compute the length of the last glyph.
+    // That's why we use numGlyphs + 1.
+    glyphOffsets = [];
+    for (i = 0; i < numGlyphs + 1; i += 1) {
+        glyphOffset = parseFn.call(p);
+        if (shortVersion) {
+            // The short table version stores the actual offset divided by 2.
+            glyphOffset *= 2;
+        }
+        glyphOffsets.push(glyphOffset);
+    }
+    return glyphOffsets;
+}
+
+exports.parse = parseLocaTable;
+
+},{"../parse":7}],19:[function(require,module,exports){
+// The `maxp` table establishes the memory requirements for the font.
+// We need it just to get the number of glyphs in the font.
+// https://www.microsoft.com/typography/OTSPEC/maxp.htm
+
+'use strict';
+
+var parse = require('../parse');
+var table = require('../table');
+
+// Parse the maximum profile `maxp` table.
+function parseMaxpTable(data, start) {
+    var maxp = {},
+        p = new parse.Parser(data, start);
+    maxp.version = p.parseVersion();
+    maxp.numGlyphs = p.parseUShort();
+    if (maxp.version === 1.0) {
+        maxp.maxPoints = p.parseUShort();
+        maxp.maxContours = p.parseUShort();
+        maxp.maxCompositePoints = p.parseUShort();
+        maxp.maxCompositeContours = p.parseUShort();
+        maxp.maxZones = p.parseUShort();
+        maxp.maxTwilightPoints = p.parseUShort();
+        maxp.maxStorage = p.parseUShort();
+        maxp.maxFunctionDefs = p.parseUShort();
+        maxp.maxInstructionDefs = p.parseUShort();
+        maxp.maxStackElements = p.parseUShort();
+        maxp.maxSizeOfInstructions = p.parseUShort();
+        maxp.maxComponentElements = p.parseUShort();
+        maxp.maxComponentDepth = p.parseUShort();
+    }
+    return maxp;
+}
+
+function makeMaxpTable(numGlyphs) {
+    return new table.Table('maxp', [
+        {name: 'version', type: 'FIXED', value: 0x00005000},
+        {name: 'numGlyphs', type: 'USHORT', value: numGlyphs}
+    ]);
+}
+
+exports.parse = parseMaxpTable;
+exports.make = makeMaxpTable;
+
+},{"../parse":7,"../table":9}],20:[function(require,module,exports){
+// The `name` naming table.
+// https://www.microsoft.com/typography/OTSPEC/name.htm
+
+'use strict';
+
+var encode = require('../types').encode;
+var parse = require('../parse');
+var table = require('../table');
+
+// NameIDs for the name table.
+var nameTableNames = [
+    'copyright',              // 0
+    'fontFamily',             // 1
+    'fontSubfamily',          // 2
+    'uniqueID',               // 3
+    'fullName',               // 4
+    'version',                // 5
+    'postScriptName',         // 6
+    'trademark',              // 7
+    'manufacturer',           // 8
+    'designer',               // 9
+    'description',            // 10
+    'manufacturerURL',        // 11
+    'designerURL',            // 12
+    'licence',                // 13
+    'licenceURL',             // 14
+    'reserved',               // 15
+    'preferredFamily',        // 16
+    'preferredSubfamily',     // 17
+    'compatibleFullName',     // 18
+    'sampleText',             // 19
+    'postScriptFindFontName', // 20
+    'wwsFamily',              // 21
+    'wwsSubfamily'            // 22
+];
+
+// Parse the naming `name` table
+// Only Windows Unicode English names are supported.
+// Format 1 additional fields are not supported
+function parseNameTable(data, start) {
+    var name = {},
+        p = new parse.Parser(data, start);
+    name.format = p.parseUShort();
+    var count = p.parseUShort(),
+        stringOffset = p.offset + p.parseUShort();
+    var platformID, encodingID, languageID, nameID, property, byteLength,
+        offset, str, i, j, codePoints;
+    var unknownCount = 0;
+    for(i = 0; i < count; i++) {
+        platformID = p.parseUShort();
+        encodingID = p.parseUShort();
+        languageID = p.parseUShort();
+        nameID = p.parseUShort();
+        property = nameTableNames[nameID];
+        byteLength = p.parseUShort();
+        offset = p.parseUShort();
+        // platformID - encodingID - languageID standard combinations :
+        // 1 - 0 - 0 : Macintosh, Roman, English
+        // 3 - 1 - 0x409 : Windows, Unicode BMP (UCS-2), en-US
+        if (platformID === 3 && encodingID === 1 && languageID === 0x409) {
+            codePoints = [];
+            var length = byteLength/2;
+            for(j = 0; j < length; j++, offset += 2) {
+                codePoints[j] = parse.getShort(data, stringOffset+offset);
+            }
+            str = String.fromCharCode.apply(null, codePoints);
+            if (property) {
+                name[property] = str;
+            }
+            else {
+                unknownCount++;
+                name['unknown'+unknownCount] = str;
+            }
+        }
+
+    }
+    if (name.format === 1) {
+        name.langTagCount = p.parseUShort();
+    }
+    return name;
+}
+
+function makeNameRecord(platformID, encodingID, languageID, nameID, length, offset) {
+    return new table.Table('NameRecord', [
+        {name: 'platformID', type: 'USHORT', value: platformID},
+        {name: 'encodingID', type: 'USHORT', value: encodingID},
+        {name: 'languageID', type: 'USHORT', value: languageID},
+        {name: 'nameID', type: 'USHORT', value: nameID},
+        {name: 'length', type: 'USHORT', value: length},
+        {name: 'offset', type: 'USHORT', value: offset}
+    ]);
+}
+
+function addMacintoshNameRecord(t, recordID, s, offset) {
+    // Macintosh, Roman, English
+    var stringBytes = encode.STRING(s);
+    t.records.push(makeNameRecord(1, 0, 0, recordID, stringBytes.length, offset));
+    t.strings.push(stringBytes);
+    offset += stringBytes.length;
+    return offset;
+}
+
+function addWindowsNameRecord(t, recordID, s, offset) {
+    // Windows, Unicode BMP (UCS-2), US English
+    var utf16Bytes = encode.UTF16(s);
+    t.records.push(makeNameRecord(3, 1, 0x0409, recordID, utf16Bytes.length, offset));
+    t.strings.push(utf16Bytes);
+    offset += utf16Bytes.length;
+    return offset;
+}
+
+function makeNameTable(options) {
+    var i, s;
+    var t = new table.Table('name', [
+        {name: 'format', type: 'USHORT', value: 0},
+        {name: 'count', type: 'USHORT', value: 0},
+        {name: 'stringOffset', type: 'USHORT', value: 0}
+    ]);
+    t.records = [];
+    t.strings = [];
+    var offset = 0;
+    // Add Macintosh records first
+    for (i = 0; i < nameTableNames.length; i += 1) {
+        if (options[nameTableNames[i]] !== undefined) {
+            s = options[nameTableNames[i]];
+            offset = addMacintoshNameRecord(t, i, s, offset);
+        }
+    }
+    // Then add Windows records
+    for (i = 0; i < nameTableNames.length; i += 1) {
+        if (options[nameTableNames[i]] !== undefined) {
+            s = options[nameTableNames[i]];
+            offset = addWindowsNameRecord(t, i, s, offset);
+        }
+    }
+
+    t.count = t.records.length;
+    t.stringOffset = 6 + t.count * 12;
+    for (i = 0; i < t.records.length; i += 1) {
+        t.fields.push({name: 'record_' + i, type: 'TABLE', value: t.records[i]});
+    }
+    for (i = 0; i < t.strings.length; i += 1) {
+        t.fields.push({name: 'string_' + i, type: 'LITERAL', value: t.strings[i]});
+    }
+    return t;
+}
+
+exports.parse = parseNameTable;
+exports.make = makeNameTable;
+
+},{"../parse":7,"../table":9,"../types":24}],21:[function(require,module,exports){
+// The `OS/2` table contains metrics required in OpenType fonts.
+// https://www.microsoft.com/typography/OTSPEC/os2.htm
+
+'use strict';
+
+var parse = require('../parse');
+var table = require('../table');
+
+var unicodeRanges = [
+    {begin: 0x0000, end: 0x007F}, // Basic Latin
+    {begin: 0x0080, end: 0x00FF}, // Latin-1 Supplement
+    {begin: 0x0100, end: 0x017F}, // Latin Extended-A
+    {begin: 0x0180, end: 0x024F}, // Latin Extended-B
+    {begin: 0x0250, end: 0x02AF}, // IPA Extensions
+    {begin: 0x02B0, end: 0x02FF}, // Spacing Modifier Letters
+    {begin: 0x0300, end: 0x036F}, // Combining Diacritical Marks
+    {begin: 0x0370, end: 0x03FF}, // Greek and Coptic
+    {begin: 0x2C80, end: 0x2CFF}, // Coptic
+    {begin: 0x0400, end: 0x04FF}, // Cyrillic
+    {begin: 0x0530, end: 0x058F}, // Armenian
+    {begin: 0x0590, end: 0x05FF}, // Hebrew
+    {begin: 0xA500, end: 0xA63F}, // Vai
+    {begin: 0x0600, end: 0x06FF}, // Arabic
+    {begin: 0x07C0, end: 0x07FF}, // NKo
+    {begin: 0x0900, end: 0x097F}, // Devanagari
+    {begin: 0x0980, end: 0x09FF}, // Bengali
+    {begin: 0x0A00, end: 0x0A7F}, // Gurmukhi
+    {begin: 0x0A80, end: 0x0AFF}, // Gujarati
+    {begin: 0x0B00, end: 0x0B7F}, // Oriya
+    {begin: 0x0B80, end: 0x0BFF}, // Tamil
+    {begin: 0x0C00, end: 0x0C7F}, // Telugu
+    {begin: 0x0C80, end: 0x0CFF}, // Kannada
+    {begin: 0x0D00, end: 0x0D7F}, // Malayalam
+    {begin: 0x0E00, end: 0x0E7F}, // Thai
+    {begin: 0x0E80, end: 0x0EFF}, // Lao
+    {begin: 0x10A0, end: 0x10FF}, // Georgian
+    {begin: 0x1B00, end: 0x1B7F}, // Balinese
+    {begin: 0x1100, end: 0x11FF}, // Hangul Jamo
+    {begin: 0x1E00, end: 0x1EFF}, // Latin Extended Additional
+    {begin: 0x1F00, end: 0x1FFF}, // Greek Extended
+    {begin: 0x2000, end: 0x206F}, // General Punctuation
+    {begin: 0x2070, end: 0x209F}, // Superscripts And Subscripts
+    {begin: 0x20A0, end: 0x20CF}, // Currency Symbol
+    {begin: 0x20D0, end: 0x20FF}, // Combining Diacritical Marks For Symbols
+    {begin: 0x2100, end: 0x214F}, // Letterlike Symbols
+    {begin: 0x2150, end: 0x218F}, // Number Forms
+    {begin: 0x2190, end: 0x21FF}, // Arrows
+    {begin: 0x2200, end: 0x22FF}, // Mathematical Operators
+    {begin: 0x2300, end: 0x23FF}, // Miscellaneous Technical
+    {begin: 0x2400, end: 0x243F}, // Control Pictures
+    {begin: 0x2440, end: 0x245F}, // Optical Character Recognition
+    {begin: 0x2460, end: 0x24FF}, // Enclosed Alphanumerics
+    {begin: 0x2500, end: 0x257F}, // Box Drawing
+    {begin: 0x2580, end: 0x259F}, // Block Elements
+    {begin: 0x25A0, end: 0x25FF}, // Geometric Shapes
+    {begin: 0x2600, end: 0x26FF}, // Miscellaneous Symbols
+    {begin: 0x2700, end: 0x27BF}, // Dingbats
+    {begin: 0x3000, end: 0x303F}, // CJK Symbols And Punctuation
+    {begin: 0x3040, end: 0x309F}, // Hiragana
+    {begin: 0x30A0, end: 0x30FF}, // Katakana
+    {begin: 0x3100, end: 0x312F}, // Bopomofo
+    {begin: 0x3130, end: 0x318F}, // Hangul Compatibility Jamo
+    {begin: 0xA840, end: 0xA87F}, // Phags-pa
+    {begin: 0x3200, end: 0x32FF}, // Enclosed CJK Letters And Months
+    {begin: 0x3300, end: 0x33FF}, // CJK Compatibility
+    {begin: 0xAC00, end: 0xD7AF}, // Hangul Syllables
+    {begin: 0xD800, end: 0xDFFF}, // Non-Plane 0 *
+    {begin: 0x10900, end: 0x1091F}, // Phoenicia
+    {begin: 0x4E00, end: 0x9FFF}, // CJK Unified Ideographs
+    {begin: 0xE000, end: 0xF8FF}, // Private Use Area (plane 0)
+    {begin: 0x31C0, end: 0x31EF}, // CJK Strokes
+    {begin: 0xFB00, end: 0xFB4F}, // Alphabetic Presentation Forms
+    {begin: 0xFB50, end: 0xFDFF}, // Arabic Presentation Forms-A
+    {begin: 0xFE20, end: 0xFE2F}, // Combining Half Marks
+    {begin: 0xFE10, end: 0xFE1F}, // Vertical Forms
+    {begin: 0xFE50, end: 0xFE6F}, // Small Form Variants
+    {begin: 0xFE70, end: 0xFEFF}, // Arabic Presentation Forms-B
+    {begin: 0xFF00, end: 0xFFEF}, // Halfwidth And Fullwidth Forms
+    {begin: 0xFFF0, end: 0xFFFF}, // Specials
+    {begin: 0x0F00, end: 0x0FFF}, // Tibetan
+    {begin: 0x0700, end: 0x074F}, // Syriac
+    {begin: 0x0780, end: 0x07BF}, // Thaana
+    {begin: 0x0D80, end: 0x0DFF}, // Sinhala
+    {begin: 0x1000, end: 0x109F}, // Myanmar
+    {begin: 0x1200, end: 0x137F}, // Ethiopic
+    {begin: 0x13A0, end: 0x13FF}, // Cherokee
+    {begin: 0x1400, end: 0x167F}, // Unified Canadian Aboriginal Syllabics
+    {begin: 0x1680, end: 0x169F}, // Ogham
+    {begin: 0x16A0, end: 0x16FF}, // Runic
+    {begin: 0x1780, end: 0x17FF}, // Khmer
+    {begin: 0x1800, end: 0x18AF}, // Mongolian
+    {begin: 0x2800, end: 0x28FF}, // Braille Patterns
+    {begin: 0xA000, end: 0xA48F}, // Yi Syllables
+    {begin: 0x1700, end: 0x171F}, // Tagalog
+    {begin: 0x10300, end: 0x1032F}, // Old Italic
+    {begin: 0x10330, end: 0x1034F}, // Gothic
+    {begin: 0x10400, end: 0x1044F}, // Deseret
+    {begin: 0x1D000, end: 0x1D0FF}, // Byzantine Musical Symbols
+    {begin: 0x1D400, end: 0x1D7FF}, // Mathematical Alphanumeric Symbols
+    {begin: 0xFF000, end: 0xFFFFD}, // Private Use (plane 15)
+    {begin: 0xFE00, end: 0xFE0F}, // Variation Selectors
+    {begin: 0xE0000, end: 0xE007F}, // Tags
+    {begin: 0x1900, end: 0x194F}, // Limbu
+    {begin: 0x1950, end: 0x197F}, // Tai Le
+    {begin: 0x1980, end: 0x19DF}, // New Tai Lue
+    {begin: 0x1A00, end: 0x1A1F}, // Buginese
+    {begin: 0x2C00, end: 0x2C5F}, // Glagolitic
+    {begin: 0x2D30, end: 0x2D7F}, // Tifinagh
+    {begin: 0x4DC0, end: 0x4DFF}, // Yijing Hexagram Symbols
+    {begin: 0xA800, end: 0xA82F}, // Syloti Nagri
+    {begin: 0x10000, end: 0x1007F}, // Linear B Syllabary
+    {begin: 0x10140, end: 0x1018F}, // Ancient Greek Numbers
+    {begin: 0x10380, end: 0x1039F}, // Ugaritic
+    {begin: 0x103A0, end: 0x103DF}, // Old Persian
+    {begin: 0x10450, end: 0x1047F}, // Shavian
+    {begin: 0x10480, end: 0x104AF}, // Osmanya
+    {begin: 0x10800, end: 0x1083F}, // Cypriot Syllabary
+    {begin: 0x10A00, end: 0x10A5F}, // Kharoshthi
+    {begin: 0x1D300, end: 0x1D35F}, // Tai Xuan Jing Symbols
+    {begin: 0x12000, end: 0x123FF}, // Cuneiform
+    {begin: 0x1D360, end: 0x1D37F}, // Counting Rod Numerals
+    {begin: 0x1B80, end: 0x1BBF}, // Sundanese
+    {begin: 0x1C00, end: 0x1C4F}, // Lepcha
+    {begin: 0x1C50, end: 0x1C7F}, // Ol Chiki
+    {begin: 0xA880, end: 0xA8DF}, // Saurashtra
+    {begin: 0xA900, end: 0xA92F}, // Kayah Li
+    {begin: 0xA930, end: 0xA95F}, // Rejang
+    {begin: 0xAA00, end: 0xAA5F}, // Cham
+    {begin: 0x10190, end: 0x101CF}, // Ancient Symbols
+    {begin: 0x101D0, end: 0x101FF}, // Phaistos Disc
+    {begin: 0x102A0, end: 0x102DF}, // Carian
+    {begin: 0x1F030, end: 0x1F09F}  // Domino Tiles
+];
+
+function getUnicodeRange(unicode) {
+    for (var i = 0; i < unicodeRanges.length; i += 1) {
+        var range = unicodeRanges[i];
+        if (unicode >= range.begin && unicode < range.end) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+// Parse the OS/2 and Windows metrics `OS/2` table
+function parseOS2Table(data, start) {
+    var os2 = {},
+        p = new parse.Parser(data, start);
+    os2.version = p.parseUShort();
+    os2.xAvgCharWidth = p.parseShort();
+    os2.usWeightClass = p.parseUShort();
+    os2.usWidthClass = p.parseUShort();
+    os2.fsType = p.parseUShort();
+    os2.ySubscriptXSize = p.parseShort();
+    os2.ySubscriptYSize = p.parseShort();
+    os2.ySubscriptXOffset = p.parseShort();
+    os2.ySubscriptYOffset = p.parseShort();
+    os2.ySuperscriptXSize = p.parseShort();
+    os2.ySuperscriptYSize = p.parseShort();
+    os2.ySuperscriptXOffset = p.parseShort();
+    os2.ySuperscriptYOffset = p.parseShort();
+    os2.yStrikeoutSize = p.parseShort();
+    os2.yStrikeoutPosition = p.parseShort();
+    os2.sFamilyClass = p.parseShort();
+    os2.panose = [];
+    for (var i = 0; i < 10; i++) {
+        os2.panose[i] = p.parseByte();
+    }
+    os2.ulUnicodeRange1 = p.parseULong();
+    os2.ulUnicodeRange2 = p.parseULong();
+    os2.ulUnicodeRange3 = p.parseULong();
+    os2.ulUnicodeRange4 = p.parseULong();
+    os2.achVendID = String.fromCharCode(p.parseByte(), p.parseByte(), p.parseByte(), p.parseByte());
+    os2.fsSelection = p.parseUShort();
+    os2.usFirstCharIndex = p.parseUShort();
+    os2.usLastCharIndex = p.parseUShort();
+    os2.sTypoAscender = p.parseShort();
+    os2.sTypoDescender = p.parseShort();
+    os2.sTypoLineGap = p.parseShort();
+    os2.usWinAscent = p.parseUShort();
+    os2.usWinDescent = p.parseUShort();
+    if (os2.version >= 1) {
+        os2.ulCodePageRange1 = p.parseULong();
+        os2.ulCodePageRange2 = p.parseULong();
+    }
+    if (os2.version >= 2) {
+        os2.sxHeight = p.parseShort();
+        os2.sCapHeight = p.parseShort();
+        os2.usDefaultChar = p.parseUShort();
+        os2.usBreakChar = p.parseUShort();
+        os2.usMaxContent = p.parseUShort();
+    }
+    return os2;
+}
+
+function makeOS2Table(options) {
+    return new table.Table('OS/2', [
+        {name: 'version', type: 'USHORT', value: 0x0003},
+        {name: 'xAvgCharWidth', type: 'SHORT', value: 0},
+        {name: 'usWeightClass', type: 'USHORT', value: 0},
+        {name: 'usWidthClass', type: 'USHORT', value: 0},
+        {name: 'fsType', type: 'USHORT', value: 0},
+        {name: 'ySubscriptXSize', type: 'SHORT', value: 650},
+        {name: 'ySubscriptYSize', type: 'SHORT', value: 699},
+        {name: 'ySubscriptXOffset', type: 'SHORT', value: 0},
+        {name: 'ySubscriptYOffset', type: 'SHORT', value: 140},
+        {name: 'ySuperscriptXSize', type: 'SHORT', value: 650},
+        {name: 'ySuperscriptYSize', type: 'SHORT', value: 699},
+        {name: 'ySuperscriptXOffset', type: 'SHORT', value: 0},
+        {name: 'ySuperscriptYOffset', type: 'SHORT', value: 479},
+        {name: 'yStrikeoutSize', type: 'SHORT', value: 49},
+        {name: 'yStrikeoutPosition', type: 'SHORT', value: 258},
+        {name: 'sFamilyClass', type: 'SHORT', value: 0},
+        {name: 'bFamilyType', type: 'BYTE', value: 0},
+        {name: 'bSerifStyle', type: 'BYTE', value: 0},
+        {name: 'bWeight', type: 'BYTE', value: 0},
+        {name: 'bProportion', type: 'BYTE', value: 0},
+        {name: 'bContrast', type: 'BYTE', value: 0},
+        {name: 'bStrokeVariation', type: 'BYTE', value: 0},
+        {name: 'bArmStyle', type: 'BYTE', value: 0},
+        {name: 'bLetterform', type: 'BYTE', value: 0},
+        {name: 'bMidline', type: 'BYTE', value: 0},
+        {name: 'bXHeight', type: 'BYTE', value: 0},
+        {name: 'ulUnicodeRange1', type: 'ULONG', value: 0},
+        {name: 'ulUnicodeRange2', type: 'ULONG', value: 0},
+        {name: 'ulUnicodeRange3', type: 'ULONG', value: 0},
+        {name: 'ulUnicodeRange4', type: 'ULONG', value: 0},
+        {name: 'achVendID', type: 'CHARARRAY', value: 'XXXX'},
+        {name: 'fsSelection', type: 'USHORT', value: 0},
+        {name: 'usFirstCharIndex', type: 'USHORT', value: 0},
+        {name: 'usLastCharIndex', type: 'USHORT', value: 0},
+        {name: 'sTypoAscender', type: 'SHORT', value: 0},
+        {name: 'sTypoDescender', type: 'SHORT', value: 0},
+        {name: 'sTypoLineGap', type: 'SHORT', value: 0},
+        {name: 'usWinAscent', type: 'USHORT', value: 0},
+        {name: 'usWinDescent', type: 'USHORT', value: 0},
+        {name: 'ulCodePageRange1', type: 'ULONG', value: 0},
+        {name: 'ulCodePageRange2', type: 'ULONG', value: 0},
+        {name: 'sxHeight', type: 'SHORT', value: 0},
+        {name: 'sCapHeight', type: 'SHORT', value: 0},
+        {name: 'usDefaultChar', type: 'USHORT', value: 0},
+        {name: 'usBreakChar', type: 'USHORT', value: 0},
+        {name: 'usMaxContext', type: 'USHORT', value: 0}
+    ], options);
+}
+
+exports.unicodeRanges = unicodeRanges;
+exports.getUnicodeRange = getUnicodeRange;
+exports.parse = parseOS2Table;
+exports.make = makeOS2Table;
+
+},{"../parse":7,"../table":9}],22:[function(require,module,exports){
+// The `post` table stores additional PostScript information, such as glyph names.
+// https://www.microsoft.com/typography/OTSPEC/post.htm
+
+'use strict';
+
+var encoding = require('../encoding');
+var parse = require('../parse');
+var table = require('../table');
+
+// Parse the PostScript `post` table
+function parsePostTable(data, start) {
+    var post = {},
+        p = new parse.Parser(data, start),
+        i, nameLength;
+    post.version = p.parseVersion();
+    post.italicAngle = p.parseFixed();
+    post.underlinePosition = p.parseShort();
+    post.underlineThickness = p.parseShort();
+    post.isFixedPitch = p.parseULong();
+    post.minMemType42 = p.parseULong();
+    post.maxMemType42 = p.parseULong();
+    post.minMemType1 = p.parseULong();
+    post.maxMemType1 = p.parseULong();
+    switch (post.version) {
+    case 1:
+        post.names = encoding.standardNames.slice();
+        break;
+    case 2:
+        post.numberOfGlyphs = p.parseUShort();
+        post.glyphNameIndex = new Array(post.numberOfGlyphs);
+        for (i = 0; i < post.numberOfGlyphs; i++) {
+            post.glyphNameIndex[i] = p.parseUShort();
+        }
+        post.names = [];
+        for (i = 0; i < post.numberOfGlyphs; i++) {
+            if (post.glyphNameIndex[i] >= encoding.standardNames.length) {
+                nameLength = p.parseChar();
+                post.names.push(p.parseString(nameLength));
+            }
+        }
+        break;
+    case 2.5:
+        post.numberOfGlyphs = p.parseUShort();
+        post.offset = new Array(post.numberOfGlyphs);
+        for (i = 0; i < post.numberOfGlyphs; i++) {
+            post.offset[i] = p.parseChar();
+        }
+        break;
+    }
+    return post;
+}
+
+function makePostTable() {
+    return new table.Table('post', [
+        {name: 'version', type: 'FIXED', value: 0x00030000},
+        {name: 'italicAngle', type: 'FIXED', value: 0},
+        {name: 'underlinePosition', type: 'FWORD', value: 0},
+        {name: 'underlineThickness', type: 'FWORD', value: 0},
+        {name: 'isFixedPitch', type: 'ULONG', value: 0},
+        {name: 'minMemType42', type: 'ULONG', value: 0},
+        {name: 'maxMemType42', type: 'ULONG', value: 0},
+        {name: 'minMemType1', type: 'ULONG', value: 0},
+        {name: 'maxMemType1', type: 'ULONG', value: 0}
+    ]);
+}
+
+exports.parse = parsePostTable;
+exports.make = makePostTable;
+
+},{"../encoding":3,"../parse":7,"../table":9}],23:[function(require,module,exports){
+// The `sfnt` wrapper provides organization for the tables in the font.
+// It is the top-level data structure in a font.
+// https://www.microsoft.com/typography/OTSPEC/otff.htm
+// Recommendations for creating OpenType Fonts:
+// http://www.microsoft.com/typography/otspec140/recom.htm
+
+'use strict';
+
+var check = require('../check');
+var table = require('../table');
+
+var cmap = require('./cmap');
+var cff = require('./cff');
+var head = require('./head');
+var hhea = require('./hhea');
+var hmtx = require('./hmtx');
+var maxp = require('./maxp');
+var _name = require('./name');
+var os2 = require('./os2');
+var post = require('./post');
+
+function log2(v) {
+    return Math.log(v) / Math.log(2) | 0;
+}
+
+function computeCheckSum(bytes) {
+    while (bytes.length % 4 !== 0) {
+        bytes.push(0);
+    }
+    var sum = 0;
+    for (var i = 0; i < bytes.length; i += 4) {
+        sum += (bytes[i] << 24) +
+            (bytes[i + 1] << 16) +
+            (bytes[i + 2] << 8) +
+            (bytes[i + 3]);
+    }
+    sum %= Math.pow(2, 32);
+    return sum;
+}
+
+function makeTableRecord(tag, checkSum, offset, length) {
+    return new table.Table('Table Record', [
+        {name: 'tag', type: 'TAG', value: tag !== undefined ? tag : ''},
+        {name: 'checkSum', type: 'ULONG', value: checkSum !== undefined ? checkSum : 0},
+        {name: 'offset', type: 'ULONG', value: offset !== undefined ? offset : 0},
+        {name: 'length', type: 'ULONG', value: length !== undefined ? length : 0}
+    ]);
+}
+
+function makeSfntTable(tables) {
+    var sfnt = new table.Table('sfnt', [
+        {name: 'version', type: 'TAG', value: 'OTTO'},
+        {name: 'numTables', type: 'USHORT', value: 0},
+        {name: 'searchRange', type: 'USHORT', value: 0},
+        {name: 'entrySelector', type: 'USHORT', value: 0},
+        {name: 'rangeShift', type: 'USHORT', value: 0}
+    ]);
+    sfnt.tables = tables;
+    sfnt.numTables = tables.length;
+    var highestPowerOf2 = Math.pow(2, log2(sfnt.numTables));
+    sfnt.searchRange = 16 * highestPowerOf2;
+    sfnt.entrySelector = log2(highestPowerOf2);
+    sfnt.rangeShift = sfnt.numTables * 16 - sfnt.searchRange;
+
+    var recordFields = [];
+    var tableFields = [];
+
+    var offset = sfnt.sizeOf() + (makeTableRecord().sizeOf() * sfnt.numTables);
+    while (offset % 4 !== 0) {
+        offset += 1;
+        tableFields.push({name: 'padding', type: 'BYTE', value: 0});
+    }
+
+    for (var i = 0; i < tables.length; i += 1) {
+        var t = tables[i];
+        check.argument(t.tableName.length === 4, 'Table name' + t.tableName + ' is invalid.');
+        var tableLength = t.sizeOf();
+        var tableRecord = makeTableRecord(t.tableName, computeCheckSum(t.encode()), offset, tableLength);
+        recordFields.push({name: tableRecord.tag + ' Table Record', type: 'TABLE', value: tableRecord});
+        tableFields.push({name: t.tableName + ' table', type: 'TABLE', value: t});
+        offset += tableLength;
+        check.argument(!isNaN(offset), 'Something went wrong calculating the offset.');
+        while (offset % 4 !== 0) {
+            offset += 1;
+            tableFields.push({name: 'padding', type: 'BYTE', value: 0});
+        }
+    }
+
+    // Table records need to be sorted alphabetically.
+    recordFields.sort(function (r1, r2) {
+        if (r1.value.tag > r2.value.tag) {
+            return 1;
+        } else {
+            return -1;
+        }
+    });
+
+    sfnt.fields = sfnt.fields.concat(recordFields);
+    sfnt.fields = sfnt.fields.concat(tableFields);
+    return sfnt;
+}
+
+// Get the metrics for a character. If the string has more than one character
+// this function returns metrics for the first available character.
+// You can provide optional fallback metrics if no characters are available.
+function metricsForChar(font, chars, notFoundMetrics) {
+    for (var i = 0; i < chars.length; i += 1) {
+        var glyphIndex = font.charToGlyphIndex(chars[i]);
+        if (glyphIndex > 0) {
+            var glyph = font.glyphs[glyphIndex];
+            return glyph.getMetrics();
+        }
+    }
+    return notFoundMetrics;
+}
+
+function average(vs) {
+    var sum = 0;
+    for (var i = 0; i < vs.length; i += 1) {
+        sum += vs[i];
+    }
+    return sum / vs.length;
+}
+
+// Convert the font object to a SFNT data structure.
+// This structure contains all the necessary tables and metadata to create a binary OTF file.
+function fontToSfntTable(font) {
+    var xMins = [];
+    var yMins = [];
+    var xMaxs = [];
+    var yMaxs = [];
+    var advanceWidths = [];
+    var leftSideBearings = [];
+    var rightSideBearings = [];
+    var firstCharIndex = null;
+    var lastCharIndex = 0;
+    var ulUnicodeRange1 = 0;
+    var ulUnicodeRange2 = 0;
+    var ulUnicodeRange3 = 0;
+    var ulUnicodeRange4 = 0;
+    for (var i = 0; i < font.glyphs.length; i += 1) {
+        var glyph = font.glyphs[i];
+        var unicode = glyph.unicode | 0;
+        if (firstCharIndex > unicode || firstCharIndex === null) {
+            firstCharIndex = unicode;
+        }
+        if (lastCharIndex < unicode) {
+            lastCharIndex = unicode;
+        }
+        var position = os2.getUnicodeRange(unicode);
+        if (position < 32) {
+            ulUnicodeRange1 |= 1 << position;
+        } else if (position < 64) {
+            ulUnicodeRange2 |= 1 << position - 32;
+        } else if (position < 96) {
+            ulUnicodeRange3 |= 1 << position - 64;
+        } else if (position < 123) {
+            ulUnicodeRange4 |= 1 << position - 96;
+        } else {
+            throw new Error('Unicode ranges bits > 123 are reserved for internal usage');
+        }
+        // Skip non-important characters.
+        if (glyph.name === '.notdef') continue;
+        var metrics = glyph.getMetrics();
+        xMins.push(metrics.xMin);
+        yMins.push(metrics.yMin);
+        xMaxs.push(metrics.xMax);
+        yMaxs.push(metrics.yMax);
+        leftSideBearings.push(metrics.leftSideBearing);
+        rightSideBearings.push(metrics.rightSideBearing);
+        advanceWidths.push(glyph.advanceWidth);
+    }
+    var globals = {
+        xMin: Math.min.apply(null, xMins),
+        yMin: Math.min.apply(null, yMins),
+        xMax: Math.max.apply(null, xMaxs),
+        yMax: Math.max.apply(null, yMaxs),
+        advanceWidthMax: Math.max.apply(null, advanceWidths),
+        advanceWidthAvg: average(advanceWidths),
+        minLeftSideBearing: Math.min.apply(null, leftSideBearings),
+        maxLeftSideBearing: Math.max.apply(null, leftSideBearings),
+        minRightSideBearing: Math.min.apply(null, rightSideBearings)
+    };
+    globals.ascender = globals.yMax;
+    globals.descender = globals.yMin;
+
+    var headTable = head.make({
+        unitsPerEm: font.unitsPerEm,
+        xMin: globals.xMin,
+        yMin: globals.yMin,
+        xMax: globals.xMax,
+        yMax: globals.yMax
+    });
+
+    var hheaTable = hhea.make({
+        ascender: globals.ascender,
+        descender: globals.descender,
+        advanceWidthMax: globals.advanceWidthMax,
+        minLeftSideBearing: globals.minLeftSideBearing,
+        minRightSideBearing: globals.minRightSideBearing,
+        xMaxExtent: globals.maxLeftSideBearing + (globals.xMax - globals.xMin),
+        numberOfHMetrics: font.glyphs.length
+    });
+
+    var maxpTable = maxp.make(font.glyphs.length);
+
+    var os2Table = os2.make({
+        xAvgCharWidth: Math.round(globals.advanceWidthAvg),
+        usWeightClass: 500, // Medium FIXME Make this configurable
+        usWidthClass: 5, // Medium (normal) FIXME Make this configurable
+        usFirstCharIndex: firstCharIndex,
+        usLastCharIndex: lastCharIndex,
+        ulUnicodeRange1: ulUnicodeRange1,
+        ulUnicodeRange2: ulUnicodeRange2,
+        ulUnicodeRange3: ulUnicodeRange3,
+        ulUnicodeRange4: ulUnicodeRange4,
+        // See http://typophile.com/node/13081 for more info on vertical metrics.
+        // We get metrics for typical characters (such as "x" for xHeight).
+        // We provide some fallback characters if characters are unavailable: their
+        // ordering was chosen experimentally.
+        sTypoAscender: globals.ascender,
+        sTypoDescender: globals.descender,
+        sTypoLineGap: 0,
+        usWinAscent: globals.ascender,
+        usWinDescent: -globals.descender,
+        sxHeight: metricsForChar(font, 'xyvw', {yMax: 0}).yMax,
+        sCapHeight: metricsForChar(font, 'HIKLEFJMNTZBDPRAGOQSUVWXY', globals).yMax,
+        usBreakChar: font.hasChar(' ') ? 32 : 0 // Use space as the break character, if available.
+    });
+
+
+    var hmtxTable = hmtx.make(font.glyphs);
+    var cmapTable = cmap.make(font.glyphs);
+
+    var fullName = font.familyName + ' ' + font.styleName;
+    var postScriptName = font.familyName.replace(/\s/g, '') + '-' + font.styleName;
+    var nameTable = _name.make({
+        copyright: font.copyright,
+        fontFamily: font.familyName,
+        fontSubfamily: font.styleName,
+        uniqueID: font.manufacturer + ':' + fullName,
+        fullName: fullName,
+        version: font.version,
+        postScriptName: postScriptName,
+        trademark: font.trademark,
+        manufacturer: font.manufacturer,
+        designer: font.designer,
+        description: font.description,
+        manufacturerURL: font.manufacturerURL,
+        designerURL: font.designerURL,
+        license: font.license,
+        licenseURL: font.licenseURL,
+        preferredFamily: font.familyName,
+        preferredSubfamily: font.styleName
+    });
+    var postTable = post.make();
+    var cffTable = cff.make(font.glyphs, {
+        version: font.version,
+        fullName: fullName,
+        familyName: font.familyName,
+        weightName: font.styleName,
+        postScriptName: postScriptName
+    });
+    // Order the tables according to the the OpenType specification 1.4.
+    var tables = [headTable, hheaTable, maxpTable, os2Table, nameTable, cmapTable, postTable, cffTable, hmtxTable];
+
+    var sfntTable = makeSfntTable(tables);
+
+    // Compute the font's checkSum and store it in head.checkSumAdjustment.
+    var bytes = sfntTable.encode();
+    var checkSum = computeCheckSum(bytes);
+    var tableFields = sfntTable.fields;
+    var checkSumAdjusted = false;
+    for (i = 0; i < tableFields.length; i += 1) {
+        if (tableFields[i].name === 'head table') {
+            tableFields[i].value.checkSumAdjustment = 0xB1B0AFBA - checkSum;
+            checkSumAdjusted = true;
+            break;
+        }
+    }
+    if (!checkSumAdjusted) {
+        throw new Error('Could not find head table with checkSum to adjust.');
+    }
+
+    return sfntTable;
+}
+
+exports.computeCheckSum = computeCheckSum;
+exports.make = makeSfntTable;
+exports.fontToTable = fontToSfntTable;
+
+},{"../check":1,"../table":9,"./cff":10,"./cmap":11,"./head":14,"./hhea":15,"./hmtx":16,"./maxp":19,"./name":20,"./os2":21,"./post":22}],24:[function(require,module,exports){
+// Data types used in the OpenType font file.
+// All OpenType fonts use Motorola-style byte ordering (Big Endian)
+
+/* global WeakMap */
+
+'use strict';
+
+var check = require('./check');
+
+var LIMIT16 = 32768; // The limit at which a 16-bit number switches signs == 2^15
+var LIMIT32 = 2147483648; // The limit at which a 32-bit number switches signs == 2 ^ 31
+
+var decode = {};
+var encode = {};
+var sizeOf = {};
+
+// Return a function that always returns the same value.
+function constant(v) {
+    return function () {
+        return v;
+    };
+}
+
+// OpenType data types //////////////////////////////////////////////////////
+
+// Convert an 8-bit unsigned integer to a list of 1 byte.
+encode.BYTE = function (v) {
+    check.argument(v >= 0 && v <= 255, 'Byte value should be between 0 and 255.');
+    return [v];
+};
+
+sizeOf.BYTE = constant(1);
+
+// Convert a 8-bit signed integer to a list of 1 byte.
+encode.CHAR = function (v) {
+    return [v.charCodeAt(0)];
+};
+
+sizeOf.BYTE = constant(1);
+
+// Convert an ASCII string to a list of bytes.
+encode.CHARARRAY = function (v) {
+    var b = [];
+    for (var i = 0; i < v.length; i += 1) {
+        b.push(v.charCodeAt(i));
+    }
+    return b;
+};
+
+sizeOf.CHARARRAY = function (v) {
+    return v.length;
+};
+
+// Convert a 16-bit unsigned integer to a list of 2 bytes.
+encode.USHORT = function (v) {
+    return [(v >> 8) & 0xFF, v & 0xFF];
+};
+
+sizeOf.USHORT = constant(2);
+
+// Convert a 16-bit signed integer to a list of 2 bytes.
+encode.SHORT = function (v) {
+    // Two's complement
+    if (v >= LIMIT16){
+        v = - ( 2 * LIMIT16 - v);
+    }
+    return [(v >> 8) & 0xFF, v & 0xFF];
+};
+
+sizeOf.SHORT = constant(2);
+
+// Convert a 24-bit unsigned integer to a list of 3 bytes.
+encode.UINT24 = function (v) {
+    return [(v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF];
+};
+
+sizeOf.UINT24 = constant(3);
+
+// Convert a 32-bit unsigned integer to a list of 4 bytes.
+encode.ULONG = function (v) {
+    return [(v >> 24) & 0xFF, (v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF];
+};
+
+sizeOf.ULONG = constant(4);
+
+// Convert a 32-bit unsigned integer to a list of 4 bytes.
+encode.LONG = function (v) {
+     // Two's complement
+    if (v >= LIMIT32){
+        v = - ( 2 * LIMIT32 - v);
+    }
+    return [(v >> 24) & 0xFF, (v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF];
+};
+
+sizeOf.LONG = constant(4);
+
+encode.FIXED = encode.ULONG;
+sizeOf.FIXED = sizeOf.ULONG;
+
+encode.FWORD = encode.SHORT;
+sizeOf.FWORD = sizeOf.SHORT;
+
+encode.UFWORD = encode.USHORT;
+sizeOf.UFWORD = sizeOf.USHORT;
+
+
+// FIXME Implement LONGDATETIME
+encode.LONGDATETIME = function () {
+    return [0, 0, 0, 0, 0, 0, 0, 0];
+};
+
+sizeOf.LONGDATETIME = constant(8);
+
+// Convert a 4-char tag to a list of 4 bytes.
+encode.TAG = function (v) {
+    check.argument(v.length === 4, 'Tag should be exactly 4 ASCII characters.');
+    return [v.charCodeAt(0),
+            v.charCodeAt(1),
+            v.charCodeAt(2),
+            v.charCodeAt(3)];
+};
+
+sizeOf.TAG = constant(4);
+
+// CFF data types ///////////////////////////////////////////////////////////
+
+encode.Card8 = encode.BYTE;
+sizeOf.Card8 = sizeOf.BYTE;
+
+encode.Card16 = encode.USHORT;
+sizeOf.Card16 = sizeOf.USHORT;
+
+encode.OffSize = encode.BYTE;
+sizeOf.OffSize = sizeOf.BYTE;
+
+encode.SID = encode.USHORT;
+sizeOf.SID = sizeOf.USHORT;
+
+// Convert a numeric operand or charstring number to a variable-size list of bytes.
+encode.NUMBER = function (v) {
+    if (v >= -107 && v <= 107) {
+        return [v + 139];
+    } else if (v >= 108 && v <= 1131 ) {
+        v = v - 108;
+        return [(v >> 8) + 247, v & 0xFF];
+    } else if (v >= -1131 && v <= -108) {
+        v = -v - 108;
+        return [(v >> 8) + 251, v & 0xFF];
+    } else if (v >= -32768 && v <= 32767) {
+        return encode.NUMBER16(v);
+    } else {
+        return encode.NUMBER32(v);
+    }
+};
+
+sizeOf.NUMBER = function (v) {
+    return encode.NUMBER(v).length;
+};
+
+// Convert a signed number between -32768 and +32767 to a three-byte value.
+// This ensures we always use three bytes, but is not the most compact format.
+encode.NUMBER16 = function (v) {
+    return [28, (v >> 8) & 0xFF, v & 0xFF];
+};
+
+sizeOf.NUMBER16 = constant(2);
+
+// Convert a signed number between -(2^31) and +(2^31-1) to a four-byte value.
+// This is useful if you want to be sure you always use four bytes,
+// at the expense of wasting a few bytes for smaller numbers.
+encode.NUMBER32 = function (v) {
+    return [29, (v >> 24) & 0xFF, (v >> 16) & 0xFF, (v >> 8) & 0xFF, v & 0xFF];
+};
+
+sizeOf.NUMBER32 = constant(4);
+
+encode.NAME = encode.CHARARRAY;
+sizeOf.NAME = sizeOf.CHARARRAY;
+
+encode.STRING = encode.CHARARRAY;
+sizeOf.STRING = sizeOf.CHARARRAY;
+
+// Convert a ASCII string to a list of UTF16 bytes.
+encode.UTF16 = function (v) {
+    var b = [];
+    for (var i = 0; i < v.length; i += 1) {
+        b.push(0);
+        b.push(v.charCodeAt(i));
+    }
+    return b;
+};
+
+sizeOf.UTF16 = function (v) {
+    return v.length * 2;
+};
+
+// Convert a list of values to a CFF INDEX structure.
+// The values should be objects containing name / type / value.
+encode.INDEX = function (l) {
+    var offSize, offset, offsets, offsetEncoder, encodedOffsets, encodedOffset, data,
+        dataSize, i, v;
+    // Because we have to know which data type to use to encode the offsets,
+    // we have to go through the values twice: once to encode the data and
+    // calculate the offets, then again to encode the offsets using the fitting data type.
+    offset = 1; // First offset is always 1.
+    offsets = [offset];
+    data = [];
+    dataSize = 0;
+    for (i = 0; i < l.length; i += 1) {
+        v = encode.OBJECT(l[i]);
+        Array.prototype.push.apply(data, v);
+        dataSize += v.length;
+        offset += v.length;
+        offsets.push(offset);
+    }
+
+    if (data.length === 0) {
+        return [0, 0];
+    }
+
+    encodedOffsets = [];
+    offSize = (1 + Math.floor(Math.log(dataSize)/Math.log(2)) / 8) | 0;
+    offsetEncoder = [undefined, encode.BYTE, encode.USHORT, encode.UINT24, encode.ULONG][offSize];
+    for (i = 0; i < offsets.length; i += 1) {
+        encodedOffset = offsetEncoder(offsets[i]);
+        Array.prototype.push.apply(encodedOffsets, encodedOffset);
+    }
+    return Array.prototype.concat(encode.Card16(l.length),
+                           encode.OffSize(offSize),
+                           encodedOffsets,
+                           data);
+};
+
+sizeOf.INDEX = function (v) {
+    return encode.INDEX(v).length;
+};
+
+// Convert an object to a CFF DICT structure.
+// The keys should be numeric.
+// The values should be objects containing name / type / value.
+encode.DICT = function (m) {
+    var d = [],
+        keys = Object.keys(m),
+        length = keys.length;
+
+    for (var i = 0; i < length; i += 1) {
+        // Object.keys() return string keys, but our keys are always numeric.
+        var k = parseInt(keys[i], 0);
+        var v = m[k];
+        // Value comes before the key.
+        d = d.concat(encode.OPERAND(v.value, v.type));
+        d = d.concat(encode.OPERATOR(k));
+    }
+
+    return d;
+};
+
+sizeOf.DICT = function (m) {
+    return encode.DICT(m).length;
+};
+
+encode.OPERATOR = function (v) {
+    if (v < 1200) {
+        return [v];
+    } else {
+        return [12, v - 1200];
+    }
+};
+
+encode.OPERAND = function (v, type) {
+    var d, i;
+    d = [];
+    if (Array.isArray(type)) {
+        for (i = 0; i < type.length; i += 1) {
+            check.argument(v.length === type.length, 'Not enough arguments given for type' + type);
+            d = d.concat(encode.OPERAND(v[i], type[i]));
+        }
+    } else {
+        if (type === 'SID') {
+            d = d.concat(encode.NUMBER(v));
+        } else if (type === 'offset') {
+            // We make it easy for ourselves and always encode offsets as
+            // 4 bytes. This makes offset calculation for the top dict easier.
+            d = d.concat(encode.NUMBER32(v));
+        } else {
+            // FIXME Add support for booleans
+            d = d.concat(encode.NUMBER(v));
+        }
+    }
+    return d;
+};
+
+encode.OP = encode.BYTE;
+sizeOf.OP = sizeOf.BYTE;
+
+// memoize charstring encoding using WeakMap if available
+var wmm = typeof WeakMap === 'function' && new WeakMap();
+// Convert a list of CharString operations to bytes.
+encode.CHARSTRING = function (ops) {
+    if ( wmm && wmm.has( ops ) ) {
+        return wmm.get( ops );
+    }
+
+    var d = [],
+        length = ops.length,
+        op,
+        i;
+
+    for (i = 0; i < length; i += 1) {
+        op = ops[i];
+        d = d.concat( encode[op.type](op.value) );
+    }
+
+    if ( wmm ) {
+        wmm.set( ops, d );
+    }
+
+    return d;
+};
+
+sizeOf.CHARSTRING = function (ops) {
+    return encode.CHARSTRING(ops).length;
+};
+
+// Utility functions ////////////////////////////////////////////////////////
+
+// Convert an object containing name / type / value to bytes.
+encode.OBJECT = function (v) {
+    var encodingFunction = encode[v.type];
+    check.argument(encodingFunction !== undefined, 'No encoding function for type ' + v.type);
+    return encodingFunction(v.value);
+};
+
+// Convert a table object to bytes.
+// A table contains a list of fields containing the metadata (name, type and default value).
+// The table itself has the field values set as attributes.
+encode.TABLE = function (table) {
+    var d = [],
+        length = table.fields.length,
+        i;
+
+    for (i = 0; i < length; i += 1) {
+        var field = table.fields[i];
+        var encodingFunction = encode[field.type];
+        check.argument(encodingFunction !== undefined, 'No encoding function for field type ' + field.type);
+        var value = table[field.name];
+        if (value === undefined) {
+            value = field.value;
+        }
+        var bytes = encodingFunction(value);
+        d = d.concat(bytes);
+    }
+    return d;
+};
+
+// Merge in a list of bytes.
+encode.LITERAL = function (v) {
+    return v;
+};
+
+sizeOf.LITERAL = function (v) {
+    return v.length;
+};
+
+
+exports.decode = decode;
+exports.encode = encode;
+exports.sizeOf = sizeOf;
+
+},{"./check":1}]},{},[6])(6)
+});
+
+function LeapHand()
+{
+	THREE.Scene.call(this);
+	this.name = "leap";
+
+	this.bone_meshes = [];
+	this.arm_meshes = [];
+
+	//Hand Material
+	this.material = new THREE.MeshPhongMaterial();
+
+	//Physics
+	this.physics_world = null;
+	this.physics_bodys = [];
+
+	//Hand Atributes
+	this.use_arm = false;
+	this.mode = this.DESK;
+	this.scale = new THREE.Vector3(1,1,1);
+
+	//Start leap and set callback function
+	this.controller = new Leap.Controller();
+	this.data = null; //Controller data
+
+	var self = this;
+	Leap.loop({background:true}, function(data)
+	{
+		self.data = data;
+	}).connect();
+}
+
+LeapHand.prototype = Object.create(THREE.Scene.prototype);
+LeapHand.prototype.icon = "editor/files/icons/hw/leap.png";
+
+LeapHand.prototype.update = update;
+LeapHand.prototype.setMode = setMode;
+LeapHand.prototype.updatePhysics = updatePhysics;
+LeapHand.prototype.addMesh = addMesh;
+LeapHand.prototype.updateMesh = updateMesh;
 
 //Leap Hand Modes
 LeapHand.DESK = 0;
 LeapHand.HDM = 1;
 
-//Initialize LeapHand
-LeapHand.initialize = function()
+//Update leap status
+function update()
 {
-	LeapHand.scene = new THREE.Scene();
-	
-	LeapHand.bone_meshes = [];
-	LeapHand.arm_meshes = [];
+	if(this.data != null)
+	{
+		var self = this;
 
-	//Physics
-	LeapHand.physics_world = null;
-	LeapHand.physics_bodys = [];
+		//Clear scene
+		this.arm_meshes.forEach(function(item)
+		{
+			self.remove(item);
+		});
+		
+		this.bone_meshes.forEach(function(item)
+		{
+			self.remove(item);
+		});
 
-	//Hand Atributes
-	LeapHand.use_arm = false;
-	LeapHand.mode = LeapHand.DESK;
-	LeapHand.scale = new THREE.Vector3(1,1,1);
+		//Add new Elements to scene
+		var countBones = 0;
+		var countArms = 0;
 
-	//Start leap and set callback function
-	LeapHand.controller = new Leap.Controller();
-	Leap.loop({background:true}, LeapHand.updateLeap).connect();
+		for(var hand of this.data.hands)
+		{
+			for(var finger of hand.fingers)
+			{
+				for(var bone of finger.bones) 
+				{
+					if(countBones !== 0)
+					{
+						var boneMesh = this.bone_meshes[countBones] || this.addMesh(this.bone_meshes, this.material);
+						this.updateMesh(bone, boneMesh);	
+					}
+					countBones++;
+				}
+			}
+
+			var arm = hand.arm;
+			if(this.show_arm)
+			{
+				var armMesh = this.arm_meshes[countArms++] || this.addMesh(this.arm_meshes);
+				this.updateMesh(arm, armMesh);
+				armMesh.scale.set(arm.width/1200, arm.width/300, arm.length/150);
+			}
+		}
+
+		//Update Leap Colision box
+		if(this.physics_world != null)
+		{
+			this.updatePhysics()
+		}
+	}
 }
 
 //Change Mode
-LeapHand.setMode = function(mode)
+function setMode(mode)
 {
-	LeapHand.mode = mode;
-}
-
-//Update leap status
-LeapHand.updateLeap = function(frame)
-{
-	//Clear leap scene
-	LeapHand.arm_meshes.forEach(function(item)
-	{
-		LeapHand.scene.remove(item);
-	});
-	
-	LeapHand.bone_meshes.forEach(function(item)
-	{
-		LeapHand.scene.remove(item);
-	});
-
-	//Add new Elements to scene
-	var countBones = 0;
-	var countArms = 0;
-
-	frame.hands.forEach(function(hand)
-	{
-		var material = new THREE.MeshPhongMaterial({color: 0x00ff00});
-		
-		hand.fingers.forEach(function(finger)
-		{
-			finger.bones.forEach(function(bone) 
-			{
-				if(countBones++ !== 0)
-				{
-					var boneMesh = LeapHand.bone_meshes[countBones] || LeapHand.addMesh(LeapHand.bone_meshes, material);
-					LeapHand.updateMesh(bone, boneMesh);	
-				}
-			});
-		});
-
-		var arm = hand.arm;
-		if(LeapHand.show_arm)
-		{
-			var armMesh = LeapHand.arm_meshes[countArms++] || LeapHand.addMesh(LeapHand.arm_meshes);
-			LeapHand.updateMesh(arm, armMesh);
-			armMesh.scale.set(arm.width/1200, arm.width/300, arm.length/150);
-		}
-	});
-
-	//Update Leap Colision box
-	if(LeapHand.physics_world != null)
-	{
-		LeapHand.updatePhysics(LeapHand.scene, LeapHand.physics_world)
-	}
-	
+	this.mode = mode;
 }
 
 //Add physics bounding box from objet to physics world
-LeapHand.updatePhysics = function(object, world)
+function updatePhysics()
 {	
 	//Remove all physics bodys
-	LeapHand.physics_bodys.forEach(function(item)
+	this.physics_bodys.forEach(function(item)
 	{
-		LeapHand.physics_world.removeBody(item);
+		this.physics_world.removeBody(item);
 	});
-	LeapHand.physics_bodys = [];
+	this.physics_bodys = [];
 
 	//Create new physics bodys
-	object.children.forEach(function(children, j)
+	this.children.forEach(function(children, j)
 	{
 		var box = new THREE.BoundingBoxHelper(children);
 		box.update();
 
 		var hs = new THREE.Vector3(box.box.max.x - box.box.min.x, box.box.max.y - box.box.min.y, box.box.max.z - box.box.min.z);
-		hs.x *= object.scale.x;
-		hs.y *= object.scale.y;
-		hs.z *= object.scale.z;
+		hs.x *= this.scale.x;
+		hs.y *= this.scale.y;
+		hs.z *= this.scale.z;
 		hs.divideScalar(2);
 
 		var pos = box.box.center();
-		pos.x *= object.scale.x;
-		pos.y *= object.scale.y;
-		pos.z *= object.scale.z;
-		pos.add(object.position);
+		pos.x *= this.scale.x;
+		pos.y *= this.scale.y;
+		pos.z *= this.scale.z;
+		pos.add(this.position);
 
 		var shape = new CANNON.Box(new CANNON.Vec3(hs.x, hs.y, hs.z));
 		var body = new CANNON.Body({mass:0});
 		body.addShape(shape);
-		body.position.set(pos.x - object.position.x, pos.y - object.position.y, pos.z - object.position.z);
+		body.position.set(pos.x - this.position.x, pos.y - this.position.y, pos.z - this.position.z);
 		body.updateMassProperties();
 
-		LeapHand.physics_bodys.push(body);
-		world.addBody(body);
+		this.physics_bodys.push(body);
+		this.physics_world.addBody(body);
 	});
 }
 
-
-LeapHand.addMesh = function(meshes, material)
+function addMesh(meshes, material)
 {
 	var geometry = new THREE.BoxGeometry(1, 1, 1);
 	var mesh = new THREE.Mesh(geometry, material);
@@ -16480,7 +27039,7 @@ LeapHand.addMesh = function(meshes, material)
 	return mesh;
 }
 
-LeapHand.updateMesh = function(bone, mesh)
+function updateMesh(bone, mesh)
 {
 	mesh.position.fromArray(bone.center());
 	mesh.position.divideScalar(150);
@@ -16488,7 +27047,7 @@ LeapHand.updateMesh = function(bone, mesh)
 	mesh.setRotationFromMatrix((new THREE.Matrix4()).fromArray(bone.matrix()));
 	mesh.scale.set(bone.width/150, bone.width/150, bone.length/150);
 
-	LeapHand.scene.add(mesh);
+	this.add(mesh);
 }
 
 function KinectDevice(){}
@@ -17236,7 +27795,11 @@ class Scene extends THREE.Scene {
 	}
 
 	initialize() {
-		// TODO: This
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
 	}
 
 	update() {
@@ -17248,10 +27811,6 @@ class Scene extends THREE.Scene {
 				this.children[i].update()
 			}
 		}
-	}
-
-	resize() {
-		// TODO: This
 	}
 }
 
@@ -17270,9 +27829,19 @@ class Script extends THREE.Object3D {
 		}
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	setLoopCode(code) {
-		this.code = code
-		this.func = Function(this.code)
+		try {
+			this.code = code
+			this.func = Function(this.code)
+		} catch(e) {}
 	}
 
 	update() {
@@ -17297,6 +27866,14 @@ class Model3D extends THREE.Mesh {
 		this.name = "model"
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].update != undefined) {
@@ -17306,10 +27883,26 @@ class Model3D extends THREE.Mesh {
 	}
 }
 class Text3D extends THREE.Mesh {
-	constructor(geometry, material) {
-		super()
+	constructor(text, font, material) {
+		super(new THREE.TextGeometry(text, {font: font}), material)
+
+		this.font = font
+		this.text = text
 
 		this.name = "text"
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	setText(text) {
+		this.text = text
+		this.geometry = new THREE.TextGeometry(this.text, {font: this.font})
 	}
 
 	update() {
@@ -17327,6 +27920,14 @@ class PointLight extends THREE.PointLight {
 		this.name = "point_light"
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].length != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].update != undefined) {
@@ -17340,6 +27941,14 @@ class SpotLight extends THREE.SpotLight {
 		super(hex, intensity, distance, angle, exponent, decay)
 
 		this.name = "spot_light"
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
 	}
 
 	update() {
@@ -17356,6 +27965,14 @@ class AmbientLight extends THREE.AmbientLight {
 		this.name = "ambient_light"
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].update != undefined) {
@@ -17368,6 +27985,14 @@ class DirectionalLight extends THREE.DirectionalLight {
 	constructor(hex, intensity) {
 		super(hex, intensity)
 		this.name = "directional_light"
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
 	}
 
 	update() {
@@ -17385,6 +28010,14 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 		this.name = "perspective_camera"
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].update != undefined) {
@@ -17400,6 +28033,14 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 		this.name = "orthographic_camera"
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].update != undefined) {
@@ -17413,6 +28054,14 @@ class Empty extends THREE.Object3D {
 		super()
 
 		this.name = "empty"
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
 	}
 
 	update() {
@@ -17431,16 +28080,29 @@ class Sky extends THREE.DirectionalLight {
 
 		this.castShadow = true
 
-		this.angle = 0
-		this.distance = 20
-		this.day_time = 10 // seconds
+		// Sun
+		this.distance = 200
+		this.day_time = 10
+
+		// Runtime stuff 
+		this.time = 0
 
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
+		this.time += App.delta_time / 1000
+
 		// Update position
-		this.position.x = this.distance * Math.cos(App.time / 10000)
-		this.position.y = this.distance * Math.sin(App.time / 10000)
+		this.position.x = this.distance * Math.cos(this.time)
+		this.position.y = this.distance * Math.sin(this.time)
 
 		// Update children
 		for(var i = 0; i < this.children.length; i++) {
@@ -17456,6 +28118,9 @@ function App(){}
 //App initialization (entry point)
 App.initialize = function(main)
 {
+	// Node modules
+	App.fs = require("fs")
+
 	//Stas tool
 	App.stats = new Stats();
 	App.stats.setMode(0);
@@ -17480,6 +28145,16 @@ App.initialize = function(main)
 	App.loop();
 }
 
+// Read File
+App.readFile = function(fname) {
+	return App.fs.readFileSync(fname, "utf8")
+}
+
+// Write File
+App.writeFile = function(fname, data) {
+	App.fs.writeFileSync(fname, data)
+}
+
 //Load Main program
 App.loadMain = function(main)
 {
@@ -17487,6 +28162,7 @@ App.loadMain = function(main)
 	App.main.initialize();
 }
 
+// Show stats
 App.showStats = function(value)
 {
 	if(value === true)

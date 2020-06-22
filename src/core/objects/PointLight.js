@@ -5,6 +5,14 @@ class PointLight extends THREE.PointLight {
 		this.name = "point_light"
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].length != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].update != undefined) {

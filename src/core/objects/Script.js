@@ -13,9 +13,19 @@ class Script extends THREE.Object3D {
 		}
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	setLoopCode(code) {
-		this.code = code
-		this.func = Function(this.code)
+		try {
+			this.code = code
+			this.func = Function(this.code)
+		} catch(e) {}
 	}
 
 	update() {

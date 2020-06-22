@@ -46,11 +46,13 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        //TODO: Open Project
+        console.log(Editor.program)
+        console.log(JSON.parse(App.readFile("project.gorlot")))
+        Editor.updateTreeView()
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
-        //TODO: Save Project
+        App.writeFile("project.gorlot", JSON.stringify(Editor.program))
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {
@@ -162,7 +164,13 @@ EditorUI.Initialize = function() {
     }})
 
     EditorUI.topmenu.add("Add/3D Objects/Text", {callback: () => {
-        // TODO: This
+        var loader = new THREE.FontLoader().load("data/fonts/helvetiker_bold.typeface.js", function(font) {
+            var material = new THREE.MeshPhongMaterial()
+            var model = new Text3D("text", font, material)
+            model.receiveShadow = true
+            model.castShadow = true
+            Editor.addToActualScene(model)
+        })
     }})
 
     // ----- Add/Lights -----
@@ -228,6 +236,18 @@ EditorUI.Initialize = function() {
 
     // Blocks
     EditorUI.topmenu.add("Add/Scripts/Blocks", {callback: () => {
+        // TODO: This
+    }})
+
+    // ----- Device -----
+
+    // Kinect Skeleton
+    EditorUI.topmenu.add("Add/Device/Kinect", {callback: () => {
+        // TODO: This
+    }})
+
+    // Virtual Reality
+    EditorUI.topmenu.add("Add/Device/Virutal Reality", {callback: () => {
         // TODO: This
     }})
 

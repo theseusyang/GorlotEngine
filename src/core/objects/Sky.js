@@ -6,16 +6,29 @@ class Sky extends THREE.DirectionalLight {
 
 		this.castShadow = true
 
-		this.angle = 0
-		this.distance = 20
-		this.day_time = 10 // seconds
+		// Sun
+		this.distance = 200
+		this.day_time = 10
+
+		// Runtime stuff 
+		this.time = 0
 
 	}
 
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
 	update() {
+		this.time += App.delta_time / 1000
+
 		// Update position
-		this.position.x = this.distance * Math.cos(App.time / 10000)
-		this.position.y = this.distance * Math.sin(App.time / 10000)
+		this.position.x = this.distance * Math.cos(this.time)
+		this.position.y = this.distance * Math.sin(this.time)
 
 		// Update children
 		for(var i = 0; i < this.children.length; i++) {

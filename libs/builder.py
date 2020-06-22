@@ -17,12 +17,16 @@ libraries.append("three/stats.min.js")
 
 libraries.append("three/loaders/OBJLoader.js")
 libraries.append("three/loaders/MTLLoader.js")
-libraries.append("three/loaders/OBJMTLLoader.js")
-#libraries.append("three/loaders/ColladaLoader.js")
+libraries.append("three/loaders/ColladaLoader.js")
+libraries.append("three/loaders/collada/Animation.js")
+libraries.append("three/loaders/collada/AnimationHandler.js")
+libraries.append("three/loaders/collada/KeyFrameAnimation.js")
 
 libraries.append("cannon/cannon.js")
 libraries.append("cannon/ConvexGeometry.js")
 libraries.append("cannon/CannonDebugRenderer.js")
+
+libraries.append("opentype.min.js")
 
 # Then the code itself
 source.append("device/LeapHand.js")

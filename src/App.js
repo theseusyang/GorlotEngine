@@ -4,6 +4,9 @@ function App(){}
 //App initialization (entry point)
 App.initialize = function(main)
 {
+	// Node modules
+	App.fs = require("fs")
+
 	//Stas tool
 	App.stats = new Stats();
 	App.stats.setMode(0);
@@ -28,6 +31,16 @@ App.initialize = function(main)
 	App.loop();
 }
 
+// Read File
+App.readFile = function(fname) {
+	return App.fs.readFileSync(fname, "utf8")
+}
+
+// Write File
+App.writeFile = function(fname, data) {
+	App.fs.writeFileSync(fname, data)
+}
+
 //Load Main program
 App.loadMain = function(main)
 {
@@ -35,6 +48,7 @@ App.loadMain = function(main)
 	App.main.initialize();
 }
 
+// Show stats
 App.showStats = function(value)
 {
 	if(value === true)
