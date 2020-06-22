@@ -41,11 +41,22 @@ class Program {
 
 	addDefaultScene() {
 		var scene = new Scene()
-		scene.add(new AmbientLight(0x202020))
+		scene.add(new Sky())
 
-		var light = new PointLight(0xaaaaaa)
-		light.position.set(0, 5, -5)
-		scene.add(light)
+		var material = new THREE.MeshPhongMaterial()
+		var geometry = new THREE.BoxGeometry(2, 2, 2)
+		var model = new Model3D(geometry, material)
+		model.receiveShadow = true
+		model.castShadow = true
+		scene.add(model)
+
+		material = new THREE.MeshPhongMaterial()
+		geometry = new THREE.BoxGeometry(10, 0.1, 10)
+		model = new Model3D(geometry, material)
+		model.position.set(0, -1.05, 0)
+		model.receiveShadow = true
+		model.castShadow = true
+		scene.add(model)
 
 		this.addScene(scene)
 	

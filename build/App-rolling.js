@@ -27712,11 +27712,22 @@ class Program {
 
 	addDefaultScene() {
 		var scene = new Scene()
-		scene.add(new AmbientLight(0x202020))
+		scene.add(new Sky())
 
-		var light = new PointLight(0xaaaaaa)
-		light.position.set(0, 5, -5)
-		scene.add(light)
+		var material = new THREE.MeshPhongMaterial()
+		var geometry = new THREE.BoxGeometry(2, 2, 2)
+		var model = new Model3D(geometry, material)
+		model.receiveShadow = true
+		model.castShadow = true
+		scene.add(model)
+
+		material = new THREE.MeshPhongMaterial()
+		geometry = new THREE.BoxGeometry(10, 0.1, 10)
+		model = new Model3D(geometry, material)
+		model.position.set(0, -1.05, 0)
+		model.receiveShadow = true
+		model.castShadow = true
+		scene.add(model)
 
 		this.addScene(scene)
 	
@@ -27981,6 +27992,29 @@ class AmbientLight extends THREE.AmbientLight {
 		}
 	}
 }
+class HemisphereLight extends THREE.HemisphereLight {
+	constructor(skyColorHex, groundColorHex, intensity) {
+		super(skyColorHex, groundColorHex, intensity)
+
+		this.name = "hemisphere_light"
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	update() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].update != undefined) {
+				this.children[i].update()
+			}
+		}
+	}
+}
 class DirectionalLight extends THREE.DirectionalLight {
 	constructor(hex, intensity) {
 		super(hex, intensity)
@@ -28072,20 +28106,45 @@ class Empty extends THREE.Object3D {
 		}
 	}
 }
-class Sky extends THREE.DirectionalLight {
+class Sky extends THREE.Scene {
 	constructor() {
-		super(0xffffaa, 0.3)
+		super()
 
 		this.name = "sky"
 
-		this.castShadow = true
-
 		// Sun
+		this.sun = new DirectionalLight(0xffffaa, 0.3)
+		this.sun.castShadow = true
+		this.add(this.sun)
+
+		// Hemisphere
+		this.hemisphere = new HemisphereLight(0xffffff, 0xffffff, 0.3)
+		this.hemisphere.color.setHSL(0.6, 1, 0.6)
+		this.hemisphere.groundColor.setHSL(0.095, 1, 0.75)
+		this.hemisphere.position.set(0, 500, 0)
+		this.add(this.hemisphere)
+
+		// Sun position control
 		this.distance = 200
 		this.day_time = 10
-
-		// Runtime stuff 
 		this.time = 0
+
+		// Sky Shader
+		var vertex = App.readFile("data/shaders/sky_vertex.glsl")
+		var fragment = App.readFile("data/shaders/sky_fragment.glsl")
+		var uniforms = {
+			topColor: {type: "c", value: new THREE.Color(0x0077ff)},
+			bottomColor: {type: "c", value: new THREE.Color(0xffffff)},
+			offset: {type: "f", value: 33},
+			exponent: {type: "f", value: 0.6}
+		}
+		uniforms.topColor.value.copy(this.hemisphere.color)
+
+		// Sky
+		var geometry = new THREE.SphereGeometry(4000, 32, 15)
+		var material = new THREE.ShaderMaterial({vertexShader: vertex, fragmentShader: fragment, uniforms: uniforms, side: THREE.BackSide})
+		this.sky = new Model3D(geometry, material)
+		this.add(this.sky)
 
 	}
 
@@ -28098,11 +28157,11 @@ class Sky extends THREE.DirectionalLight {
 	}
 
 	update() {
-		this.time += App.delta_time / 1000
+		this.time += App.delta_time / (this.day_time * 1000)
 
 		// Update position
-		this.position.x = this.distance * Math.cos(this.time)
-		this.position.y = this.distance * Math.sin(this.time)
+		this.sun.position.x = this.distance * (Math.cos(this.time))
+		this.sun.position.y = this.distance * (Math.cos(this.time))
 
 		// Update children
 		for(var i = 0; i < this.children.length; i++) {
