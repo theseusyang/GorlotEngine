@@ -17243,15 +17243,23 @@ class Scene extends THREE.Scene {
 		this.world.solver.tolerance = 0.05;
 	}
 
+	initialize() {
+		// TODO: This
+	}
+
 	update() {
 		this.world.step(1/60);
 	
 		for(var i = 0; i < this.children.length; i++)
 		{
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
+	}
+
+	resize() {
+		// TODO: This
 	}
 }
 
@@ -17259,7 +17267,6 @@ class Script extends THREE.Object3D {
 	constructor() {
 		super()
 
-		this.updateable = true
 		this.name = "script"
 
 		// Script code
@@ -17277,10 +17284,15 @@ class Script extends THREE.Object3D {
 	}
 
 	update() {
-		this.func()
+		// Run script
+		try {
+			this.func()
+		} catch (e) {
+
+		}
 
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17290,13 +17302,12 @@ class Model3D extends THREE.Mesh {
 	constructor(geometry, material) {
 		super(geometry, material)
 
-		this.updateable = true
 		this.name = "model"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17306,13 +17317,12 @@ class Text3D extends THREE.Mesh {
 	constructor(geometry, material) {
 		super()
 
-		this.updateable = true
 		this.name = "text"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update
 			}
 		}
@@ -17321,13 +17331,13 @@ class Text3D extends THREE.Mesh {
 class PointLight extends THREE.PointLight {
 	constructor(hex, intensity, distance, decay) {
 		super(hex, intensity, distance, decay)
-		this.updateable = true
+
 		this.name = "point_light"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17336,13 +17346,13 @@ class PointLight extends THREE.PointLight {
 class SpotLight extends THREE.SpotLight {
 	constructor(hex, intensity, distance, angle, exponent, decay) {
 		super(hex, intensity, distance, angle, exponent, decay)
-		this.updateable = true
+
 		this.name = "spot_light"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17351,13 +17361,12 @@ class SpotLight extends THREE.SpotLight {
 class AmbientLight extends THREE.AmbientLight {
 	constructor(hex) {
 		super(hex)
-		this.updateable = true
 		this.name = "ambient_light"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17366,13 +17375,12 @@ class AmbientLight extends THREE.AmbientLight {
 class DirectionalLight extends THREE.DirectionalLight {
 	constructor(hex, intensity) {
 		super(hex, intensity)
-		this.updateable = true
 		this.name = "directional_light"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17382,13 +17390,12 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 	constructor(fov, aspect, near, far) {
 		super(fov, aspect, near, far)
 
-		this.updateable = true
 		this.name = "perspective_camera"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17398,13 +17405,12 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 	constructor(left, right, top, bottom, near, far) {
 		super(left, right, top, bottom, near, far)
 
-		this.updateable = true
 		this.name = "orthographic_camera"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17414,13 +17420,12 @@ class Empty extends THREE.Object3D {
 	constructor() {
 		super()
 
-		this.updateable = true
 		this.name = "empty"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
@@ -17435,15 +17440,19 @@ class Sky extends THREE.DirectionalLight {
 		this.castShadow = true
 
 		this.angle = 0
-		this.distance = 0
-		this.day_time = 0
+		this.distance = 20
+		this.day_time = 10 // seconds
 
-		this.updateable = true
 	}
 
 	update() {
+		// Update position
+		this.position.x = this.distance * Math.cos(App.time / 10000)
+		this.position.y = this.distance * Math.sin(App.time / 10000)
+
+		// Update children
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update) {
 				this.children[i].update
 			}
 		}

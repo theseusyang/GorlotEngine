@@ -53,14 +53,19 @@ source.append("core/objects/Sky.js")
 source.append("App.js")
 
 # Libraries required to the Editor
+
 editorLibs.append("litegui/litegui.min.js")
+
 editorLibs.append("codemirror/codemirror.js")
 editorLibs.append("codemirror/mode/javascript/javascript.js")
 
 # Css Files to the editor
+
 editorCss.append("libs/litegui/litegui.css")
+
 editorCss.append("libs/codemirror/codemirror.css")
 editorCss.append("libs/codemirror/theme/monokai.css")
+
 editorCss.append("src/editor/utils/editor.css")
 
 # Editor Code

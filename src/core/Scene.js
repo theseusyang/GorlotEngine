@@ -53,14 +53,22 @@ class Scene extends THREE.Scene {
 		this.world.solver.tolerance = 0.05;
 	}
 
+	initialize() {
+		// TODO: This
+	}
+
 	update() {
 		this.world.step(1/60);
 	
 		for(var i = 0; i < this.children.length; i++)
 		{
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update()
 			}
 		}
+	}
+
+	resize() {
+		// TODO: This
 	}
 }

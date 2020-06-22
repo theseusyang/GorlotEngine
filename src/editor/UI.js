@@ -377,13 +377,12 @@ EditorUI.Initialize = function() {
 
         // Script
         if (data.attachedTo instanceof Script) {
-            EditorUI.tabs_widget.addTab("Script Editor", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
+            EditorUI.tabs_widget.addTab("Script Editor", {selected: true, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
             EditorUI.code = new CodeEditor(EditorUI.tabs_widget.getTabContent("Script Editor"))
 
-            // TODO: Call this when a tab is resized
+            // TODO: Create a new array that will be iterated through in EditorUI.updateInterface calling updateInterface of each of its elements
             
             EditorUI.code.updateInterface()
-            EditorUI.tabs_widget.selectTab("Script Editor")
             EditorUI.code.attachScript(data.attachedTo)
         }
     })

@@ -10786,7 +10786,7 @@ Editor.update = function()
 
 				var distance = Editor.camera.position.distanceTo(Editor.selected_object.position)/5
 				Editor.move_tool.scale.set(distance, distance, distance)
-				Editor.move_tool.position.copy(Editor.selected_object.position);
+				Editor.move_tool.position.copy(Editor.objectAbsolutePosition(Editor.selected_object));
 			}
 			else if(Editor.tool_mode === Editor.MODE_RESIZE)
 			{
@@ -10796,7 +10796,7 @@ Editor.update = function()
 
 				var distance = Editor.camera.position.distanceTo(Editor.selected_object.position)/5
 				Editor.resize_tool.scale.set(distance, distance, distance)
-				Editor.resize_tool.position.copy(Editor.selected_object.position);
+				Editor.resize_tool.position.copy(Editor.objectAbsolutePosition(Editor.selected_object));
 				
 			}
 			else if(Editor.tool_mode === Editor.MODE_ROTATE)
@@ -10808,7 +10808,7 @@ Editor.update = function()
 				var distance = Editor.camera.position.distanceTo(Editor.selected_object.position)/5
 				Editor.rotate_tool.scale.set(distance, distance, distance)
 				Editor.rotate_tool.rotation.copy(Editor.selected_object.rotation)
-				Editor.rotate_tool.position.copy(Editor.selected_object.position);
+				Editor.rotate_tool.position.copy(Editor.objectAbsolutePosition(Editor.selected_object));
 			}
 			else
 			{
@@ -10877,7 +10877,7 @@ Editor.update = function()
 				//Rotate Mode
 				else if(Editor.tool_mode === Editor.MODE_ROTATE)
 				{
-					var speed = Editor.camera.position.distanceTo(Editor.selected_object.position)/500;
+					var speed = 1/200;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.rotation.x -= Mouse.pos_diff.y * speed;
@@ -10890,8 +10890,8 @@ Editor.update = function()
 					}
 					else if(Editor.editing_object_args.z)
 					{
-						Editor.selected_object.rotation.z -= Mouse.pos_diff.y * speed;
-						Editor.selected_object.rotation.z -= Mouse.pos_diff.x * speed;
+						Editor.selected_object.rotation.z += Mouse.pos_diff.y * speed;
+						Editor.selected_object.rotation.z += Mouse.pos_diff.x * speed;
 					}
 				}
 			}
@@ -11082,6 +11082,17 @@ Editor.updateObjectHelper = function() {
 		}
 	
 	}
+}
+
+// Return object absolute position (not relative to parent)
+Editor.objectAbsolutePosition = function(obj) {
+	if (obj.parent != null) {
+		var position = obj.position.close()
+		position.add(Editor.objectAbsolutePosition(obj.parent))
+		return position
+	}
+
+	return obj.position
 }
 
 // Activate Helper
@@ -11519,13 +11530,12 @@ EditorUI.Initialize = function() {
 
         // Script
         if (data.attachedTo instanceof Script) {
-            EditorUI.tabs_widget.addTab("Script Editor", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
+            EditorUI.tabs_widget.addTab("Script Editor", {selected: true, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
             EditorUI.code = new CodeEditor(EditorUI.tabs_widget.getTabContent("Script Editor"))
 
-            // TODO: Call this when a tab is resized
+            // TODO: Create a new array that will be iterated through in EditorUI.updateInterface calling updateInterface of each of its elements
             
             EditorUI.code.updateInterface()
-            EditorUI.tabs_widget.selectTab("Script Editor")
             EditorUI.code.attachScript(data.attachedTo)
         }
     })

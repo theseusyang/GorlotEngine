@@ -2,13 +2,12 @@ class Text3D extends THREE.Mesh {
 	constructor(geometry, material) {
 		super()
 
-		this.updateable = true
 		this.name = "text"
 	}
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].updateable) {
+			if (this.children[i].update != undefined) {
 				this.children[i].update
 			}
 		}
