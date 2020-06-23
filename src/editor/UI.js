@@ -47,28 +47,35 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        try {
-            Editor.program = JSON.parse(App.readFile("project.json"))
-            Editor.updateTreeView()
-            console.log("Loaded")
-        } catch(e) {
-            console.error("Error")
-        }
+        var loader = new THREE.ObjectLoader()
+        var data = JSON.parse(App.readFile("project.json"))
+        var scene = loader.parse(data)
+
+        var program = new Program()
+        program.addScene(scene)
+
+        Editor.program = program
+
+        Editor.resetEditingFlags()
+        Editor.updateTreeView()
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
         // TODO: Create a toJSON function to every object, so the components can be serialized
 
-        var output = Editor.scene.toJSON()
+        var output = Editor.program.scene.toJSON()
+        var json = null
 
         try {
-            output = JSON.stringify(output, null, '\t')
-            output = output.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1')
+            json = JSON.stringify(output, null, "\t")
+            json = json.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, "$1")
         } catch (e) {
-            output = JSON.stringify(output)
+            json = JSON.stringify(json)
         }
 
-        App.writeFile("project.json", output)
+        if (json != null) {
+            App.writeFile("project.json", json)
+        }
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {

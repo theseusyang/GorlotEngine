@@ -27606,6 +27606,11 @@ class Program {
 
 	addScene(scene) {
 		this.scenes.push(scene)
+
+		// If first scene, set as actual scene
+		if (this.scenes.length === 1) {
+			this.scene = this.scenes[0]
+		}
 	}
 
 	addDefaultScene() {
@@ -27630,11 +27635,6 @@ class Program {
 		scene.add(model)
 
 		this.addScene(scene)
-	
-		// If first scene set as actual scene
-		if (this.scene == null) {
-			this.scene = this.scenes[0]
-		}
 	}
 
 	removeScene(scene) {

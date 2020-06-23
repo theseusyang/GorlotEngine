@@ -25,6 +25,10 @@ Editor.componentManager.addComponent(new LightComponent(), true)
 //Initialize Main
 Editor.initialize = function(canvas)
 {
+	// Set mouse Lock false
+	App.setMouseLock(false)
+	App.showStats(false)
+
 	//Editor initial state
 	Editor.tool_mode = Editor.MODE_SELECT;
 	Editor.state = Editor.STATE_EDITING;
@@ -38,26 +42,21 @@ Editor.initialize = function(canvas)
 	Editor.is_editing_object = false;
 	Editor.editing_object_args = null;
 
+	// Editor program and scene
+	Editor.program = null
+	Editor.createNewProgram()
+
 	//Initialize User Interface
 	EditorUI.Initialize();
-
-	//Set mouse lock true
-	App.setMouseLock(false);
-	App.showStats(false);
 
 	//Set render canvas
 	Editor.canvas = EditorUI.canvas;
 	Mouse.canvas = Editor.canvas;
 
-	//Editor program and scene
-	Editor.program = null;
-	Editor.scene = null
-	Editor.createNewProgram()
-
 	//Debug Elements
 	Editor.tool_scene = new THREE.Scene();
 	Editor.tool_scene_top = new THREE.Scene();
-	Editor.cannon_renderer = new THREE.CannonDebugRenderer(Editor.tool_scene, Editor.scene.world);
+	Editor.cannon_renderer = new THREE.CannonDebugRenderer(Editor.tool_scene, Editor.program.scene.world);
 
 	//Editor Camera
 	Editor.camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 100000);
@@ -287,7 +286,7 @@ Editor.update = function()
 				if(Mouse.buttonJustPressed(Mouse.LEFT))
 				{
 					Editor.updateRaycaster();
-					var intersects =  Editor.raycaster.intersectObjects(Editor.scene.children, true);
+					var intersects =  Editor.raycaster.intersectObjects(Editor.program.scene.children, true);
 					if(intersects.length > 0)
 					{
 						Editor.selected_object = intersects[0].object;
@@ -386,13 +385,13 @@ Editor.update = function()
 	//Update Scene if on test mode
 	else if(Editor.state === Editor.STATE_TESTING)
 	{
-		Editor.scene.update();
+		Editor.program.scene.update();
 	}
 }
 
 // Add object to actual scene
 Editor.addToActualScene = function(obj) {
-	Editor.scene.add(obj)
+	Editor.program.scene.add(obj)
 	Editor.updateTreeView()
 	Editor.renameObject(obj, obj.name)
 }
@@ -410,7 +409,7 @@ Editor.renameObject = function(obj, name) {
 
 // Update Tree View to Match Actual Scene
 Editor.updateTreeView = function() {
-	EditorUI.hierarchyFromScene(Editor.scene)
+	EditorUI.hierarchyFromScene(Editor.program.scene)
 	EditorUI.updateInspector()
 }
 
@@ -420,7 +419,7 @@ Editor.draw = function()
 	Editor.renderer.clear();
 
 	//Render scene
-	Editor.renderer.render(Editor.scene, Editor.camera);
+	Editor.renderer.render(Editor.program.scene, Editor.camera);
 
 	//Render debug scene
 	if(Editor.state == Editor.STATE_EDITING)
@@ -558,7 +557,9 @@ Editor.resetEditingFlags = function() {
 	Editor.is_editing_object = false
 	Editor.editing_object_args = null
 
-	EditorUI.form.clear()
+	if(EditorUI.form !== undefined) {
+		EditorUI.form.clear()
+	}
 }
 
 // New Program
@@ -567,7 +568,6 @@ Editor.createNewProgram = function() {
 
 	Editor.program = new Program()
 	Editor.program.addDefaultScene()
-	Editor.scene = Editor.program.scene
 
 	Editor.resetEditingFlags()
 }

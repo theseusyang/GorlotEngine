@@ -6,21 +6,21 @@
 	},
 	"geometries": [
 		{
-			"uuid": "02F5456F-795D-4712-8A48-A5789DD8FC26",
+			"uuid": "62A10DB0-42F2-4F62-BD1F-9431CE479CF6",
 			"type": "SphereGeometry",
 			"radius": 4000,
 			"widthSegments": 32,
 			"heightSegments": 15
 		},
 		{
-			"uuid": "9FDA1891-6444-4288-9F70-9641F16A8E1F",
+			"uuid": "22D53E9C-5F11-4AE6-B98D-BF89B9DEFD2A",
 			"type": "BoxGeometry",
 			"width": 2,
 			"height": 2,
 			"depth": 2
 		},
 		{
-			"uuid": "A7C4D919-25E5-4554-B9BE-4E9B4C698521",
+			"uuid": "F8B77B4C-B674-4DFD-8B51-B4A637270BF4",
 			"type": "BoxGeometry",
 			"width": 20,
 			"height": 1,
@@ -28,7 +28,7 @@
 		}],
 	"materials": [
 		{
-			"uuid": "982AFE39-1E97-405C-9589-C2E5169831CF",
+			"uuid": "2E67C977-D729-4C17-B81D-9D925F0E32A6",
 			"type": "ShaderMaterial",
 			"side": 1,
 			"uniforms": {
@@ -61,7 +61,7 @@
 			"fragmentShader": "uniform vec3 top_color;\nuniform vec3 bottom_color;\nuniform float offset;\nuniform float exponent;\nvarying vec3 vWorldPosition;\n\nvoid main() {\n\tfloat h = normalize(vWorldPosition + offset).y;\n\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n}"
 		},
 		{
-			"uuid": "8641459B-ADB6-4646-ACCF-6BD492118DCB",
+			"uuid": "EB3ED1C7-3663-4862-AE3A-03C80CAB24BD",
 			"type": "MeshPhongMaterial",
 			"color": 16777215,
 			"emissive": 0,
@@ -69,7 +69,7 @@
 			"shininess": 30
 		},
 		{
-			"uuid": "4A2B32F1-8B47-498C-B836-A46A3F642592",
+			"uuid": "EDE1B023-88B7-4FC8-97CE-8DD2EEC59067",
 			"type": "MeshPhongMaterial",
 			"color": 16777215,
 			"emissive": 0,
@@ -77,18 +77,18 @@
 			"shininess": 30
 		}],
 	"object": {
-		"uuid": "AB7B3DE3-6AA6-48F5-94E3-6001043F68CA",
+		"uuid": "F695AAE8-6BCF-4ABC-ADFE-09621D4C181A",
 		"type": "Scene",
 		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 		"children": [
 			{
-				"uuid": "1C8BDEF4-8D25-4245-A627-F0D6CB2F4736",
+				"uuid": "0DA73369-5F9F-430D-97F3-C1D1A6EF3494",
 				"type": "Scene",
 				"name": "sky",
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 				"children": [
 					{
-						"uuid": "6F2BE539-5DB5-48CE-BDCA-28A73ECEC5C8",
+						"uuid": "ACD82942-2905-483B-A7DF-001482174273",
 						"type": "DirectionalLight",
 						"name": "sun",
 						"castShadow": true,
@@ -97,7 +97,7 @@
 						"intensity": 0.3
 					},
 					{
-						"uuid": "8DA7B9B0-EC5F-467E-B8D0-DBD87E27E48B",
+						"uuid": "C0C08544-2488-4F05-BD8B-D624CD28D9E4",
 						"type": "HemisphereLight",
 						"name": "horizon",
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,500,0,1],
@@ -106,33 +106,44 @@
 						"groundColor": 16763007
 					},
 					{
-						"uuid": "51342E4A-BDF1-4A42-A78B-455F88263FEE",
+						"uuid": "9BA5566C-9FD6-4073-8E2F-503194601495",
 						"type": "Mesh",
 						"name": "sky_shape",
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"geometry": "02F5456F-795D-4712-8A48-A5789DD8FC26",
-						"material": "982AFE39-1E97-405C-9589-C2E5169831CF"
+						"geometry": "62A10DB0-42F2-4F62-BD1F-9431CE479CF6",
+						"material": "2E67C977-D729-4C17-B81D-9D925F0E32A6"
 					}]
 			},
 			{
-				"uuid": "290130AC-3A46-4FD0-A08B-5011A5FD0A08",
+				"uuid": "45AE8B5E-1037-454E-A713-E85DA21C9009",
 				"type": "Mesh",
 				"name": "box",
 				"castShadow": true,
 				"receiveShadow": true,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,6.802000045776367,0,0,1],
-				"geometry": "9FDA1891-6444-4288-9F70-9641F16A8E1F",
-				"material": "8641459B-ADB6-4646-ACCF-6BD492118DCB"
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,6.193999767303467,0,0,1],
+				"geometry": "22D53E9C-5F11-4AE6-B98D-BF89B9DEFD2A",
+				"material": "EB3ED1C7-3663-4862-AE3A-03C80CAB24BD"
 			},
 			{
-				"uuid": "DB8AE85E-E94E-4BD6-89D1-5292072FFD26",
+				"uuid": "7D1AB885-6936-41D1-85C3-21D6150C4722",
 				"type": "Mesh",
 				"name": "ground",
 				"castShadow": true,
 				"receiveShadow": true,
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.5,0,1],
-				"geometry": "A7C4D919-25E5-4554-B9BE-4E9B4C698521",
-				"material": "4A2B32F1-8B47-498C-B836-A46A3F642592"
+				"geometry": "F8B77B4C-B674-4DFD-8B51-B4A637270BF4",
+				"material": "EDE1B023-88B7-4FC8-97CE-8DD2EEC59067"
+			},
+			{
+				"uuid": "D38E9ACF-8D42-42EC-8C8A-B0A3AF25808F",
+				"type": "PointLight",
+				"name": "point_light_1",
+				"castShadow": true,
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,1.7079999446868896,0,1],
+				"color": 65535,
+				"intensity": 0.31195652173913047,
+				"distance": 0,
+				"decay": 1
 			}]
 	}
 }
