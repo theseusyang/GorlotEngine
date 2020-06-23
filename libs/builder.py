@@ -42,6 +42,8 @@ source.append("core/animation/Skeleton.js")
 source.append("core/Program.js")
 source.append("core/Scene.js")
 
+source.append("core/ObjectLoader.js")
+
 source.append("core/objects/lights/PointLight.js")
 source.append("core/objects/lights/SpotLight.js")
 source.append("core/objects/lights/AmbientLight.js")

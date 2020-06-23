@@ -11524,17 +11524,22 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        var loader = new THREE.ObjectLoader()
-        var data = JSON.parse(App.readFile("project.json"))
-        var scene = loader.parse(data)
+        try {
+            var loader = new ObjectLoader()
+            var data = JSON.parse(App.readFile("project.json"))
+            var scene = loader.parse(data)
 
-        var program = new Program()
-        program.addScene(scene)
+            var program = new Program()
+            program.addScene(scene)
 
-        Editor.program = program
+            Editor.program = program
+            Editor.resetEditingFlags()
+            Editor.updateTreeView()
 
-        Editor.resetEditingFlags()
-        Editor.updateTreeView()
+            console.log("File loaded")
+        } catch(e) {
+            console.log("Error loading file")
+        }
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
@@ -11587,12 +11592,16 @@ EditorUI.Initialize = function() {
         //TODO: Highlight this tool (Only this one)
     }})
 
-    // ----- Preferences -----
-    EditorUI.topmenu.add("Edit/Preferences", {callback: () => {
-        EditorUI.tabs_widget.getTab("Preferences").tab.style.display = ""
-        EditorUI.tabs_widget.selectTab("Preferences")
+    // ----- Add Scene -----
+    EditorUI.topmenu.add("Edit/Project/Add Scene", {callback: () => {
+        // TODO: Add Scene
     }})
 
+    // ----- Preferences -----
+    EditorUI.topmenu.add("Edit/Project/Project Settings", {callback: () => {
+        // TODO: Create TAB (in the canvas zone) containing the Project Settings
+    }})
+    
     // ----- Add -----
 
     // ----- Add/Primitives -----
