@@ -11256,6 +11256,8 @@ Editor.resetEditingFlags = function() {
 
 // New Program
 Editor.createNewProgram = function() {
+	Editor.nameId = 1
+
 	Editor.program = new Program()
 	Editor.program.addDefaultScene()
 	Editor.scene = Editor.program.actual_scene
