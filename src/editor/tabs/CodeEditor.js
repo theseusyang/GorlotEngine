@@ -37,7 +37,7 @@ class CodeEditor {
 
 	attachScript(script) {
 		this.script = script
-		this.setText(script.code)
+		this.setText(script.codeloop)
 	}
 
 	updateScript() {

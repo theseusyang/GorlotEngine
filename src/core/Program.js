@@ -48,6 +48,7 @@ class Program {
 		var model = new Model3D(geometry, material)
 		model.receiveShadow = true
 		model.castShadow = true
+		model.name = "box"
 		scene.add(model)
 
 		material = new THREE.MeshPhongMaterial()
@@ -56,6 +57,7 @@ class Program {
 		model.position.set(0, -1.05, 0)
 		model.receiveShadow = true
 		model.castShadow = true
+		model.name = "ground"
 		scene.add(model)
 
 		this.addScene(scene)

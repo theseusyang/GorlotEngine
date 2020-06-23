@@ -14,13 +14,14 @@ EditorUI.asset_explorer_menu
 EditorUI.explorer
 EditorUI.tabs_widget
 EditorUI.topmenu
-EditorUI.code
+EditorUI.form
 
 EditorUI.bot_tabs
 EditorUI.asset_explorer_tab
 EditorUI.console
 
 EditorUI.assetEx_height = 200
+EditorUI.ins = null
 
 // Areas
 //var mainarea, left_area, right_area 
@@ -104,6 +105,7 @@ EditorUI.Initialize = function() {
         var model = new Model3D(geometry, material)
         model.receiveShadow = true
         model.castShadow = true
+        model.name = "cube"
         Editor.addToActualScene(model)
 
         //EditorUI.hierarchyFromScene(Editor.scene)
@@ -116,6 +118,7 @@ EditorUI.Initialize = function() {
         var model = new Model3D(geometry, material)
         model.receiveShadow = true
         model.castShadow = true
+        model.name = "Cylinder"
         Editor.addToActualScene(model)
 
         //EditorUI.hierarchyFromScene(Editor.scene)
@@ -128,6 +131,7 @@ EditorUI.Initialize = function() {
         var model = new Model3D(geometry, material)
         model.receiveShadow = true
         model.castShadow = true
+        model.name = "Sphere"
         Editor.addToActualScene(model)
 
         //EditorUI.hierarchyFromScene(Editor.scene)
@@ -140,6 +144,7 @@ EditorUI.Initialize = function() {
         var model = new Model3D(geometry, material)
         model.receiveShadow = true
         model.castShadow = true
+        model.name = "Torus"
         Editor.addToActualScene(model)
 
         //EditorUI.hierarchyFromScene(Editor.scene)
@@ -152,6 +157,7 @@ EditorUI.Initialize = function() {
         var model = new Model3D(geometry, model)
         model.receiveShadow = true
         model.castShadow = true
+        model.name = "Cone"
         Editor.addToActualScene(model)
 
         //EditorUI.hierarchyFromScene(Editor.scene)
@@ -209,6 +215,12 @@ EditorUI.Initialize = function() {
         //EditorUI.hierarchyFromScene(Editor.scene)
     }})
 
+    EditorUI.topmenu.add("Add/Lights/Hemisphere", {callback: () => {
+        var light = new HemisphereLight()
+        light.castShadow = true
+        Editor.addToActualScene(light)
+    }})
+
     EditorUI.topmenu.add("Add/Lights/Sky", {callback: () => {
         var light = new Sky()
         Editor.addToActualScene(light)
@@ -223,7 +235,7 @@ EditorUI.Initialize = function() {
 
     // Orthographic Camera
     EditorUI.topmenu.add("Add/Cameras/Orthographic", {callback: () => {
-        Editor.addToActualScene(new OrthographicCamera(1, 1, 1, 1, 1, 1))
+        Editor.addToActualScene(new OrthographicCamera(5, 5, 5, 5, 5, 5))
         //EditorUI.hierarchyFromScene(Editor.scene)
     }})
 
@@ -237,6 +249,20 @@ EditorUI.Initialize = function() {
     // Blocks
     EditorUI.topmenu.add("Add/Scripts/Blocks", {callback: () => {
         // TODO: This
+    }})
+
+    // ----- Effects -----
+    // Sprite
+    EditorUI.topmenu.add("Add/Effects/Sprite", {callback: () => {
+        var map = new THREE.TextureLoader().load("data/sample.png")
+        var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
+        var sprite = new Sprite(material)
+        Editor.addToActualScene(sprite)
+    }})
+
+    // Particles
+    EditorUI.topmenu.add("Add/Effects/Particles", {callback: () => {
+        // TODO: Update
     }})
 
     // ----- Device -----
@@ -292,7 +318,7 @@ EditorUI.Initialize = function() {
 
     // ----- MAINAREA SPLIT ----- 
     EditorUI.mainarea = new LiteGUI.Area({autoresize: true, inmediateResize: true, height: "calc(100% - 20px)"})
-    EditorUI.mainarea.split("horizontal", [null, 200], true)
+    EditorUI.mainarea.split("horizontal", [null, 300], true)
     // Everytime the user resizes the canvas, the EditorUI.Resize function is called
     EditorUI.mainarea.onresize = EditorUI.Resize
     // Add the mainarea to the GUI
@@ -359,13 +385,12 @@ EditorUI.Initialize = function() {
     EditorUI.console = new LiteGUI.Console()
     EditorUI.bot_tabs.getTab("Console").add(EditorUI.console)
 
-    // ----- INSPECTOR -----
+    // ----- TREE -----
     EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height+100], true)
-
+    
     EditorUI.hierarchy_panel = new LiteGUI.Panel({title: "Hierarchy"})
     EditorUI.right_area.getSection(0).add(EditorUI.hierarchy_panel)
-
-    // ----- TREE -----
+    
     EditorUI.hierarchy = new LiteGUI.Tree({
         id: "Program",
         children: []
@@ -427,6 +452,9 @@ EditorUI.Initialize = function() {
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector"})
     EditorUI.right_area.getSection(1).add(EditorUI.inspector)
 
+    EditorUI.form = new LiteGUI.Inspector(/*{onchange: EditorUI.updateObjectInfo}*/)
+    EditorUI.inspector.content.appendChild(EditorUI.form.root)
+
     // Call to the resize method
     EditorUI.Resize()
 }
@@ -438,6 +466,18 @@ EditorUI.selectSceneEditor = function() {
 
 EditorUI.updateInterface = function () {
     EditorUI.resizeCanvas()
+}
+
+EditorUI.updateInspector = function(object) {
+    EditorUI.ins = null
+
+    if (object instanceof Model3D) {
+        EditorUI.ins = new Model3DInspector(object)
+        EditorUI.form.onchange = EditorUI.ins.updateInfo
+    } else {
+        // If the object ain't any of the supported types, then the form is cleaned
+        EditorUI.form.clear()
+    }
 }
 
 EditorUI.hierarchyFromScene = function(scene) {
@@ -474,6 +514,8 @@ EditorUI.hierarchyFromScene = function(scene) {
 }
 
 EditorUI.hierarchyContext = function(e, data) {
+    var object = data.data.attachedTo
+
     var context = new LiteGUI.ContextMenu([
         {title: "Copy", callback: () => {
             // TODO: This
@@ -485,7 +527,10 @@ EditorUI.hierarchyContext = function(e, data) {
             // TODO: This
         }},
         {title: "Delete", callback: () => {
-            // TODO: This            
+            if ((object !== null) && (object.parent !== null)) {
+                object.parent.remove(object)
+                Editor.updateTreeView()
+            }
         }}
     ], {title: "Edit item", event: e})
 }

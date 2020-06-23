@@ -2,10 +2,12 @@ class Text3D extends THREE.Mesh {
 	constructor(text, font, material) {
 		super(new THREE.TextGeometry(text, {font: font}), material)
 
+		this.name = "text"
+
 		this.font = font
 		this.text = text
 
-		this.name = "text"
+		this.scale.set(0.01, 0.01, 0.01)
 	}
 
 	initialize() {

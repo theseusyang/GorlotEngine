@@ -27,9 +27,9 @@ libraries.append("cannon/ConvexGeometry.js")
 libraries.append("cannon/CannonDebugRenderer.js")
 
 libraries.append("opentype.min.js")
+libraries.append("jszip.min.js")
 
 # Then the code itself
-source.append("device/LeapHand.js")
 source.append("device/KinectDevice.js")
 
 source.append("input/Key.js")
@@ -53,6 +53,7 @@ source.append("core/objects/PerspectiveCamera.js")
 source.append("core/objects/OrthographicCamera.js")
 source.append("core/objects/Empty.js")
 source.append("core/objects/Sky.js")
+source.append("core/objects/Sprite.js")
 
 # WARNING: This should always be the last file
 source.append("App.js")
@@ -79,6 +80,8 @@ editor.append("editor/tools/ResizeTool.js")
 editor.append("editor/tools/RotateTool.js")
 
 editor.append("editor/tabs/CodeEditor.js")
+
+editor.append("editor/tabs/Inspector/Model3D.js")
 
 editor.append("Editor.js")
 
