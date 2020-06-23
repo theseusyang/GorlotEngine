@@ -5,6 +5,8 @@ class Empty extends THREE.Object3D {
 		this.name = "empty"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		
 	}
 
 	addComponent(component) {

@@ -18,8 +18,10 @@ Editor.nameId = 1
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()
 
+Editor.componentManager.addComponent(new ElementComponent(), true)
 Editor.componentManager.addComponent(new Object3DComponent(), true)
 Editor.componentManager.addComponent(new Text3DComponent(), true)
+Editor.componentManager.addComponent(new LightComponent(), true)
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -136,7 +138,7 @@ Editor.update = function()
 	if(Editor.state === Editor.STATE_EDITING)
 	{
 		//If object select display tools
-		if(Editor.selected_object !== null)
+		if(Editor.selected_object !== null && Editor.selected_object !== undefined)
 		{
 			Editor.updateObjectHelper()
 
@@ -438,7 +440,7 @@ Editor.updateObjectHelper = function() {
 	Editor.activateHelper(Editor.spot_light_helper, false)
 	Editor.activateHelper(Editor.directional_light_helper, false)
 
-	if (Editor.selected_object !== null) {
+	if (Editor.selected_object !== null && Editor.selected_object !== undefined) {
 		
 		if (Editor.selected_object instanceof THREE.Camera) {
 			Editor.activateHelper(Editor.camera_helper, true)

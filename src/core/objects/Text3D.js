@@ -10,6 +10,8 @@ class Text3D extends THREE.Mesh {
 		this.scale.set(0.01, 0.01, 0.01)
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		this.addComponent(new Text3DComponent())
 	}
 
 	addComponent(component) {

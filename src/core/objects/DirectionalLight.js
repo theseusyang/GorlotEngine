@@ -4,6 +4,9 @@ class DirectionalLight extends THREE.DirectionalLight {
 		this.name = "directional_light"
 
 		this.components = []
+
+		this.addComponent(new ElementComponent())
+		
 	}
 
 	addComponent(component) {

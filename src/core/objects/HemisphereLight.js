@@ -5,6 +5,8 @@ class HemisphereLight extends THREE.HemisphereLight {
 		this.name = "hemisphere_light"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		
 	}
 
 	addComponent(component) {

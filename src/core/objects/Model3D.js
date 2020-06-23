@@ -5,6 +5,8 @@ class Model3D extends THREE.Mesh {
 		this.name = "model"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
 	}
 
 	addComponent(component) {

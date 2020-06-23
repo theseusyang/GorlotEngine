@@ -10655,11 +10655,6 @@ class ObjectInspector {
 
 	    EditorUI.form.addString("Name", this.object.name)
 	    EditorUI.form.addString("UUID", this.object.uuid, {disabled: true})
-	    EditorUI.form.addSeparator()
-	
-	    EditorUI.form.addVector3("Position", [this.object.position.x, this.object.position.y, this.object.position.z])
-	    EditorUI.form.addVector3("Rotation", [this.object.rotation.x, this.object.rotation.y, this.object.rotation.z])
-	    EditorUI.form.addVector3("Scale",    [this.object.scale.x, this.object.scale.y, this.object.scale.z])
 
 	    this.addComponentButton()
 
@@ -10696,15 +10691,7 @@ class ObjectInspector {
 		}
 
 		if (name === "Name") {
-			//Editor.selected_object.name = str
-			//Editor.updateTreeView()
 			Editor.renameObject(Editor.selected_object, str)
-		} else if (name ===  "Position") {
-			Editor.selected_object.position.set(val[0], val[1], val[2])
-		} else if (name === "Rotation") {
-			Editor.selected_object.rotation.set(val[0], val[1], val[2])
-		} else if (name === "Scale") {
-			Editor.selected_object.scale.set(val[0], val[1], val[2])
 		}
 
 		if(Editor.selected_object.components.length > 0) {
@@ -10747,8 +10734,10 @@ Editor.nameId = 1
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()
 
+Editor.componentManager.addComponent(new ElementComponent(), true)
 Editor.componentManager.addComponent(new Object3DComponent(), true)
 Editor.componentManager.addComponent(new Text3DComponent(), true)
+Editor.componentManager.addComponent(new LightComponent(), true)
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -10865,7 +10854,7 @@ Editor.update = function()
 	if(Editor.state === Editor.STATE_EDITING)
 	{
 		//If object select display tools
-		if(Editor.selected_object !== null)
+		if(Editor.selected_object !== null && Editor.selected_object !== undefined)
 		{
 			Editor.updateObjectHelper()
 
@@ -11167,7 +11156,7 @@ Editor.updateObjectHelper = function() {
 	Editor.activateHelper(Editor.spot_light_helper, false)
 	Editor.activateHelper(Editor.directional_light_helper, false)
 
-	if (Editor.selected_object !== null) {
+	if (Editor.selected_object !== null && Editor.selected_object !== undefined) {
 		
 		if (Editor.selected_object instanceof THREE.Camera) {
 			Editor.activateHelper(Editor.camera_helper, true)

@@ -5,6 +5,7 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 		this.name = "perspective_camera"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {

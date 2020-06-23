@@ -13,6 +13,8 @@ class Script extends THREE.Object3D {
 		this.func_init = Function(this.code_init)
 
 		this.components = []
+
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {

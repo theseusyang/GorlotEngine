@@ -5,6 +5,7 @@ class SpotLight extends THREE.SpotLight {
 		this.name = "spot_light"
 	
 		this.components = []
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {

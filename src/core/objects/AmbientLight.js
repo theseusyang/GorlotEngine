@@ -4,6 +4,8 @@ class AmbientLight extends THREE.AmbientLight {
 		this.name = "ambient_light"
 
 		this.components = []
+
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {

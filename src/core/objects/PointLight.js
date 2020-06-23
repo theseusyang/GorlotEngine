@@ -5,6 +5,7 @@ class PointLight extends THREE.PointLight {
 		this.name = "point_light"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {

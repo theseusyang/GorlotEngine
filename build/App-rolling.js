@@ -27693,15 +27693,37 @@ class ComponentManager {
 		}})
 	}
 }
+class ElementComponent extends Component {
+	constructor() {
+		super("Element")
+	}
+
+	initUI() {
+		super.initUI()
+
+		EditorUI.form.addVector3("Position", [Editor.selected_object.position.x, Editor.selected_object.position.y, Editor.selected_object.position.z])
+		EditorUI.form.addVector3("Rotation", [Editor.selected_object.rotation.x, Editor.selected_object.rotation.y, Editor.selected_object.rotation.z])
+		EditorUI.form.addVector3("Scale", [Editor.selected_object.scale.x, Editor.selected_object.scale.y, Editor.selected_object.scale.z])
+	}
+
+	updateInfo(name, value, widgets) {
+		var str = value + ""
+		var val = str.split(",")
+
+		if (name === "Position") {
+			Editor.selected_object.position.set(val[0], val[1], val[2])
+		} else if (name === "Rotation") {
+			Editor.selected_object.rotation.set(val[0], val[1], val[2])
+		} else if (name === "Scale") {
+			Editor.selected_object.scale.set(val[0], val[1], val[2])
+		}
+	}
+}
 // TODO: Move all the component system to "src/editor"
 
 class Object3DComponent extends Component {
 	constructor() {
 		super("Object 3D")
-
-		this.defaultVisible = true
-		this.defaultCastShadow = true
-		this.defaultReceiveShadow = true
 	}
 
 	initUI() {
@@ -27716,8 +27738,6 @@ class Object3DComponent extends Component {
 	}
 
 	updateInfo(name, value, widget) {
-
-		console.log("name: " + name)
 
 		var str = value + ""
 		if (str === "true") {
@@ -27738,8 +27758,6 @@ class Object3DComponent extends Component {
 class Text3DComponent extends Component {
 	constructor() {
 		super("Text 3D")
-
-		this.defaultText = "text"
 	}
 
 	initUI() {
@@ -27748,7 +27766,7 @@ class Text3DComponent extends Component {
 		if (Editor.selected_object instanceof Text3D) {
 			EditorUI.form.addString("Text", Editor.selected_object.text)
 		} else {
-			EditorUI.form.addInfo(null, "The selected object ain't text. This component won't work :(")
+			EditorUI.form.addInfo(null, "The selected object ain't text. This component won't work :'(")
 		}
 
 		this.addRemoveButton(this)
@@ -27757,6 +27775,47 @@ class Text3DComponent extends Component {
 	updateInfo(name, value, widget) {
 		if (name === "Text") {
 			Editor.selected_object.setText(value)
+		}
+	}
+}
+class LightComponent extends Component {
+	constructor() {
+		super("Light")
+	}
+
+	initUI() {
+		super.initUI()
+
+		// Every kind of Light can have this component, if some special value is required, we can create more components and call them from here, and not be added in the component manager
+		if(Editor.selected_object instanceof THREE.Light) {
+			EditorUI.form.addSlider("Intensity", Editor.selected_object.intensity, {min: 0.1, max: 1, step: 0.01})
+			// TODO: Include jsColor here
+			EditorUI.form.addString("Color Hex", "0x" + Editor.selected_object.color.getHexString())
+			EditorUI.form.addString("Color RGB", Editor.selected_object.color.getStyle())
+			EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
+		} else {
+			EditorUI.form.addInfo(null, "This selected object ain't a light. This component won't work :'(")
+		}
+	}
+
+	updateInfo(name, value, widget) {
+
+		if (value === "true") {
+			value = true
+		} if (value === "false") {
+			value = false
+		}
+
+		if (name === "Intensity") {
+			Editor.selected_object.intensity = value
+		} else if (name === "Color Hex") {
+			Editor.selected_object.color.setHex(value)
+			EditorUI.updateInspector()
+		} else if (name === "Color RGB") {
+			Editor.selected_object.color.setStyle(value)
+			EditorUI.updateInspector()
+		} else if (name === "Cast Shadow") {
+			Editor.selected_object.intensity = value
 		}
 	}
 }
@@ -27775,6 +27834,8 @@ class Script extends THREE.Object3D {
 		this.func_init = Function(this.code_init)
 
 		this.components = []
+
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -27832,6 +27893,8 @@ class Model3D extends THREE.Mesh {
 		this.name = "model"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
 	}
 
 	addComponent(component) {
@@ -27868,6 +27931,8 @@ class Text3D extends THREE.Mesh {
 		this.scale.set(0.01, 0.01, 0.01)
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		this.addComponent(new Text3DComponent())
 	}
 
 	addComponent(component) {
@@ -27904,6 +27969,7 @@ class PointLight extends THREE.PointLight {
 		this.name = "point_light"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -27935,6 +28001,7 @@ class SpotLight extends THREE.SpotLight {
 		this.name = "spot_light"
 	
 		this.components = []
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -27977,6 +28044,8 @@ class AmbientLight extends THREE.AmbientLight {
 		this.name = "ambient_light"
 
 		this.components = []
+
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -28008,6 +28077,8 @@ class HemisphereLight extends THREE.HemisphereLight {
 		this.name = "hemisphere_light"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		
 	}
 
 	addComponent(component) {
@@ -28038,6 +28109,9 @@ class DirectionalLight extends THREE.DirectionalLight {
 		this.name = "directional_light"
 
 		this.components = []
+
+		this.addComponent(new ElementComponent())
+		
 	}
 
 	addComponent(component) {
@@ -28069,6 +28143,7 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 		this.name = "perspective_camera"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -28100,6 +28175,9 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 		this.name = "orthographic_camera"
 
 		this.components = []
+
+		this.addComponent(new ElementComponent())
+		
 	}
 
 	addComponent(component) {
@@ -28131,6 +28209,8 @@ class Empty extends THREE.Object3D {
 		this.name = "empty"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
+		
 	}
 
 	addComponent(component) {
@@ -28201,6 +28281,7 @@ class Sky extends THREE.Scene {
 		this.add(this.sky)
 
 		this.components = []
+		this.addComponent(new ElementComponent())
 
 	}
 
@@ -28245,6 +28326,7 @@ class Sprite extends THREE.Sprite {
 		this.name = "sprite"
 
 		this.components = []
+		this.addComponent(new ElementComponent())
 	}
 
 	addComponent(component) {

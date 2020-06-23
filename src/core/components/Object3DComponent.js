@@ -3,10 +3,6 @@
 class Object3DComponent extends Component {
 	constructor() {
 		super("Object 3D")
-
-		this.defaultVisible = true
-		this.defaultCastShadow = true
-		this.defaultReceiveShadow = true
 	}
 
 	initUI() {
@@ -21,8 +17,6 @@ class Object3DComponent extends Component {
 	}
 
 	updateInfo(name, value, widget) {
-
-		console.log("name: " + name)
 
 		var str = value + ""
 		if (str === "true") {

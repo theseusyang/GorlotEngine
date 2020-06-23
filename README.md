@@ -9,6 +9,7 @@ Gorlot Engine is a 3D Game engine coded in JavaScript, based in Three.JS and nun
 ![Parent/Child system](imgs/2.png)
 ![The code Editor](imgs/3.png)
 ![The component system](img/4.png)
+![Run mode](img/5.png)
 
 ## Technologies used
 [litegui.js: The graphical interface](https://github.com/jagenjo/litegui.js)
