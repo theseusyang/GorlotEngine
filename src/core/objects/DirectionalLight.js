@@ -6,6 +6,9 @@ class DirectionalLight extends THREE.DirectionalLight {
 		this.components = []
 
 		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+		this.addComponent(new LightComponent())
+
 		
 	}
 

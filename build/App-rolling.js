@@ -27791,6 +27791,9 @@ class PointLight extends THREE.PointLight {
 
 		this.components = []
 		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+		this.addComponent(new LightComponent())
+
 	}
 
 	addComponent(component) {
@@ -27823,6 +27826,9 @@ class SpotLight extends THREE.SpotLight {
 	
 		this.components = []
 		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+		this.addComponent(new LightComponent())
+
 	}
 
 	addComponent(component) {
@@ -27867,6 +27873,8 @@ class AmbientLight extends THREE.AmbientLight {
 		this.components = []
 
 		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+		this.addComponent(new LightComponent())
 	}
 
 	addComponent(component) {
@@ -27899,6 +27907,9 @@ class HemisphereLight extends THREE.HemisphereLight {
 
 		this.components = []
 		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+		this.addComponent(new LightComponent())
+
 		
 	}
 
@@ -27932,6 +27943,9 @@ class DirectionalLight extends THREE.DirectionalLight {
 		this.components = []
 
 		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+		this.addComponent(new LightComponent())
+
 		
 	}
 
