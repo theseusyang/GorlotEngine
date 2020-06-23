@@ -10646,9 +10646,47 @@ class CodeEditor {
 		this.element.style.height= this.parent.style.height
 	}
 }
-class Model3DInspector {
+class ObjectInspector {
+	addComponentButton() {
+		EditorUI.form.addSeparator()
+
+		this.i = 0
+
+		if (Editor.selected_object.components.length > 0) {
+	    	for(var i = 0; i < Editor.selected_object.components.length; i++) {
+	    		Editor.selected_object.components[i].initUI()
+	    		EditorUI.form.addSeparator()
+	    	}
+	    }
+
+		var addComponentBtn = EditorUI.form.addButton(null, "Add Component")
+		var self = this
+	    addComponentBtn.onclick = function(e) {
+	    	self.createComponentDialog(e)
+	    }
+	}
+	
+	addComponent(component) {
+	}
+
+	createComponentDialog(e) {
+
+		var arr = []
+    	var obj = Editor.selected_object
+
+    	var context = new LiteGUI.ContextMenu(Editor.components, {
+    		title: "Add Component",
+    		event: e
+    	})
+
+	}
+
+}
+class Model3DInspector extends ObjectInspector {
 
 	constructor() {
+		super()
+
 		// IMPORTANT: Clear the form
 		EditorUI.form.clear()
 	
@@ -10667,16 +10705,10 @@ class Model3DInspector {
 	    EditorUI.form.addCheckbox("Cast Shadow", this.object.castShadow)
 	    EditorUI.form.addCheckbox("Receive Shadow", this.object.receiveShadow)
 
-	    if (Editor.selected_object.components.length > 0) {
-	    	EditorUI.form.addSeparator()
-	    	for(var i = 0; i < Editor.selected_object.components.length; i++) {
-	    		Editor.selected_object.components[i].initUI()
-	    	}
-	    }
+	    this.addComponentButton()
 
 	    EditorUI.form.addSeparator()
 
-	    EditorUI.form.addButton(null, "Add Component")
 	}
 
 	// Update the editing object info
@@ -10726,6 +10758,11 @@ Editor.MODE_SELECT = 0;
 Editor.MODE_MOVE = 1;
 Editor.MODE_RESIZE = 2;
 Editor.MODE_ROTATE = 3;
+
+//Editor component system
+Editor.components = [] // For creating a new component, push a Component to this array
+Editor.componentManager = new ComponentManager()
+Editor.componentManager.addComponent(new Component("Object 3D"), true)
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -10996,7 +11033,6 @@ Editor.update = function()
 					if(intersects.length > 0)
 					{
 						Editor.selected_object = intersects[0].object;
-						Editor.selected_object.addComponent(new Component("3D Object"))
 						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
@@ -11561,7 +11597,7 @@ EditorUI.Initialize = function() {
 
     // ----- MAINAREA SPLIT ----- 
     EditorUI.mainarea = new LiteGUI.Area({autoresize: true, inmediateResize: true, height: "calc(100% - 20px)"})
-    EditorUI.mainarea.split("horizontal", [null, 300], true)
+    EditorUI.mainarea.split("horizontal", [null, 400], true)
     // Everytime the user resizes the canvas, the EditorUI.Resize function is called
     EditorUI.mainarea.onresize = EditorUI.Resize
     // Add the mainarea to the GUI

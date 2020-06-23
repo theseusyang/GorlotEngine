@@ -318,7 +318,7 @@ EditorUI.Initialize = function() {
 
     // ----- MAINAREA SPLIT ----- 
     EditorUI.mainarea = new LiteGUI.Area({autoresize: true, inmediateResize: true, height: "calc(100% - 20px)"})
-    EditorUI.mainarea.split("horizontal", [null, 300], true)
+    EditorUI.mainarea.split("horizontal", [null, 400], true)
     // Everytime the user resizes the canvas, the EditorUI.Resize function is called
     EditorUI.mainarea.onresize = EditorUI.Resize
     // Add the mainarea to the GUI

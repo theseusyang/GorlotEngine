@@ -7,6 +7,7 @@ class Component {
 
 	initUI() {
 		// All the UI function will be here
+		EditorUI.form.addTitle(this.name)
 	}
 
 	initialize() {

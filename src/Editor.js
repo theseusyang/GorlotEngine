@@ -11,6 +11,11 @@ Editor.MODE_MOVE = 1;
 Editor.MODE_RESIZE = 2;
 Editor.MODE_ROTATE = 3;
 
+//Editor component system
+Editor.components = [] // For creating a new component, push a Component to this array
+Editor.componentManager = new ComponentManager()
+Editor.componentManager.addComponent(new Component("Object 3D"), true)
+
 //Initialize Main
 Editor.initialize = function(canvas)
 {

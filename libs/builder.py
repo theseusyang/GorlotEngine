@@ -38,9 +38,11 @@ source.append("input/Mouse.js")
 
 source.append("core/animation/Joint.js")
 source.append("core/animation/Skeleton.js")
-source.append("core/Component.js")
 source.append("core/Program.js")
 source.append("core/Scene.js")
+
+source.append("core/Component.js")
+source.append("core/ComponentManager.js")
 
 source.append("core/objects/Script.js")
 source.append("core/objects/Model3D.js")
@@ -82,6 +84,7 @@ editor.append("editor/tools/RotateTool.js")
 
 editor.append("editor/tabs/CodeEditor.js")
 
+editor.append("editor/tabs/Inspector/ObjectInspector.js")
 editor.append("editor/tabs/Inspector/Model3D.js")
 
 editor.append("Editor.js")

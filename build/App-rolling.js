@@ -27521,26 +27521,6 @@ class Skeleton {
 		}
 	}
 }
-class Component {
-	// To create a new component, you should extend this class
-
-	constructor(name) {
-		this.name = name
-	}
-
-	initUI() {
-		// All the UI function will be here
-		EditorUI.form.addTitle(this.name)
-	}
-
-	initialize() {
-		// This method will be called at the very first frame
-	}
-
-	update() {
-		// This method will be called every frame
-	}
-}
 /*function Program()
 {
 	//Program Info
@@ -27699,6 +27679,41 @@ class Scene extends THREE.Scene {
 	}
 }
 
+class Component {
+	// To create a new component, you should extend this class
+
+	constructor(name) {
+		this.name = name
+	}
+
+	initUI() {
+		// All the UI function will be here
+		EditorUI.form.addTitle(this.name)
+	}
+
+	initialize() {
+		// This method will be called at the very first frame
+	}
+
+	update() {
+		// This method will be called every frame
+	}
+}
+class ComponentManager {
+	constructor() {
+	}
+
+	addComponent(component, ui) {
+		Editor.components.push({title: component.name, callback: () => {
+			Editor.selected_object.addComponent(component)
+			
+			if(ui) {
+				EditorUI.updateInspector(Editor.selected_object)
+			}
+		
+		}})
+	}
+}
 class Script extends THREE.Object3D {
 	constructor() {
 		super()

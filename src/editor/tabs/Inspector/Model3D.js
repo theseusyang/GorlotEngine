@@ -1,6 +1,8 @@
-class Model3DInspector {
+class Model3DInspector extends ObjectInspector {
 
 	constructor() {
+		super()
+
 		// IMPORTANT: Clear the form
 		EditorUI.form.clear()
 	
@@ -19,16 +21,10 @@ class Model3DInspector {
 	    EditorUI.form.addCheckbox("Cast Shadow", this.object.castShadow)
 	    EditorUI.form.addCheckbox("Receive Shadow", this.object.receiveShadow)
 
-	    if (Editor.selected_object.components.length > 0) {
-	    	EditorUI.form.addSeparator()
-	    	for(var i = 0; i < Editor.selected_object.components.length; i++) {
-	    		Editor.selected_object.components[i].initUI()
-	    	}
-	    }
+	    this.addComponentButton()
 
 	    EditorUI.form.addSeparator()
 
-	    EditorUI.form.addButton(null, "Add Component")
 	}
 
 	// Update the editing object info
