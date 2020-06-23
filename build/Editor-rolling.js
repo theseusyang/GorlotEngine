@@ -10654,6 +10654,7 @@ class ObjectInspector {
 		this.object = Editor.selected_object
 
 	    EditorUI.form.addString("Name", this.object.name)
+	    EditorUI.form.addString("UUID", this.object.uuid, {disabled: true})
 	    EditorUI.form.addSeparator()
 	
 	    EditorUI.form.addVector3("Position", [this.object.position.x, this.object.position.y, this.object.position.z])
@@ -10695,8 +10696,9 @@ class ObjectInspector {
 		}
 
 		if (name === "Name") {
-			Editor.selected_object.name = str
-			Editor.updateTreeView()
+			//Editor.selected_object.name = str
+			//Editor.updateTreeView()
+			Editor.renameObject(Editor.selected_object, str)
 		} else if (name ===  "Position") {
 			Editor.selected_object.position.set(val[0], val[1], val[2])
 		} else if (name === "Rotation") {
@@ -10738,10 +10740,15 @@ Editor.MODE_MOVE = 1;
 Editor.MODE_RESIZE = 2;
 Editor.MODE_ROTATE = 3;
 
+// This is a variable for handling objects with a non-unique name
+Editor.nameId = 1
+
 //Editor component system
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()
+
 Editor.componentManager.addComponent(new Object3DComponent(), true)
+Editor.componentManager.addComponent(new Text3DComponent(), true)
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -11106,6 +11113,17 @@ Editor.update = function()
 // Add object to actual scene
 Editor.addToActualScene = function(obj) {
 	Editor.scene.add(obj)
+	Editor.updateTreeView()
+}
+
+// Renames an object and checks if its name is unique
+Editor.renameObject = function(obj, name) {
+	var toName = name
+	if (EditorUI.hierarchy.getItem(toName)) {
+		toName += "_" + Editor.nameId
+		Editor.nameId++
+	}
+	obj.name = toName
 	Editor.updateTreeView()
 }
 
@@ -11695,11 +11713,13 @@ EditorUI.Initialize = function() {
 
     // When renaming an object, renaming it in the scene
     LiteGUI.bind(EditorUI.hierarchy.root, "item_renamed", function(e) {
-        console.log(e.detail.data)
+        //console.log(e.detail.data)
     
-        var obj = e.detail.data.attachedTo
-        obj.name = e.detail.new_name
-        Editor.updateTreeView()
+        Editor.renameObject(e.detail.data.attachedTo, e.detail.new_name)
+
+        //var obj = e.detail.data.attachedTo
+        //obj.name = e.detail.new_name
+        //Editor.updateTreeView()
     })
 
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})
@@ -11738,7 +11758,7 @@ EditorUI.hierarchyFromScene = function(scene) {
     EditorUI.hierarchy.updateTree({id: "Program", children: []})
 
     for(var i = 0; i < scene.children.length; i++) {
-        var it = EditorUI.hierarchy.insertItem({id: scene.children[i].name + Editor.scene.children[i].id, attachedTo: scene.children[i]})
+        var it = EditorUI.hierarchy.insertItem({id: scene.children[i].name, attachedTo: scene.children[i]})
         it.addEventListener("contextmenu", function(e) {
             var item = it
             e.preventDefault()
@@ -11757,10 +11777,10 @@ EditorUI.hierarchyFromScene = function(scene) {
             for(var j = 0; j < scene.children[i].children.length; j++) {
                 EditorUI.hierarchy.insertItem(
                     {
-                        id: scene.children[i].children[j].name + Editor.scene.children[i].children[j].id,
+                        id: scene.children[i].children[j].name,
                         attachedTo: scene.children[i].children[j]
                     },
-                    scene.children[i].name + Editor.scene.children[i].id)
+                    scene.children[i].name)
             }
         }
 

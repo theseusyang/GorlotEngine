@@ -40,7 +40,7 @@ class Sky extends THREE.Scene {
 		var geometry = new THREE.SphereGeometry(4000, 32, 15)
 		var material = new THREE.ShaderMaterial({vertexShader: vertex, fragmentShader: fragment, uniforms: uniforms, side: THREE.BackSide})
 		this.sky = new Model3D(geometry, material)
-		this.sky.name = "sky"
+		this.sky.name = "sky_shape"
 		this.add(this.sky)
 
 		this.components = []

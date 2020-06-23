@@ -43,6 +43,7 @@ source.append("core/Component.js")
 source.append("core/ComponentManager.js")
 
 source.append("core/components/Object3DComponent.js")
+source.append("core/components/Text3DComponent.js")
 
 source.append("core/objects/Script.js")
 source.append("core/objects/Model3D.js")

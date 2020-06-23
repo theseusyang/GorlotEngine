@@ -27659,6 +27659,23 @@ class Component {
 	update() {
 		// This method will be called every frame
 	}
+
+	addRemoveButton() {
+		EditorUI.form.addButtons(null, ["Remove Component", "Reset Defaults"], {callback: function(name) {
+			if (name === "Remove Component") {
+				// TODO: Remove Component
+				for(var i = 0; i < Editor.selected_object.components.length; i++) {
+					if (Editor.selected_object.components[i] === this) {
+						console.log(Editor.selected_object.components[i].name)
+					}
+				}
+			} else if (name === "Reset Defaults") {
+				// TODO: Reset Defaults
+			}
+
+		}})
+
+	}
 }
 class ComponentManager {
 	constructor() {
@@ -27694,18 +27711,7 @@ class Object3DComponent extends Component {
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
 
 		var self = this
-		EditorUI.form.addButtons(null, ["Remove Component", "Reset Defaults"], {callback: function(name) {
-			if (name === "Remove Component") {
-				// TODO: Remove Component
-				console.log("Remove pressed")
-			} else if (name === "Reset Defaults") {
-				Editor.selected_object.visible = self.defaultVisible
-				Editor.selected_object.castShadow = self.defaultCastShadow
-				Editor.selected_object.receiveShadow = self.defaultReceiveShadow
-
-				EditorUI.updateInspector()
-			}
-		}})
+		this.addRemoveButton()
 	}
 
 	updateInfo(name, value, widget) {
@@ -27725,6 +27731,31 @@ class Object3DComponent extends Component {
 			Editor.selected_object.castShadow = str
 		} if (name === "Receive Shadow") {
 			Editor.selected_object.receiveShadow = str
+		}
+	}
+}
+class Text3DComponent extends Component {
+	constructor() {
+		super("Text 3D")
+
+		this.defaultText = "text"
+	}
+
+	initUI() {
+		super.initUI()
+
+		if (Editor.selected_object instanceof Text3D) {
+			EditorUI.form.addString("Text", Editor.selected_object.text)
+		} else {
+			EditorUI.form.addInfo(null, "The selected object ain't text. This component won't work :(")
+		}
+
+		this.addRemoveButton()
+	}
+
+	updateInfo(name, value, widget) {
+		if (name === "Text") {
+			Editor.selected_object.setText(value)
 		}
 	}
 }
@@ -28165,7 +28196,7 @@ class Sky extends THREE.Scene {
 		var geometry = new THREE.SphereGeometry(4000, 32, 15)
 		var material = new THREE.ShaderMaterial({vertexShader: vertex, fragmentShader: fragment, uniforms: uniforms, side: THREE.BackSide})
 		this.sky = new Model3D(geometry, material)
-		this.sky.name = "sky"
+		this.sky.name = "sky_shape"
 		this.add(this.sky)
 
 		this.components = []

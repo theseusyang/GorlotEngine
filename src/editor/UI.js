@@ -444,11 +444,13 @@ EditorUI.Initialize = function() {
 
     // When renaming an object, renaming it in the scene
     LiteGUI.bind(EditorUI.hierarchy.root, "item_renamed", function(e) {
-        console.log(e.detail.data)
+        //console.log(e.detail.data)
     
-        var obj = e.detail.data.attachedTo
-        obj.name = e.detail.new_name
-        Editor.updateTreeView()
+        Editor.renameObject(e.detail.data.attachedTo, e.detail.new_name)
+
+        //var obj = e.detail.data.attachedTo
+        //obj.name = e.detail.new_name
+        //Editor.updateTreeView()
     })
 
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})
@@ -487,7 +489,7 @@ EditorUI.hierarchyFromScene = function(scene) {
     EditorUI.hierarchy.updateTree({id: "Program", children: []})
 
     for(var i = 0; i < scene.children.length; i++) {
-        var it = EditorUI.hierarchy.insertItem({id: scene.children[i].name + Editor.scene.children[i].id, attachedTo: scene.children[i]})
+        var it = EditorUI.hierarchy.insertItem({id: scene.children[i].name, attachedTo: scene.children[i]})
         it.addEventListener("contextmenu", function(e) {
             var item = it
             e.preventDefault()
@@ -506,10 +508,10 @@ EditorUI.hierarchyFromScene = function(scene) {
             for(var j = 0; j < scene.children[i].children.length; j++) {
                 EditorUI.hierarchy.insertItem(
                     {
-                        id: scene.children[i].children[j].name + Editor.scene.children[i].children[j].id,
+                        id: scene.children[i].children[j].name,
                         attachedTo: scene.children[i].children[j]
                     },
-                    scene.children[i].name + Editor.scene.children[i].id)
+                    scene.children[i].name)
             }
         }
 

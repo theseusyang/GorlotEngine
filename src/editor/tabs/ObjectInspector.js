@@ -6,6 +6,7 @@ class ObjectInspector {
 		this.object = Editor.selected_object
 
 	    EditorUI.form.addString("Name", this.object.name)
+	    EditorUI.form.addString("UUID", this.object.uuid, {disabled: true})
 	    EditorUI.form.addSeparator()
 	
 	    EditorUI.form.addVector3("Position", [this.object.position.x, this.object.position.y, this.object.position.z])
@@ -47,8 +48,9 @@ class ObjectInspector {
 		}
 
 		if (name === "Name") {
-			Editor.selected_object.name = str
-			Editor.updateTreeView()
+			//Editor.selected_object.name = str
+			//Editor.updateTreeView()
+			Editor.renameObject(Editor.selected_object, str)
 		} else if (name ===  "Position") {
 			Editor.selected_object.position.set(val[0], val[1], val[2])
 		} else if (name === "Rotation") {

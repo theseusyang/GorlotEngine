@@ -11,10 +11,15 @@ Editor.MODE_MOVE = 1;
 Editor.MODE_RESIZE = 2;
 Editor.MODE_ROTATE = 3;
 
+// This is a variable for handling objects with a non-unique name
+Editor.nameId = 1
+
 //Editor component system
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()
+
 Editor.componentManager.addComponent(new Object3DComponent(), true)
+Editor.componentManager.addComponent(new Text3DComponent(), true)
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -379,6 +384,17 @@ Editor.update = function()
 // Add object to actual scene
 Editor.addToActualScene = function(obj) {
 	Editor.scene.add(obj)
+	Editor.updateTreeView()
+}
+
+// Renames an object and checks if its name is unique
+Editor.renameObject = function(obj, name) {
+	var toName = name
+	if (EditorUI.hierarchy.getItem(toName)) {
+		toName += "_" + Editor.nameId
+		Editor.nameId++
+	}
+	obj.name = toName
 	Editor.updateTreeView()
 }
 

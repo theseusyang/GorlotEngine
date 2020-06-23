@@ -17,18 +17,7 @@ class Object3DComponent extends Component {
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
 
 		var self = this
-		EditorUI.form.addButtons(null, ["Remove Component", "Reset Defaults"], {callback: function(name) {
-			if (name === "Remove Component") {
-				// TODO: Remove Component
-				console.log("Remove pressed")
-			} else if (name === "Reset Defaults") {
-				Editor.selected_object.visible = self.defaultVisible
-				Editor.selected_object.castShadow = self.defaultCastShadow
-				Editor.selected_object.receiveShadow = self.defaultReceiveShadow
-
-				EditorUI.updateInspector()
-			}
-		}})
+		this.addRemoveButton()
 	}
 
 	updateInfo(name, value, widget) {
