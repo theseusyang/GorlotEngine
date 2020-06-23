@@ -273,7 +273,7 @@ EditorUI.Initialize = function() {
     }})
 
     // Virtual Reality
-    EditorUI.topmenu.add("Add/Device/Virutal Reality", {callback: () => {
+    EditorUI.topmenu.add("Add/Device/Virtual Reality", {callback: () => {
         // TODO: This
     }})
 
@@ -473,7 +473,7 @@ EditorUI.updateInspector = function(object) {
     EditorUI.ins = null
 
     if (object instanceof Model3D) {
-        EditorUI.ins = new Model3DInspector(object)
+        EditorUI.ins = new Model3DInspector()
         EditorUI.form.onchange = EditorUI.ins.updateInfo
     } else {
         // If the object ain't any of the supported types, then the form is cleaned
