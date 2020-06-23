@@ -47,13 +47,28 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        console.log(Editor.program.scene)
-        console.log(JSON.parse(App.readFile("project.gorlot")))
-        Editor.updateTreeView()
+        try {
+            Editor.program = JSON.parse(App.readFile("project.json"))
+            Editor.updateTreeView()
+            console.log("Loaded")
+        } catch(e) {
+            console.error("Error")
+        }
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
-        App.writeFile("project.gorlot", JSON.stringify(Editor.program.scene))
+        // TODO: Create a toJSON function to every object, so the components can be serialized
+
+        var output = Editor.scene.toJSON()
+
+        try {
+            output = JSON.stringify(output, null, '\t')
+            output = output.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1')
+        } catch (e) {
+            output = JSON.stringify(output)
+        }
+
+        App.writeFile("project.json", output)
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {

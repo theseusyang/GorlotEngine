@@ -1,14 +1,12 @@
-class PointLight extends THREE.PointLight {
-	constructor(hex, intensity, distance, decay) {
-		super(hex, intensity, distance, decay)
+class PerspectiveCamera extends THREE.PerspectiveCamera {
+	constructor(fov, aspect, near, far) {
+		super(fov, aspect, near, far)
 
-		this.name = "point_light"
+		this.rotationAutoUpdate = true
+		this.name = "perspective_camera"
 
 		this.components = []
 		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
-
 	}
 
 	addComponent(component) {
@@ -19,7 +17,7 @@ class PointLight extends THREE.PointLight {
 
 	initialize() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].length != undefined) {
+			if (this.children[i].initialize != undefined) {
 				this.children[i].initialize()
 			}
 		}

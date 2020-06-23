@@ -10917,7 +10917,6 @@ Editor.nameId = 1
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()
 
-Editor.componentManager.addComponent(new ElementComponent(), true)
 Editor.componentManager.addComponent(new Object3DComponent(), true)
 Editor.componentManager.addComponent(new Text3DComponent(), true)
 Editor.componentManager.addComponent(new LightComponent(), true)
@@ -10943,7 +10942,7 @@ Editor.initialize = function(canvas)
 
 	//Set mouse lock true
 	App.setMouseLock(false);
-	App.showStats(true);
+	App.showStats(false);
 
 	//Set render canvas
 	Editor.canvas = EditorUI.canvas;
@@ -11294,9 +11293,10 @@ Editor.update = function()
 Editor.addToActualScene = function(obj) {
 	Editor.scene.add(obj)
 	Editor.updateTreeView()
+	Editor.renameObject(obj, obj.name)
 }
 
-// Renames an object and checks if its name is unique
+// Checks if an object's name is unique, if not, renames it
 Editor.renameObject = function(obj, name) {
 	var toName = name
 	if (EditorUI.hierarchy.getItem(toName)) {
@@ -11524,13 +11524,28 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        console.log(Editor.program.scene)
-        console.log(JSON.parse(App.readFile("project.gorlot")))
-        Editor.updateTreeView()
+        try {
+            Editor.program = JSON.parse(App.readFile("project.json"))
+            Editor.updateTreeView()
+            console.log("Loaded")
+        } catch(e) {
+            console.error("Error")
+        }
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
-        App.writeFile("project.gorlot", JSON.stringify(Editor.program.scene))
+        // TODO: Create a toJSON function to every object, so the components can be serialized
+
+        var output = Editor.scene.toJSON()
+
+        try {
+            output = JSON.stringify(output, null, '\t')
+            output = output.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, '$1')
+        } catch (e) {
+            output = JSON.stringify(output)
+        }
+
+        App.writeFile("project.json", output)
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {

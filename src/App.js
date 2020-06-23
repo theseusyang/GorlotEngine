@@ -16,6 +16,8 @@ App.initialize = function(main)
 	App.stats.domElement.style.left = "0px";
 	App.stats.domElement.style.top = "0px";
 	App.stats.domElement.style.zIndex = "10000"
+	App.stats.domElement.style.opacity = "0.7"
+	App.stats.domElement.style.pointerEvents = "none"
 	document.body.appendChild(App.stats.domElement);
 
 	//Init Input

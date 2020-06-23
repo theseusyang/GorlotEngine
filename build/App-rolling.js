@@ -27621,9 +27621,9 @@ class Program {
 		scene.add(model)
 
 		material = new THREE.MeshPhongMaterial()
-		geometry = new THREE.BoxGeometry(10, 0.1, 10)
+		geometry = new THREE.BoxGeometry(20, 1, 20)
 		model = new Model3D(geometry, material)
-		model.position.set(0, -1.05, 0)
+		model.position.set(0, -1.5, 0)
 		model.receiveShadow = true
 		model.castShadow = true
 		model.name = "ground"
@@ -27725,154 +27725,14 @@ class Scene extends THREE.Scene {
 	}
 }
 
-class Script extends THREE.Object3D {
-	constructor() {
-		super()
-
-		this.name = "script"
-
-		// Script code
-		this.code_loop = ""
-		this.code_init = ""
-
-		// Script functions
-		this.func_loop = Function(this.code_loop)
-		this.func_init = Function(this.code_init)
-
-		this.components = []
-
-		this.addComponent(new ElementComponent())
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	initialize() {
-		// Run script
-		try {
-			this.func_init()
-		} catch(e) {}
-
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
-				this.children[i].initialize()
-			}
-		}
-	}
-
-	setInitCode(code) {
-		try {
-			this.code_init = code
-			this.func_init = Function(this.code_init)
-		} catch(e) {}
-	}
-
-	setLoopCode(code) {
-		try {
-			this.code_loop = code_loop
-			this.func_loop = Function(this.code_loop)
-		} catch(e) {}
-	}
-
-	update() {
-		// Run script
-		try {
-			this.func_loop()
-		} catch (e) {
-
-		}
-
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
-				this.children[i].update()
-			}
-		}
-	}
-}
-class Model3D extends THREE.Mesh {
-	constructor(geometry, material) {
-		super(geometry, material)
-
-		this.name = "model"
-
-		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
-				this.children[i].initialize()
-			}
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
-				this.children[i].update()
-			}
-		}
-	}
-}
-class Text3D extends THREE.Mesh {
-	constructor(text, font, material) {
-		super(new THREE.TextGeometry(text, {font: font}), material)
-
-		this.name = "text"
-
-		this.font = font
-		this.text = text
-
-		this.scale.set(0.01, 0.01, 0.01)
-
-		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Text3DComponent())
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
-				this.children[i].initialize()
-			}
-		}
-	}
-
-	setText(text) {
-		this.text = text
-		this.geometry = new THREE.TextGeometry(this.text, {font: this.font})
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
-				this.children[i].update
-			}
-		}
-	}
-}
 class PointLight extends THREE.PointLight {
 	constructor(hex, intensity, distance, decay) {
 		super(hex, intensity, distance, decay)
 
 		this.name = "point_light"
+
+		this.shadow.camera.near = 1
+		this.shadow.camera.far = 1000
 
 		this.components = []
 		this.addComponent(new ElementComponent())
@@ -27984,42 +27844,6 @@ class AmbientLight extends THREE.AmbientLight {
 		}
 	}
 }
-class HemisphereLight extends THREE.HemisphereLight {
-	constructor(skyColorHex, groundColorHex, intensity) {
-		super(skyColorHex, groundColorHex, intensity)
-
-		this.name = "hemisphere_light"
-
-		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
-
-		
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
-				this.children[i].initialize()
-			}
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
-				this.children[i].update()
-			}
-		}
-	}
-}
 class DirectionalLight extends THREE.DirectionalLight {
 	constructor(hex, intensity) {
 		super(hex, intensity)
@@ -28056,80 +27880,17 @@ class DirectionalLight extends THREE.DirectionalLight {
 		}
 	}
 }
-class PerspectiveCamera extends THREE.PerspectiveCamera {
-	constructor(fov, aspect, near, far) {
-		super(fov, aspect, near, far)
+class HemisphereLight extends THREE.HemisphereLight {
+	constructor(skyColorHex, groundColorHex, intensity) {
+		super(skyColorHex, groundColorHex, intensity)
 
-		this.name = "perspective_camera"
-
-		this.components = []
-		this.addComponent(new ElementComponent())
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
-				this.children[i].initialize()
-			}
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
-				this.children[i].update()
-			}
-		}
-	}
-}
-class OrthographicCamera extends THREE.OrthographicCamera {
-	constructor(left, right, top, bottom, near, far) {
-		super(left, right, top, bottom, near, far)
-
-		this.name = "orthographic_camera"
-
-		this.components = []
-
-		this.addComponent(new ElementComponent())
-		
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
-				this.children[i].initialize()
-			}
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
-				this.children[i].update()
-			}
-		}
-	}
-}
-class Empty extends THREE.Object3D {
-	constructor() {
-		super()
-
-		this.name = "empty"
+		this.name = "hemisphere_light"
 
 		this.components = []
 		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+		this.addComponent(new LightComponent())
+
 		
 	}
 
@@ -28317,6 +28078,251 @@ Sky.pid2 = Math.PI / 2
 //Sky color (morning, noon, afternoon, nigh)
 Sky.color_top = [new THREE.Color(0x77b3fb), new THREE.Color(0x0076ff), new THREE.Color(0x035bb6), new THREE.Color(0x002439)];
 Sky.color_bottom = [new THREE.Color(0xebece6), new THREE.Color(0xffffff), new THREE.Color(0xfee7d7), new THREE.Color(0x0065a7)];
+class PerspectiveCamera extends THREE.PerspectiveCamera {
+	constructor(fov, aspect, near, far) {
+		super(fov, aspect, near, far)
+
+		this.rotationAutoUpdate = true
+		this.name = "perspective_camera"
+
+		this.components = []
+		this.addComponent(new ElementComponent())
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	update() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].update != undefined) {
+				this.children[i].update()
+			}
+		}
+	}
+}
+class OrthographicCamera extends THREE.OrthographicCamera {
+	constructor(left, right, top, bottom, near, far) {
+		super(left, right, top, bottom, near, far)
+
+		this.name = "orthographic_camera"
+
+		this.components = []
+
+		this.addComponent(new ElementComponent())
+		
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	update() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].update != undefined) {
+				this.children[i].update()
+			}
+		}
+	}
+}
+class Empty extends THREE.Object3D {
+	constructor() {
+		super()
+
+		this.name = "empty"
+
+		this.components = []
+		this.addComponent(new ElementComponent())
+		
+		this.rotationAutoUpdate = false
+		this.matrixAutoUpdate = false
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	update() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].update != undefined) {
+				this.children[i].update()
+			}
+		}
+	}
+}
+class Script extends THREE.Object3D {
+	constructor() {
+		super()
+
+		this.name = "script"
+
+		// Script code
+		this.code_loop = ""
+		this.code_init = ""
+
+		// Script functions
+		this.func_loop = Function(this.code_loop)
+		this.func_init = Function(this.code_init)
+
+		this.components = []
+
+		this.addComponent(new ElementComponent())
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	initialize() {
+		// Run script
+		try {
+			this.func_init()
+		} catch(e) {}
+
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	setInitCode(code) {
+		try {
+			this.code_init = code
+			this.func_init = Function(this.code_init)
+		} catch(e) {}
+	}
+
+	setLoopCode(code) {
+		try {
+			this.code_loop = code_loop
+			this.func_loop = Function(this.code_loop)
+		} catch(e) {}
+	}
+
+	update() {
+		// Run script
+		try {
+			this.func_loop()
+		} catch (e) {
+
+		}
+
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].update != undefined) {
+				this.children[i].update()
+			}
+		}
+	}
+}
+class Model3D extends THREE.Mesh {
+	constructor(geometry, material) {
+		super(geometry, material)
+
+		this.name = "model"
+
+		this.components = []
+		this.addComponent(new ElementComponent())
+		this.addComponent(new Object3DComponent())
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	update() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].update != undefined) {
+				this.children[i].update()
+			}
+		}
+	}
+}
+class Text3D extends THREE.Mesh {
+	constructor(text, font, material) {
+		super(new THREE.TextGeometry(text, {font: font}), material)
+
+		this.name = "text"
+
+		this.font = font
+		this.text = text
+
+		this.scale.set(0.01, 0.01, 0.01)
+
+		this.components = []
+		this.addComponent(new ElementComponent())
+		this.addComponent(new Text3DComponent())
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].initialize != undefined) {
+				this.children[i].initialize()
+			}
+		}
+	}
+
+	setText(text) {
+		this.text = text
+		this.geometry = new THREE.TextGeometry(this.text, {font: this.font})
+	}
+
+	update() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].update != undefined) {
+				this.children[i].update
+			}
+		}
+	}
+}
 class Sprite extends THREE.Sprite {
 	constructor(material) {
 		super(material)
@@ -28373,6 +28379,8 @@ App.initialize = function(main)
 	App.stats.domElement.style.left = "0px";
 	App.stats.domElement.style.top = "0px";
 	App.stats.domElement.style.zIndex = "10000"
+	App.stats.domElement.style.opacity = "0.7"
+	App.stats.domElement.style.pointerEvents = "none"
 	document.body.appendChild(App.stats.domElement);
 
 	//Init Input
