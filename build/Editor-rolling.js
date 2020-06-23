@@ -9977,14 +9977,16 @@ class ComponentManager {
 	}
 
 	addComponent(component, ui) {
-		Editor.components.push({title: component.name, callback: () => {
-			Editor.selected_object.addComponent(component)
-			
-			if(ui) {
-				EditorUI.updateInspector()
-			}
-		
-		}})
+//		Editor.components.push({title: component.name, callback: () => {
+//			Editor.selected_object.addComponent(component)
+//			
+//			if(ui) {
+//				EditorUI.updateInspector()
+//			}
+//		
+//		}})
+
+		Editor.components.push(component)
 	}
 }
 class ElementComponent extends Component {
@@ -10886,13 +10888,25 @@ class ObjectInspector {
 
 	createComponentDialog(e) {
 
-		var arr = []
-    	var obj = Editor.selected_object
+		var dialog = new LiteGUI.Dialog({title: "Components", closable: true })
+		dialog.dockTo(EditorUI.inspector, "full")
+		dialog.show()
 
-    	var context = new LiteGUI.ContextMenu(Editor.components, {
-    		title: "Add Component",
-    		event: e
-    	})
+		var inspector = new LiteGUI.Inspector({width: dialog.width, height: dialog.height})
+		dialog.add(inspector)
+
+		Editor.components.forEach((item, index) => {
+			inspector.addButton(null, item.name, {callback: () => {
+				Editor.selected_object.addComponent(item)
+				EditorUI.updateInspector()
+				dialog.close()
+			}})
+		})
+
+    	//var context = new LiteGUI.ContextMenu(Editor.components, {
+    	//	title: "Add Component",
+    	//	event: e
+    	//})
 
 	}
 
