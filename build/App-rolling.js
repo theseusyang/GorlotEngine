@@ -1,42 +1,3 @@
-// A function created by me, to make the console in the Editor to function properly
-var logOfConsole = []
-
-var _log = console.log,
-	_warn = console.warn,
-	_error = console.error
-
-console.log = function() {
-	logOfConsole.push({method: 'log', arguments: arguments})
-	// TODO: Do dis in a non-so shitty way
-	var str = ""
-	for(var i = 0; i < arguments.length; i++) {
-		str += arguments[i] + " "
-	}
-	EditorUI.console.addMessage("Log: " + str.toString(), "con-log")
-	return _log.apply(console, arguments)
-}
-
-console.warn = function() {
-	logOfConsole.push({method: 'warn', arguments: arguments})
-	// TODO: Do dis in a non-so shitty way
-	var str = ""
-	for(var i = 0; i < arguments.length; i++) {
-		str += arguments[i] + " "
-	}
-	EditorUI.console.addMessage("Warning: " + str, "con-warn")
-	return _warn.apply(console, arguments)
-}
-
-console.error = function() {
-	logOfConsole.push({method: 'error', arguments: arguments})
-	// TODO: Do dis in a non-so shitty way
-	var str = ""
-	for(var i = 0; i < arguments.length; i++) {
-		str += arguments[i] + " "
-	}
-	EditorUI.console.addMessage("Error: " + str, "con-error")
-	return _error.apply(console, arguments)
-}
 // threejs.org/license
 'use strict';var THREE={REVISION:"75"};"function"===typeof define&&define.amd?define("three",THREE):"undefined"!==typeof exports&&"undefined"!==typeof module&&(module.exports=THREE);void 0===Number.EPSILON&&(Number.EPSILON=Math.pow(2,-52));void 0===Math.sign&&(Math.sign=function(a){return 0>a?-1:0<a?1:+a});void 0===Function.prototype.name&&void 0!==Object.defineProperty&&Object.defineProperty(Function.prototype,"name",{get:function(){return this.toString().match(/^\s*function\s*(\S*)\s*\(/)[1]}});
 void 0===Object.assign&&Object.defineProperty(Object,"assign",{writable:!0,configurable:!0,value:function(a){if(void 0===a||null===a)throw new TypeError("Cannot convert first argument to object");for(var b=Object(a),c=1,d=arguments.length;c!==d;++c){var e=arguments[c];if(void 0!==e&&null!==e)for(var e=Object(e),f=Object.keys(e),g=0,h=f.length;g!==h;++g){var k=f[g],l=Object.getOwnPropertyDescriptor(e,k);void 0!==l&&l.enumerable&&(b[k]=e[k])}}return b}});THREE.MOUSE={LEFT:0,MIDDLE:1,RIGHT:2};
@@ -27708,10 +27669,63 @@ class ComponentManager {
 			Editor.selected_object.addComponent(component)
 			
 			if(ui) {
-				EditorUI.updateInspector(Editor.selected_object)
+				EditorUI.updateInspector()
 			}
 		
 		}})
+	}
+}
+// TODO: Move all the component system to "src/editor"
+
+class Object3DComponent extends Component {
+	constructor() {
+		super("Object 3D")
+
+		this.defaultVisible = true
+		this.defaultCastShadow = true
+		this.defaultReceiveShadow = true
+	}
+
+	initUI() {
+		super.initUI()
+	
+		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible)
+		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
+		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
+
+		var self = this
+		EditorUI.form.addButtons(null, ["Remove Component", "Reset Defaults"], {callback: function(name) {
+			if (name === "Remove Component") {
+				// TODO: Remove Component
+				console.log("Remove pressed")
+			} else if (name === "Reset Defaults") {
+				Editor.selected_object.visible = self.defaultVisible
+				Editor.selected_object.castShadow = self.defaultCastShadow
+				Editor.selected_object.receiveShadow = self.defaultReceiveShadow
+
+				EditorUI.updateInspector()
+			}
+		}})
+	}
+
+	updateInfo(name, value, widget) {
+
+		console.log("name: " + name)
+
+		var str = value + ""
+		if (str === "true") {
+			str = true
+		} if (str === "false") {
+			str = false
+		}
+
+		if (name === "Visible") {
+			Editor.selected_object.visible = str
+		} if (name === "Cast Shadow") {
+			Editor.selected_object.castShadow = str
+		} if (name === "Receive Shadow") {
+			Editor.selected_object.receiveShadow = str
+		}
 	}
 }
 class Script extends THREE.Object3D {

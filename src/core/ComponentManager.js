@@ -7,7 +7,7 @@ class ComponentManager {
 			Editor.selected_object.addComponent(component)
 			
 			if(ui) {
-				EditorUI.updateInspector(Editor.selected_object)
+				EditorUI.updateInspector()
 			}
 		
 		}})

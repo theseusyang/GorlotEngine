@@ -14,7 +14,7 @@ Editor.MODE_ROTATE = 3;
 //Editor component system
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()
-Editor.componentManager.addComponent(new Component("Object 3D"), true)
+Editor.componentManager.addComponent(new Object3DComponent(), true)
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -188,6 +188,7 @@ Editor.update = function()
 			if(Mouse.buttonJustReleased(Mouse.LEFT))
 			{
 				Editor.is_editing_object = false;
+				EditorUI.updateInspector()
 			}
 			else
 			{
@@ -202,20 +203,17 @@ Editor.update = function()
 						Editor.selected_object.position.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
 						Editor.selected_object.position.x -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.y)
 					{
 						Editor.selected_object.position.y -= Mouse.pos_diff.y * speed;
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.z)
 					{
 						Editor.selected_object.position.z -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x + Editor.pid2);
 						Editor.selected_object.position.z -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x + Editor.pid2);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
 				//Resize mode
@@ -227,20 +225,17 @@ Editor.update = function()
 						Editor.selected_object.scale.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
 						Editor.selected_object.scale.x -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.y)
 					{
 						Editor.selected_object.scale.y -= Mouse.pos_diff.y * speed;
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.z)
 					{
 						Editor.selected_object.scale.z -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x + Editor.pid2);
 						Editor.selected_object.scale.z -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x + Editor.pid2);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
 				//Rotate Mode
@@ -252,21 +247,18 @@ Editor.update = function()
 						Editor.selected_object.rotation.x -= Mouse.pos_diff.y * speed;
 						Editor.selected_object.rotation.x -= Mouse.pos_diff.x * speed;
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.y)
 					{
 						Editor.selected_object.rotation.y -= Mouse.pos_diff.y * speed;
 						Editor.selected_object.rotation.y -= Mouse.pos_diff.x * speed;
 					
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.z)
 					{
 						Editor.selected_object.rotation.z += Mouse.pos_diff.y * speed;
 						Editor.selected_object.rotation.z += Mouse.pos_diff.x * speed;
 					
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
 			}
@@ -285,7 +277,7 @@ Editor.update = function()
 					if(intersects.length > 0)
 					{
 						Editor.selected_object = intersects[0].object;
-						EditorUI.updateInspector(Editor.selected_object)
+						EditorUI.updateInspector()
 					}
 				}
 			}
@@ -393,6 +385,7 @@ Editor.addToActualScene = function(obj) {
 // Update Tree View to Match Actual Scene
 Editor.updateTreeView = function() {
 	EditorUI.hierarchyFromScene(Editor.scene)
+	EditorUI.updateInspector()
 }
 
 //Draw stuff into screen

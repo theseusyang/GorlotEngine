@@ -1,9 +1,6 @@
-class Model3DInspector extends ObjectInspector {
-
+class ObjectInspector {
+	
 	constructor() {
-		super()
-
-		// IMPORTANT: Clear the form
 		EditorUI.form.clear()
 	
 		this.object = Editor.selected_object
@@ -15,22 +12,31 @@ class Model3DInspector extends ObjectInspector {
 	    EditorUI.form.addVector3("Rotation", [this.object.rotation.x, this.object.rotation.y, this.object.rotation.z])
 	    EditorUI.form.addVector3("Scale",    [this.object.scale.x, this.object.scale.y, this.object.scale.z])
 
-	    EditorUI.form.addSeparator()
-
-	    EditorUI.form.addCheckbox("Visible", this.object.visible)
-	    EditorUI.form.addCheckbox("Cast Shadow", this.object.castShadow)
-	    EditorUI.form.addCheckbox("Receive Shadow", this.object.receiveShadow)
-
 	    this.addComponentButton()
 
 	    EditorUI.form.addSeparator()
-
 	}
 
-	// Update the editing object info
-	updateInfo(name, value, widget) {
-		console.log("Name: " + name + ", Value: " + value)
+	addComponentButton() {
+		EditorUI.form.addSeparator()
 
+		this.i = 0
+
+		if (Editor.selected_object.components.length > 0) {
+	    	for(var i = 0; i < Editor.selected_object.components.length; i++) {
+	    		Editor.selected_object.components[i].initUI()
+	    		EditorUI.form.addSeparator()
+	    	}
+	    }
+
+		var addComponentBtn = EditorUI.form.addButton(null, "Add Component")
+		var self = this
+	    addComponentBtn.onclick = function(e) {
+	    	self.createComponentDialog(e)
+	    }
+	}
+
+	updateInfo(name, value, widget) {
 		var str = value + ""
 		var val = str.split(",")
 
@@ -51,13 +57,23 @@ class Model3DInspector extends ObjectInspector {
 			Editor.selected_object.scale.set(val[0], val[1], val[2])
 		}
 
-		else if (name === "Visible") {
-			Editor.selected_object.visible = str
-		} else if (name === "Cast Shadow") {
-			Editor.selected_object.castShadow = str
-		} else if (name === "Receive Shadow") {
-			Editor.selected_object.receiveShadow = str
+		if(Editor.selected_object.components.length > 0) {
+			for(var i = 0; i < Editor.selected_object.components.length; i++) {
+				Editor.selected_object.components[i].updateInfo(name, value, widget)
+			}
 		}
+	}
+
+	createComponentDialog(e) {
+
+		var arr = []
+    	var obj = Editor.selected_object
+
+    	var context = new LiteGUI.ContextMenu(Editor.components, {
+    		title: "Add Component",
+    		event: e
+    	})
+
 	}
 
 }

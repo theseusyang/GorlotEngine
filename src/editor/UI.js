@@ -347,15 +347,16 @@ EditorUI.Initialize = function() {
 
     // ----- BOT TABS -----
 
-    EditorUI.bot_tabs = new LiteGUI.Tabs()
-    EditorUI.bot_tabs.addTab("Explorer",{selected: true, width: "100%"})
-    EditorUI.bot_tabs.addTab("Console", {selected: false, width: "100%"})
-    EditorUI.left_area.getSection(1).add(EditorUI.bot_tabs)
+    //EditorUI.bot_tabs = new LiteGUI.Tabs()
+    //EditorUI.bot_tabs.addTab("Explorer",{selected: true, width: "100%"})
+    //EditorUI.bot_tabs.addTab("Console", {selected: false, width: "100%"})
+    //EditorUI.left_area.getSection(1).add(EditorUI.bot_tabs)
 
     // ----- EXPLORER -----
 
     EditorUI.asset_explorer = new LiteGUI.Panel({title: "Explorer", scroll: true})
-    EditorUI.bot_tabs.getTab("Explorer").add(EditorUI.asset_explorer)
+    EditorUI.left_area.getSection(1).add(EditorUI.asset_explorer)
+    //EditorUI.bot_tabs.getTab("Explorer").add(EditorUI.asset_explorer)
 
     // ----- ASSET EXPLORER MENU -----
 
@@ -382,11 +383,11 @@ EditorUI.Initialize = function() {
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
     // ----- CONSOLE -----
-    EditorUI.console = new LiteGUI.Console()
-    EditorUI.bot_tabs.getTab("Console").add(EditorUI.console)
+    //EditorUI.console = new LiteGUI.Console()
+    //EditorUI.bot_tabs.getTab("Console").add(EditorUI.console)
 
     // ----- TREE -----
-    EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height+100], true)
+    EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height + 200], true)
     
     EditorUI.hierarchy_panel = new LiteGUI.Panel({title: "Hierarchy", scroll: true})
     EditorUI.right_area.getSection(0).add(EditorUI.hierarchy_panel)
@@ -469,14 +470,15 @@ EditorUI.updateInterface = function () {
     EditorUI.resizeCanvas()
 }
 
-EditorUI.updateInspector = function(object) {
+EditorUI.updateInspector = function() {
     EditorUI.ins = null
 
-    if (object instanceof Model3D) {
-        EditorUI.ins = new Model3DInspector()
+    if(Editor.selected_object != null) {
+        var object = Editor.selected_object
+    
+        EditorUI.ins = new ObjectInspector()
         EditorUI.form.onchange = EditorUI.ins.updateInfo
     } else {
-        // If the object ain't any of the supported types, then the form is cleaned
         EditorUI.form.clear()
     }
 }

@@ -10,8 +10,6 @@ editorLibs = []
 editorCss = []
 
 # First, Libraries are added
-libraries.append("console.js")
-
 libraries.append("three/three.min.js")
 libraries.append("three/stats.min.js")
 
@@ -43,6 +41,8 @@ source.append("core/Scene.js")
 
 source.append("core/Component.js")
 source.append("core/ComponentManager.js")
+
+source.append("core/components/Object3DComponent.js")
 
 source.append("core/objects/Script.js")
 source.append("core/objects/Model3D.js")
@@ -83,9 +83,7 @@ editor.append("editor/tools/ResizeTool.js")
 editor.append("editor/tools/RotateTool.js")
 
 editor.append("editor/tabs/CodeEditor.js")
-
-editor.append("editor/tabs/Inspector/ObjectInspector.js")
-editor.append("editor/tabs/Inspector/Model3D.js")
+editor.append("editor/tabs/ObjectInspector.js")
 
 editor.append("Editor.js")
 

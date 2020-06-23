@@ -10647,6 +10647,24 @@ class CodeEditor {
 	}
 }
 class ObjectInspector {
+	
+	constructor() {
+		EditorUI.form.clear()
+	
+		this.object = Editor.selected_object
+
+	    EditorUI.form.addString("Name", this.object.name)
+	    EditorUI.form.addSeparator()
+	
+	    EditorUI.form.addVector3("Position", [this.object.position.x, this.object.position.y, this.object.position.z])
+	    EditorUI.form.addVector3("Rotation", [this.object.rotation.x, this.object.rotation.y, this.object.rotation.z])
+	    EditorUI.form.addVector3("Scale",    [this.object.scale.x, this.object.scale.y, this.object.scale.z])
+
+	    this.addComponentButton()
+
+	    EditorUI.form.addSeparator()
+	}
+
 	addComponentButton() {
 		EditorUI.form.addSeparator()
 
@@ -10665,56 +10683,8 @@ class ObjectInspector {
 	    	self.createComponentDialog(e)
 	    }
 	}
-	
-	addComponent(component) {
-	}
 
-	createComponentDialog(e) {
-
-		var arr = []
-    	var obj = Editor.selected_object
-
-    	var context = new LiteGUI.ContextMenu(Editor.components, {
-    		title: "Add Component",
-    		event: e
-    	})
-
-	}
-
-}
-class Model3DInspector extends ObjectInspector {
-
-	constructor() {
-		super()
-
-		// IMPORTANT: Clear the form
-		EditorUI.form.clear()
-	
-		this.object = Editor.selected_object
-
-	    EditorUI.form.addString("Name", this.object.name)
-	    EditorUI.form.addSeparator()
-	
-	    EditorUI.form.addVector3("Position", [this.object.position.x, this.object.position.y, this.object.position.z])
-	    EditorUI.form.addVector3("Rotation", [this.object.rotation.x, this.object.rotation.y, this.object.rotation.z])
-	    EditorUI.form.addVector3("Scale",    [this.object.scale.x, this.object.scale.y, this.object.scale.z])
-
-	    EditorUI.form.addSeparator()
-
-	    EditorUI.form.addCheckbox("Visible", this.object.visible)
-	    EditorUI.form.addCheckbox("Cast Shadow", this.object.castShadow)
-	    EditorUI.form.addCheckbox("Receive Shadow", this.object.receiveShadow)
-
-	    this.addComponentButton()
-
-	    EditorUI.form.addSeparator()
-
-	}
-
-	// Update the editing object info
 	updateInfo(name, value, widget) {
-		console.log("Name: " + name + ", Value: " + value)
-
 		var str = value + ""
 		var val = str.split(",")
 
@@ -10735,17 +10705,26 @@ class Model3DInspector extends ObjectInspector {
 			Editor.selected_object.scale.set(val[0], val[1], val[2])
 		}
 
-		else if (name === "Visible") {
-			Editor.selected_object.visible = str
-		} else if (name === "Cast Shadow") {
-			Editor.selected_object.castShadow = str
-		} else if (name === "Receive Shadow") {
-			Editor.selected_object.receiveShadow = str
+		if(Editor.selected_object.components.length > 0) {
+			for(var i = 0; i < Editor.selected_object.components.length; i++) {
+				Editor.selected_object.components[i].updateInfo(name, value, widget)
+			}
 		}
 	}
 
-}
+	createComponentDialog(e) {
 
+		var arr = []
+    	var obj = Editor.selected_object
+
+    	var context = new LiteGUI.ContextMenu(Editor.components, {
+    		title: "Add Component",
+    		event: e
+    	})
+
+	}
+
+}
 function Editor(){}
 
 //Editor state
@@ -10762,7 +10741,7 @@ Editor.MODE_ROTATE = 3;
 //Editor component system
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()
-Editor.componentManager.addComponent(new Component("Object 3D"), true)
+Editor.componentManager.addComponent(new Object3DComponent(), true)
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -10936,6 +10915,7 @@ Editor.update = function()
 			if(Mouse.buttonJustReleased(Mouse.LEFT))
 			{
 				Editor.is_editing_object = false;
+				EditorUI.updateInspector()
 			}
 			else
 			{
@@ -10950,20 +10930,17 @@ Editor.update = function()
 						Editor.selected_object.position.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
 						Editor.selected_object.position.x -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.y)
 					{
 						Editor.selected_object.position.y -= Mouse.pos_diff.y * speed;
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.z)
 					{
 						Editor.selected_object.position.z -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x + Editor.pid2);
 						Editor.selected_object.position.z -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x + Editor.pid2);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
 				//Resize mode
@@ -10975,20 +10952,17 @@ Editor.update = function()
 						Editor.selected_object.scale.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
 						Editor.selected_object.scale.x -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.y)
 					{
 						Editor.selected_object.scale.y -= Mouse.pos_diff.y * speed;
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.z)
 					{
 						Editor.selected_object.scale.z -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x + Editor.pid2);
 						Editor.selected_object.scale.z -= Mouse.pos_diff.x * speed * Math.cos(Editor.camera_rotation.x + Editor.pid2);
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
 				//Rotate Mode
@@ -11000,21 +10974,18 @@ Editor.update = function()
 						Editor.selected_object.rotation.x -= Mouse.pos_diff.y * speed;
 						Editor.selected_object.rotation.x -= Mouse.pos_diff.x * speed;
 
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.y)
 					{
 						Editor.selected_object.rotation.y -= Mouse.pos_diff.y * speed;
 						Editor.selected_object.rotation.y -= Mouse.pos_diff.x * speed;
 					
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 					else if(Editor.editing_object_args.z)
 					{
 						Editor.selected_object.rotation.z += Mouse.pos_diff.y * speed;
 						Editor.selected_object.rotation.z += Mouse.pos_diff.x * speed;
 					
-						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
 			}
@@ -11033,7 +11004,7 @@ Editor.update = function()
 					if(intersects.length > 0)
 					{
 						Editor.selected_object = intersects[0].object;
-						EditorUI.updateInspector(Editor.selected_object)
+						EditorUI.updateInspector()
 					}
 				}
 			}
@@ -11141,6 +11112,7 @@ Editor.addToActualScene = function(obj) {
 // Update Tree View to Match Actual Scene
 Editor.updateTreeView = function() {
 	EditorUI.hierarchyFromScene(Editor.scene)
+	EditorUI.updateInspector()
 }
 
 //Draw stuff into screen
@@ -11626,15 +11598,16 @@ EditorUI.Initialize = function() {
 
     // ----- BOT TABS -----
 
-    EditorUI.bot_tabs = new LiteGUI.Tabs()
-    EditorUI.bot_tabs.addTab("Explorer",{selected: true, width: "100%"})
-    EditorUI.bot_tabs.addTab("Console", {selected: false, width: "100%"})
-    EditorUI.left_area.getSection(1).add(EditorUI.bot_tabs)
+    //EditorUI.bot_tabs = new LiteGUI.Tabs()
+    //EditorUI.bot_tabs.addTab("Explorer",{selected: true, width: "100%"})
+    //EditorUI.bot_tabs.addTab("Console", {selected: false, width: "100%"})
+    //EditorUI.left_area.getSection(1).add(EditorUI.bot_tabs)
 
     // ----- EXPLORER -----
 
     EditorUI.asset_explorer = new LiteGUI.Panel({title: "Explorer", scroll: true})
-    EditorUI.bot_tabs.getTab("Explorer").add(EditorUI.asset_explorer)
+    EditorUI.left_area.getSection(1).add(EditorUI.asset_explorer)
+    //EditorUI.bot_tabs.getTab("Explorer").add(EditorUI.asset_explorer)
 
     // ----- ASSET EXPLORER MENU -----
 
@@ -11661,11 +11634,11 @@ EditorUI.Initialize = function() {
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
     // ----- CONSOLE -----
-    EditorUI.console = new LiteGUI.Console()
-    EditorUI.bot_tabs.getTab("Console").add(EditorUI.console)
+    //EditorUI.console = new LiteGUI.Console()
+    //EditorUI.bot_tabs.getTab("Console").add(EditorUI.console)
 
     // ----- TREE -----
-    EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height+100], true)
+    EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height + 200], true)
     
     EditorUI.hierarchy_panel = new LiteGUI.Panel({title: "Hierarchy", scroll: true})
     EditorUI.right_area.getSection(0).add(EditorUI.hierarchy_panel)
@@ -11748,14 +11721,15 @@ EditorUI.updateInterface = function () {
     EditorUI.resizeCanvas()
 }
 
-EditorUI.updateInspector = function(object) {
+EditorUI.updateInspector = function() {
     EditorUI.ins = null
 
-    if (object instanceof Model3D) {
-        EditorUI.ins = new Model3DInspector()
+    if(Editor.selected_object != null) {
+        var object = Editor.selected_object
+    
+        EditorUI.ins = new ObjectInspector()
         EditorUI.form.onchange = EditorUI.ins.updateInfo
     } else {
-        // If the object ain't any of the supported types, then the form is cleaned
         EditorUI.form.clear()
     }
 }
