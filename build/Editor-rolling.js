@@ -10660,13 +10660,37 @@ class Model3DInspector {
 	    EditorUI.form.addVector3("Position", [this.object.position.x, this.object.position.y, this.object.position.z])
 	    EditorUI.form.addVector3("Rotation", [this.object.rotation.x, this.object.rotation.y, this.object.rotation.z])
 	    EditorUI.form.addVector3("Scale",    [this.object.scale.x, this.object.scale.y, this.object.scale.z])
+
+	    EditorUI.form.addSeparator()
+
+	    EditorUI.form.addCheckbox("Visible", this.object.visible)
+	    EditorUI.form.addCheckbox("Cast Shadow", this.object.castShadow)
+	    EditorUI.form.addCheckbox("Receive Shadow", this.object.receiveShadow)
+
+	    if (Editor.selected_object.components.length > 0) {
+	    	EditorUI.form.addSeparator()
+	    	for(var i = 0; i < Editor.selected_object.components.length; i++) {
+	    		Editor.selected_object.components[i].initUI()
+	    	}
+	    }
+
+	    EditorUI.form.addSeparator()
+
+	    EditorUI.form.addButton(null, "Add Component")
 	}
 
 	// Update the editing object info
 	updateInfo(name, value, widget) {
+		console.log("Name: " + name + ", Value: " + value)
+
 		var str = value + ""
 		var val = str.split(",")
 
+		if (str === "true") {
+			str = true
+		} if (str === "false") {
+			str = false
+		}
 
 		if (name === "Name") {
 			Editor.selected_object.name = str
@@ -10677,6 +10701,14 @@ class Model3DInspector {
 			Editor.selected_object.rotation.set(val[0], val[1], val[2])
 		} else if (name === "Scale") {
 			Editor.selected_object.scale.set(val[0], val[1], val[2])
+		}
+
+		else if (name === "Visible") {
+			Editor.selected_object.visible = str
+		} else if (name === "Cast Shadow") {
+			Editor.selected_object.castShadow = str
+		} else if (name === "Receive Shadow") {
+			Editor.selected_object.receiveShadow = str
 		}
 	}
 
@@ -10964,6 +10996,7 @@ Editor.update = function()
 					if(intersects.length > 0)
 					{
 						Editor.selected_object = intersects[0].object;
+						Editor.selected_object.addComponent(new Component("3D Object"))
 						EditorUI.updateInspector(Editor.selected_object)
 					}
 				}
@@ -11663,7 +11696,7 @@ EditorUI.Initialize = function() {
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})
     EditorUI.right_area.getSection(1).add(EditorUI.inspector)
 
-    EditorUI.form = new LiteGUI.Inspector(/*{onchange: EditorUI.updateObjectInfo}*/)
+    EditorUI.form = new LiteGUI.Inspector({full: true})
     EditorUI.inspector.content.appendChild(EditorUI.form.root)
 
     // Call to the resize method
@@ -11741,6 +11774,7 @@ EditorUI.hierarchyContext = function(e, data) {
             if ((object !== null) && (object.parent !== null)) {
                 object.parent.remove(object)
                 Editor.updateTreeView()
+                Editor.updateObjectHelper()
             }
         }}
     ], {title: "Edit item", event: e})

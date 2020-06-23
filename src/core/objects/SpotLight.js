@@ -3,6 +3,26 @@ class SpotLight extends THREE.SpotLight {
 		super(hex, intensity, distance, angle, exponent, decay)
 
 		this.name = "spot_light"
+	
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

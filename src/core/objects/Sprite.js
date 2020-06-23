@@ -3,6 +3,20 @@ class Sprite extends THREE.Sprite {
 		super(material)
 
 		this.name = "sprite"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

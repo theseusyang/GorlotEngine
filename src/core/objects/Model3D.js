@@ -3,6 +3,14 @@ class Model3D extends THREE.Mesh {
 		super(geometry, material)
 
 		this.name = "model"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

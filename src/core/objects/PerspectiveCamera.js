@@ -3,6 +3,14 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 		super(fov, aspect, near, far)
 
 		this.name = "perspective_camera"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

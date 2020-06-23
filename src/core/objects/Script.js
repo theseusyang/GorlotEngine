@@ -11,6 +11,14 @@ class Script extends THREE.Object3D {
 		// Script functions
 		this.func_loop = Function(this.code_loop)
 		this.func_init = Function(this.code_init)
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

@@ -2,6 +2,14 @@ class AmbientLight extends THREE.AmbientLight {
 	constructor(hex) {
 		super(hex)
 		this.name = "ambient_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

@@ -453,7 +453,7 @@ EditorUI.Initialize = function() {
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})
     EditorUI.right_area.getSection(1).add(EditorUI.inspector)
 
-    EditorUI.form = new LiteGUI.Inspector(/*{onchange: EditorUI.updateObjectInfo}*/)
+    EditorUI.form = new LiteGUI.Inspector({full: true})
     EditorUI.inspector.content.appendChild(EditorUI.form.root)
 
     // Call to the resize method
@@ -531,6 +531,7 @@ EditorUI.hierarchyContext = function(e, data) {
             if ((object !== null) && (object.parent !== null)) {
                 object.parent.remove(object)
                 Editor.updateTreeView()
+                Editor.updateObjectHelper()
             }
         }}
     ], {title: "Edit item", event: e})

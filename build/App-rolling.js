@@ -27521,6 +27521,26 @@ class Skeleton {
 		}
 	}
 }
+class Component {
+	// To create a new component, you should extend this class
+
+	constructor(name) {
+		this.name = name
+	}
+
+	initUI() {
+		// All the UI function will be here
+		EditorUI.form.addTitle(this.name)
+	}
+
+	initialize() {
+		// This method will be called at the very first frame
+	}
+
+	update() {
+		// This method will be called every frame
+	}
+}
 /*function Program()
 {
 	//Program Info
@@ -27692,6 +27712,14 @@ class Script extends THREE.Object3D {
 		// Script functions
 		this.func_loop = Function(this.code_loop)
 		this.func_init = Function(this.code_init)
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27741,6 +27769,14 @@ class Model3D extends THREE.Mesh {
 		super(geometry, material)
 
 		this.name = "model"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27769,6 +27805,14 @@ class Text3D extends THREE.Mesh {
 		this.text = text
 
 		this.scale.set(0.01, 0.01, 0.01)
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27797,6 +27841,14 @@ class PointLight extends THREE.PointLight {
 		super(hex, intensity, distance, decay)
 
 		this.name = "point_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27820,6 +27872,26 @@ class SpotLight extends THREE.SpotLight {
 		super(hex, intensity, distance, angle, exponent, decay)
 
 		this.name = "spot_light"
+	
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27842,6 +27914,14 @@ class AmbientLight extends THREE.AmbientLight {
 	constructor(hex) {
 		super(hex)
 		this.name = "ambient_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27865,6 +27945,14 @@ class HemisphereLight extends THREE.HemisphereLight {
 		super(skyColorHex, groundColorHex, intensity)
 
 		this.name = "hemisphere_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27887,6 +27975,14 @@ class DirectionalLight extends THREE.DirectionalLight {
 	constructor(hex, intensity) {
 		super(hex, intensity)
 		this.name = "directional_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27910,6 +28006,14 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 		super(fov, aspect, near, far)
 
 		this.name = "perspective_camera"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27933,6 +28037,14 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 		super(left, right, top, bottom, near, far)
 
 		this.name = "orthographic_camera"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -27956,6 +28068,14 @@ class Empty extends THREE.Object3D {
 		super()
 
 		this.name = "empty"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -28019,6 +28139,14 @@ class Sky extends THREE.Scene {
 		this.sky.name = "sky"
 		this.add(this.sky)
 
+		this.components = []
+
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
@@ -28054,6 +28182,20 @@ class Sprite extends THREE.Sprite {
 		super(material)
 
 		this.name = "sprite"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

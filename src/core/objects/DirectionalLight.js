@@ -2,6 +2,14 @@ class DirectionalLight extends THREE.DirectionalLight {
 	constructor(hex, intensity) {
 		super(hex, intensity)
 		this.name = "directional_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

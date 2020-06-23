@@ -3,6 +3,14 @@ class PointLight extends THREE.PointLight {
 		super(hex, intensity, distance, decay)
 
 		this.name = "point_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

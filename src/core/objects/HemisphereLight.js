@@ -3,6 +3,14 @@ class HemisphereLight extends THREE.HemisphereLight {
 		super(skyColorHex, groundColorHex, intensity)
 
 		this.name = "hemisphere_light"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

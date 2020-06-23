@@ -43,6 +43,14 @@ class Sky extends THREE.Scene {
 		this.sky.name = "sky"
 		this.add(this.sky)
 
+		this.components = []
+
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

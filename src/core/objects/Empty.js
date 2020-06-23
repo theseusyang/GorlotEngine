@@ -3,6 +3,14 @@ class Empty extends THREE.Object3D {
 		super()
 
 		this.name = "empty"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {

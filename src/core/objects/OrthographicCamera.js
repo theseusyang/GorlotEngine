@@ -3,6 +3,14 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 		super(left, right, top, bottom, near, far)
 
 		this.name = "orthographic_camera"
+
+		this.components = []
+	}
+
+	addComponent(component) {
+		if (component instanceof Component) {
+			this.components.push(component)
+		}
 	}
 
 	initialize() {
