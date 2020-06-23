@@ -354,7 +354,7 @@ EditorUI.Initialize = function() {
 
     // ----- EXPLORER -----
 
-    EditorUI.asset_explorer = new LiteGUI.Panel({title: "Explorer"})
+    EditorUI.asset_explorer = new LiteGUI.Panel({title: "Explorer", scroll: true})
     EditorUI.bot_tabs.getTab("Explorer").add(EditorUI.asset_explorer)
 
     // ----- ASSET EXPLORER MENU -----
@@ -388,7 +388,7 @@ EditorUI.Initialize = function() {
     // ----- TREE -----
     EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height+100], true)
     
-    EditorUI.hierarchy_panel = new LiteGUI.Panel({title: "Hierarchy"})
+    EditorUI.hierarchy_panel = new LiteGUI.Panel({title: "Hierarchy", scroll: true})
     EditorUI.right_area.getSection(0).add(EditorUI.hierarchy_panel)
     
     EditorUI.hierarchy = new LiteGUI.Tree({
@@ -450,7 +450,7 @@ EditorUI.Initialize = function() {
         Editor.updateTreeView()
     })
 
-    EditorUI.inspector = new LiteGUI.Panel({title: "Inspector"})
+    EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})
     EditorUI.right_area.getSection(1).add(EditorUI.inspector)
 
     EditorUI.form = new LiteGUI.Inspector(/*{onchange: EditorUI.updateObjectInfo}*/)
