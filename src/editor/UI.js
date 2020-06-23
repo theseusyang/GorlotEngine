@@ -405,6 +405,7 @@ EditorUI.Initialize = function() {
     // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
         Editor.selected_object = e.detail.data.attachedTo
+        EditorUI.updateInspector(e.detail.data.attachedTo)
         //console.log(e.detail)
     })
 
