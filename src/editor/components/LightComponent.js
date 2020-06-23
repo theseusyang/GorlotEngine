@@ -16,6 +16,8 @@ class LightComponent extends Component {
 		} else {
 			EditorUI.form.addInfo(null, "This selected object ain't a light. This component won't work :'(")
 		}
+
+		this.addRemoveButton(this)
 	}
 
 	updateInfo(name, value, widget) {

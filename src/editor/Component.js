@@ -24,7 +24,8 @@ class Component {
 				for(var i = 0; i < Editor.selected_object.components.length; i++) {
 					if (Editor.selected_object.components[i] == component) {
 						// TODO: Delete Editor.selected_object.components[i] from the array
-						console.log(Editor.selected_object.components[i].name)
+						//console.log(Editor.selected_object.components[i].name)
+						Editor.selected_object.components.splice(i, 1)
 						EditorUI.updateInspector()
 					}
 				}
