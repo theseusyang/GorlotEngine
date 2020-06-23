@@ -17,7 +17,7 @@ class Object3DComponent extends Component {
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
 
 		var self = this
-		this.addRemoveButton()
+		this.addRemoveButton(this)
 	}
 
 	updateInfo(name, value, widget) {

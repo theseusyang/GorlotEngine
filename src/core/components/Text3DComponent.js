@@ -14,7 +14,7 @@ class Text3DComponent extends Component {
 			EditorUI.form.addInfo(null, "The selected object ain't text. This component won't work :(")
 		}
 
-		this.addRemoveButton()
+		this.addRemoveButton(this)
 	}
 
 	updateInfo(name, value, widget) {

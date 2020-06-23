@@ -27660,13 +27660,14 @@ class Component {
 		// This method will be called every frame
 	}
 
-	addRemoveButton() {
+	addRemoveButton(component) {
 		EditorUI.form.addButtons(null, ["Remove Component", "Reset Defaults"], {callback: function(name) {
 			if (name === "Remove Component") {
-				// TODO: Remove Component
 				for(var i = 0; i < Editor.selected_object.components.length; i++) {
-					if (Editor.selected_object.components[i] === this) {
+					if (Editor.selected_object.components[i] == component) {
+						// TODO: Delete Editor.selected_object.components[i] from the array
 						console.log(Editor.selected_object.components[i].name)
+						EditorUI.updateInspector()
 					}
 				}
 			} else if (name === "Reset Defaults") {
@@ -27711,7 +27712,7 @@ class Object3DComponent extends Component {
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
 
 		var self = this
-		this.addRemoveButton()
+		this.addRemoveButton(this)
 	}
 
 	updateInfo(name, value, widget) {
@@ -27750,7 +27751,7 @@ class Text3DComponent extends Component {
 			EditorUI.form.addInfo(null, "The selected object ain't text. This component won't work :(")
 		}
 
-		this.addRemoveButton()
+		this.addRemoveButton(this)
 	}
 
 	updateInfo(name, value, widget) {

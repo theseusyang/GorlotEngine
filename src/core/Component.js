@@ -18,13 +18,14 @@ class Component {
 		// This method will be called every frame
 	}
 
-	addRemoveButton() {
+	addRemoveButton(component) {
 		EditorUI.form.addButtons(null, ["Remove Component", "Reset Defaults"], {callback: function(name) {
 			if (name === "Remove Component") {
-				// TODO: Remove Component
 				for(var i = 0; i < Editor.selected_object.components.length; i++) {
-					if (Editor.selected_object.components[i] === this) {
+					if (Editor.selected_object.components[i] == component) {
+						// TODO: Delete Editor.selected_object.components[i] from the array
 						console.log(Editor.selected_object.components[i].name)
+						EditorUI.updateInspector()
 					}
 				}
 			} else if (name === "Reset Defaults") {
