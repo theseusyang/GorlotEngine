@@ -70,11 +70,6 @@ class ObjectInspector {
 			}})
 		})
 
-    	//var context = new LiteGUI.ContextMenu(Editor.components, {
-    	//	title: "Add Component",
-    	//	event: e
-    	//})
-
 	}
 
 }
