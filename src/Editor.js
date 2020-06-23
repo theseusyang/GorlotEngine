@@ -110,6 +110,11 @@ Editor.initialize = function(canvas)
 	Editor.activateHelper(Editor.spot_light_helper, false)
 	Editor.tool_scene.add(Editor.spot_light_helper)
 
+	// HemisphereLight helper
+	Editor.hemisphere_light_helper = new THREE.HemisphereLightHelper(new THREE.HemisphereLight, 1)
+	Editor.activateHelper(Editor.hemisphere_light_helper, false)
+	Editor.tool_scene.add(Editor.hemisphere_light_helper)
+
 	// Move Tool
 	Editor.move_tool = new MoveTool();
 	Editor.move_tool.visible = false;
@@ -207,7 +212,7 @@ Editor.update = function()
 				//Moving object
 				if(Editor.tool_mode === Editor.MODE_MOVE)
 				{
-					var speed = Editor.camera.position.distanceTo(Editor.selected_object.position)/500;
+					var speed = Editor.camera.position.distanceTo(Editor.objectAbsolutePosition(Editor.selected_object))/500;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.position.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
@@ -229,7 +234,7 @@ Editor.update = function()
 				//Resize mode
 				else if(Editor.tool_mode === Editor.MODE_RESIZE)
 				{
-					var speed = Editor.camera.position.distanceTo(Editor.selected_object.position)/1000;
+					var speed = Editor.camera.position.distanceTo(Editor.objectAbsolutePosition(Editor.selected_object))/1000;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.scale.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
@@ -251,7 +256,7 @@ Editor.update = function()
 				//Rotate Mode
 				else if(Editor.tool_mode === Editor.MODE_ROTATE)
 				{
-					var speed = 1/200;
+					var speed = 1/300;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.rotation.x -= Mouse.pos_diff.y * speed;
@@ -445,27 +450,33 @@ Editor.updateObjectHelper = function() {
 
 	if (Editor.selected_object !== null && Editor.selected_object !== undefined) {
 		
+		var position = Editor.objectAbsolutePosition(Editor.selected_object)
 		if (Editor.selected_object instanceof THREE.Camera) {
 			Editor.activateHelper(Editor.camera_helper, true)
 			Editor.camera_helper.camera = Editor.selected_object
-			Editor.camera_helper.position.copy(Editor.selected_object.position)
+			Editor.camera_helper.position.copy(position)
 			Editor.camera_helper.rotation.copy(Editor.selected_object.rotation)
 			Editor.camera_helper.update()
 		} else if (Editor.selected_object instanceof THREE.DirectionalLight) {
 			Editor.activateHelper(Editor.directional_light_helper, true)
 			Editor.directional_light_helper.light = Editor.selected_object
-			Editor.directional_light_helper.position.copy(Editor.selected_object.position)
+			Editor.directional_light_helper.position.copy(position)
 			Editor.directional_light_helper.update()
 		} else if (Editor.selected_object instanceof THREE.PointLight) {
 			Editor.activateHelper(Editor.point_light_helper, true)
 			Editor.point_light_helper.light = Editor.selected_object
-			Editor.point_light_helper.position.copy(Editor.selected_object.position)
+			Editor.point_light_helper.position.copy(position)
 			Editor.point_light_helper.update()
 		} else if (Editor.selected_object instanceof THREE.SpotLight) {
 			Editor.activateHelper(Editor.spot_light_helper, true)
 			Editor.spot_light_helper.light = Editor.selected_object
-			Editor.spot_light_helper.position.copy(Editor.selected_object.position)
+			Editor.spot_light_helper.position.copy(position)
 			Editor.spot_light_helper.update()
+		} else if (Editor.selected_object instanceof THREE.HemisphereLight) {
+			Editor.activateHelper(Editor.hemisphere_light_helper, true)
+			Editor.hemisphere_light_helper.light = Editor.selected_object
+			Editor.hemisphere_light_helper.position.copy(position)
+			Editor.hemisphere_light_helper.update()
 		} else if (Editor.selected_object instanceof THREE.Mesh) {
 			Editor.activateHelper(Editor.box_helper, true)
 			Editor.box_helper.update(Editor.selected_object)
@@ -492,6 +503,17 @@ Editor.objectAbsolutePosition = function(obj) {
 	}
 
 	return obj.position
+}
+
+Editor.objectAbsoluteScale = function(obj) {
+	if (obj.parent !== null && obj.parent !== undefined) {
+		var scale = new THREE.Vector3(obj.scale.x, obj.scale.y, obj.scale.z)
+		scale.multiply(Editor.objectAbsoluteScale(obj.parent))
+
+		return scale
+	}
+
+	return obj.scale
 }
 
 // Activate Helper
@@ -545,7 +567,7 @@ Editor.createNewProgram = function() {
 
 	Editor.program = new Program()
 	Editor.program.addDefaultScene()
-	Editor.scene = Editor.program.actual_scene
+	Editor.scene = Editor.program.scene
 
 	Editor.resetEditingFlags()
 }

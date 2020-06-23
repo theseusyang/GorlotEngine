@@ -9933,6 +9933,186 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 
 });
 
+class Component {
+	// To create a new component, you should extend this class
+
+	constructor(name) {
+		this.name = name
+	}
+
+	initUI() {
+		// All the UI function will be here
+		EditorUI.form.addTitle(this.name)
+	}
+
+	initialize() {
+		// This method will be called at the very first frame
+	}
+
+	update() {
+		// This method will be called every frame
+	}
+
+	addRemoveButton(component) {
+		EditorUI.form.addButtons(null, ["Remove Component", "Reset Defaults"], {callback: function(name) {
+			if (name === "Remove Component") {
+				for(var i = 0; i < Editor.selected_object.components.length; i++) {
+					if (Editor.selected_object.components[i] == component) {
+						// TODO: Delete Editor.selected_object.components[i] from the array
+						console.log(Editor.selected_object.components[i].name)
+						EditorUI.updateInspector()
+					}
+				}
+			} else if (name === "Reset Defaults") {
+				// TODO: Reset Defaults
+			}
+
+		}})
+
+	}
+}
+class ComponentManager {
+	constructor() {
+	}
+
+	addComponent(component, ui) {
+		Editor.components.push({title: component.name, callback: () => {
+			Editor.selected_object.addComponent(component)
+			
+			if(ui) {
+				EditorUI.updateInspector()
+			}
+		
+		}})
+	}
+}
+class ElementComponent extends Component {
+	constructor() {
+		super("Element")
+	}
+
+	initUI() {
+		super.initUI()
+
+		EditorUI.form.addVector3("Position", [Editor.selected_object.position.x, Editor.selected_object.position.y, Editor.selected_object.position.z])
+		EditorUI.form.addVector3("Rotation", [Editor.selected_object.rotation.x, Editor.selected_object.rotation.y, Editor.selected_object.rotation.z])
+		EditorUI.form.addVector3("Scale", [Editor.selected_object.scale.x, Editor.selected_object.scale.y, Editor.selected_object.scale.z])
+	}
+
+	updateInfo(name, value, widgets) {
+		var str = value + ""
+		var val = str.split(",")
+
+		if (name === "Position") {
+			Editor.selected_object.position.set(val[0], val[1], val[2])
+		} else if (name === "Rotation") {
+			Editor.selected_object.rotation.set(val[0], val[1], val[2])
+		} else if (name === "Scale") {
+			Editor.selected_object.scale.set(val[0], val[1], val[2])
+		}
+	}
+}
+// TODO: Move all the component system to "src/editor"
+
+class Object3DComponent extends Component {
+	constructor() {
+		super("Object 3D")
+	}
+
+	initUI() {
+		super.initUI()
+	
+		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible)
+		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
+		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
+
+		var self = this
+		this.addRemoveButton(this)
+	}
+
+	updateInfo(name, value, widget) {
+
+		var str = value + ""
+		if (str === "true") {
+			str = true
+		} if (str === "false") {
+			str = false
+		}
+
+		if (name === "Visible") {
+			Editor.selected_object.visible = str
+		} if (name === "Cast Shadow") {
+			Editor.selected_object.castShadow = str
+		} if (name === "Receive Shadow") {
+			Editor.selected_object.receiveShadow = str
+		}
+	}
+}
+class Text3DComponent extends Component {
+	constructor() {
+		super("Text 3D")
+	}
+
+	initUI() {
+		super.initUI()
+
+		if (Editor.selected_object instanceof Text3D) {
+			EditorUI.form.addString("Text", Editor.selected_object.text)
+		} else {
+			EditorUI.form.addInfo(null, "The selected object ain't text. This component won't work :'(")
+		}
+
+		this.addRemoveButton(this)
+	}
+
+	updateInfo(name, value, widget) {
+		if (name === "Text") {
+			Editor.selected_object.setText(value)
+		}
+	}
+}
+class LightComponent extends Component {
+	constructor() {
+		super("Light")
+	}
+
+	initUI() {
+		super.initUI()
+
+		// Every kind of Light can have this component, if some special value is required, we can create more components and call them from here, and not be added in the component manager
+		if(Editor.selected_object instanceof THREE.Light) {
+			EditorUI.form.addSlider("Intensity", Editor.selected_object.intensity, {min: 0.1, max: 1, step: 0.01})
+			// TODO: Include jsColor here
+			EditorUI.form.addString("Color Hex", "0x" + Editor.selected_object.color.getHexString())
+			EditorUI.form.addString("Color RGB", Editor.selected_object.color.getStyle())
+			EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
+		} else {
+			EditorUI.form.addInfo(null, "This selected object ain't a light. This component won't work :'(")
+		}
+	}
+
+	updateInfo(name, value, widget) {
+
+		if (value === "true") {
+			value = true
+		} if (value === "false") {
+			value = false
+		}
+
+		if (name === "Intensity") {
+			Editor.selected_object.intensity = value
+		} else if (name === "Color Hex") {
+			Editor.selected_object.color.setHex(value)
+			EditorUI.updateInspector()
+		} else if (name === "Color RGB") {
+			Editor.selected_object.color.setStyle(value)
+			EditorUI.updateInspector()
+		} else if (name === "Cast Shadow") {
+			Editor.selected_object.intensity = value
+			EditorUI.updateInspector()
+		}
+	}
+}
 /*function MoveTool()
 {
 	//Super
@@ -10826,6 +11006,11 @@ Editor.initialize = function(canvas)
 	Editor.activateHelper(Editor.spot_light_helper, false)
 	Editor.tool_scene.add(Editor.spot_light_helper)
 
+	// HemisphereLight helper
+	Editor.hemisphere_light_helper = new THREE.HemisphereLightHelper(new THREE.HemisphereLight, 1)
+	Editor.activateHelper(Editor.hemisphere_light_helper, false)
+	Editor.tool_scene.add(Editor.hemisphere_light_helper)
+
 	// Move Tool
 	Editor.move_tool = new MoveTool();
 	Editor.move_tool.visible = false;
@@ -10923,7 +11108,7 @@ Editor.update = function()
 				//Moving object
 				if(Editor.tool_mode === Editor.MODE_MOVE)
 				{
-					var speed = Editor.camera.position.distanceTo(Editor.selected_object.position)/500;
+					var speed = Editor.camera.position.distanceTo(Editor.objectAbsolutePosition(Editor.selected_object))/500;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.position.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
@@ -10945,7 +11130,7 @@ Editor.update = function()
 				//Resize mode
 				else if(Editor.tool_mode === Editor.MODE_RESIZE)
 				{
-					var speed = Editor.camera.position.distanceTo(Editor.selected_object.position)/1000;
+					var speed = Editor.camera.position.distanceTo(Editor.objectAbsolutePosition(Editor.selected_object))/1000;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.scale.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
@@ -10967,7 +11152,7 @@ Editor.update = function()
 				//Rotate Mode
 				else if(Editor.tool_mode === Editor.MODE_ROTATE)
 				{
-					var speed = 1/200;
+					var speed = 1/300;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.rotation.x -= Mouse.pos_diff.y * speed;
@@ -11161,27 +11346,33 @@ Editor.updateObjectHelper = function() {
 
 	if (Editor.selected_object !== null && Editor.selected_object !== undefined) {
 		
+		var position = Editor.objectAbsolutePosition(Editor.selected_object)
 		if (Editor.selected_object instanceof THREE.Camera) {
 			Editor.activateHelper(Editor.camera_helper, true)
 			Editor.camera_helper.camera = Editor.selected_object
-			Editor.camera_helper.position.copy(Editor.selected_object.position)
+			Editor.camera_helper.position.copy(position)
 			Editor.camera_helper.rotation.copy(Editor.selected_object.rotation)
 			Editor.camera_helper.update()
 		} else if (Editor.selected_object instanceof THREE.DirectionalLight) {
 			Editor.activateHelper(Editor.directional_light_helper, true)
 			Editor.directional_light_helper.light = Editor.selected_object
-			Editor.directional_light_helper.position.copy(Editor.selected_object.position)
+			Editor.directional_light_helper.position.copy(position)
 			Editor.directional_light_helper.update()
 		} else if (Editor.selected_object instanceof THREE.PointLight) {
 			Editor.activateHelper(Editor.point_light_helper, true)
 			Editor.point_light_helper.light = Editor.selected_object
-			Editor.point_light_helper.position.copy(Editor.selected_object.position)
+			Editor.point_light_helper.position.copy(position)
 			Editor.point_light_helper.update()
 		} else if (Editor.selected_object instanceof THREE.SpotLight) {
 			Editor.activateHelper(Editor.spot_light_helper, true)
 			Editor.spot_light_helper.light = Editor.selected_object
-			Editor.spot_light_helper.position.copy(Editor.selected_object.position)
+			Editor.spot_light_helper.position.copy(position)
 			Editor.spot_light_helper.update()
+		} else if (Editor.selected_object instanceof THREE.HemisphereLight) {
+			Editor.activateHelper(Editor.hemisphere_light_helper, true)
+			Editor.hemisphere_light_helper.light = Editor.selected_object
+			Editor.hemisphere_light_helper.position.copy(position)
+			Editor.hemisphere_light_helper.update()
 		} else if (Editor.selected_object instanceof THREE.Mesh) {
 			Editor.activateHelper(Editor.box_helper, true)
 			Editor.box_helper.update(Editor.selected_object)
@@ -11208,6 +11399,17 @@ Editor.objectAbsolutePosition = function(obj) {
 	}
 
 	return obj.position
+}
+
+Editor.objectAbsoluteScale = function(obj) {
+	if (obj.parent !== null && obj.parent !== undefined) {
+		var scale = new THREE.Vector3(obj.scale.x, obj.scale.y, obj.scale.z)
+		scale.multiply(Editor.objectAbsoluteScale(obj.parent))
+
+		return scale
+	}
+
+	return obj.scale
 }
 
 // Activate Helper
@@ -11261,7 +11463,7 @@ Editor.createNewProgram = function() {
 
 	Editor.program = new Program()
 	Editor.program.addDefaultScene()
-	Editor.scene = Editor.program.actual_scene
+	Editor.scene = Editor.program.scene
 
 	Editor.resetEditingFlags()
 }
@@ -11319,13 +11521,13 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        console.log(Editor.program)
+        console.log(Editor.program.scene)
         console.log(JSON.parse(App.readFile("project.gorlot")))
         Editor.updateTreeView()
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
-        App.writeFile("project.gorlot", JSON.stringify(Editor.program))
+        App.writeFile("project.gorlot", JSON.stringify(Editor.program.scene))
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {

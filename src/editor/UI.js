@@ -47,13 +47,13 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        console.log(Editor.program)
+        console.log(Editor.program.scene)
         console.log(JSON.parse(App.readFile("project.gorlot")))
         Editor.updateTreeView()
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
-        App.writeFile("project.gorlot", JSON.stringify(Editor.program))
+        App.writeFile("project.gorlot", JSON.stringify(Editor.program.scene))
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {

@@ -32,7 +32,7 @@ class Program {
 		this.scenes = [];
 	
 		//Runtime variables
-		this.actual_scene = null;
+		this.scene = null;
 	}
 
 	addScene(scene) {
@@ -63,8 +63,8 @@ class Program {
 		this.addScene(scene)
 	
 		// If first scene set as actual scene
-		if (this.actual_scene == null) {
-			this.actual_scene = this.scenes[0]
+		if (this.scene == null) {
+			this.scene = this.scenes[0]
 		}
 	}
 
@@ -76,7 +76,7 @@ class Program {
 
 		// If no scene on program, set actual scene to null
 		if (this.scenes.length === 0) {
-			this.actual_scene = null
+			this.scene = null
 		}
 	}
 }

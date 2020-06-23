@@ -39,14 +39,6 @@ source.append("core/animation/Skeleton.js")
 source.append("core/Program.js")
 source.append("core/Scene.js")
 
-source.append("core/Component.js")
-source.append("core/ComponentManager.js")
-
-source.append("core/components/ElementComponent.js")
-source.append("core/components/Object3DComponent.js")
-source.append("core/components/Text3DComponent.js")
-source.append("core/components/LightComponent.js")
-
 source.append("core/objects/Script.js")
 source.append("core/objects/Model3D.js")
 source.append("core/objects/Text3D.js")
@@ -81,6 +73,14 @@ editorCss.append("libs/codemirror/theme/monokai.css")
 editorCss.append("src/editor/utils/editor.css")
 
 # Editor Code
+editor.append("editor/Component.js")
+editor.append("editor/ComponentManager.js")
+
+editor.append("editor/components/ElementComponent.js")
+editor.append("editor/components/Object3DComponent.js")
+editor.append("editor/components/Text3DComponent.js")
+editor.append("editor/components/LightComponent.js")
+
 editor.append("editor/tools/MoveTool.js")
 editor.append("editor/tools/ResizeTool.js")
 editor.append("editor/tools/RotateTool.js")
