@@ -8160,6 +8160,91 @@ THREE.KeyFrameAnimation.prototype = {
 
 };
 
+var THREEx = THREEx || {}
+
+THREEx.VideoTexture	= function(url){
+	// create the video element
+	var video	= document.createElement('video');
+	video.width	= 320;
+	video.height	= 240;
+	video.autoplay	= true;
+	video.loop	= true;
+	video.src	= url;
+	// expose video as this.video
+	this.video	= video
+
+	// create the texture
+	var texture	= new THREE.Texture( video );
+	// expose texture as this.texture
+	this.texture	= texture
+
+	/**
+	 * update the object
+	 */
+	this.update	= function(){
+		if( video.readyState !== video.HAVE_ENOUGH_DATA )	return;
+		texture.needsUpdate	= true;		
+	}
+
+	/**
+	 * destroy the object
+	 */
+	this.destroy	= function(){
+		video.pause()
+	}
+}
+var THREEx = THREEx || {}
+
+THREEx.WebcamTexture	= function(){
+	console.assert(THREEx.WebcamTexture.available === true)
+	// create the video element
+	var video	= document.createElement('video');
+	video.width	= 320;
+	video.height	= 240;
+	video.autoplay	= true;
+	video.loop	= true;
+	// expose video as this.video
+	this.video	= video
+
+	if( navigator.webkitGetUserMedia ){
+		navigator.webkitGetUserMedia({video:true}, function(stream){
+			video.src	= URL.createObjectURL(stream);
+		}, function(error){
+			alert('you got no WebRTC webcam');
+		});		
+	}else if(navigator.mozGetUserMedia){
+		navigator.mozGetUserMedia({video:true}, function(stream){
+			video.src	= URL.createObjectURL(stream);
+		}, function(error){
+			alert('you got no WebRTC webcam');
+		});				
+	}else	console.assert(false)
+
+
+	// create the texture
+	var texture	= new THREE.Texture( video );
+	// expose texture as this.texture
+	this.texture	= texture
+
+	/**
+	 * update the object
+	 */
+	this.update	= function(delta, now){
+		if( video.readyState !== video.HAVE_ENOUGH_DATA )	return;
+		texture.needsUpdate	= true;		
+	}
+
+	/**
+	 * destroy the object
+	 */
+	this.destroy	= function(){
+		video.pause()
+	}
+}
+
+
+THREEx.WebcamTexture.available	= navigator.webkitGetUserMedia || navigator.mozGetUserMedia ? true : false;
+
 /*
  * Copyright (c) 2015 cannon.js Authors
  *
@@ -28096,7 +28181,7 @@ class Sky extends THREE.Scene {
 		// Day time
 		this.update_time = true
 		this.day_time = 20
-		this.time = 0
+		this.time = 5
 
 		// Sky Shader
 		var vertex = App.readFile("data/shaders/sky_vertex.glsl")
@@ -28287,6 +28372,7 @@ App.initialize = function(main)
 	App.stats.domElement.style.position = "absolute";
 	App.stats.domElement.style.left = "0px";
 	App.stats.domElement.style.top = "0px";
+	App.stats.domElement.style.zIndex = "10000"
 	document.body.appendChild(App.stats.domElement);
 
 	//Init Input

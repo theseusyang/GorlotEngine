@@ -20,6 +20,9 @@ libraries.append("three/loaders/collada/Animation.js")
 libraries.append("three/loaders/collada/AnimationHandler.js")
 libraries.append("three/loaders/collada/KeyFrameAnimation.js")
 
+libraries.append("threex/videotexture.js")
+libraries.append("threex/webcamtexture.js")
+
 libraries.append("cannon/cannon.js")
 libraries.append("cannon/ConvexGeometry.js")
 libraries.append("cannon/CannonDebugRenderer.js")

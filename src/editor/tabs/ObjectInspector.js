@@ -55,7 +55,7 @@ class ObjectInspector {
 
 	createComponentDialog(e) {
 
-		var dialog = new LiteGUI.Dialog({title: "Components", closable: true })
+		var dialog = new LiteGUI.Dialog({title: "Components", closable: true, scroll: true, scrollable: true})
 		dialog.dockTo(EditorUI.inspector, "full")
 		dialog.show()
 

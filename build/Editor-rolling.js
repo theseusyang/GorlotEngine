@@ -9977,15 +9977,6 @@ class ComponentManager {
 	}
 
 	addComponent(component, ui) {
-//		Editor.components.push({title: component.name, callback: () => {
-//			Editor.selected_object.addComponent(component)
-//			
-//			if(ui) {
-//				EditorUI.updateInspector()
-//			}
-//		
-//		}})
-
 		Editor.components.push(component)
 	}
 }
@@ -10888,7 +10879,7 @@ class ObjectInspector {
 
 	createComponentDialog(e) {
 
-		var dialog = new LiteGUI.Dialog({title: "Components", closable: true })
+		var dialog = new LiteGUI.Dialog({title: "Components", closable: true, scroll: true, scrollable: true})
 		dialog.dockTo(EditorUI.inspector, "full")
 		dialog.show()
 
@@ -10902,11 +10893,6 @@ class ObjectInspector {
 				dialog.close()
 			}})
 		})
-
-    	//var context = new LiteGUI.ContextMenu(Editor.components, {
-    	//	title: "Add Component",
-    	//	event: e
-    	//})
 
 	}
 
@@ -10957,7 +10943,7 @@ Editor.initialize = function(canvas)
 
 	//Set mouse lock true
 	App.setMouseLock(false);
-	App.showStats(false);
+	App.showStats(true);
 
 	//Set render canvas
 	Editor.canvas = EditorUI.canvas;
