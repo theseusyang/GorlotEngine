@@ -50,24 +50,23 @@ EditorUI.Initialize = function() {
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        try {
-            var loader = new ObjectLoader()
-            var data = JSON.parse(App.readFile("project.json"))
-            var scene = loader.parse(data)
+        App.chooseFile((event) => {
+            var file = event.srcElement.value
+            try {
+                var loader = new ObjectLoader()
+                var data = JSON.parse(App.readFile(file))
+                var scene = loader.parse(data)
 
-            var program = new Program()
-            program.addScene(scene)
+                var program = new Program()
+                program.addScene(scene)
 
-            Editor.program = program
-            Editor.resetEditingFlags()
-            Editor.updateTreeView()
+                Editor.program = program
+                Editor.resetEditingFlags()
+                Editor.updateTreeView()
 
-            EditorUI.updateable = []
-
-            console.log("File loaded")
-        } catch(e) {
-            console.log("Error loading file")
-        }
+                console.log("File Loaded!")
+            } catch (e) { console.error("Error loading file, exception: " + e) }
+        }, ".json")
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
