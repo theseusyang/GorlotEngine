@@ -112,7 +112,6 @@
 						"uuid": "0CE5AAC5-F56A-4D03-9891-DB04741CB51D",
 						"type": "Mesh",
 						"name": "sky_shape",
-						"visible": false,
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 						"geometry": "1DE3EA94-22E9-471A-B4BE-A071646129CD",
 						"material": "A97897D4-28DB-41A8-8923-3561081766BB"
@@ -142,7 +141,7 @@
 				"uuid": "8A0E2A50-6D35-405E-B297-0F9E7B96AD06",
 				"type": "Script",
 				"code_init": "",
-				"code_loop": "",
+				"code_loop": "console.log(\"It works <3\")",
 				"name": "script",
 				"castShadow": false,
 				"receiveShadow": false,

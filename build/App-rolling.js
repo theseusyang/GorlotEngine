@@ -27299,8 +27299,12 @@ Mouse.insideCanvas = function()
 		return false;
 	}
 	
-	var rect = Mouse.canvas.getBoundingClientRect();
-	return (Mouse.pos.x > 0 && Mouse.pos.y > 0 && Mouse.pos.x < rect.width && Mouse.pos.y < rect.height); 
+	if(Editor.clickable) {
+		var rect = Mouse.canvas.getBoundingClientRect();
+		return (Mouse.pos.x > 0 && Mouse.pos.y > 0 && Mouse.pos.x < rect.width && Mouse.pos.y < rect.height); 
+	} else {
+		return false
+	}
 }
 
 //Check if Mouse button is pressed

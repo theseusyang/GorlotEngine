@@ -14,6 +14,9 @@ Editor.MODE_ROTATE = 3;
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
 
+// This variable determines whether we can click and modify what is inside the canvas
+Editor.clickable = true
+
 //Editor component system
 Editor.components = [] // For creating a new component, push a Component to this array
 Editor.componentManager = new ComponentManager()

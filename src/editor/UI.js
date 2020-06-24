@@ -29,6 +29,8 @@ EditorUI.mainarea
 EditorUI.left_area
 EditorUI.right_area
 
+EditorUI.updateable = []
+
 EditorUI.Initialize = function() {
 
     // Initializing the LiteGUI library
@@ -44,6 +46,7 @@ EditorUI.Initialize = function() {
         Editor.createNewProgram()
         Editor.updateTreeView()
         Editor.updateObjectHelper()
+        EditorUI.updateable = []
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
@@ -58,6 +61,8 @@ EditorUI.Initialize = function() {
             Editor.program = program
             Editor.resetEditingFlags()
             Editor.updateTreeView()
+
+            EditorUI.updateable = []
 
             console.log("File loaded")
         } catch(e) {
@@ -129,8 +134,13 @@ EditorUI.Initialize = function() {
 
     // ----- Add/Primitives -----
 
+    EditorUI.topmenu.add("Add", {callback: () => {
+        var wind = new AddMenuWindow()
+        wind.show()
+    }})
+
     // Cube
-    EditorUI.topmenu.add("Add/3D Objects/Primitives/Cube", {callback: () => {
+    /*EditorUI.topmenu.add("Add/3D Objects/Primitives/Cube", {callback: () => {
         var geometry = new THREE.BoxGeometry(1,1,1)
         var material = new THREE.MeshPhongMaterial()
         var model = new Model3D(geometry, material)
@@ -194,7 +204,6 @@ EditorUI.Initialize = function() {
         //EditorUI.hierarchyFromScene(Editor.scene)
     }})
 
-    // Text
     EditorUI.topmenu.add("Add/3D Objects/Empty", {callback: () => {
         Editor.addToActualScene(new Empty())
         EditorUI.hierarchyFromScene(Editor.scene)
@@ -306,7 +315,7 @@ EditorUI.Initialize = function() {
     // Virtual Reality
     EditorUI.topmenu.add("Add/Device/Virtual Reality", {callback: () => {
         // TODO: This
-    }})
+    }})*/
 
     // ----- RUN -----
 
@@ -361,15 +370,10 @@ EditorUI.Initialize = function() {
     // ----- TABS -----
     EditorUI.tabs_widget = new LiteGUI.Tabs()
     EditorUI.tabs_widget.addTab("Scene Editor", {selected: true, width: "100%", closable: false, onclose: EditorUI.selectSceneEditor})
-    //EditorUI.tabs_widget.addTab("Script Editor", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-    //EditorUI.tabs_widget.addTab("Material Editor", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-    //EditorUI.tabs_widget.addTab("Preferences", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
     EditorUI.left_area.add(EditorUI.tabs_widget)
 
     // Add the Canvas to the Scene Editor tab
     EditorUI.tabs_widget.getTabContent("Scene Editor").appendChild(EditorUI.canvas)
-
-    //EditorUI.tabs_widget.getTabContent("Script Editor").appendChild(EditorUI.code.element)
 
     // ----- CANVAS AREA SPLIT -----
     EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height], false)
@@ -428,23 +432,24 @@ EditorUI.Initialize = function() {
         children: []
     }, {
         allow_drag: true,
-        allow_rename: true,
+        //allow_rename: true,
         height: EditorUI.right_area.getSection(0).getHeight(),
     })
     EditorUI.hierarchy_panel.add(EditorUI.hierarchy)
-    EditorUI.hierarchy.contextmenu = () => {console.log("a")}
 
     // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
-        Editor.selected_object = e.detail.data.attachedTo
-        EditorUI.updateInspector(e.detail.data.attachedTo)
-        //console.log(e.detail)
+        if(e.detail.data.id !== "Program") {
+            Editor.selected_object = e.detail.data.attachedTo
+            EditorUI.updateInspector(e.detail.data.attachedTo)
+        } else {
+            // TODO: A program component in which you can modify its info
+            // Or open the project settings, and you can do so in there
+        }
     })
 
     // When an item is moved, this will check if we should set a parent
     LiteGUI.bind(EditorUI.hierarchy.root, "item_moved", function(e) {
-        //console.log(e.detail)
-
         if (e.detail.parent_item) {
             var parObj = e.detail.parent_item.data.attachedTo
             var obj = e.detail.item.data.attachedTo
@@ -458,16 +463,14 @@ EditorUI.Initialize = function() {
 
     // If an item in the hierarchy is double clicked and that object can add a new tab, this will open it
     LiteGUI.bind(EditorUI.hierarchy.root, "item_dblclicked", function(e) {
-        //console.log(e.detail.data)
         var data = e.detail.data
 
         // Script
         if (data.attachedTo instanceof Script) {
-            EditorUI.tabs_widget.addTab("Script Editor", {selected: true, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-            EditorUI.code = new CodeEditor(EditorUI.tabs_widget.getTabContent("Script Editor"))
+            EditorUI.tabs_widget.addTab("Script Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
+            EditorUI.code = new CodeEditor(EditorUI.tabs_widget.getTabContent("Script Editor " + Editor.nameId))
+            Editor.nameId++
 
-            // TODO: Create a new array that will be iterated through in EditorUI.updateInterface calling updateInterface of each of its elements
-            
             EditorUI.code.attachScript(data.attachedTo)
             EditorUI.code.updateInterface()
         }
@@ -475,7 +478,7 @@ EditorUI.Initialize = function() {
 
     // When renaming an object, renaming it in the scene
     LiteGUI.bind(EditorUI.hierarchy.root, "item_renamed", function(e) {
-        Editor.renameObject(e.detail.data.attachedTo, e.detail.new_name)
+        //Editor.renameObject(e.detail.data.attachedTo, e.detail.new_name)
     })
 
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})

@@ -1,5 +1,3 @@
-// TODO: Move all the component system to "src/editor"
-
 class Object3DComponent extends Component {
 	constructor() {
 		super("Object 3D", "Object3DComponent")
@@ -11,6 +9,8 @@ class Object3DComponent extends Component {
 		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible)
 		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
+		EditorUI.form.addCheckbox("Rotation Auto Update", Editor.selected_object.rotationAutoUpdate)
+		EditorUI.form.addCheckbox("Matrix Auto Update", Editor.selected_object.matrixAutoUpdate)
 
 		var self = this
 		this.addRemoveButton(this)

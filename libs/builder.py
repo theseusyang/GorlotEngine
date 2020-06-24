@@ -90,6 +90,8 @@ editor.append("editor/tools/MoveTool.js")
 editor.append("editor/tools/ResizeTool.js")
 editor.append("editor/tools/RotateTool.js")
 
+editor.append("editor/windows/AddMenuWindow.js")
+
 editor.append("editor/tabs/CodeEditor.js")
 editor.append("editor/tabs/ObjectInspector.js")
 

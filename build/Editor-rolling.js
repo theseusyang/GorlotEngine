@@ -10872,6 +10872,7 @@ class ElementComponent extends Component {
 	initUI() {
 		super.initUI()
 
+		// TODO: Copy & Paste these values
 		EditorUI.form.addVector3("Position", [Editor.selected_object.position.x, Editor.selected_object.position.y, Editor.selected_object.position.z])
 		EditorUI.form.addVector3("Rotation", [Editor.selected_object.rotation.x, Editor.selected_object.rotation.y, Editor.selected_object.rotation.z])
 		EditorUI.form.addVector3("Scale", [Editor.selected_object.scale.x, Editor.selected_object.scale.y, Editor.selected_object.scale.z])
@@ -10890,8 +10891,6 @@ class ElementComponent extends Component {
 		}
 	}
 }
-// TODO: Move all the component system to "src/editor"
-
 class Object3DComponent extends Component {
 	constructor() {
 		super("Object 3D", "Object3DComponent")
@@ -10903,6 +10902,8 @@ class Object3DComponent extends Component {
 		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible)
 		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
+		EditorUI.form.addCheckbox("Rotation Auto Update", Editor.selected_object.rotationAutoUpdate)
+		EditorUI.form.addCheckbox("Matrix Auto Update", Editor.selected_object.matrixAutoUpdate)
 
 		var self = this
 		this.addRemoveButton(this)
@@ -10937,6 +10938,7 @@ class Text3DComponent extends Component {
 		if (Editor.selected_object instanceof Text3D) {
 			EditorUI.form.addString("Text", Editor.selected_object.text)
 		} else {
+			// TODO: Create a child which is a text
 			EditorUI.form.addInfo(null, "The selected object ain't text. This component won't work :'(")
 		}
 
@@ -10952,6 +10954,8 @@ class Text3DComponent extends Component {
 class LightComponent extends Component {
 	constructor() {
 		super("Light", "LightComponent")
+
+		this.objectType = null
 	}
 
 	initUI() {
@@ -10959,12 +10963,91 @@ class LightComponent extends Component {
 
 		// Every kind of Light can have this component, if some special value is required, we can create more components and call them from here, and not be added in the component manager
 		if(Editor.selected_object instanceof THREE.Light) {
-			EditorUI.form.addSlider("Intensity", Editor.selected_object.intensity, {min: 0.1, max: 1, step: 0.01})
+
+			if (Editor.selected_object instanceof AmbientLight) {
+				this.objectType = "Ambient"
+			} else if (Editor.selected_object instanceof DirectionalLight) {
+				this.objectType = "Directional"
+			} else if (Editor.selected_object instanceof HemisphereLight) {
+				this.objectType = "Hemisphere"
+			} else if (Editor.selected_object instanceof PointLight) {
+				this.objectType = "Point"
+			} else if (Editor.selected_object instanceof SpotLight) {
+				this.objectType = "Spot"
+			}
+
+			// TODO: Selecting another kind of light from the Combo, will change the selected light's kind of
+			EditorUI.form.addCombo("Type", this.objectType, {values: ["Ambient", "Directional", "Hemisphere", "Point", "Spot"], disabled: true})
+			EditorUI.form.addSeparator()
+
+			if(this.objectType === "Ambient") {
+				EditorUI.form.addTitle("Ambient Light")
+				EditorUI.addSeparator()
+			} else if(this.objectType === "Directional") {
+				EditorUI.form.addTitle("Directional Light")
+				EditorUI.form.addTitle("Shadow")
+
+				EditorUI.form.addString("Left", Editor.selected_object.shadow.camera.left)
+				EditorUI.form.addString("Right", Editor.selected_object.shadow.camera.right)
+				EditorUI.form.addString("Top", Editor.selected_object.shadow.camera.top)
+				EditorUI.form.addString("Bottom", Editor.selected_object.shadow.camera.bottom)
+
+				EditorUI.form.addString("Near", Editor.selected_object.shadow.camera.near)
+				EditorUI.form.addString("Far", Editor.selected_object.shadow.camera.far)
+
+				EditorUI.form.addString("Zoom", Editor.selected_object.shadow.camera.zoom)
+				EditorUI.form.addVector2("Map Size", [Editor.selected_object.shadow.mapSize.x, Editor.selected_object.shadow.mapSize.y])
+
+				EditorUI.form.addString("Bias", Editor.selected_object.shadow.bias)
+				EditorUI.form.addString("Radius", Editor.selected_object.shadow.radius)
+
+				EditorUI.form.addSeparator()
+			} else if (this.objectType === "Hemisphere") {
+				EditorUI.form.addTitle("Hemisphere")
+
+				// TODO: Include jsColor here
+				EditorUI.form.addString("Ground Color", Editor.selected_object.groundColor.getStyle())
+				EditorUI.form.addString("Sky Color", Editor.selected_object.color.getStyle())
+
+				EditorUI.form.addSeparator()
+			} else if (this.objectType === "Point") {
+				EditorUI.form.addTitle("Point Light")
+				EditorUI.form.addTitle("Shadow")
+
+				EditorUI.form.addString("Near", Editor.selected_object.shadow.camera.near)
+				EditorUI.form.addString("Far", Editor.selected_object.shadow.camera.far)
+				EditorUI.form.addVector2("Map Size", [Editor.selected_object.shadow.mapSize.x, Editor.selected_object.shadow.mapSize.y])
+
+				EditorUI.form.addString("Bias", Editor.selected_object.shadow.bias)
+				EditorUI.form.addString("Radius", Editor.selected_object.shadow.radius)
+
+				EditorUI.form.addSeparator()
+			} else if (this.objectType === "Spot") {
+				EditorUI.form.addTitle("Spot Light")
+
+				EditorUI.form.addSlider("Distance", Editor.selected_object.distance, {min: 1, max: 100, step: 1})
+				EditorUI.form.addSlider("Angle", Editor.selected_object.angle, {min: 0, max: 1.5, step: 0.1})
+				EditorUI.form.addSlider("Penumbra", Editor.selected_object.penumbra, {min: 0, max: 1.5, step: 0.1})
+				EditorUI.form.addSlider("Decay", Editor.selected_object.decay, {min: 0, max: 2, step: 0.1})
+
+				EditorUI.form.addSeparator()
+
+				EditorUI.form.addTitle("Shadow")
+				EditorUI.form.addString("Near", Editor.selected_object.shadow.camera.near)
+				EditorUI.form.addString("Far", Editor.selected_object.shadow.camera.far)
+				EditorUI.form.addVector2("Map Size", [Editor.selected_object.shadow.mapSize.x, Editor.selected_object.shadow.mapSize.y])
+
+
+				EditorUI.form.addSeparator()
+			}
+
+			EditorUI.form.addSlider("Intensity", Editor.selected_object.intensity, {min: 0, max: 1, step: 0.01})
 			// TODO: Include jsColor here
 			EditorUI.form.addString("Color Hex", "0x" + Editor.selected_object.color.getHexString())
 			EditorUI.form.addString("Color RGB", Editor.selected_object.color.getStyle())
 			EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
 		} else {
+			// TODO: Create a child which is a light source
 			EditorUI.form.addInfo(null, "This selected object ain't a light. This component won't work :'(")
 		}
 
@@ -10979,7 +11062,67 @@ class LightComponent extends Component {
 			value = false
 		}
 
-		if (name === "Intensity") {
+		if (name === "Left") {
+			Editor.selected_object.shadow.camera.left = value
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		} else if (name === "Right") {
+			Editor.selected_object.shadow.camera.right = value
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		} else if (name === "Top") {
+			Editor.selected_object.shadow.camera.top = value
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		} else if (name === "Bottom") {
+			Editor.selected_object.shadow.camera.bottom = value
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		} else if (name === "Zoom") {
+			Editor.selected_object.shadow.camera.zoom = value
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		} 
+
+		else if (name === "Ground Color") {
+			Editor.selected_object.groundColor.setStyle(value)
+			EditorUI.updateInspector()
+		} else if (name === "Sky Color") {
+			Editor.selected_object.color.setStyle(value)
+			EditorUI.updateInspector()
+		}
+
+		else if (name === "Bias") {
+			Editor.selected_object.shadow.bias = value
+		} else if (name === "Radius") {
+			Editor.selected_object.shadow.radius = value
+		}
+
+		else if (name === "Distance") {
+			Editor.selected_object.distance = value
+		} else if (name === "Angle") {
+			Editor.selected_object.angle = value
+		} else if (name === "Penumbra") {
+			Editor.selected_object.penumbra = value
+		} else if (name === "Decay") {
+			Editor.selected_object.decay = value
+		}
+
+		else if (name === "Near") {
+			Editor.selected_object.shadow.camera.near = value
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		} else if (name === "Far") {
+			Editor.selected_object.shadow.camera.far = value
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		} else if (name === "Map Size") {
+			Editor.selected_object.shadow.mapSize.set(value[0], value[1])
+			// TODO: Make this to function
+			EditorUI.updateInspector()
+		}
+
+		else if (name === "Intensity") {
 			Editor.selected_object.intensity = value
 		} else if (name === "Color Hex") {
 			Editor.selected_object.color.setHex(value)
@@ -11649,6 +11792,215 @@ class RotateTool extends THREE.Scene {
 		return {selected, x, y, z};
 	}
 }
+class AddMenuWindow {
+	constructor() {
+		// TODO: Add Icons
+		this.dialog = new LiteGUI.Dialog( {id: "dialog_add", title: "Add Objects", close: true, minimize: true, width: 400, scroll: false, draggable: true} )
+		this.dialog.on_close = function() {
+			Editor.clickable = true
+		}
+
+		this.selected_object = null
+
+		this.objects = [
+			{
+				"name": "Cube",
+				"icon": ""
+			},
+			{
+				"name": "Cylinder",
+				"icon": ""
+			},
+			{
+				"name": "Sphere",
+				"icon": ""
+			},
+			{
+				"name": "Torus",
+				"icon": ""
+			},
+			{
+				"name": "Pyramid",
+				"icon": ""
+			},
+			{
+				"name": "Empty",
+				"icon": ""
+			},
+			{
+				"name": "Text",
+				"icon": ""
+			},
+			{
+				"name": "Point Light",
+				"icon": ""
+			},
+			{
+				"name": "Ambient Light",
+				"icon": ""
+			},
+			{
+				"name": "Spot Light",
+				"icon": ""
+			},
+			{
+				"name": "Directional Light",
+				"icon": ""
+			},
+			{
+				"name": "Hemisphere Light",
+				"icon": ""
+			},
+			{
+				"name": "Sky",
+				"icon": ""
+			},
+			{
+				"name": "Perspective Camera",
+				"icon": ""
+			},
+			{
+				"name": "Orthographic Camera",
+				"icon": ""
+			},
+			{
+				"name": "Script",
+				"icon": ""
+			},
+			{
+				"name": "Blueprints",
+				"icon": ""
+			},
+			{
+				"name": "Sprite",
+				"icon": ""
+			},
+			{
+				"name": "Particles",
+				"icon": ""
+			}
+		]
+
+		var self = this
+
+		this.widgets = new LiteGUI.Inspector()
+
+		this.objectList = this.widgets.addList(null, this.objects, {callback_dblclick: function(v) {
+			self.selected_object = v.name
+			self.add()
+			self.close()
+		}})
+
+		this.dialog.add(this.widgets)
+		this.dialog.center()
+	}
+
+	add() {
+		var o = this.selected_object
+
+		if (o === "Cube") {
+			var geometry = new THREE.BoxGeometry(1, 1, 1)
+			var material = new THREE.MeshPhongMaterial()
+			var model = new Model3D(geometry, material)
+			model.receiveShadow = true
+			model.castShadow = true
+			model.name = "cube"
+			Editor.addToActualScene(model)
+		} else if (o === "Cylinder") {
+			var geometry = new THREE.CylinderGeometry(1, 1, 2, 32)
+        	var material = new THREE.MeshPhongMaterial()
+        	var model = new Model3D(geometry, material)
+        	model.receiveShadow = true
+        	model.castShadow = true
+        	model.name = "Cylinder"
+        	Editor.addToActualScene(model)
+		} else if (o === "Sphere") {
+			var geometry = new THREE.SphereGeometry(0.6, 16, 16)
+        	var material = new THREE.MeshPhongMaterial()
+        	var model = new Model3D(geometry, material)
+        	model.receiveShadow = true
+        	model.castShadow = true
+        	model.name = "Sphere"
+        	Editor.addToActualScene(model)
+		} else if (o === "Torus") {
+			var geometry = new THREE.TorusGeometry(1, 0.5, 16, 100)
+        	var material = new THREE.MeshPhongMaterial()
+        	var model = new Model3D(geometry, material)
+        	model.receiveShadow = true
+        	model.castShadow = true
+        	model.name = "Torus"
+        	Editor.addToActualScene(model)
+		} else if (o === "Pyramid") {
+			var geometry = new THREE.CylinderGeometry(0, 1, 2, 32)
+        	var material = new THREE.MeshPhongMaterial()
+        	var model = new Model3D(geometry, model)
+        	model.receiveShadow = true
+        	model.castShadow = true
+        	model.name = "Cone"
+        	Editor.addToActualScene(model)
+		} else if (o === "Empty") {
+			Editor.addToActualScene(new Empty())
+		} else if (o === "Text") {
+			var loader = new THREE.FontLoader().load("data/fonts/helvetiker_bold.typeface.js", function(font) {
+        	    var material = new THREE.MeshPhongMaterial()
+        	    var model = new Text3D("text", font, material)
+        	    model.receiveShadow = true
+        	    model.castShadow = true
+        	    Editor.addToActualScene(model)
+        	})
+		} else if (o === "Point Light") {
+			var light = new PointLight()
+        	light.castShadow = true
+        	light.shadow.camera.near = 1
+        	light.shadow.camera.far = 1
+        	light.shadow.bias = 0.01
+        	Editor.addToActualScene(light)
+		} else if (o === "Ambient Light") {
+			var light = new AmbientLight()
+        	Editor.addToActualScene(light)
+		} else if (o === "Spot Light") {
+			var light = new SpotLight()
+        	light.castShadow = true
+        	Editor.addToActualScene(light)
+		} else if (o === "Directional Light") {
+			var light = new DirectionalLight()
+        	light.castShadow = true
+        	Editor.addToActualScene(light)
+		} else if (o === "Hemisphere Light") {
+			var light = new HemisphereLight()
+        	light.castShadow = true
+        	Editor.addToActualScene(light)
+		} else if (o === "Sky") {
+			var light = new Sky()
+       		Editor.addToActualScene(light)
+		} else if (o === "Perspective Camera") {
+			Editor.addToActualScene(new PerspectiveCamera())
+		} else if (o === "Orthographic Camera") {
+			Editor.addToActualScene(new OrthographicCamera(5, 5, 5, 5, 5, 5))
+		} else if (o === "Script") {
+			Editor.addToActualScene(new Script())
+		} else if (o === "Blueprints") {
+			// TODO: This
+		} else if (o === "Sprite") {
+			var map = new THREE.TextureLoader().load("data/sample.png")
+        	var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
+        	var sprite = new Sprite(material)
+        	Editor.addToActualScene(sprite)
+		} else if (o === "Particles") {
+			// TODO: This
+		}
+
+	}
+
+	show() {
+		this.dialog.show("fade")
+		Editor.clickable = false
+	}
+
+	close() {
+		this.dialog.close()
+	}
+}
 class CodeEditor {
 	constructor(parent) {
 		this.parent = parent
@@ -11776,20 +12128,40 @@ class ObjectInspector {
 
 	createComponentDialog(e) {
 
-		var dialog = new LiteGUI.Dialog({title: "Components", closable: true, scroll: true, scrollable: true})
-		dialog.dockTo(EditorUI.inspector, "full")
-		dialog.show()
+		//var dialog = new LiteGUI.Dialog({title: "Components", closable: true, scroll: true, scrollable: true})
+		//dialog.dockTo(EditorUI.inspector, "full")
+		//dialog.show()
 
-		var inspector = new LiteGUI.Inspector({width: dialog.width, height: dialog.height})
-		dialog.add(inspector)
+		//var inspector = new LiteGUI.Inspector({width: dialog.width, height: dialog.height})
+		//dialog.add(inspector)
 
-		Editor.components.forEach((item, index) => {
-			inspector.addButton(null, item.name, {callback: () => {
-				Editor.selected_object.addComponent(item)
-				EditorUI.updateInspector()
-				dialog.close()
-			}})
-		})
+		//Editor.components.forEach((item, index) => {
+		//	inspector.addButton(null, item.name, {callback: () => {
+		//		Editor.selected_object.addComponent(item)
+		//		EditorUI.updateInspector()
+		//		dialog.close()
+		//	}})
+		//})
+
+		// TODO: Add icons
+
+		var dialog = new LiteGUI.Dialog( {id: "dialog_components", title: "Components", close: true, minimize: true, width: 400, scroll: false, draggable: true } )
+		dialog.on_close = function() {
+			Editor.clickable = true
+		}
+		dialog.show("fade")
+		Editor.clickable = false
+
+		var selected_component = null
+		var widgets = new LiteGUI.Inspector()
+		var list_widget = widgets.addList(null, Editor.components, {height: 364, callback_dblclick: function(v) {
+			Editor.selected_object.addComponent(v)
+			EditorUI.updateInspector()
+			dialog.close()
+		}})
+
+		dialog.add(widgets)
+		dialog.center()
 
 	}
 
@@ -11809,6 +12181,9 @@ Editor.MODE_ROTATE = 3;
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
+
+// This variable determines whether we can click and modify what is inside the canvas
+Editor.clickable = true
 
 //Editor component system
 Editor.components = [] // For creating a new component, push a Component to this array
@@ -12403,6 +12778,8 @@ EditorUI.mainarea
 EditorUI.left_area
 EditorUI.right_area
 
+EditorUI.updateable = []
+
 EditorUI.Initialize = function() {
 
     // Initializing the LiteGUI library
@@ -12418,6 +12795,7 @@ EditorUI.Initialize = function() {
         Editor.createNewProgram()
         Editor.updateTreeView()
         Editor.updateObjectHelper()
+        EditorUI.updateable = []
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
@@ -12432,6 +12810,8 @@ EditorUI.Initialize = function() {
             Editor.program = program
             Editor.resetEditingFlags()
             Editor.updateTreeView()
+
+            EditorUI.updateable = []
 
             console.log("File loaded")
         } catch(e) {
@@ -12503,8 +12883,13 @@ EditorUI.Initialize = function() {
 
     // ----- Add/Primitives -----
 
+    EditorUI.topmenu.add("Add", {callback: () => {
+        var wind = new AddMenuWindow()
+        wind.show()
+    }})
+
     // Cube
-    EditorUI.topmenu.add("Add/3D Objects/Primitives/Cube", {callback: () => {
+    /*EditorUI.topmenu.add("Add/3D Objects/Primitives/Cube", {callback: () => {
         var geometry = new THREE.BoxGeometry(1,1,1)
         var material = new THREE.MeshPhongMaterial()
         var model = new Model3D(geometry, material)
@@ -12568,7 +12953,6 @@ EditorUI.Initialize = function() {
         //EditorUI.hierarchyFromScene(Editor.scene)
     }})
 
-    // Text
     EditorUI.topmenu.add("Add/3D Objects/Empty", {callback: () => {
         Editor.addToActualScene(new Empty())
         EditorUI.hierarchyFromScene(Editor.scene)
@@ -12680,7 +13064,7 @@ EditorUI.Initialize = function() {
     // Virtual Reality
     EditorUI.topmenu.add("Add/Device/Virtual Reality", {callback: () => {
         // TODO: This
-    }})
+    }})*/
 
     // ----- RUN -----
 
@@ -12735,15 +13119,10 @@ EditorUI.Initialize = function() {
     // ----- TABS -----
     EditorUI.tabs_widget = new LiteGUI.Tabs()
     EditorUI.tabs_widget.addTab("Scene Editor", {selected: true, width: "100%", closable: false, onclose: EditorUI.selectSceneEditor})
-    //EditorUI.tabs_widget.addTab("Script Editor", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-    //EditorUI.tabs_widget.addTab("Material Editor", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-    //EditorUI.tabs_widget.addTab("Preferences", {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
     EditorUI.left_area.add(EditorUI.tabs_widget)
 
     // Add the Canvas to the Scene Editor tab
     EditorUI.tabs_widget.getTabContent("Scene Editor").appendChild(EditorUI.canvas)
-
-    //EditorUI.tabs_widget.getTabContent("Script Editor").appendChild(EditorUI.code.element)
 
     // ----- CANVAS AREA SPLIT -----
     EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height], false)
@@ -12802,23 +13181,24 @@ EditorUI.Initialize = function() {
         children: []
     }, {
         allow_drag: true,
-        allow_rename: true,
+        //allow_rename: true,
         height: EditorUI.right_area.getSection(0).getHeight(),
     })
     EditorUI.hierarchy_panel.add(EditorUI.hierarchy)
-    EditorUI.hierarchy.contextmenu = () => {console.log("a")}
 
     // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
-        Editor.selected_object = e.detail.data.attachedTo
-        EditorUI.updateInspector(e.detail.data.attachedTo)
-        //console.log(e.detail)
+        if(e.detail.data.id !== "Program") {
+            Editor.selected_object = e.detail.data.attachedTo
+            EditorUI.updateInspector(e.detail.data.attachedTo)
+        } else {
+            // TODO: A program component in which you can modify its info
+            // Or open the project settings, and you can do so in there
+        }
     })
 
     // When an item is moved, this will check if we should set a parent
     LiteGUI.bind(EditorUI.hierarchy.root, "item_moved", function(e) {
-        //console.log(e.detail)
-
         if (e.detail.parent_item) {
             var parObj = e.detail.parent_item.data.attachedTo
             var obj = e.detail.item.data.attachedTo
@@ -12832,16 +13212,14 @@ EditorUI.Initialize = function() {
 
     // If an item in the hierarchy is double clicked and that object can add a new tab, this will open it
     LiteGUI.bind(EditorUI.hierarchy.root, "item_dblclicked", function(e) {
-        //console.log(e.detail.data)
         var data = e.detail.data
 
         // Script
         if (data.attachedTo instanceof Script) {
-            EditorUI.tabs_widget.addTab("Script Editor", {selected: true, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-            EditorUI.code = new CodeEditor(EditorUI.tabs_widget.getTabContent("Script Editor"))
+            EditorUI.tabs_widget.addTab("Script Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
+            EditorUI.code = new CodeEditor(EditorUI.tabs_widget.getTabContent("Script Editor " + Editor.nameId))
+            Editor.nameId++
 
-            // TODO: Create a new array that will be iterated through in EditorUI.updateInterface calling updateInterface of each of its elements
-            
             EditorUI.code.attachScript(data.attachedTo)
             EditorUI.code.updateInterface()
         }
@@ -12849,7 +13227,7 @@ EditorUI.Initialize = function() {
 
     // When renaming an object, renaming it in the scene
     LiteGUI.bind(EditorUI.hierarchy.root, "item_renamed", function(e) {
-        Editor.renameObject(e.detail.data.attachedTo, e.detail.new_name)
+        //Editor.renameObject(e.detail.data.attachedTo, e.detail.new_name)
     })
 
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})
