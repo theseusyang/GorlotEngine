@@ -171,16 +171,10 @@ EditorUI.Initialize = function() {
         //TODO: Show About
     }})
 
-    // ----- CANVAS -----
-    EditorUI.canvas = document.createElement("canvas")
-    EditorUI.canvas.id = "canvas"
-
     // ----- MAINAREA SPLIT ----- 
-    EditorUI.mainarea = new LiteGUI.Area({autoresize: true, inmediateResize: true, height: "calc(100% - 20px)"})
+    EditorUI.mainarea = new LiteGUI.Area({autoresize: true})
     EditorUI.mainarea.split("horizontal", [null, 400], true)
-    // Everytime the user resizes the canvas, the EditorUI.Resize function is called
     EditorUI.mainarea.onresize = EditorUI.Resize
-    // Add the mainarea to the GUI
     LiteGUI.add(EditorUI.mainarea)
 
     EditorUI.left_area = EditorUI.mainarea.getSection(0)
@@ -188,9 +182,13 @@ EditorUI.Initialize = function() {
 
     // ----- TABS -----
     EditorUI.tabs_widget = new LiteGUI.Tabs()
-    EditorUI.tabs_widget.addTab("Scene Editor", {selected: true, width: "100%", closable: false, onclose: EditorUI.selectSceneEditor})
+    EditorUI.tabs_widget.addTab("Scene Editor", {selected: true, closable: false, })
     EditorUI.left_area.add(EditorUI.tabs_widget)
 
+    // ----- CANVAS -----
+    EditorUI.canvas = document.createElement("canvas")
+    EditorUI.canvas.id = "canvas"
+    
     // Add the Canvas to the Scene Editor tab
     EditorUI.tabs_widget.getTabContent("Scene Editor").appendChild(EditorUI.canvas)
 
@@ -273,8 +271,10 @@ EditorUI.Initialize = function() {
             var parObj = e.detail.parent_item.data.attachedTo
             var obj = e.detail.item.data.attachedTo
 
-            if (parObj != null) {
+            if (parObj != null && parObj.parent === Editor.program.scene) {
                 parObj.add(obj)
+                Editor.updateTreeView()
+            } else {
                 Editor.updateTreeView()
             }
         }
@@ -335,34 +335,23 @@ EditorUI.updateInspector = function() {
 EditorUI.hierarchyFromScene = function(scene) {
     EditorUI.hierarchy.updateTree({id: "Program", children: []})
 
-    for(var i = 0; i < scene.children.length; i++) {
-        var it = EditorUI.hierarchy.insertItem({id: scene.children[i].name, attachedTo: scene.children[i]})
+    scene.children.forEach((item, index) => {
+        var it = EditorUI.hierarchy.insertItem({id: scene.children[index].name, attachedTo: scene.children[index]})
         it.addEventListener("contextmenu", function(e) {
-            var item = it
-            e.preventDefault()
-            e.stopPropagation()
-
-            if (e.button != 2) {
-                return
-            }
-
-            return EditorUI.hierarchyContext(e, {item: item, data: item.data})
+            return EditorUI.hierarchyContext(e, {item: it, data: it.data})
         })
 
-        // The tree only displays a parent and a child, TODO: add support to infinite children
+        if (scene.children[index].children.length > 0) {
+            var children = scene.children[index].children.length
 
-        if (scene.children[i].children.length > 0) {
-            for(var j = 0; j < scene.children[i].children.length; j++) {
-                EditorUI.hierarchy.insertItem(
-                    {
-                        id: scene.children[i].children[j].name,
-                        attachedTo: scene.children[i].children[j]
-                    },
-                    scene.children[i].name)
-            }
+            scene.children[index].children.forEach((j, k) => {
+                var l = EditorUI.hierarchy.insertItem({id: scene.children[index].children[k].name, attachedTo: scene.children[index].children[k]}, scene.children[index].name)
+                l.addEventListener("contextmenu", function(e) {
+                    return EditorUI.hierarchyContext(e, {item: l, data: l.data})
+                })
+            })
         }
-
-    }
+    })
 }
 
 EditorUI.hierarchyContext = function(e, data) {
@@ -382,7 +371,6 @@ EditorUI.hierarchyContext = function(e, data) {
             if ((object !== null) && (object.parent !== null)) {
                 object.parent.remove(object)
                 Editor.updateTreeView()
-                Editor.updateObjectHelper()
             }
         }}
     ], {title: "Edit item", event: e})
@@ -393,6 +381,6 @@ EditorUI.Resize = function() {
 }
 
 EditorUI.resizeCanvas = function() {
-    canvas.width = EditorUI.left_area.getWidth()
-    canvas.height= EditorUI.left_area.getHeight() - EditorUI.assetEx_height// - left_area.getSection().getHeight()
+    EditorUI.canvas.width = EditorUI.left_area.getWidth() - 4
+    EditorUI.canvas.height= EditorUI.left_area.getHeight() - (EditorUI.assetEx_height + 26) // - left_area.getSection().getHeight()
 }
