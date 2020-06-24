@@ -3,6 +3,7 @@ class Empty extends THREE.Object3D {
 		super()
 
 		this.name = "empty"
+		this.type = "Group"
 
 		this.components = []
 
