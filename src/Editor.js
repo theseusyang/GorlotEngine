@@ -299,6 +299,9 @@ Editor.update = function()
 					if(intersects.length > 0)
 					{
 						Editor.selected_object = intersects[0].object;
+
+						EditorUI.hierarchy.setSelectedItem(Editor.selected_object.name)
+
 						EditorUI.updateInspector()
 					}
 				}

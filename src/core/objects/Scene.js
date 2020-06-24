@@ -53,6 +53,15 @@ class Scene extends THREE.Scene {
 		this.world.broadphase = new CANNON.NaiveBroadphase();
 		this.world.gravity.set(0,-9.82,0);
 		this.world.solver.iterations = 10;
+
+		// Components
+		this.components = []
+		this.defaultComponents = []
+	}
+
+	addComponent(compo) {
+		// For now, you can't add components to the scenes
+		return false
 	}
 
 	initialize() {
