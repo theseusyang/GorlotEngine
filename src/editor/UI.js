@@ -214,36 +214,69 @@ EditorUI.Initialize = function() {
 
     EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
 
-    EditorUI.asset_explorer_menu.add("Import/Models/OBJ", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Import/Objects/OBJ", {callback: () => {
         App.chooseFile((event) => {
             var file = event.srcElement.value
 
             try {
                 var loader = new THREE.OBJLoader()
-                loader.load(file, function(obj) {
-                    Editor.addToActualScene(obj)
-                })
-                console.log("File imported")
+
+                var obj = loader.parse(App.readFile(file))
+                Editor.addToActualScene(obj)
+
+                console.log("Object imported")
             } catch(e) {
-                console.error("Error importing file: " + e)
+                console.error("Error importing Object: " + e)
             }
         }, ".obj")
     }})
 
-    EditorUI.asset_explorer_menu.add("Import/Models/DAE", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Import/Objects/DAE", {callback: () => {
         App.chooseFile((event) => {
             var file = event.srcElement.value
             try {
                 var loader = new THREE.ColladaLoader()
-                loader.load(file, function(obj) {
-                    Editor.addToActualScene(obj.scene)
-                })
 
-                console.log("File imported")
+                var obj = loader.parse(App.readFile(file))
+                Editor.addToActualScene(obj.scene)
+
+                console.log("Object imported")
             } catch(e) {
-                console.error("Error importing file: " + e)
+                console.error("Error importing Object: " + e)
             }
         }, ".dae")
+    }})
+
+    EditorUI.asset_explorer_menu.add("Import/Objects/JSON", {callback: () => {
+        App.chooseFile((event) => {
+            var file = event.srcElement.value
+
+            try {
+                var loader = new ObjectLoader()
+                var obj = loader.parse(App.readFile(file))
+                Editor.addToActualScene(obj)
+
+                console.log("Object imported")
+            } catch(e) {
+                console.error("Error importing Object: " + e)
+            }
+        }, ".json")
+    }})
+
+    EditorUI.asset_explorer_menu.add("Import/Objects/VRML", {callback: () => {
+        App.chooseFile(function(event) {
+            var file = event.srcElement.value
+
+            try {
+                var loader = new THREE.VRMLLoader()
+                var obj = loader.parse(App.readFile(file))
+                Editor.addToActualScene(obj)
+
+                console.log("Object imported")
+            } catch(e) {
+                console.log("Error importing Object: " + e)
+            }
+        }, ".wrl, .vrml")
     }})
 
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)

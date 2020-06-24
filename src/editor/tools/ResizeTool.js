@@ -189,6 +189,8 @@ class ResizeTool extends THREE.Scene {
 		this.y.matrixAutoUpdate = false
 		this.z.updateMatrix()
 		this.z.matrixAutoUpdate = false
+		this.block.updateMatrix()
+		this.block.matrixAutoUpdate = false
 
 		//Add to super
 		this.add(this.x);
@@ -198,7 +200,7 @@ class ResizeTool extends THREE.Scene {
 	}
 
 	highlightSelectedComponents(raycaster) {
-		var x = false, y = false, z = false, w = false;
+		var x = false, y = false, z = false, center = false;
 		var selected = false;
 		
 		//X Component
@@ -246,7 +248,7 @@ class ResizeTool extends THREE.Scene {
 		//Center Block Component
 		if(raycaster.intersectObject(this.block, true).length > 0)
 		{
-			w = true;
+			center = true;
 			selected = true;
 			this.block.material = this.material_yellow;
 		}
@@ -255,6 +257,6 @@ class ResizeTool extends THREE.Scene {
 			this.block.material = this.material_white;
 		}
 	
-		return {selected, x, y, z, w};
+		return {selected, x, y, z, center};
 	}
 }

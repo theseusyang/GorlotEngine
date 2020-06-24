@@ -87,6 +87,7 @@ class RotateTool extends THREE.Scene {
 		this.material_green = new THREE.MeshBasicMaterial({color: 0x00ff00});
 		this.material_blue = new THREE.MeshBasicMaterial({color: 0x0000ff});
 		this.material_yellow = new THREE.MeshBasicMaterial({color: 0xffff00});
+		this.material_white = new THREE.MeshBasicMaterial({color: 0xffffff})
 	
 		//X
 		var geometry = new THREE.TorusGeometry(1, 0.02, 5, 64);
@@ -101,6 +102,10 @@ class RotateTool extends THREE.Scene {
 		//Z
 		geometry = new THREE.TorusGeometry(1, 0.02, 5, 64);
 		this.z = new THREE.Mesh(geometry, this.material_blue);
+		
+		// Center
+		geometry = new THREE.SphereGeometry(0.1, 8, 8)
+		this.center = new THREE.Mesh(geometry, this.material_white)
 	
 		// Disable components auto matrix update
 		this.x.updateMatrix()
@@ -109,15 +114,18 @@ class RotateTool extends THREE.Scene {
 		this.y.matrixAutoUpdate = false
 		this.z.updateMatrix()
 		this.z.matrixAutoUpdate = false
+		this.center.updateMatrix()
+		this.center.matrixAutoUpdate = false
 
 		//Add to super
 		this.add(this.x);
 		this.add(this.y);
 		this.add(this.z);
+		this.add(this.center)
 	}
 
 	highlightSelectedComponents(raycaster) {
-		var x = false, y = false, z = false;
+		var x = false, y = false, z = false, center = false
 		var selected = false;
 	
 		//X Component
@@ -155,7 +163,16 @@ class RotateTool extends THREE.Scene {
 		{
 			this.z.material = this.material_blue;
 		}
+
+		// Center
+		if (raycaster.intersectObject(this.center, false).length > 0) {
+			selected = true
+			center = true
+			this.center.material = this.material_yellow
+		} else {
+			this.center.material = this.material_white
+		}
 	
-		return {selected, x, y, z};
+		return {selected, x, y, z, center}
 	}
 }

@@ -507,7 +507,7 @@ function parseObject(data, geometries, materials)
 			break;
 
 		default:
-			object = new THREE.Object3D();
+			object = new Empty();
 	}
 
 	object.uuid = data.uuid;

@@ -15,6 +15,7 @@ libraries.append("three/stats.min.js")
 
 libraries.append("three/loaders/OBJLoader.js")
 libraries.append("three/loaders/MTLLoader.js")
+libraries.append("three/loaders/VRMLLoader.js")
 libraries.append("three/loaders/ColladaLoader.js")
 libraries.append("three/loaders/collada/Animation.js")
 libraries.append("three/loaders/collada/AnimationHandler.js")
