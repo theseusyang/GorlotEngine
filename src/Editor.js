@@ -455,7 +455,6 @@ Editor.draw = function()
 Editor.resize = function()
 {
 	EditorUI.updateInterface();
-    Editor.resizeCamera()
 }
 
 // Show appropriate helper to selected object

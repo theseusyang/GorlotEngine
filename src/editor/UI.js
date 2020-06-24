@@ -31,6 +31,8 @@ EditorUI.right_area
 
 EditorUI.updateable = []
 
+// TODO: Move some elements to their own files
+
 EditorUI.Initialize = function() {
 
     // Initializing the LiteGUI library
@@ -514,6 +516,11 @@ EditorUI.Resize = function() {
 }
 
 EditorUI.resizeCanvas = function() {
+
+    if (Editor.camera !== undefined) {
+        Editor.resizeCamera()
+    }
+
     EditorUI.canvas.width = EditorUI.left_area.getWidth() - 4
     EditorUI.canvas.height= EditorUI.left_area.getHeight() - (EditorUI.assetEx_height + 26) // - left_area.getSection().getHeight()
 }

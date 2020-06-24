@@ -64,6 +64,13 @@ source.append("core/objects/Model3D.js")
 source.append("core/objects/Text3D.js")
 source.append("core/objects/Sprite.js")
 
+editor.append("core/Component.js")
+editor.append("core/ComponentManager.js")
+
+editor.append("core/components/ElementComponent.js")
+editor.append("core/components/Object3DComponent.js")
+editor.append("core/components/Text3DComponent.js")
+editor.append("core/components/LightComponent.js")
 # WARNING: This should always be the last file
 source.append("App.js")
 
@@ -84,13 +91,6 @@ editorCss.append("libs/codemirror/theme/monokai.css")
 editorCss.append("src/editor/utils/editor.css")
 
 # Editor Code
-editor.append("editor/Component.js")
-editor.append("editor/ComponentManager.js")
-
-editor.append("editor/components/ElementComponent.js")
-editor.append("editor/components/Object3DComponent.js")
-editor.append("editor/components/Text3DComponent.js")
-editor.append("editor/components/LightComponent.js")
 
 editor.append("editor/tools/MoveTool.js")
 editor.append("editor/tools/ResizeTool.js")
