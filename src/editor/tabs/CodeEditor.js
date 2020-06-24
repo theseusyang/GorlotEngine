@@ -7,7 +7,7 @@ class CodeEditor {
 		this.element.style.position = "absolute"
 
 		// CodeMirror Editor
-		this.code = new CodeMirror(this.element, {value: "//TODO <Insert Code here>\n", lineNumbers: true, mode: "javascript"})
+		this.code = new CodeMirror(this.element, {value: "", lineNumbers: true, mode: "javascript"})
 		this.code.setOption("theme", "monokai")
 		this.code.setOption("mode", "javascript")
 
@@ -37,11 +37,12 @@ class CodeEditor {
 
 	attachScript(script) {
 		this.script = script
-		this.setText(script.codeloop)
+		this.setText(script.code_loop)
 	}
 
 	updateScript() {
 		if (this.script != null) {
+			console.log("Updating to the script")
 			this.script.setLoopCode(this.code.getValue())
 		}
 	}

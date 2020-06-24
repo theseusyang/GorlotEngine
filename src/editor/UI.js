@@ -468,20 +468,14 @@ EditorUI.Initialize = function() {
 
             // TODO: Create a new array that will be iterated through in EditorUI.updateInterface calling updateInterface of each of its elements
             
-            EditorUI.code.updateInterface()
             EditorUI.code.attachScript(data.attachedTo)
+            EditorUI.code.updateInterface()
         }
     })
 
     // When renaming an object, renaming it in the scene
     LiteGUI.bind(EditorUI.hierarchy.root, "item_renamed", function(e) {
-        //console.log(e.detail.data)
-    
         Editor.renameObject(e.detail.data.attachedTo, e.detail.new_name)
-
-        //var obj = e.detail.data.attachedTo
-        //obj.name = e.detail.new_name
-        //Editor.updateTreeView()
     })
 
     EditorUI.inspector = new LiteGUI.Panel({title: "Inspector", scroll: true})
