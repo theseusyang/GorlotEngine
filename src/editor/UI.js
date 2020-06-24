@@ -235,23 +235,37 @@ EditorUI.Initialize = function() {
     // ----- ASSET EXPLORER MENU -----
 
     EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
-    EditorUI.asset_explorer_menu.add("File/Import", {callback: () => {
-        // TODO: This
-    }})
-    EditorUI.asset_explorer_menu.add("File/Export", {callback: () => {
 
+    EditorUI.asset_explorer_menu.add("Import/Models/OBJ", {callback: () => {
+        App.chooseFile((event) => {
+            var file = event.srcElement.value
+
+            try {
+                var loader = new THREE.OBJLoader()
+                loader.load(file, function(obj) {
+                    Editor.addToActualScene(obj)
+                })
+                console.log("File imported")
+            } catch(e) {
+                console.error("Error importing file: " + e)
+            }
+        }, ".obj")
     }})
 
-    EditorUI.asset_explorer_menu.add("Add/Shader", {callback: () => {
-        // TODO: This
-    }})
+    EditorUI.asset_explorer_menu.add("Import/Models/DAE", {callback: () => {
+        App.chooseFile((event) => {
+            var file = event.srcElement.value
+            try {
+                var loader = new THREE.ColladaLoader()
+                loader.load(file, function(obj) {
+                    Editor.addToActualScene(obj.scene)
+                })
 
-    EditorUI.asset_explorer_menu.add("Add/Material", {callback: () => {
-        // TODO: This
-    }})
-
-    EditorUI.asset_explorer_menu.add("Add/Terrain", {callback: () => {
-        // TODO: This
+                console.log("File imported")
+            } catch(e) {
+                console.error("Error importing file: " + e)
+            }
+        }, ".dae")
     }})
 
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
@@ -381,26 +395,61 @@ EditorUI.hierarchyContext = function(e, data) {
 
     var context = new LiteGUI.ContextMenu([
         {title: "Copy", callback: () => {
-            // TODO: This
+            if (!(object instanceof Scene)) {
+                try {
+                    if (object !== null) {
+                        App.clipboard.set(JSON.stringify(object.toJSON()), "text")
+                    }
+                } catch(e) {console.error("Error copying object: " + e)}
+            }
+        }},
+        {title: "Cut", callback: () => {
+            if (!(object instanceof Scene)) {
+                try {
+                    if (object !== null) {
+                        App.clipboard.set(JSON.stringify(object.toJSON()), "text")
+                    }
+
+                    EditorUI.deleteObject(object)
+                } catch(e) {console.error("Error cutting object: " + e)}
+            }
         }},
         {title: "Paste", callback: () => {
-            // TODO: This
+            if (!(object instanceof Scene)) {
+                try {
+                    if (object !== null) {
+                        var content = App.clipboard.get("text")
+                        var loader = new ObjectLoader()
+                        var data = JSON.parse(content)
+                        var obj = loader.parse(data)
+                        obj.position.set(0,0,0)
+                        Editor.renameObject(obj, obj.name)
+                        object.add(obj)
+                        Editor.updateTreeView()
+                    }
+                } catch(e) {console.error("Error pasting the object: " + e)}
+            }
         }},
         {title: "Duplicate", callback: () => {
             // TODO: This
         }},
         {title: "Delete", callback: () => {
-            if ((object !== null) && (object.parent !== null)) {
-                object.parent.remove(object)
-                Editor.updateTreeView()
-            }
-
-            // If this object is selected, reset editing flags
-            if (Editor.isObjectSelected(object)) {
-                Editor.resetEditingFlags()
-            }
+            EditorUI.deleteObject(object)
         }}
     ], {title: "Edit item", event: e})
+}
+
+EditorUI.deleteObject = function(object) {
+    // Delete object
+    if ((object !== null) && (object.parent !== null)) {
+        object.parent.remove(object)
+        Editor.updateTreeView()
+    }
+
+    // If this object is selected, reset editing flags
+    if (Editor.isObjectSelected(object)) {
+        Editor.resetEditingFlags()
+    }
 }
 
 EditorUI.Resize = function() {

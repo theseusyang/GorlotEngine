@@ -7,9 +7,9 @@ App.initialize = function(main)
 	// Node modules
 	try {
 		App.fs = require("fs")
-		App.ui = require("nw.gui")
-		App.clipboard = App.gui.clipboard.get()
-	} catch(e) {}
+		App.gui = nw
+		App.clipboard = App.gui.Clipboard.get()
+	} catch(e) {console.error("Error: " + e)}
 
 	//Stas tool
 	App.stats = new Stats();
