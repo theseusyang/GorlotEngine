@@ -7,6 +7,8 @@ App.initialize = function(main)
 	// Node modules
 	try {
 		App.fs = require("fs")
+		App.ui = require("nw.gui")
+		App.clipboard = App.gui.clipboard.get()
 	} catch(e) {}
 
 	//Stas tool

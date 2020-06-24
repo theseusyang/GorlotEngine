@@ -392,6 +392,11 @@ Editor.update = function()
 	}
 }
 
+// Check if object is selected
+Editor.isObjectSelected = function(obj) {
+	return (obj === Editor.selected_object)
+}
+
 // Add object to actual scene
 Editor.addToActualScene = function(obj) {
 	Editor.program.scene.add(obj)
@@ -559,6 +564,10 @@ Editor.resetEditingFlags = function() {
 	Editor.block_camera_move = false
 	Editor.is_editing_object = false
 	Editor.editing_object_args = null
+
+	try {
+		Editor.updateObjectHelper()
+	} catch(e) {}
 
 	if(EditorUI.form !== undefined) {
 		EditorUI.form.clear()

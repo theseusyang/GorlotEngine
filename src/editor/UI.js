@@ -42,31 +42,39 @@ EditorUI.Initialize = function() {
 
     // ----- FILE -----
     EditorUI.topmenu.add("File/New", {callback: () => {
-        // TODO: Confirm Action
-        Editor.createNewProgram()
-        Editor.updateTreeView()
-        Editor.updateObjectHelper()
-        EditorUI.updateable = []
+        LiteGUI.confirm("All unsaved changes to the project will be lost! Create new project?", (v) => {
+            if(v) {
+                Editor.createNewProgram()
+                Editor.updateTreeView()
+                Editor.updateObjectHelper()
+                EditorUI.updateable = []
+            }
+        }, {title: "New Project"})
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-        App.chooseFile((event) => {
-            var file = event.srcElement.value
-            try {
-                var loader = new ObjectLoader()
-                var data = JSON.parse(App.readFile(file))
-                var scene = loader.parse(data)
 
-                var program = new Program()
-                program.addScene(scene)
-
-                Editor.program = program
-                Editor.resetEditingFlags()
-                Editor.updateTreeView()
-
-                console.log("File Loaded!")
-            } catch (e) { console.error("Error loading file, exception: " + e) }
-        }, ".json")
+        var confirm = LiteGUI.confirm("All unsaved changes to the project will be lost! Load file?", (v) => {
+            if(v) {
+                App.chooseFile((event) => {
+                    var file = event.srcElement.value
+                    try {
+                        var loader = new ObjectLoader()
+                        var data = JSON.parse(App.readFile(file))
+                        var scene = loader.parse(data)
+        
+                        var program = new Program()
+                        program.addScene(scene)
+        
+                        Editor.program = program
+                        Editor.resetEditingFlags()
+                        Editor.updateTreeView()
+        
+                        console.log("File Loaded!")
+                    } catch (e) { console.error("Error loading file, exception: " + e) }
+                }, ".json")
+            }
+        }, {title: "Open project"})
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
@@ -98,7 +106,11 @@ EditorUI.Initialize = function() {
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {
-        Editor.exit()
+        LiteGUI.confirm("All unsaved changes to the project will be lost! Do you really want to exit?", (v) => {
+            if (v) {
+                Editor.exit()
+            }
+        }, {title: "Exit"})
     }})
 
     // TODO: Tools in a sidebar to make its interface easier to use
@@ -381,6 +393,11 @@ EditorUI.hierarchyContext = function(e, data) {
             if ((object !== null) && (object.parent !== null)) {
                 object.parent.remove(object)
                 Editor.updateTreeView()
+            }
+
+            // If this object is selected, reset editing flags
+            if (Editor.isObjectSelected(object)) {
+                Editor.resetEditingFlags()
             }
         }}
     ], {title: "Edit item", event: e})
