@@ -59,18 +59,8 @@ EditorUI.Initialize = function() {
                 App.chooseFile((event) => {
                     var file = event.srcElement.value
                     try {
-                        var loader = new ObjectLoader()
-                        var data = JSON.parse(App.readFile(file))
-                        var scene = loader.parse(data)
-        
-                        var program = new Program()
-                        program.addScene(scene)
-        
-                        Editor.program = program
-                        Editor.resetEditingFlags()
-                        Editor.updateTreeView()
-        
-                        console.log("File Loaded!")
+                        Editor.loadProgram(file)
+                        console.log("Project loaded")
                     } catch (e) { console.error("Error loading file, exception: " + e) }
                 }, ".json")
             }
@@ -84,20 +74,8 @@ EditorUI.Initialize = function() {
             var file = event.srcElement.value
 
             try {
-                var output = Editor.program.scene.toJSON()
-                var json = null
-    
-                try {
-                    json = JSON.stringify(output, null, "\t")
-                    json = json.replace(/[\n\t]+([\d\.e-\[\]]+)/g, "$1")
-                } catch(e) {
-                    json = JSON.stringify(output)
-                }
-
-                if (json !== null) {
-                    App.writeFile(file, json)
-                    console.log("File saved!")
-                }
+                Editor.saveProgram(file)
+                console.log("Project saved")
             } catch(e) {
                 console.error("Error saving file: " + e)
             }
@@ -369,7 +347,7 @@ EditorUI.updateInspector = function() {
 }
 
 EditorUI.hierarchyFromScene = function(scene) {
-    EditorUI.hierarchy.updateTree({id: "Program", children: []})
+    EditorUI.hierarchy.updateTree({id: Editor.program.name, attachedTo: Editor.program, children: []})
 
     scene.children.forEach((item, index) => {
         var it = EditorUI.hierarchy.insertItem({id: scene.children[index].name, attachedTo: scene.children[index]})

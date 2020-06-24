@@ -16,8 +16,6 @@ class ObjectInspector {
 	addComponentButton() {
 		EditorUI.form.addSeparator()
 
-		this.i = 0
-
 		if (Editor.selected_object.defaultComponents.length > 0) {
 			for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
 				Editor.selected_object.defaultComponents[i].initUI()
