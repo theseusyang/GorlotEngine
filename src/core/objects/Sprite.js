@@ -5,7 +5,9 @@ class Sprite extends THREE.Sprite {
 		this.name = "sprite"
 
 		this.components = []
-		this.addComponent(new ElementComponent())
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	addComponent(component) {

@@ -555,6 +555,13 @@ function parseObject(data, geometries, materials)
 		}
 	}
 
+	if (data.components !== undefined) {
+		for(var component in data.components) {
+			// TODO: Remove eval
+			eval("object.addComponent(new "+data.components[component].className+"())")
+		}
+	}
+
 	if(data.type === 'LOD')
 	{
 		var levels = data.levels;
@@ -568,12 +575,6 @@ function parseObject(data, geometries, materials)
 				object.addLevel( child, level.distance );
 			}
 		}
-	}
-
-	if (data.components !== undefined) {
-		// When components are serialized, this will load them
-		// TODO: Does this work?
-		object.components = data.components
 	}
 
 	return object;

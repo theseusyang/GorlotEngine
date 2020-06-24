@@ -5,7 +5,9 @@ class Empty extends THREE.Object3D {
 		this.name = "empty"
 
 		this.components = []
-		this.addComponent(new ElementComponent())
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 		
 		this.rotationAutoUpdate = false
 		this.matrixAutoUpdate = false

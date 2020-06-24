@@ -1,6 +1,6 @@
 class LightComponent extends Component {
 	constructor() {
-		super("Light")
+		super("Light", "LightComponent")
 	}
 
 	initUI() {

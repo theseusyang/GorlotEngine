@@ -42,7 +42,6 @@ class CodeEditor {
 
 	updateScript() {
 		if (this.script != null) {
-			console.log("Updating to the script")
 			this.script.setLoopCode(this.code.getValue())
 		}
 	}

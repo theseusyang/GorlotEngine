@@ -10819,8 +10819,9 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 class Component {
 	// To create a new component, you should extend this class
 
-	constructor(name) {
+	constructor(name, className) {
 		this.name = name
+		this.className = className
 	}
 
 	initUI() {
@@ -10865,7 +10866,7 @@ class ComponentManager {
 }
 class ElementComponent extends Component {
 	constructor() {
-		super("Element")
+		super("Element", "ElementComponent")
 	}
 
 	initUI() {
@@ -10893,7 +10894,7 @@ class ElementComponent extends Component {
 
 class Object3DComponent extends Component {
 	constructor() {
-		super("Object 3D")
+		super("Object 3D", "Object3DComponent")
 	}
 
 	initUI() {
@@ -10927,7 +10928,7 @@ class Object3DComponent extends Component {
 }
 class Text3DComponent extends Component {
 	constructor() {
-		super("Text 3D")
+		super("Text 3D", "Text3DComponent")
 	}
 
 	initUI() {
@@ -10950,7 +10951,7 @@ class Text3DComponent extends Component {
 }
 class LightComponent extends Component {
 	constructor() {
-		super("Light")
+		super("Light", "LightComponent")
 	}
 
 	initUI() {
@@ -11692,7 +11693,6 @@ class CodeEditor {
 
 	updateScript() {
 		if (this.script != null) {
-			console.log("Updating to the script")
 			this.script.setLoopCode(this.code.getValue())
 		}
 	}
@@ -11726,6 +11726,13 @@ class ObjectInspector {
 
 		this.i = 0
 
+		if (Editor.selected_object.defaultComponents.length > 0) {
+			for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
+				Editor.selected_object.defaultComponents[i].initUI()
+				EditorUI.form.addSeparator()
+			}
+		}
+
 		if (Editor.selected_object.components.length > 0) {
 	    	for(var i = 0; i < Editor.selected_object.components.length; i++) {
 	    		Editor.selected_object.components[i].initUI()
@@ -11752,6 +11759,12 @@ class ObjectInspector {
 
 		if (name === "Name") {
 			Editor.renameObject(Editor.selected_object, str)
+		}
+
+		if (Editor.selected_object.defaultComponents.length > 0) {
+			for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
+				Editor.selected_object.defaultComponents[i].updateInfo(name, value, widget)
+			}
 		}
 
 		if(Editor.selected_object.components.length > 0) {

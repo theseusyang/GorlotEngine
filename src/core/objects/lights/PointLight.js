@@ -8,10 +8,11 @@ class PointLight extends THREE.PointLight {
 		this.shadow.camera.far = 1000
 
 		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
 
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new LightComponent())
 	}
 
 	addComponent(component) {

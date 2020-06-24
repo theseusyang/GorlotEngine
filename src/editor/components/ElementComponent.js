@@ -1,6 +1,6 @@
 class ElementComponent extends Component {
 	constructor() {
-		super("Element")
+		super("Element", "ElementComponent")
 	}
 
 	initUI() {

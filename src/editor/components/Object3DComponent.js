@@ -2,7 +2,7 @@
 
 class Object3DComponent extends Component {
 	constructor() {
-		super("Object 3D")
+		super("Object 3D", "Object3DComponent")
 	}
 
 	initUI() {

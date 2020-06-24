@@ -18,6 +18,13 @@ class ObjectInspector {
 
 		this.i = 0
 
+		if (Editor.selected_object.defaultComponents.length > 0) {
+			for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
+				Editor.selected_object.defaultComponents[i].initUI()
+				EditorUI.form.addSeparator()
+			}
+		}
+
 		if (Editor.selected_object.components.length > 0) {
 	    	for(var i = 0; i < Editor.selected_object.components.length; i++) {
 	    		Editor.selected_object.components[i].initUI()
@@ -44,6 +51,12 @@ class ObjectInspector {
 
 		if (name === "Name") {
 			Editor.renameObject(Editor.selected_object, str)
+		}
+
+		if (Editor.selected_object.defaultComponents.length > 0) {
+			for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
+				Editor.selected_object.defaultComponents[i].updateInfo(name, value, widget)
+			}
 		}
 
 		if(Editor.selected_object.components.length > 0) {

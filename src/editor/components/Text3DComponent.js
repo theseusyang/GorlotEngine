@@ -1,6 +1,6 @@
 class Text3DComponent extends Component {
 	constructor() {
-		super("Text 3D")
+		super("Text 3D", "Text3DComponent")
 	}
 
 	initUI() {

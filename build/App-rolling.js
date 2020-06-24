@@ -28207,6 +28207,13 @@ function parseObject(data, geometries, materials)
 		}
 	}
 
+	if (data.components !== undefined) {
+		for(var component in data.components) {
+			// TODO: Remove eval
+			eval("object.addComponent(new "+data.components[component].className+"())")
+		}
+	}
+
 	if(data.type === 'LOD')
 	{
 		var levels = data.levels;
@@ -28220,12 +28227,6 @@ function parseObject(data, geometries, materials)
 				object.addLevel( child, level.distance );
 			}
 		}
-	}
-
-	if (data.components !== undefined) {
-		// When components are serialized, this will load them
-		// TODO: Does this work?
-		object.components = data.components
 	}
 
 	return object;
@@ -28316,10 +28317,11 @@ class PointLight extends THREE.PointLight {
 		this.shadow.camera.far = 1000
 
 		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
 
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new LightComponent())
 	}
 
 	addComponent(component) {
@@ -28351,10 +28353,11 @@ class SpotLight extends THREE.SpotLight {
 		this.name = "spot_light"
 	
 		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
 
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new LightComponent())
 	}
 
 	addComponent(component) {
@@ -28398,9 +28401,10 @@ class AmbientLight extends THREE.AmbientLight {
 
 		this.components = []
 
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new LightComponent())
 	}
 
 	addComponent(component) {
@@ -28432,11 +28436,10 @@ class DirectionalLight extends THREE.DirectionalLight {
 
 		this.components = []
 
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
-
-		
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new LightComponent())
 	}
 
 	addComponent(component) {
@@ -28468,11 +28471,11 @@ class HemisphereLight extends THREE.HemisphereLight {
 		this.name = "hemisphere_light"
 
 		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
-		this.addComponent(new LightComponent())
 
-		
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new LightComponent())
 	}
 
 	addComponent(component) {
@@ -28544,8 +28547,9 @@ class Sky extends THREE.Scene {
 		this.add(this.sky)
 
 		this.components = []
-		this.addComponent(new ElementComponent())
 
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -28667,7 +28671,9 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 		this.name = "perspective_camera"
 
 		this.components = []
-		this.addComponent(new ElementComponent())
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -28700,7 +28706,8 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 		this.components = []
 
-		this.addComponent(new ElementComponent())
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 		
 	}
 
@@ -28733,7 +28740,9 @@ class Empty extends THREE.Object3D {
 		this.name = "empty"
 
 		this.components = []
-		this.addComponent(new ElementComponent())
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 		
 		this.rotationAutoUpdate = false
 		this.matrixAutoUpdate = false
@@ -28786,8 +28795,9 @@ class Script extends THREE.Object3D {
 		this.func_init = Function(this.code_init)
 
 		this.components = []
-
-		this.addComponent(new ElementComponent())
+		
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -28880,6 +28890,8 @@ class Script extends THREE.Object3D {
 
 		object.matrix = this.matrix.toArray()
 
+		object.components = this.components
+
 		if (this.geometry !== undefined) {
 			if (meta.geometries[this.geometry.uuid] === undefined) {
 				meta.geometries[this.geometry.uuid] = this.geometry.toJSON(meta)
@@ -28948,8 +28960,10 @@ class Model3D extends THREE.Mesh {
 		this.name = "model"
 
 		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Object3DComponent())
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 	}
 
 	addComponent(component) {
@@ -28986,8 +29000,10 @@ class Text3D extends THREE.Mesh {
 		this.scale.set(0.01, 0.01, 0.01)
 
 		this.components = []
-		this.addComponent(new ElementComponent())
-		this.addComponent(new Text3DComponent())
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Text3DComponent())
 	}
 
 	addComponent(component) {
@@ -29024,7 +29040,9 @@ class Sprite extends THREE.Sprite {
 		this.name = "sprite"
 
 		this.components = []
-		this.addComponent(new ElementComponent())
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	addComponent(component) {

@@ -1,8 +1,9 @@
 class Component {
 	// To create a new component, you should extend this class
 
-	constructor(name) {
+	constructor(name, className) {
 		this.name = name
+		this.className = className
 	}
 
 	initUI() {

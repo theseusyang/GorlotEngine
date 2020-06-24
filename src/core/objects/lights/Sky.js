@@ -45,8 +45,9 @@ class Sky extends THREE.Scene {
 		this.add(this.sky)
 
 		this.components = []
-		this.addComponent(new ElementComponent())
 
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	addComponent(component) {

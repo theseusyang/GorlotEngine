@@ -23,8 +23,9 @@ class Script extends THREE.Object3D {
 		this.func_init = Function(this.code_init)
 
 		this.components = []
-
-		this.addComponent(new ElementComponent())
+		
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	addComponent(component) {
@@ -116,6 +117,8 @@ class Script extends THREE.Object3D {
 		object.visible = !(this.visible === false)
 
 		object.matrix = this.matrix.toArray()
+
+		object.components = this.components
 
 		if (this.geometry !== undefined) {
 			if (meta.geometries[this.geometry.uuid] === undefined) {
