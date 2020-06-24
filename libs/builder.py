@@ -24,6 +24,9 @@ libraries.append("three/loaders/collada/KeyFrameAnimation.js")
 libraries.append("threex/videotexture.js")
 libraries.append("threex/webcamtexture.js")
 
+#libraries.append("leap/leap-0.6.4.min.js")
+#libraries.append("leap/leap-plugins-0.1.11.min.js")
+
 libraries.append("cannon/cannon.js")
 libraries.append("cannon/ConvexGeometry.js")
 libraries.append("cannon/CannonDebugRenderer.js")
@@ -32,7 +35,6 @@ libraries.append("opentype.min.js")
 libraries.append("jszip.min.js")
 
 # Then the code itself
-source.append("device/KinectDevice.js")
 
 source.append("input/Key.js")
 source.append("input/Keyboard.js")
@@ -40,11 +42,13 @@ source.append("input/Mouse.js")
 
 source.append("core/animation/Joint.js")
 source.append("core/animation/Skeleton.js")
+
+source.append("core/ObjectLoader.js")
 source.append("core/Program.js")
 source.append("core/ObjectUtils.js")
 
-source.append("core/ObjectLoader.js")
-
+source.append("core/objects/device/LeapHand.js")
+source.append("core/objects/device/KinectDevice.js")
 source.append("core/objects/Scene.js")
 source.append("core/objects/lights/PointLight.js")
 source.append("core/objects/lights/SpotLight.js")

@@ -2,7 +2,12 @@
 function ObjectUtils(){}
 
 // Limit object size
-ObjectUtils.limitSize = function(x, y, z) {
+ObjectUtils.fitBox = function(x, y, z) {
+	// TODO: This
+}
+
+// Convert threejs type to internal types
+ObjectUtils.convertFromThreeType = function() {
 	// TODO: This
 }
 

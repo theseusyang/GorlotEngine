@@ -298,11 +298,7 @@ Editor.update = function()
 					var intersects =  Editor.raycaster.intersectObjects(Editor.program.scene.children, true);
 					if(intersects.length > 0)
 					{
-						Editor.selected_object = intersects[0].object;
-
-						EditorUI.hierarchy.setSelectedItem(Editor.selected_object.name)
-
-						EditorUI.updateInspector()
+						Editor.selectObject(intersects[0].object)
 					}
 				}
 			}
@@ -399,6 +395,12 @@ Editor.update = function()
 	{
 		Editor.program.scene.update();
 	}
+}
+
+Editor.selectObject = function(obj) {
+	Editor.selected_object = obj
+	EditorUI.hierarchy.setSelectedItem(Editor.selected_object.name)
+	EditorUI.updateInspector()
 }
 
 // Check if object is selected

@@ -82,7 +82,26 @@ KinectDevice.updateSkeletons = function()
 //Update Debug skeleton
 KinectDevice.updateDebugSkeleton = function(joints)
 {
-
+	/*hipcenter
+	spine 
+	shouldercenter 
+	head 
+	shoulderleft 
+	elbowleft 
+	wristleft 
+	handleft 
+	shoulderright
+	elbowright 
+	wristright 
+	handright 
+	hipleft 
+	kneeleft 
+	ankleleft 
+	footleft
+	hipright 
+	kneeright
+	ankleright
+	footright*/
 }
 
 //Create a cylinder between points a and b

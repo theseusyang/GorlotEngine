@@ -323,7 +323,7 @@ EditorUI.Initialize = function() {
     // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
         if(e.detail.data.attachedTo != Editor.program) {
-            Editor.selected_object = e.detail.data.attachedTo
+            Editor.selectObject(e.detail.data.attachedTo)
             EditorUI.updateInspector(e.detail.data.attachedTo)
         } else {
             // TODO: A program component in which you can modify its info
