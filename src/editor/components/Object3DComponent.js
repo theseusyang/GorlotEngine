@@ -28,9 +28,9 @@ class Object3DComponent extends Component {
 		if (name === "Visible") {
 			Editor.selected_object.visible = str
 		} if (name === "Cast Shadow") {
-			Editor.selected_object.castShadow = str
+			ObjectUtils.setShadowCasting(Editor.selected_object, str)
 		} if (name === "Receive Shadow") {
-			Editor.selected_object.receiveShadow = str
+			ObjectUtils.setShadowReceiving(Editor.selected_object, str)
 		}
 	}
 }

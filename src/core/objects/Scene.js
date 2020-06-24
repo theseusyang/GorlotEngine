@@ -42,6 +42,8 @@ class Scene extends THREE.Scene {
 	constructor() {
 		super()
 
+		this.name = "scene"
+
 		// Disable auto matrix updates
 		this.rotationAutoUpdate = false
 		this.matrixAutoUpdate = false

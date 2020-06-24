@@ -6,6 +6,24 @@ ObjectUtils.limitSize = function(x, y, z) {
 	// TODO: This
 }
 
+// Set shadow receiving
+ObjectUtils.setShadowReceiving = function(obj, value) {
+	obj.receiveShadow = value
+
+	for(var i = 0; i < obj.children.length; i++) {
+		ObjectUtils.setShadowReceiving(obj.children[i], value)
+	}
+}
+
+// Set shadow casting
+ObjectUtils.setShadowCasting = function(obj, value) {
+	obj.castShadow = value
+
+	for(var i = 0; i < obj.children.length; i++) {
+		ObjectUtils.setShadowCasting(obj.children[i], value)
+	}
+}
+
 //Check if object is child of another object
 ObjectUtils.isChildOf = function(parent, child)
 {

@@ -121,7 +121,10 @@ EditorUI.Initialize = function() {
 
     // ----- Add Scene -----
     EditorUI.topmenu.add("Edit/Project/Add Scene", {callback: () => {
-        // TODO: Add Scene
+        var scene = new Scene()
+        Editor.program.add(scene)
+        Editor.renameObject(scene, scene.name)
+        Editor.updateTreeView()
     }})
 
     // ----- Preferences -----
@@ -222,6 +225,10 @@ EditorUI.Initialize = function() {
                 var loader = new THREE.OBJLoader()
 
                 var obj = loader.parse(App.readFile(file))
+
+                ObjectUtils.setShadowCasting(obj, true)
+                ObjectUtils.setShadowReceiving(obj, true)
+
                 Editor.addToActualScene(obj)
 
                 console.log("Object imported")
@@ -238,6 +245,10 @@ EditorUI.Initialize = function() {
                 var loader = new THREE.ColladaLoader()
 
                 var obj = loader.parse(App.readFile(file))
+
+                ObjectUtils.setShadowCasting(obj.scene, true)
+                ObjectUtils.setShadowReceiving(obj.scene, true)
+
                 Editor.addToActualScene(obj.scene)
 
                 console.log("Object imported")
@@ -254,6 +265,10 @@ EditorUI.Initialize = function() {
             try {
                 var loader = new ObjectLoader()
                 var obj = loader.parse(App.readFile(file))
+
+                ObjectUtils.setShadowCasting(obj, true)
+                ObjectUtils.setShadowReceiving(obj, true)
+
                 Editor.addToActualScene(obj)
 
                 console.log("Object imported")
@@ -270,6 +285,10 @@ EditorUI.Initialize = function() {
             try {
                 var loader = new THREE.VRMLLoader()
                 var obj = loader.parse(App.readFile(file))
+
+                ObjectUtils.setShadowCasting(obj, true)
+                ObjectUtils.setShadowReceiving(obj, true)
+
                 Editor.addToActualScene(obj)
 
                 console.log("Object imported")
@@ -303,7 +322,7 @@ EditorUI.Initialize = function() {
 
     // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
-        if(e.detail.data.id !== "Program") {
+        if(e.detail.data.attachedTo != Editor.program) {
             Editor.selected_object = e.detail.data.attachedTo
             EditorUI.updateInspector(e.detail.data.attachedTo)
         } else {
@@ -318,7 +337,7 @@ EditorUI.Initialize = function() {
             var parObj = e.detail.parent_item.data.attachedTo
             var obj = e.detail.item.data.attachedTo
 
-            if (parObj != null && parObj.parent === Editor.program.scene) {
+            if (parObj != null) {
                 parObj.add(obj)
                 Editor.updateTreeView()
             } else {
@@ -382,21 +401,38 @@ EditorUI.updateInspector = function() {
 EditorUI.hierarchyFromScene = function(scene) {
     EditorUI.hierarchy.updateTree({id: Editor.program.name, attachedTo: Editor.program, children: []})
 
-    scene.children.forEach((item, index) => {
-        var it = EditorUI.hierarchy.insertItem({id: scene.children[index].name, attachedTo: scene.children[index]})
-        it.addEventListener("contextmenu", function(e) {
-            return EditorUI.hierarchyContext(e, {item: it, data: it.data})
-        })
+    Editor.program.children.forEach((item, index) => {
+        var it = EditorUI.hierarchy.insertItem({id: Editor.program.children[index].name, attachedTo: Editor.program.children[index]})
+        if(Editor.program.children[index].children.length > 0){
+            EditorUI.addChildrenToHierarchy(Editor.program.children[index], Editor.program.children[index].name)
+        }
+    })
 
-        if (scene.children[index].children.length > 0) {
-            var children = scene.children[index].children.length
+//    scene.children.forEach((item, index) => {
+//        var it = EditorUI.hierarchy.insertItem({id: scene.children[index].name, attachedTo: scene.children[index]})
+//        it.addEventListener("contextmenu", function(e) {
+//            return EditorUI.hierarchyContext(e, {item: it, data: it.data})
+//        })
+//
+//        if (scene.children[index].children.length > 0) {
+//            var children = scene.children[index].children.length
+//
+//            scene.children[index].children.forEach((j, k) => {
+//                var l = EditorUI.hierarchy.insertItem({id: scene.children[index].children[k].name, attachedTo: scene.children[index].children[k]}, scene.children[index].name)
+//                l.addEventListener("contextmenu", function(e) {
+//                    return EditorUI.hierarchyContext(e, {item: l, data: l.data})
+//                })
+//            })
+//        }
+//    })
+}
 
-            scene.children[index].children.forEach((j, k) => {
-                var l = EditorUI.hierarchy.insertItem({id: scene.children[index].children[k].name, attachedTo: scene.children[index].children[k]}, scene.children[index].name)
-                l.addEventListener("contextmenu", function(e) {
-                    return EditorUI.hierarchyContext(e, {item: l, data: l.data})
-                })
-            })
+EditorUI.addChildrenToHierarchy = function(object, parent) {
+    object.children.forEach((v, i) => {
+        var it = EditorUI.hierarchy.insertItem({id: object.children[i].name, attachedTo: object.children[i]}, parent)
+
+        if (object.children[i].children.length > 0) {
+            EditorUI.addChildrenToHierarchy(object.children[i], object.children[i].name, parent)
         }
     })
 }
@@ -431,7 +467,7 @@ EditorUI.hierarchyContext = function(e, data) {
         {title: "Paste", callback: () => {
             if (!(object instanceof Scene)) {
 
-                if (object !== null && object.parent === Editor.program.scene) {
+                if (object !== null) {
                     try {
                         var content = App.clipboard.get("text")
                         var loader = new ObjectLoader()
