@@ -374,38 +374,48 @@ EditorUI.hierarchyContext = function(e, data) {
     var context = new LiteGUI.ContextMenu([
         {title: "Copy", callback: () => {
             if (!(object instanceof Scene)) {
-                try {
-                    if (object !== null) {
+
+                if (object !== null) {
+                    try {
                         App.clipboard.set(JSON.stringify(object.toJSON()), "text")
-                    }
-                } catch(e) {console.error("Error copying object: " + e)}
+                    } catch(e) {console.error("Error copying object: " + e)}
+                }
+
             }
         }},
         {title: "Cut", callback: () => {
             if (!(object instanceof Scene)) {
-                try {
-                    if (object !== null) {
-                        App.clipboard.set(JSON.stringify(object.toJSON()), "text")
-                    }
 
-                    EditorUI.deleteObject(object)
-                } catch(e) {console.error("Error cutting object: " + e)}
+                if (object !== null) {
+                    try {
+                        App.clipboard.set(JSON.stringify(object.toJSON()), "text")
+                        EditorUI.deleteObject(object)
+                    } catch(e) {console.error("Error cutting object: " + e)}
+                }
+
             }
         }},
         {title: "Paste", callback: () => {
             if (!(object instanceof Scene)) {
-                try {
-                    if (object !== null) {
+
+                if (object !== null && object.parent === Editor.program.scene) {
+                    try {
                         var content = App.clipboard.get("text")
                         var loader = new ObjectLoader()
                         var data = JSON.parse(content)
+
+                        // Create Object
                         var obj = loader.parse(data)
+                        obj.uuid = THREE.Math.generateUUID()
                         obj.position.set(0,0,0)
+
+                        // Add object
                         Editor.renameObject(obj, obj.name)
                         object.add(obj)
                         Editor.updateTreeView()
-                    }
-                } catch(e) {console.error("Error pasting the object: " + e)}
+                    } catch(e) {console.error("Error pasting the object: " + e)}
+                }
+
             }
         }},
         {title: "Duplicate", callback: () => {

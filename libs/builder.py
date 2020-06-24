@@ -40,6 +40,7 @@ source.append("input/Mouse.js")
 source.append("core/animation/Joint.js")
 source.append("core/animation/Skeleton.js")
 source.append("core/Program.js")
+source.append("core/ObjectUtils.js")
 
 source.append("core/ObjectLoader.js")
 
