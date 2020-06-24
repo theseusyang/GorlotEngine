@@ -153,11 +153,13 @@
 }
 
 .inspector .icon {
-	margin-right: 4px;
 	/*
+	margin-right: 4px;
 	margin-top: 2px;
 	margin-bottom: -2px;
 	*/
+	width: 12px;
+	height: 12px;
 }
 
 .inspector .wcontent .icon {

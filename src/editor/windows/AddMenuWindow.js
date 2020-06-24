@@ -1,7 +1,7 @@
 class AddMenuWindow {
 	constructor() {
 		// TODO: Add Icons
-		this.dialog = new LiteGUI.Dialog( {id: "dialog_add", title: "Add Objects", close: true, minimize: true, width: 400, scroll: false, draggable: true} )
+		this.dialog = new LiteGUI.Dialog( {id: "dialog_add", title: "Add Objects", close: true, minimize: true, width: 400, height: 463, scroll: false, draggable: true} )
 		this.dialog.on_close = function() {
 			Editor.clickable = true
 		}
@@ -11,79 +11,79 @@ class AddMenuWindow {
 		this.objects = [
 			{
 				"name": "Cube",
-				"icon": ""
+				"icon": "data/icons/models/cube.png"
 			},
 			{
 				"name": "Cylinder",
-				"icon": ""
+				"icon": "data/icons/models/cylinder.png"
 			},
 			{
 				"name": "Sphere",
-				"icon": ""
+				"icon": "data/icons/models/sphere.png"
 			},
 			{
 				"name": "Torus",
-				"icon": ""
+				"icon": "data/icons/models/torus.png"
 			},
 			{
 				"name": "Pyramid",
-				"icon": ""
+				"icon": "data/icons/models/pyramid.png"
 			},
 			{
 				"name": "Empty",
-				"icon": ""
+				"icon": "data/icons/models/squares.png"
 			},
 			{
 				"name": "Text",
-				"icon": ""
+				"icon": "data/icons/models/text.png"
 			},
 			{
 				"name": "Point Light",
-				"icon": ""
+				"icon": "data/icons/lights/point.png"
 			},
 			{
 				"name": "Ambient Light",
-				"icon": ""
+				"icon": "data/icons/lights/ambient.png"
 			},
 			{
 				"name": "Spot Light",
-				"icon": ""
+				"icon": "data/icons/lights/spot.png"
 			},
 			{
 				"name": "Directional Light",
-				"icon": ""
+				"icon": "data/icons/lights/directional.png"
 			},
 			{
 				"name": "Hemisphere Light",
-				"icon": ""
+				"icon": "data/icons/lights/hemisphere.png"
 			},
 			{
 				"name": "Sky",
-				"icon": ""
+				"icon": "data/icons/lights/sky.png"
 			},
 			{
 				"name": "Perspective Camera",
-				"icon": ""
+				"icon": "data/icons/camera/perspective.png"
 			},
 			{
 				"name": "Orthographic Camera",
-				"icon": ""
+				"icon": "data/icons/camera/orthographic.png"
 			},
 			{
 				"name": "Script",
-				"icon": ""
+				"icon": "data/icons/script/script.png"
 			},
 			{
 				"name": "Blueprints",
-				"icon": ""
+				"icon": "data/icons/script/blueprints.png"
 			},
 			{
 				"name": "Sprite",
-				"icon": ""
+				"icon": "data/icons/effects/sprite.png"
 			},
 			{
 				"name": "Particles",
-				"icon": ""
+				"icon": "data/icons/effects/particles.png"
 			}
 		]
 
@@ -91,7 +91,7 @@ class AddMenuWindow {
 
 		this.widgets = new LiteGUI.Inspector()
 
-		this.objectList = this.widgets.addList(null, this.objects, {callback_dblclick: function(v) {
+		this.objectList = this.widgets.addList(null, this.objects, {height: this.dialog.height,callback_dblclick: function(v) {
 			self.selected_object = v.name
 			self.add()
 			self.close()
