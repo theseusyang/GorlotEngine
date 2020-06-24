@@ -37,13 +37,16 @@ App.initialize = function(main)
 }
 
 // File chooser callback receives event object
-App.chooseFile = function(callback, filter) {
+App.chooseFile = function(callback, filter, savemode) {
 	// Create file chooser element
 	var chooser = document.createElement("input")
 	chooser.type = "file"
 	chooser.style.display = "none"
 	if (filter !== undefined) {
 		chooser.accept = filter
+	}
+	if (savemode === true) {
+		chooser.nwsaveas = "file"
 	}
 	document.body.appendChild(chooser)
 

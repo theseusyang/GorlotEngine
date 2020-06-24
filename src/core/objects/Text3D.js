@@ -3,6 +3,7 @@ class Text3D extends THREE.Mesh {
 		super(new THREE.TextGeometry(text, {font: font}), material)
 
 		this.name = "text"
+		this.type = "Text3D"
 
 		this.font = font
 		this.text = text

@@ -491,7 +491,7 @@ function parseObject(data, geometries, materials)
 			break;
 
 		case 'Sprite':
-			object = new THREE.Sprite( getMaterial( data.material ) );
+			object = new Sprite( getMaterial( data.material ) );
 			break;
 
 		case 'Group':

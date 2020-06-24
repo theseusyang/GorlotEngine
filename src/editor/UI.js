@@ -72,19 +72,29 @@ EditorUI.Initialize = function() {
     EditorUI.topmenu.add("File/Save", {callback: () => {
         // TODO: Create a toJSON function to every object, so the components can be serialized
 
-        var output = Editor.program.scene.toJSON()
-        var json = null
+        App.chooseFile((event) => {
+            var file = event.srcElement.value
 
-        try {
-            json = JSON.stringify(output, null, "\t")
-            json = json.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, "$1")
-        } catch (e) {
-            json = JSON.stringify(json)
-        }
+            try {
+                var output = Editor.program.scene.toJSON()
+                var json = null
+    
+                try {
+                    json = JSON.stringify(output, null, "\t")
+                    json = json.replace(/[\n\t]+([\d\.e-\[\]]+)/g, "$1")
+                } catch(e) {
+                    json = JSON.stringify(output)
+                }
 
-        if (json != null) {
-            App.writeFile("project.json", json)
-        }
+                if (json !== null) {
+                    App.writeFile(file, json)
+                    console.log("File saved!")
+                }
+            } catch(e) {
+                console.error("Error saving file: " + e)
+            }
+
+        }, ".json", true)
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {

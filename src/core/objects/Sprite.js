@@ -3,6 +3,7 @@ class Sprite extends THREE.Sprite {
 		super(material)
 
 		this.name = "sprite"
+		this.type = "Sprite"
 
 		this.components = []
 

@@ -6,13 +6,6 @@
 	},
 	"geometries": [
 		{
-			"uuid": "3B7A55ED-DBA2-445C-B722-27AC77AD3DF4",
-			"type": "SphereGeometry",
-			"radius": 4000,
-			"widthSegments": 32,
-			"heightSegments": 15
-		},
-		{
 			"uuid": "446BBC3F-5B14-4E16-90CF-AFF5D73ED28E",
 			"type": "BoxGeometry",
 			"name": "object",
@@ -31,6 +24,7 @@
 		{
 			"uuid": "1E1528EA-00AC-4BEE-AFC0-0DD16B2B440E",
 			"type": "BoxGeometry",
+			"name": "object",
 			"width": 1,
 			"height": 1,
 			"depth": 1
@@ -38,44 +32,12 @@
 		{
 			"uuid": "90E7C57B-B07C-4653-964B-99CA20E50FC8",
 			"type": "BoxGeometry",
+			"name": "object",
 			"width": 1,
 			"height": 1,
 			"depth": 1
 		}],
 	"materials": [
-		{
-			"uuid": "734DB421-7F16-4EC5-B921-3D4CE63547FB",
-			"type": "ShaderMaterial",
-			"side": 1,
-			"uniforms": {
-				"top_color": {
-					"type": "c",
-					"value": {
-						"r": 0.19999999999999996,
-						"g": 0.5199999999999994,
-						"b": 1
-					}
-				},
-				"bottom_color": {
-					"type": "c",
-					"value": {
-						"r": 1,
-						"g": 1,
-						"b": 1
-					}
-				},
-				"offset": {
-					"type": "f",
-					"value": 20
-				},
-				"exponent": {
-					"type": "f",
-					"value": 0.4
-				}
-			},
-			"vertexShader": "varying vec3 vWorldPosition;\n\nvoid main() {\n\tvec4 worldPosition = modelMatrix * vec4(position, 1.0);\n\tvWorldPosition = worldPosition.xyz;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n",
-			"fragmentShader": "uniform vec3 top_color;\nuniform vec3 bottom_color;\nuniform float offset;\nuniform float exponent;\nvarying vec3 vWorldPosition;\n\nvoid main() {\n\tfloat h = normalize(vWorldPosition + offset).y;\n\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n}"
-		},
 		{
 			"uuid": "0C71E63D-87A0-44D0-855B-DE6A8CB8A6A3",
 			"type": "MeshPhongMaterial",
@@ -113,25 +75,6 @@
 		"type": "Scene",
 		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 		"children": [
-			{
-				"uuid": "06B6404D-60DF-4D63-807A-765718D84E42",
-				"type": "Sky",
-				"auto_update": true,
-				"day_time": 20,
-				"sun_distance": 200,
-				"components": [
-					{
-						"name": "Text 3D",
-						"className": "Text3DComponent"
-					}],
-				"name": "sky",
-				"castShadow": false,
-				"receiveShadow": false,
-				"visible": true,
-				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-				"geometry": "3B7A55ED-DBA2-445C-B722-27AC77AD3DF4",
-				"material": "734DB421-7F16-4EC5-B921-3D4CE63547FB"
-			},
 			{
 				"uuid": "14B90BFE-2445-4C8B-AFAE-9BC0D6E8AE84",
 				"type": "Mesh",
@@ -178,6 +121,15 @@
 						"geometry": "90E7C57B-B07C-4653-964B-99CA20E50FC8",
 						"material": "31CDD02B-785C-4967-95FA-0BC065E02618"
 					}]
+			},
+			{
+				"uuid": "9D64739C-A6FF-40C3-878A-FCD2130C2F83",
+				"type": "DirectionalLight",
+				"name": "directional_light_1",
+				"castShadow": true,
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,3.6540000438690186,3.1600000858306885,0,1],
+				"color": 16777215,
+				"intensity": 0.5289855072463768
 			}]
 	}
 }
