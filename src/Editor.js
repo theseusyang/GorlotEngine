@@ -50,34 +50,29 @@ Editor.initialize = function(canvas)
 	Editor.program_backup = null
 	Editor.createNewProgram()
 
+	// Renderer and canvas
+	Editor.renderer = null
+	Editor.canvas = null
+
 	//Initialize User Interface
 	EditorUI.Initialize();
-
-	//Set render canvas
-	Editor.setRenderCanvas(EditorUI.canvas)
 
 	//Debug Elements
 	Editor.tool_scene = new THREE.Scene();
 	Editor.tool_scene_top = new THREE.Scene();
 	Editor.cannon_renderer = new THREE.CannonDebugRenderer(Editor.tool_scene, Editor.program.scene.world);
 
+	// Raycaster
+	Editor.raycaster = new THREE.Raycaster()
+
+	// Set render canvas
+	Editor.setRenderCanvas(EditorUI.canvas)
+
 	//Editor Camera
 	Editor.camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 100000);
 	Editor.camera.position.set(0, 5, -5);
 	Editor.camera_rotation = new THREE.Vector2(0,0);
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
-
-	//Raycaster
-	Editor.raycaster = new THREE.Raycaster();
-
-	//Renderer
-	Editor.renderer = new THREE.WebGLRenderer({canvas: Editor.canvas});
-	Editor.renderer.autoClear = false;
-	Editor.renderer.setSize(Editor.canvas.width, Editor.canvas.height);
-
-	// Enable shadow maps (THREE.PCFShadowMap or THREE.PCFSoftShadowMap)
-	Editor.renderer.shadowMap.enabled = true;
-	Editor.renderer.shadowMap.type = THREE.PCFShadowMap;
 
 	//Update interface
 	EditorUI.updateInterface();
@@ -190,6 +185,24 @@ Editor.update = function()
 				Editor.move_tool.visible = false;
 				Editor.rotate_tool.visible = false;
 				Editor.resize_tool.visible = false;
+			}
+
+			// Keyboard shortcuts
+			if (Keyboard.isKeyPressed(Keyboard.DEL)) {
+				// Delete Selected Object
+				Editor.deleteSelectedObject()
+			} else if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
+				// Shortcuts with the CTRL key
+				if (Keyboard.isKeyPressed(Keyboard.C)) {
+					// Copy selected object
+					Editor.copySelectedObject()
+				} else if (Keyboard.isKeyPressed(Keyboard.V)) {
+					// Paste into selected object
+					Editor.pasteIntoSelectedObject()
+				} else if (Keyboard.isKeyPressed(Keyboard.X)) {
+					// Cut selected object
+					Editor.cutSelectedObject()
+				}
 			}
 		}
 		else
@@ -407,7 +420,69 @@ Editor.selectObject = function(obj) {
 
 // Check if object is selected
 Editor.isObjectSelected = function(obj) {
-	return (obj === Editor.selected_object)
+	Editor.selected_object === obj
+}
+
+// Delete selected Object
+Editor.deleteSelectedObject = function() {
+	if (Editor.selected_object.parent !== null) {
+		Editor.selected_object.parent.remove(Editor.selected_object)
+		Editor.updateTreeView()
+		Editor.resetEditingFlags()
+	}
+}
+
+// Copy selected object
+Editor.copySelectedObject = function() {
+	if (Editor.selected_object !== null) {
+		try {
+			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
+		} catch(e) {
+			console.error("Error copying the object: " + e)
+		}
+	}
+}
+
+// Cut selected object
+Editor.cutSelectedObject = function() {
+	if (Editor.selected_object !== null) {
+		try {
+			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
+			if (Editor.selected_object.parent !== null) {
+				Editor.selected_object.parent.remove(Editor.selected_object)
+				Editor.updateTreeView()
+				Editor.resetEditingFlags()
+			}
+		} catch(e) {
+			console.error("Error cutting object: " + e)
+		}
+	}
+}
+
+// Paste as children of the selected object
+Editor.pasteIntoSelectedObject = function() {
+	try {
+		var content = App.clipboard.get("text")
+		var loader = new ObjectLoader()
+		var data = JSON.parse(content)
+
+		// Create object
+		var obj = loader.parse(data)
+		obj.uuid = THREE.Math.generateUUID()
+		obj.position.set(0, 0, 0)
+		Editor.renameObject(obj, obj.name)
+
+		// Add object
+		if (Editor.selected_object !== null) {
+			Editor.selected_object.add(obj)
+		} else {
+			Editor.program.scene.add(obj)
+		}
+
+		Editor.updateTreeView()
+	} catch(e) {
+		console.error("Error pasting object: " + e)
+	}
 }
 
 // Add object to actual scene
@@ -523,9 +598,11 @@ Editor.activateHelper = function(helper, value) {
 //Resize Camera
 Editor.resizeCamera = function()
 {
-	Editor.renderer.setSize(Editor.canvas.width, Editor.canvas.height);
-	Editor.camera.aspect = Editor.canvas.width/Editor.canvas.height;
-	Editor.camera.updateProjectionMatrix();
+	if (Editor.canvas !== null && Editor.renderer !== null) {
+		Editor.renderer.setSize(Editor.canvas.width, Editor.canvas.height)
+		Editor.camera.aspect = Editor.canvas.width/Editor.canvas.height
+		Editor.camera.updateProjectionMatrix()
+	}
 }
 
 //Set camera rotation
@@ -624,8 +701,20 @@ Editor.setState = function(state) {
 
 // Set render canvas
 Editor.setRenderCanvas = function(canvas) {
-	Editor.canvas = canvas
 	Mouse.canvas = canvas
+	Editor.canvas = canvas
+	Editor.initializeRenderer(canvas)
+}
+
+// Initialize the renderer
+Editor.initializeRenderer = function(canvas) {
+	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas})
+	Editor.renderer.autoClear = false
+
+	// Enable shadow maps
+	Editor.renderer.shadowMap.enabled = true
+	Editor.renderer.shadowMap.type = THREE.PCFShadowMao
+	Editor.renderer.setSize(canvas.width, canvas.height)
 }
 
 // Exit Editor

@@ -230,7 +230,7 @@ EditorUI.Initialize = function() {
                 ObjectUtils.setShadowCasting(obj, true)
                 ObjectUtils.setShadowReceiving(obj, true)
 
-                Editor.addToActualScene(obj)
+                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
 
                 console.log("Object imported")
             } catch(e) {
@@ -250,7 +250,7 @@ EditorUI.Initialize = function() {
                 ObjectUtils.setShadowCasting(obj.scene, true)
                 ObjectUtils.setShadowReceiving(obj.scene, true)
 
-                Editor.addToActualScene(obj.scene)
+                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj.scene))
 
                 console.log("Object imported")
             } catch(e) {
@@ -270,7 +270,7 @@ EditorUI.Initialize = function() {
                 ObjectUtils.setShadowCasting(obj, true)
                 ObjectUtils.setShadowReceiving(obj, true)
 
-                Editor.addToActualScene(obj)
+                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
 
                 console.log("Object imported")
             } catch(e) {
@@ -290,7 +290,7 @@ EditorUI.Initialize = function() {
                 ObjectUtils.setShadowCasting(obj, true)
                 ObjectUtils.setShadowReceiving(obj, true)
 
-                Editor.addToActualScene(obj)
+                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
 
                 console.log("Object imported")
             } catch(e) {
@@ -377,7 +377,7 @@ EditorUI.Initialize = function() {
             EditorUI.code.updateInterface()
         }
         // Blueprints
-        if (data.attachedTo instanceof Blueprints) {
+        else if (data.attachedTo instanceof Blueprints) {
             EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: () => {
                 EditorUI.blueEditor.updateBlueprints()
                 EditorUI.selectSceneEditor()
@@ -387,6 +387,10 @@ EditorUI.Initialize = function() {
 
             //EditorUI.blueEditor.attachBlueprints(data.attachedTo)
             EditorUI.blueEditor.updateInterface()
+        }
+        // Scene
+        else if (data.attachedTo instanceof Scene) {
+            // TODO: Open another tab editor
         }
     })
 
@@ -459,53 +463,17 @@ EditorUI.addChildrenToHierarchy = function(object, parent) {
 
 EditorUI.hierarchyContext = function(e, data) {
     var object = data.data.attachedTo
+    Editor.selectObject(object)
 
     var context = new LiteGUI.ContextMenu([
         {title: "Copy", callback: () => {
-            if (!(object instanceof Scene)) {
-
-                if (object !== null) {
-                    try {
-                        App.clipboard.set(JSON.stringify(object.toJSON()), "text")
-                    } catch(e) {console.error("Error copying object: " + e)}
-                }
-
-            }
+            Editor.copySelectedObject()
         }},
         {title: "Cut", callback: () => {
-            if (!(object instanceof Scene)) {
-
-                if (object !== null) {
-                    try {
-                        App.clipboard.set(JSON.stringify(object.toJSON()), "text")
-                        EditorUI.deleteObject(object)
-                    } catch(e) {console.error("Error cutting object: " + e)}
-                }
-
-            }
+            Editor.cutSelectedObject()
         }},
         {title: "Paste", callback: () => {
-            if (!(object instanceof Scene)) {
-
-                if (object !== null) {
-                    try {
-                        var content = App.clipboard.get("text")
-                        var loader = new ObjectLoader()
-                        var data = JSON.parse(content)
-
-                        // Create Object
-                        var obj = loader.parse(data)
-                        obj.uuid = THREE.Math.generateUUID()
-                        obj.position.set(0,0,0)
-
-                        // Add object
-                        Editor.renameObject(obj, obj.name)
-                        object.add(obj)
-                        Editor.updateTreeView()
-                    } catch(e) {console.error("Error pasting the object: " + e)}
-                }
-
-            }
+            Editor.pasteIntoSelectedObject()
         }},
         {title: "Duplicate", callback: () => {
             // TODO: This
