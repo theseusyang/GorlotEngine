@@ -75,7 +75,10 @@ source.append("core/components/SkyComponent.js")
 
 # Blueprints Nodes
 source.append("../libs/litegraph/litegraph.js")
+
 source.append("core/blueprints/Nodes/Base.js")
+source.append("core/blueprints/Nodes/Math/Math.js")
+source.append("core/blueprints/Nodes/Math/Vector.js")
 source.append("core/blueprints/Nodes/Scene.js")
 
 source.append("App.js")
