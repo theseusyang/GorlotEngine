@@ -1,25 +1,3 @@
-/*function Program()
-{
-	//Program Info
-	this.name = "program";
-	this.description = "";
-	this.author = "";
-	this.version = "0";
-
-	//Screens
-	this.scenes = [];
-
-	//Runtime variables
-	this.actual_scene = null;
-}
-
-//Function prototypes
-//Add scene to program
-Program.prototype.addScene = function(scene)
-{
-	this.scenes.push(scene);
-}*/
-
 class Program extends THREE.Object3D {
 	constructor(name, description, author, version, vr) {
 		super()
@@ -54,10 +32,12 @@ class Program extends THREE.Object3D {
 		if (vr !== undefined) {
 			this.vr = vr
 		}
+
+		// Initialization variables
+		this.initial_scene_uuid = null
 	
 		//Runtime variables
 		this.scene = null;
-		this.scenes = []
 
 		// Components
 		this.components = []
@@ -114,7 +94,7 @@ class Program extends THREE.Object3D {
 			}
 
 			// If no scene on program, set actual scene to null
-			if (this.scenes.length === 0) {
+			if (this.children.length === 0) {
 				this.scene = null
 			}
 		}

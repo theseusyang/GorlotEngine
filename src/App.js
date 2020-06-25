@@ -146,8 +146,9 @@ App.loop = function()
 
 	App.stats.begin();
 
-	//Update Mouse Values
+	//Update Input Values
 	Mouse.update();
+	Keyboard.update()
 
 	//Update time values
 	App.delta_time = Date.now() - App.time;

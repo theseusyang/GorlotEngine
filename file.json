@@ -4,7 +4,7 @@
 	"generator": "Object3D.toJSON",
 	"geometries": [
 		{
-			"uuid": "B87344D9-B378-4C5D-B459-2D1A7EABC66F",
+			"uuid": "2E0D7C24-2A95-42ED-B6A6-6D778F213B9D",
 			"type": "SphereGeometry",
 			"radius": 4000,
 			"widthSegments": 32,
@@ -28,7 +28,7 @@
 		}],
 	"materials": [
 		{
-			"uuid": "86122818-F85F-4BEF-BE49-35E9E7DAA6A3",
+			"uuid": "730B8212-19A7-47C1-8699-A3E11A390E21",
 			"type": "ShaderMaterial",
 			"side": 1,
 			"uniforms": {
@@ -109,8 +109,8 @@
 						"receiveShadow": false,
 						"visible": true,
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"geometry": "B87344D9-B378-4C5D-B459-2D1A7EABC66F",
-						"material": "86122818-F85F-4BEF-BE49-35E9E7DAA6A3"
+						"geometry": "2E0D7C24-2A95-42ED-B6A6-6D778F213B9D",
+						"material": "730B8212-19A7-47C1-8699-A3E11A390E21"
 					},
 					{
 						"uuid": "0273C44C-434A-40ED-8270-F3ED39D712D5",
@@ -136,153 +136,16 @@
 						"uuid": "D5079CDF-A76E-414D-9E8A-1068600D3CA9",
 						"type": "Blueprints",
 						"blueprints": {
-							"last_node_id": 12,
-							"last_link_id": 14,
+							"last_node_id": 15,
+							"last_link_id": 23,
 							"nodes": [
-								{
-									"id": 2,
-									"type": "Base/number",
-									"pos": [-45,250],
-									"size": [80,60],
-									"flags": {},
-									"order": 0,
-									"mode": 0,
-									"outputs": [
-										{
-											"name": "",
-											"type": "number",
-											"links": [1]
-										}],
-									"properties": {
-										"min": -1000,
-										"max": 1000,
-										"value": 10,
-										"step": 1
-									}
-								},
-								{
-									"id": 3,
-									"type": "Base/number",
-									"pos": [-44,371],
-									"size": [80,60],
-									"flags": {},
-									"order": 1,
-									"mode": 0,
-									"outputs": [
-										{
-											"name": "",
-											"type": "number",
-											"links": [2]
-										}],
-									"properties": {
-										"min": -1000,
-										"max": 1000,
-										"value": -19,
-										"step": 1
-									}
-								},
-								{
-									"id": 4,
-									"type": "Math 3D/Vector2ToVector3",
-									"pos": [391,346],
-									"size": {
-										"0": 140,
-										"1": 26
-									},
-									"flags": {},
-									"order": 8,
-									"mode": 0,
-									"inputs": [
-										{
-											"name": "Vector2",
-											"type": "Vector",
-											"link": 3
-										}],
-									"outputs": [
-										{
-											"name": "Vector3",
-											"type": "Vector",
-											"links": [4]
-										}],
-									"properties": {}
-								},
-								{
-									"id": 5,
-									"type": "Math 3D/VectorSet",
-									"pos": [615,156],
-									"size": {
-										"0": 140,
-										"1": 86
-									},
-									"flags": {},
-									"order": 10,
-									"mode": 0,
-									"inputs": [
-										{
-											"name": "Vector",
-											"type": "Vector",
-											"link": 4
-										},
-										{
-											"name": "X",
-											"type": "number",
-											"link": 6
-										},
-										{
-											"name": "Y",
-											"type": "number",
-											"link": 7
-										},
-										{
-											"name": "Z",
-											"type": "number",
-											"link": 10
-										}],
-									"outputs": [
-										{
-											"name": "Vector",
-											"type": "Vector",
-											"links": null
-										}],
-									"properties": {}
-								},
-								{
-									"id": 1,
-									"type": "Math 3D/Vector2",
-									"pos": [85,285],
-									"size": {
-										"0": 140,
-										"1": 46
-									},
-									"flags": {},
-									"order": 5,
-									"mode": 0,
-									"inputs": [
-										{
-											"name": "X",
-											"type": "number",
-											"link": 1
-										},
-										{
-											"name": "Y",
-											"type": "number",
-											"link": 2
-										}],
-									"outputs": [
-										{
-											"name": "Vector",
-											"type": "Vector",
-											"links": [3]
-										}],
-									"properties": {}
-								},
 								{
 									"id": 6,
 									"type": "Base/number",
 									"pos": [86,-35],
 									"size": [80,60],
 									"flags": {},
-									"order": 2,
+									"order": 0,
 									"mode": 0,
 									"outputs": [
 										{
@@ -298,86 +161,12 @@
 									}
 								},
 								{
-									"id": 7,
-									"type": "Math/Abs",
-									"pos": [252,-16],
-									"size": {
-										"0": 140,
-										"1": 26
-									},
-									"flags": {},
-									"order": 6,
-									"mode": 0,
-									"inputs": [
-										{
-											"name": "X",
-											"type": "number",
-											"link": 5
-										}],
-									"outputs": [
-										{
-											"name": "Result",
-											"type": "number",
-											"links": [6,8]
-										}],
-									"properties": {}
-								},
-								{
-									"id": 8,
-									"type": "Math/Addition",
-									"pos": [410,139],
-									"size": {
-										"0": 140,
-										"1": 46
-									},
-									"flags": {},
-									"order": 9,
-									"mode": 0,
-									"inputs": [
-										{
-											"name": "X",
-											"type": "number",
-											"link": 8
-										},
-										{
-											"name": "Y",
-											"type": "number",
-											"link": 14
-										}],
-									"outputs": [
-										{
-											"name": "Result",
-											"type": "number",
-											"links": [7]
-										}],
-									"properties": {}
-								},
-								{
-									"id": 10,
-									"type": "Math/Random",
-									"pos": [344,238],
-									"size": {
-										"0": 140,
-										"1": 26
-									},
-									"flags": {},
-									"order": 3,
-									"mode": 0,
-									"outputs": [
-										{
-											"name": "Random",
-											"type": "number",
-											"links": [10]
-										}],
-									"properties": {}
-								},
-								{
 									"id": 9,
 									"type": "Base/number",
 									"pos": [77,93],
 									"size": [80,60],
 									"flags": {},
-									"order": 4,
+									"order": 1,
 									"mode": 0,
 									"outputs": [
 										{
@@ -401,7 +190,7 @@
 										"1": 26
 									},
 									"flags": {},
-									"order": 7,
+									"order": 6,
 									"mode": 0,
 									"inputs": [
 										{
@@ -416,18 +205,229 @@
 											"links": [14]
 										}],
 									"properties": {}
+								},
+								{
+									"id": 2,
+									"type": "Base/number",
+									"pos": [-45,250],
+									"size": [80,60],
+									"flags": {},
+									"order": 2,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "",
+											"type": "number",
+											"links": [15]
+										}],
+									"properties": {
+										"min": -1000,
+										"max": 1000,
+										"value": 10,
+										"step": 1
+									}
+								},
+								{
+									"id": 3,
+									"type": "Base/number",
+									"pos": [-44,371],
+									"size": [80,60],
+									"flags": {},
+									"order": 3,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "",
+											"type": "number",
+											"links": [16]
+										}],
+									"properties": {
+										"min": -1000,
+										"max": 1000,
+										"value": -19,
+										"step": 1
+									}
+								},
+								{
+									"id": 13,
+									"type": "Vectors/Vector2",
+									"pos": [144,309],
+									"size": {
+										"0": 140,
+										"1": 46
+									},
+									"flags": {},
+									"order": 7,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": 15
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": 16
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [17]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 14,
+									"type": "Vectors/Vector2ToVector3",
+									"pos": [422,335],
+									"size": {
+										"0": 140,
+										"1": 26
+									},
+									"flags": {},
+									"order": 9,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Vector2",
+											"type": "Vector",
+											"link": 17
+										}],
+									"outputs": [
+										{
+											"name": "Vector3",
+											"type": "Vector",
+											"links": [20]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 15,
+									"type": "Vectors/VectorSet",
+									"pos": [794,106],
+									"size": {
+										"0": 140,
+										"1": 86
+									},
+									"flags": {},
+									"order": 10,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"link": 20
+										},
+										{
+											"name": "X",
+											"type": "number",
+											"link": 21
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": 22
+										},
+										{
+											"name": "Z",
+											"type": "number",
+											"link": 23
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": null
+										}],
+									"properties": {}
+								},
+								{
+									"id": 7,
+									"type": "Math/Abs",
+									"pos": [252,-16],
+									"size": {
+										"0": 140,
+										"1": 26
+									},
+									"flags": {},
+									"order": 5,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": 5
+										}],
+									"outputs": [
+										{
+											"name": "Result",
+											"type": "number",
+											"links": [8,21]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 8,
+									"type": "Math/Addition",
+									"pos": [410,139],
+									"size": {
+										"0": 140,
+										"1": 46
+									},
+									"flags": {},
+									"order": 8,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": 8
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": 14
+										}],
+									"outputs": [
+										{
+											"name": "Result",
+											"type": "number",
+											"links": [22]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 10,
+									"type": "Math/Random",
+									"pos": [341,236],
+									"size": {
+										"0": 140,
+										"1": 26
+									},
+									"flags": {},
+									"order": 4,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "Random",
+											"type": "number",
+											"links": [23]
+										}],
+									"properties": {}
 								}],
-							"links": [[1,2,0,1,0,
-									"number"],[2,3,0,1,1,
-									"number"],[3,1,0,4,0,
-									"Vector"],[4,4,0,5,0,
-									"Vector"],[5,6,0,7,0,
-									"number"],[6,7,0,5,1,
-									"number"],[7,8,0,5,2,
+							"links": [[5,6,0,7,0,
 									"number"],[8,7,0,8,0,
-									"number"],[10,10,0,5,3,
 									"number"],[13,9,0,12,0,
 									"number"],[14,12,0,8,1,
+									"number"],[15,2,0,13,0,
+									"number"],[16,3,0,13,1,
+									"number"],[17,13,0,14,0,
+									"Vector"],[20,14,0,15,0,
+									"Vector"],[21,7,0,15,1,
+									"number"],[22,8,0,15,2,
+									"number"],[23,10,0,15,3,
 									"number"]],
 							"groups": [],
 							"config": {},

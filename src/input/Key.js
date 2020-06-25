@@ -9,7 +9,7 @@ class Key {
 		this.justPressed = false;
 		this.justReleased = false;
 
-		if(action === 0) //Key Down
+		if(action === Key.KEY_DOWN) //Key Down
 		{
 			if(!this.isPressed)
 			{
@@ -17,8 +17,8 @@ class Key {
 			}
 			this.isPressed = true;
 		}
-		else //Key Up
-		{
+		//Key Up
+		else {
 			if(this.isPressed)
 			{
 				this.justReleased = true;

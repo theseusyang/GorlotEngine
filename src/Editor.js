@@ -47,7 +47,7 @@ Editor.initialize = function(canvas)
 
 	// Editor program and scene
 	Editor.program = null
-	Editor.program_backup = null
+	Editor.program_running = null
 	Editor.createNewProgram()
 
 	// Renderer and canvas
@@ -188,18 +188,18 @@ Editor.update = function()
 			}
 
 			// Keyboard shortcuts
-			if (Keyboard.isKeyPressed(Keyboard.DEL)) {
+			if (Keyboard.isKeyJustPressed(Keyboard.DEL)) {
 				// Delete Selected Object
 				Editor.deleteSelectedObject()
-			} else if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
+			} else if (Keyboard.isKeyJustPressed(Keyboard.CTRL)) {
 				// Shortcuts with the CTRL key
 				if (Keyboard.isKeyPressed(Keyboard.C)) {
 					// Copy selected object
 					Editor.copySelectedObject()
-				} else if (Keyboard.isKeyPressed(Keyboard.V)) {
+				} else if (Keyboard.isKeyJustPressed(Keyboard.V)) {
 					// Paste into selected object
 					Editor.pasteIntoSelectedObject()
-				} else if (Keyboard.isKeyPressed(Keyboard.X)) {
+				} else if (Keyboard.isKeyJustPressed(Keyboard.X)) {
 					// Cut selected object
 					Editor.cutSelectedObject()
 				}
@@ -408,7 +408,7 @@ Editor.update = function()
 	//Update Scene if on test mode
 	else if(Editor.state === Editor.STATE_TESTING)
 	{
-		Editor.program.scene.update();
+		Editor.program_running.scene.update();
 	}
 }
 
@@ -523,17 +523,18 @@ Editor.draw = function()
 {
 	Editor.renderer.clear();
 
-	//Render scene
-	Editor.renderer.render(Editor.program.scene, Editor.camera);
-
 	//Render debug scene
 	if(Editor.state == Editor.STATE_EDITING)
 	{
+		// Render scene
+		Editor.renderer.render(Editor.program.scene, Editor.camera)
+
 		Editor.cannon_renderer.update();
 		Editor.renderer.render(Editor.tool_scene, Editor.camera);
-
 		Editor.renderer.clearDepth();
 		Editor.renderer.render(Editor.tool_scene_top, Editor.camera);
+	} else if (Editor.state === Editor.STATE_TESTING) {
+		Editor.renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera)
 	}
 }
 
@@ -683,18 +684,17 @@ Editor.createNewProgram = function() {
 // Set editor state
 Editor.setState = function(state) {
 	if (state === Editor.STATE_EDITING) {
-		// Restore program from backup
-		if (Editor.state === Editor.STATE_TESTING) {
-			Editor.program = Editor.program_backup
-			Editor.program_backup = null
-		}
+		// Clean program running variable
+		Editor.program_running = null
 	} else if (state === Editor.STATE_TESTING) {
-		// Create a backup of the original program
-		Editor.program_backup = Editor.program
-		Editor.program = Editor.program.clone()
+		// Copy program and initialize scene
+		Editor.program_running = Editor.program.clone()
+		Editor.program_running.scene.initialize()
 
-		// Initialize program
-		Editor.program.scene.initialize()
+		// If no camera attached, attach camera
+		if (Editor.program_running.scene.camera === null) {
+			Editor.program_running.scene.camera = Editor.camera
+		}
 	}
 	Editor.state = state
 }
