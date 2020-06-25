@@ -197,6 +197,11 @@ EditorUI.Initialize = function() {
     // Add the Canvas to the Scene Editor tab
     EditorUI.tabs_widget.getTabContent("Scene Editor").appendChild(EditorUI.canvas)
 
+    EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
+    var a = new BlueprintsEditor(EditorUI.tabs_widget.getTabContent("Blueprints Editor " + Editor.nameId))
+    a.updateInterface()
+    Editor.nameId++
+
     // ----- CANVAS AREA SPLIT -----
     EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height], false)
     EditorUI.left_area.onresize = EditorUI.resizeCanvas

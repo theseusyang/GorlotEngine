@@ -78,12 +78,18 @@ source.append("App.js")
 
 editorLibs.append("litegui/litegui.min.js")
 
+editorLibs.append("litegraph/litegraph.js")
+editorLibs.append("litegraph/litegraph-editor.js")
+
 editorLibs.append("codemirror/codemirror.js")
 editorLibs.append("codemirror/mode/javascript/javascript.js")
 
 # Css Files to the editor
 
 editorCss.append("libs/litegui/litegui.css")
+
+editorCss.append("libs/litegraph/litegraph.css")
+editorCss.append("libs/litegraph/litegraph-editor.css")
 
 editorCss.append("libs/codemirror/codemirror.css")
 editorCss.append("libs/codemirror/theme/monokai.css")
@@ -99,6 +105,7 @@ editor.append("editor/tools/RotateTool.js")
 editor.append("editor/windows/AddMenuWindow.js")
 
 editor.append("editor/tabs/CodeEditor.js")
+editor.append("editor/tabs/BlueprintsEditor.js")
 editor.append("editor/tabs/ObjectInspector.js")
 
 editor.append("Editor.js")
