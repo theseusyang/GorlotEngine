@@ -431,6 +431,10 @@ function parseObject(data, geometries, materials)
 		case 'Program':
 			object = new Program(data.name, data.description, data.author, data.version, data.vr)
 			break;
+		
+		case 'Blueprints':
+			object = new Blueprints(data.blueprints)
+			break;
 
 		case 'LeapDevice':
 			object = new LeapHand(data.mode, data.user_arm)
@@ -572,6 +576,10 @@ function parseObject(data, geometries, materials)
 			// TODO: Remove eval
 			eval("object.addComponent(new "+data.components[component].className+"())")
 		}
+	}
+
+	if (data.blueprints !== undefined) {
+		object.blueprints = data.blueprints
 	}
 
 	if(data.type === 'LOD')

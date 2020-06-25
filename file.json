@@ -1,0 +1,197 @@
+{
+	"version": 4.4,
+	"type": "Object",
+	"generator": "Object3D.toJSON",
+	"geometries": [
+		{
+			"uuid": "34AE993D-CE40-4966-A65B-AF5391F77274",
+			"type": "SphereGeometry",
+			"radius": 4000,
+			"widthSegments": 32,
+			"heightSegments": 15
+		},
+		{
+			"uuid": "612CA176-6A02-42EC-B552-D7387F5D7367",
+			"type": "BoxGeometry",
+			"width": 2,
+			"height": 2,
+			"depth": 2
+		},
+		{
+			"uuid": "3436585C-4E52-4517-8162-D4C7C82D06AB",
+			"type": "BoxGeometry",
+			"width": 20,
+			"height": 1,
+			"depth": 20
+		}],
+	"materials": [
+		{
+			"uuid": "3437BA6E-F9EB-43F0-A6A8-1098BCC964FA",
+			"type": "ShaderMaterial",
+			"side": 1,
+			"uniforms": {
+				"top_color": {
+					"type": "c",
+					"value": {
+						"r": 0,
+						"g": 0.4627450980392157,
+						"b": 1
+					}
+				},
+				"bottom_color": {
+					"type": "c",
+					"value": {
+						"r": 1,
+						"g": 1,
+						"b": 1
+					}
+				},
+				"offset": {
+					"type": "f",
+					"value": 20
+				},
+				"exponent": {
+					"type": "f",
+					"value": 0.4
+				}
+			},
+			"vertexShader": "varying vec3 vWorldPosition;\n\nvoid main() {\n\tvec4 worldPosition = modelMatrix * vec4(position, 1.0);\n\tvWorldPosition = worldPosition.xyz;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n",
+			"fragmentShader": "uniform vec3 top_color;\nuniform vec3 bottom_color;\nuniform float offset;\nuniform float exponent;\nvarying vec3 vWorldPosition;\n\nvoid main() {\n\tfloat h = normalize(vWorldPosition + offset).y;\n\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n}"
+		},
+		{
+			"uuid": "20ECCAC0-045A-403E-82EB-4553B8BB89AA",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		},
+		{
+			"uuid": "36A34889-29D1-499C-BA0E-0A7821F8D3CA",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		}],
+	"object": {
+		"uuid": "327E2CD4-E6E7-40FE-9F97-A6C4BADFA222",
+		"type": "Program",
+		"description": "",
+		"author": "",
+		"version": "0",
+		"vr": false,
+		"name": "program",
+		"castShadow": false,
+		"receiveShadow": false,
+		"visible": true,
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"components": [],
+		"children": [
+			{
+				"uuid": "24F9BECE-72B6-42E7-9113-9236E619C27A",
+				"type": "Scene",
+				"name": "scene",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"children": [
+					{
+						"uuid": "8B5A3721-81CA-45AF-931F-BE4E0B83E9AF",
+						"type": "Sky",
+						"auto_update": false,
+						"day_time": 20,
+						"sun_distance": 200,
+						"components": [],
+						"name": "sky",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "34AE993D-CE40-4966-A65B-AF5391F77274",
+						"material": "3437BA6E-F9EB-43F0-A6A8-1098BCC964FA"
+					},
+					{
+						"uuid": "75719546-35EA-45CB-A0E4-D9C39D0BFB4E",
+						"type": "Mesh",
+						"name": "box",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "612CA176-6A02-42EC-B552-D7387F5D7367",
+						"material": "20ECCAC0-045A-403E-82EB-4553B8BB89AA"
+					},
+					{
+						"uuid": "8BFF5086-F6AE-450F-BEFD-B5B8B7003A1D",
+						"type": "Mesh",
+						"name": "ground",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.5,0,1],
+						"geometry": "3436585C-4E52-4517-8162-D4C7C82D06AB",
+						"material": "36A34889-29D1-499C-BA0E-0A7821F8D3CA"
+					},
+					{
+						"uuid": "FB12BE03-347B-47D2-946F-913472E9945D",
+						"type": "Blueprints",
+						"blueprints": {
+							"last_node_id": 2,
+							"last_link_id": 1,
+							"nodes": [
+								{
+									"id": 1,
+									"type": "Scenes/GetRunningScene",
+									"pos": [100,159],
+									"size": {
+										"0": 140,
+										"1": 26
+									},
+									"flags": {},
+									"order": 0,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "Scene",
+											"type": "Scene",
+											"links": [1]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 2,
+									"type": "Scenes/AddObjectToScene",
+									"pos": [348,104],
+									"size": {
+										"0": 140,
+										"1": 46
+									},
+									"flags": {},
+									"order": 1,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Object",
+											"type": "Object3D",
+											"link": null
+										},
+										{
+											"name": "Scene",
+											"type": "Scene",
+											"link": 1
+										}],
+									"properties": {}
+								}],
+							"links": [[1,1,0,2,1,
+									"Scene"]],
+							"groups": [],
+							"config": {},
+							"version": 0.4
+						},
+						"name": "blueprints_1",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"components": []
+					}]
+			}]
+	}
+}
