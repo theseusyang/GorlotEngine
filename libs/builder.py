@@ -114,6 +114,7 @@ editor.append("editor/tools/RotateTool.js")
 editor.append("editor/windows/AddMenuWindow.js")
 
 editor.append("editor/tabs/CodeEditor.js")
+editor.append("editor/tabs/SceneEditor.js")
 editor.append("editor/tabs/BlueprintsEditor.js")
 editor.append("editor/tabs/ObjectInspector.js")
 

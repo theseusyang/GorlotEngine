@@ -66,7 +66,7 @@ Editor.initialize = function(canvas)
 	Editor.raycaster = new THREE.Raycaster()
 
 	// Set render canvas
-	Editor.setRenderCanvas(EditorUI.canvas)
+	Editor.setRenderCanvas(EditorUI.canvas.element)
 
 	//Editor Camera
 	Editor.camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 100000);
@@ -542,7 +542,6 @@ Editor.draw = function()
 Editor.resize = function()
 {
 	EditorUI.updateInterface();
-	EditorUI.resizeCanvas()
 }
 
 // Show appropriate helper to selected object

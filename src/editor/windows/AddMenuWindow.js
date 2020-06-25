@@ -182,7 +182,7 @@ class AddMenuWindow {
 		} else if (o === "Perspective Camera") {
 			Editor.addToActualScene(new PerspectiveCamera())
 		} else if (o === "Orthographic Camera") {
-			Editor.addToActualScene(new OrthographicCamera(5, 5, 5, 5, 5, 5))
+			Editor.addToActualScene(new OrthographicCamera(3, 3, 3, 3, 3, 3))
 		} else if (o === "Script") {
 			Editor.addToActualScene(new Script())
 		} else if (o === "Blueprints") {

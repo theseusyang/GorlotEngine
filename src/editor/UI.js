@@ -186,15 +186,10 @@ EditorUI.Initialize = function() {
 
     // ----- TABS -----
     EditorUI.tabs_widget = new LiteGUI.Tabs()
-    EditorUI.tabs_widget.addTab("Scene Editor", {selected: true, closable: false, })
     EditorUI.left_area.add(EditorUI.tabs_widget)
 
     // ----- CANVAS -----
-    EditorUI.canvas = document.createElement("canvas")
-    EditorUI.canvas.id = "canvas"
-    
-    // Add the Canvas to the Scene Editor tab
-    EditorUI.tabs_widget.getTabContent("Scene Editor").appendChild(EditorUI.canvas)
+    EditorUI.canvas = new SceneEditor()
 
     // ----- CANVAS AREA SPLIT -----
     EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height], false)
@@ -390,7 +385,13 @@ EditorUI.Initialize = function() {
         }
         // Scene
         else if (data.attachedTo instanceof Scene) {
-            // TODO: Open another tab editor
+            var id = SceneEditor.id-1
+            EditorUI.tabs_widget.removeTab("Scene Editor " + id)
+
+            var container = new SceneEditor()
+            container.setScene(data.attachedTo)
+            container.updateInterface()
+            container.activate()
         }
     })
 
@@ -415,7 +416,7 @@ EditorUI.selectSceneEditor = function() {
 }
 
 EditorUI.updateInterface = function () {
-    EditorUI.Resize()
+    EditorUI.canvas.updateInterface()
 }
 
 EditorUI.updateInspector = function() {
@@ -487,7 +488,18 @@ EditorUI.hierarchyContext = function(e, data) {
 EditorUI.deleteObject = function(object) {
     // Delete object
     if ((object !== null) && (object.parent !== null)) {
-        object.parent.remove(object)
+
+        if(!(object instanceof Scene)) {
+            object.parent.remove(object)
+        } else {
+            // If the object to select is an scene
+            var tab = EditorUI.tabs_widget.getCurrentTab()
+            if (tab.id !== EditorUI.canvas.id) {
+                // This avoids the user to delete the scene he is currently editing
+                object.parent.remove(object)
+            }
+        }
+
         Editor.updateTreeView()
     }
 
@@ -498,15 +510,5 @@ EditorUI.deleteObject = function(object) {
 }
 
 EditorUI.Resize = function() {
-    EditorUI.resizeCanvas()
-}
-
-EditorUI.resizeCanvas = function() {
-
-    if (Editor.camera !== undefined) {
-        Editor.resizeCamera()
-    }
-
-    EditorUI.canvas.width = EditorUI.left_area.getWidth() - 4
-    EditorUI.canvas.height= EditorUI.left_area.getHeight() - (EditorUI.assetEx_height + 26) // - left_area.getSection().getHeight()
+    EditorUI.updateInterface()
 }
