@@ -1,6 +1,17 @@
 class CodeEditor {
 	constructor(parent) {
-		this.parent = parent
+
+		this.id = "Settings Tab " + CodeEditor.id
+		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
+			EditorUI.selectSceneEditor()
+		}})
+
+		if (parent !== undefined) {
+			this.parent = parent
+		} else {
+			this.parent = EditorUI.tabs_widget.getTabContent(this.id)
+		}
+
 
 		this.element = document.createElement("div")
 		this.element.id = "code"
@@ -19,6 +30,14 @@ class CodeEditor {
 
 		// Script attached to the editor
 		this.script = null
+
+		var self = this
+		if (parent === undefined) {
+			// This means, we've created the parent
+			EditorUI.mainarea.onresize = function(e) {
+				self.updateInterface()
+			}
+		}
 
 		this.parent.appendChild(this.element)
 	}
@@ -47,11 +66,8 @@ class CodeEditor {
 	}
 
 	updateInterface() {
-		this.code.setSize(EditorUI.mainarea.getSection(0).getWidth(), EditorUI.mainarea.getSection(0).getHeight()-EditorUI.assetEx_height-24)
-
-		this.element.style.top = this.parent.style.top
-		this.element.style.left = this.parent.style.left
-		this.element.style.width = this.parent.style.width
-		this.element.style.height= this.parent.style.height
+		this.code.setSize(EditorUI.mainarea.getSection(0).getWidth() - 2, EditorUI.mainarea.getSection(0).getHeight()-EditorUI.assetEx_height)
 	}
 }
+
+CodeEditor.id = 0

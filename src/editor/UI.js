@@ -18,9 +18,8 @@ EditorUI.form
 
 EditorUI.bot_tabs
 EditorUI.asset_explorer_tab
-EditorUI.console
 
-EditorUI.assetEx_height = 200
+EditorUI.assetEx_height = 226
 EditorUI.ins = null
 
 // Areas
@@ -28,8 +27,6 @@ EditorUI.ins = null
 EditorUI.mainarea
 EditorUI.left_area
 EditorUI.right_area
-
-EditorUI.updateable = []
 
 // TODO: Move some elements to their own files
 
@@ -130,7 +127,8 @@ EditorUI.Initialize = function() {
 
     // ----- Preferences -----
     EditorUI.topmenu.add("Edit/Project/Project Settings", {callback: () => {
-        // TODO: Create TAB (in the canvas zone) containing the Project Settings
+        EditorUI.projectSettings = new SettingsTab()
+        EditorUI.projectSettings.updateInterface()
     }})
     
     // ----- Add -----
@@ -192,22 +190,14 @@ EditorUI.Initialize = function() {
     EditorUI.canvas = new SceneEditor()
 
     // ----- CANVAS AREA SPLIT -----
-    EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height], false)
+    EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height-26], false)
     EditorUI.left_area.onresize = EditorUI.resizeCanvas
 
-
-    // ----- BOT TABS -----
-
-    //EditorUI.bot_tabs = new LiteGUI.Tabs()
-    //EditorUI.bot_tabs.addTab("Explorer",{selected: true, width: "100%"})
-    //EditorUI.bot_tabs.addTab("Console", {selected: false, width: "100%"})
-    //EditorUI.left_area.getSection(1).add(EditorUI.bot_tabs)
 
     // ----- EXPLORER -----
 
     EditorUI.asset_explorer = new LiteGUI.Panel({title: "Explorer", scroll: true})
     EditorUI.left_area.getSection(1).add(EditorUI.asset_explorer)
-    //EditorUI.bot_tabs.getTab("Explorer").add(EditorUI.asset_explorer)
 
     // ----- ASSET EXPLORER MENU -----
 
@@ -312,10 +302,6 @@ EditorUI.Initialize = function() {
 
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
-    // ----- CONSOLE -----
-    //EditorUI.console = new LiteGUI.Console()
-    //EditorUI.bot_tabs.getTab("Console").add(EditorUI.console)
-
     // ----- TREE -----
     EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height + 200], true)
     
@@ -364,23 +350,17 @@ EditorUI.Initialize = function() {
 
         // Script
         if (data.attachedTo instanceof Script) {
-            EditorUI.tabs_widget.addTab("Script Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-            EditorUI.code = new CodeEditor(EditorUI.tabs_widget.getTabContent("Script Editor " + Editor.nameId))
-            Editor.nameId++
-
+            EditorUI.code = new CodeEditor()
             EditorUI.code.attachScript(data.attachedTo)
             EditorUI.code.updateInterface()
         }
         // Blueprints
         else if (data.attachedTo instanceof Blueprints) {
-            EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: () => {
-                EditorUI.blueEditor.updateBlueprints()
-                EditorUI.selectSceneEditor()
-            }})
-            EditorUI.blueEditor = new BlueprintsEditor(EditorUI.tabs_widget.getTabContent("Blueprints Editor " + Editor.nameId), data.attachedTo)
-            Editor.nameId++
-
-            //EditorUI.blueEditor.attachBlueprints(data.attachedTo)
+            //EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: () => {
+            //    EditorUI.blueEditor.updateBlueprints()
+            //    EditorUI.selectSceneEditor()
+            //}})
+            EditorUI.blueEditor = new BlueprintsEditor(undefined, data.attachedTo)
             EditorUI.blueEditor.updateInterface()
         }
         // Scene
@@ -411,8 +391,7 @@ EditorUI.Initialize = function() {
 }
 
 EditorUI.selectSceneEditor = function() {
-    // This function is called every-time a tab is closed
-    EditorUI.tabs_widget.selectTab("Scene Editor")
+    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
 }
 
 EditorUI.updateInterface = function () {

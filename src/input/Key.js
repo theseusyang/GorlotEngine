@@ -19,7 +19,7 @@ class Key {
 		}
 		//Key Up
 		else {
-			if(this.isPressed)
+			if(this.isPressed === true)
 			{
 				this.justReleased = true;
 			}

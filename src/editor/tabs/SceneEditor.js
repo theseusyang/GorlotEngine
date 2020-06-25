@@ -7,7 +7,7 @@ class SceneEditor {
 		if (parent !== undefined) {
 			this.parent = parent
 		} else {
-			this.parent = EditorUI.tabs_widget.getTabContent("Scene Editor " + SceneEditor.id)
+			this.parent = EditorUI.tabs_widget.getTabContent(this.id)
 		}
 
 		this.element = document.createElement("canvas")
@@ -37,7 +37,7 @@ class SceneEditor {
 
 	updateInterface() {
 		this.element.width = EditorUI.left_area.getWidth() - 2
-    	this.element.height= EditorUI.left_area.getHeight() - (EditorUI.assetEx_height + 26) // - left_area.getSection().getHeight()
+    	this.element.height= EditorUI.left_area.getHeight() - EditorUI.assetEx_height // - left_area.getSection().getHeight()
 		
 		Editor.resizeCamera()
 

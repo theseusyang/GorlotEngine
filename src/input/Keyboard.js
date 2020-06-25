@@ -1,11 +1,11 @@
 function Keyboard(){}
 
-Keyboard.actions = []
-Keyboard.keys = []
-
 Keyboard.initialize = function()
 {
-	// Keyboard keys
+	Keyboard.actions = [];
+	Keyboard.keys = [];
+
+	//Keyboard keys
 	for(var i = 0; i < 256; i++)
 	{
 		Keyboard.keys.push(new Key());
@@ -14,39 +14,57 @@ Keyboard.initialize = function()
 	//Keyboard OnKeyDown Event
 	document.onkeydown = function(event)
 	{
-		Keyboard.actions.push(event.keyCode)
-		Keyboard.actions.push(Key.KEY_DOWN)
+		Keyboard.actions.push(event.keyCode);
+		Keyboard.actions.push(Key.KEY_DOWN);
 	}
 
 	//Keyboard OnKeyUp Event
 	document.onkeyup = function(event)
 	{
-		Keyboard.actions.push(event.keyCode)
-		Keyboard.actions.push(Key.KEY_UP)
+		Keyboard.actions.push(event.keyCode);
+		Keyboard.actions.push(Key.KEY_UP);
 	}
 }
 
-// Update key pressed sync
+//Update key pressed sync
 Keyboard.update = function()
 {
-	while(Keyboard.actions.length > 0) {
-		Keyboard.keys[Keyboard.actions.shift()].update(Keyboard.actions.shift())
+	var end = 0;
+	while(Keyboard.actions.length > end)
+	{
+		var key = Keyboard.actions.shift();
+		var action = Keyboard.actions.shift();
+
+		Keyboard.keys[key].update(action);
+
+		if(Keyboard.keys[key].justReleased)
+		{
+			Keyboard.actions.push(key);
+			Keyboard.actions.push(action);
+			end += 2;
+		}
+		else if(Keyboard.keys[key].justPressed)
+		{
+			Keyboard.actions.push(key);
+			Keyboard.actions.push(action);
+			end += 2;
+		}
 	}
 }
 
-// Check if a key is pressed
+//Check if a key is pressed
 Keyboard.isKeyPressed = function(key)
 {
 	return key < 256 && Keyboard.keys[key].isPressed;
 }
 
-// Check if a key is just pressed
+//Check is a key as just pressed
 Keyboard.isKeyJustPressed = function(key)
 {
 	return key < 256 && Keyboard.keys[key].justPressed;
 }
 
-// Check if a key was just released
+//Check if a key was just released
 Keyboard.isKeyJustReleased = function(key)
 {
 	return key < 256 && Keyboard.keys[key].justReleased;
@@ -58,12 +76,12 @@ Keyboard.SHIFT = 16;
 Keyboard.ESC = 27;
 Keyboard.SPACEBAR = 32;
 Keyboard.CTRL = 17;
-Keyboard.DEL = 46
-Keyboard.END = 35
-Keyboard.HOME = 36
+Keyboard.DEL = 46;
+Keyboard.END = 35;
+Keyboard.HOME = 36;
 
-Keyboard.PAGE_UP = 33
-Keyboard.PAGE_DOWN = 34
+Keyboard.PAGE_UP = 33;
+Keyboard.PAGE_DOWN = 34;
 
 Keyboard.LEFT = 37;
 Keyboard.RIGHT = 39;
