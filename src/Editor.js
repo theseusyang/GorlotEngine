@@ -47,6 +47,7 @@ Editor.initialize = function(canvas)
 
 	// Editor program and scene
 	Editor.program = null
+	Editor.program_backup = null
 	Editor.createNewProgram()
 
 	//Initialize User Interface
@@ -73,6 +74,8 @@ Editor.initialize = function(canvas)
 	Editor.renderer = new THREE.WebGLRenderer({canvas: Editor.canvas});
 	Editor.renderer.autoClear = false;
 	Editor.renderer.setSize(Editor.canvas.width, Editor.canvas.height);
+
+	// Enable shadow maps (THREE.PCFShadowMap or THREE.PCFSoftShadowMap)
 	Editor.renderer.shadowMap.enabled = true;
 	Editor.renderer.shadowMap.type = THREE.PCFShadowMap;
 
@@ -265,21 +268,21 @@ Editor.update = function()
 					var speed = 1/300;
 					if(Editor.editing_object_args.x)
 					{
-						Editor.selected_object.rotation.x -= Mouse.pos_diff.y * speed;
-						Editor.selected_object.rotation.x -= Mouse.pos_diff.x * speed;
-
+						var delta = new THREE.Quaternion()
+						delta.setFromEuler(new THREE.Euler(-(Mouse.pos_diff.y + Mouse.pos_diff.x) * speed, 0, 0, 'XYZ'))
+						Editor.selected_object.quaternion.multiplyQuaternions(delta, Editor.selected_object.quaternion)
 					}
 					else if(Editor.editing_object_args.y)
 					{
-						Editor.selected_object.rotation.y -= Mouse.pos_diff.y * speed;
-						Editor.selected_object.rotation.y -= Mouse.pos_diff.x * speed;
-					
+						var delta = new THREE.Quaternion()
+						delta.setFromEuler(new THREE.Euler(0, -(Mouse.pos_diff.y + Mouse.pos_diff.x) * speed, 0, 'XYZ'))
+						Editor.selected_object.quaternion.multiplyQuaternions(delta, Editor.selected_object.quaternion)
 					}
 					else if(Editor.editing_object_args.z)
 					{
-						Editor.selected_object.rotation.z += Mouse.pos_diff.y * speed;
-						Editor.selected_object.rotation.z += Mouse.pos_diff.x * speed;
-					
+						var delta = new THREE.Quaternion()
+						delta.setFromEuler(new THREE.Euler(0, 0, (Mouse.pos_diff.y + Mouse.pos_diff.x) * speed, 'XYZ'))
+						Editor.selected_object.quaternion.multiplyQuaternions(delta, Editor.selected_object.quaternion)
 					}
 				}
 			}
@@ -598,6 +601,25 @@ Editor.createNewProgram = function() {
 	Editor.program.addDefaultScene()
 
 	Editor.resetEditingFlags()
+}
+
+// Set editor state
+Editor.setState = function(state) {
+	if (state === Editor.STATE_EDITING) {
+		// Restore program from backup
+		if (Editor.state === Editor.STATE_TESTING) {
+			Editor.program = Editor.program_backup
+			Editor.program_backup = null
+		}
+	} else if (state === Editor.STATE_TESTING) {
+		// Create a backup of the original program
+		Editor.program_backup = Editor.program
+		Editor.program = Editor.program.clone()
+
+		// Initialize program
+		Editor.program.scene.initialize()
+	}
+	Editor.state = state
 }
 
 // Set render canvas

@@ -11,8 +11,6 @@ class SkyComponent extends Component {
 	}
 
 	updateInfo(name, value, widget) {
-		console.log(name + " " + value)
-
 		if (value === "true") {
 			value = true
 		} if (value === "false") {

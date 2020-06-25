@@ -31,7 +31,7 @@ class DirectionalLight extends THREE.DirectionalLight {
 
 	initialize() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
+			if (this.children[i].initialize !== undefined) {
 				this.children[i].initialize()
 			}
 		}
@@ -39,7 +39,7 @@ class DirectionalLight extends THREE.DirectionalLight {
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
+			if (this.children[i].update !== undefined) {
 				this.children[i].update()
 			}
 		}

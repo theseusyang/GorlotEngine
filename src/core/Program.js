@@ -136,6 +136,13 @@ class Program extends THREE.Object3D {
 		return false
 	}
 
+	clone() {
+		// Clone program, keep uuid and everything else
+		var data = this.toJSON()
+		var loader = new ObjectLoader()
+		return loader.parse(data)
+	}
+
 	toJSON(meta) {
 		var isRootObject = (meta === undefined)
 		var output = {}

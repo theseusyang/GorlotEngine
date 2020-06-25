@@ -153,10 +153,10 @@ EditorUI.Initialize = function() {
 
         if(Editor.state === Editor.STATE_EDITING) {
             menuItem.name = "Stop"
-            Editor.state = Editor.STATE_TESTING
+            Editor.setState(Editor.STATE_TESTING)
         } else if(Editor.state === Editor.STATE_TESTING) {
             menuItem.name = "Run"
-            Editor.state = Editor.STATE_EDITING
+            Editor.setState(Editor.STATE_EDITING)
         }
 
         //EditorUI.updateInterface()

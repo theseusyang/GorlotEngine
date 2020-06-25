@@ -11,8 +11,8 @@ class Script extends THREE.Object3D {
 		this.matrixAutoUpdate = false
 
 		// Script code
-		this.code_loop = ""
-		this.code_init = ""
+		this.code_loop = "//ADD LOOP CODE HERE"
+		this.code_init = "//ADD INITIALIZATION CODE HERE"
 
 		// Compile init and loop code
 		if (code_init !== undefined) {
@@ -23,8 +23,8 @@ class Script extends THREE.Object3D {
 		}
 
 		// Script functions
-		this.func_loop = Function(this.code_loop)
-		this.func_init = Function(this.code_init)
+		this.setLoopCode(this.code_loop)
+		this.setInitCode(this.code_init)
 
 		this.components = []
 		
