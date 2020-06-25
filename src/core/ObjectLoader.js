@@ -433,7 +433,7 @@ function parseObject(data, geometries, materials)
 			break;
 		
 		case 'Blueprints':
-			object = new Blueprints(data.blueprints)
+			object = new Blueprints(data.init, data.loop)
 			break;
 
 		case 'LeapDevice':
@@ -578,8 +578,11 @@ function parseObject(data, geometries, materials)
 		}
 	}
 
-	if (data.blueprints !== undefined) {
-		object.blueprints = data.blueprints
+	if (data.init !== undefined) {
+		object.init = data.init
+	}
+	if (data.loop !== undefined) {
+		object.loop = data.loop
 	}
 
 	if(data.type === 'LOD')

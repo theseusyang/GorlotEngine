@@ -1,5 +1,5 @@
 class BlueprintsEditor {
-	constructor(parent, blueprints) {
+	constructor(parent, blueprints, type) {
 
 		var self = this
 		this.id = "Blueprints Editor " + BlueprintsEditor.id
@@ -21,8 +21,14 @@ class BlueprintsEditor {
 
 		// Blueprints attached to the editor
 		this.blueprints = blueprints ? blueprints : null
+		this.type = type
 
-		this.graph = new LGraph(blueprints.getData())
+		if(this.type === "Init") {
+			this.graph = new LGraph(blueprints.getInit())
+		} else if (type === "Loop") {
+			this.graph = new LGraph(blueprints.getLoop())
+		}
+
 		this.graphcanvas = new LGraphCanvas("#BlueprintsEditor"+Editor.nameId, this.graph)
 		
 		if (parent === undefined) {
@@ -37,11 +43,14 @@ class BlueprintsEditor {
 	updateBlueprints() {
 		if (this.blueprints !== null) {
 			this.graphcanvas.clear()
-			this.blueprints.setData(this.graph.serialize())
-		}
-	}
 
-	toJSON() {
+			if (this.type === "Init") {
+				this.blueprints.setInit(this.graph.serialize())
+			} else if (this.type === "Loop") {
+				this.blueprints.setLoop(this.graph.serialize())
+			}
+			
+		}
 	}
 
 	updateInterface() {

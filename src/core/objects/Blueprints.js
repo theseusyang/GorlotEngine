@@ -1,7 +1,7 @@
 // TODO: make this useful, I mean, when you can code (using scripts) add all the available functions to the blueprints system
 
 class Blueprints extends THREE.Object3D {
-	constructor(blueprints) {
+	constructor(blueprintsInit, blueprintsLoop) {
 		super()
 
 		this.name = "blueprints"
@@ -11,9 +11,15 @@ class Blueprints extends THREE.Object3D {
 		this.rotationAutoUpdate = false
 		this.matrixAutoUpdate = false
 
+		this.init = {}
+		this.loop = {}
+		
 		// Data
-		if(blueprints !== undefined) {
-			this.data = blueprints
+		if(blueprintsInit !== undefined) {
+			this.init = blueprintsInit
+		}
+		if (blueprintsLoop !== undefined) {
+			this.loop = blueprintsLoop
 		}
 
 		// Components
@@ -21,9 +27,12 @@ class Blueprints extends THREE.Object3D {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new BlueprintsComponent())
 	}
 
 	initialize() {
+		// TODO: Compile  (Using LGraph without LGraphcanvas)
+
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].initialize != undefined) {
 				this.children[i].initialize()
@@ -41,12 +50,26 @@ class Blueprints extends THREE.Object3D {
 		}
 	}
 
-	setData(data) {
-		this.data = data
+	addComponent(compo) {
+		if (compo instanceof Component) {
+			this.components.push(compo)
+		}
 	}
 
-	getData() {
-		return this.data
+	setInit(data) {
+		this.init = data
+	}
+
+	setLoop(data) {
+		this.loop = data
+	}
+
+	getInit() {
+		return this.init
+	}
+
+	getLoop() {
+		return this.loop
 	}
 
 	toJSON(meta) {
@@ -74,7 +97,8 @@ class Blueprints extends THREE.Object3D {
 		object.uuid = this.uuid
 		object.type = this.type
 
-		object.blueprints = this.data
+		object.init = this.init
+		object.loop = this.loop
 
 		if (this.name !== "") {
 			object.name = this.name

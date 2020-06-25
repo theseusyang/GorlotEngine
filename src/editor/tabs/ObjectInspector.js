@@ -9,16 +9,6 @@ class ObjectInspector {
 	    EditorUI.form.addString("UUID", this.object.uuid, {disabled: true})
 	    EditorUI.form.addTitle("Instance of: " + this.object.type)
 
-	    if(this.object.addComponent !== undefined) {
-	    	this.addComponentButton()
-	    }
-
-	    EditorUI.form.addSeparator()
-	}
-
-	addComponentButton() {
-		EditorUI.form.addSeparator()
-
 		if(this.object.defaultComponents !== undefined) {
 			if (Editor.selected_object.defaultComponents.length > 0) {
 				for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
@@ -28,7 +18,6 @@ class ObjectInspector {
 			}
 		}
 
-
 		if(this.object.components !== undefined) {
 			if (Editor.selected_object.components.length > 0) {
 	    		for(var i = 0; i < Editor.selected_object.components.length; i++) {
@@ -37,6 +26,16 @@ class ObjectInspector {
 	    		}
 	    	}
 	    }
+
+	    if(this.object.addComponent !== undefined) {
+	    	this.addComponentButton()
+	    }
+
+
+	    EditorUI.form.addSeparator()
+	}
+
+	addComponentButton() {
 
 		var addComponentBtn = EditorUI.form.addButton(null, "Add Component")
 		var self = this

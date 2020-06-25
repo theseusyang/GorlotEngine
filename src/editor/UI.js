@@ -331,7 +331,6 @@ EditorUI.Initialize = function() {
         children: []
     }, {
         allow_drag: true,
-        //allow_rename: true,
         height: EditorUI.right_area.getSection(0).getHeight(),
     })
     EditorUI.hierarchy_panel.add(EditorUI.hierarchy)
@@ -373,14 +372,14 @@ EditorUI.Initialize = function() {
             EditorUI.code.updateInterface()
         }
         // Blueprints
-        else if (data.attachedTo instanceof Blueprints) {
-            //EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: () => {
-            //    EditorUI.blueEditor.updateBlueprints()
-            //    EditorUI.selectSceneEditor()
-            //}})
-            EditorUI.blueEditor = new BlueprintsEditor(undefined, data.attachedTo)
-            EditorUI.blueEditor.updateInterface()
-        }
+//        else if (data.attachedTo instanceof Blueprints) {
+//            //EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: () => {
+//            //    EditorUI.blueEditor.updateBlueprints()
+//            //    EditorUI.selectSceneEditor()
+//            //}})
+//            EditorUI.blueEditor = new BlueprintsEditor(undefined, data.attachedTo)
+//            EditorUI.blueEditor.updateInterface()
+//        }
         // Scene
         else if (data.attachedTo instanceof Scene) {
             var id = SceneEditor.id-1

@@ -2,7 +2,7 @@ function ENode() {
 	this.addOutput("E", "number")
 }
 ENode.title = "Euler"
-ENode.onExecute = function() {
+ENode.prototype.onExecute = function() {
 	this.setOutputData(0, Math.E)
 }
 
@@ -11,7 +11,7 @@ function LN2Node() {
 	this.addOutput("LN2", "number")
 }
 LN2Node.title = "LN2"
-LN2Node.onExecute = function() {
+LN2Node.prototype.onExecute = function() {
 	this.setOutputData(0, Math.LN2)
 }
 
@@ -20,7 +20,7 @@ function LN10Node() {
 	this.addOutput("LN10", "number")
 }
 LN10Node.title = "LN10"
-LN10Node.onExecute = function() {
+LN10Node.prototype.onExecute = function() {
 	this.setOutputData(0, Math.LN10)
 }
 
@@ -30,7 +30,7 @@ function AbsNode() {
 	this.addOutput("Result", "number")
 }
 AbsNode.title = "Abs"
-AbsNode.onExecute = function() {
+AbsNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -44,7 +44,7 @@ function AcosNode() {
 	this.addOutput("Result", "number")
 }
 AcosNode.title = "Arccosine"
-AcosNode.onExecute = function() {
+AcosNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -58,7 +58,7 @@ function AcoshNode() {
 	this.addOutput("Result", "number")
 }
 AcoshNode.title = "Hyperbolic Arccosine"
-AcoshNode.onExecute = function() {
+AcoshNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -72,7 +72,7 @@ function AsinNode() {
 	this.addOutput("Result", "number")
 }
 AsinNode.title = "Arcsine"
-AsinNode.onExecute = function() {
+AsinNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -86,7 +86,7 @@ function AsinhNode() {
 	this.addOutput("Result", "number")
 }
 AsinhNode.title = "Hyperbolic Arcsine"
-AsinhNode.onExecute = function() {
+AsinhNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -100,7 +100,7 @@ function AtanNode() {
 	this.addOutput("Result", "number")
 }
 AtanNode.title = "Arctangent"
-AtanNode.onExecute = function() {
+AtanNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -114,7 +114,7 @@ function AtanhNode() {
 	this.addOutput("Result", "number")
 }
 AtanhNode.title = "Hyperbolic Arctangent"
-AtanhNode.onExecute = function() {
+AtanhNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -129,7 +129,7 @@ function Atan2Node() {
 	this.addOutput("Result", "number")
 }
 Atan2Node.title = "Arctangent 2"
-Atan2Node.onExecute = function() {
+Atan2Node.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	var y = this.getInputData(1)
 	if (x === undefined) {
@@ -147,7 +147,7 @@ function CbrtNode() {
 	this.addOutput("Result", "number")
 }
 CbrtNode.title = "Cube root"
-CbrtNode.onExecute = function() {
+CbrtNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -161,7 +161,7 @@ function CeilNode() {
 	this.addOutput("Result", "number")
 }
 CeilNode.title = "Ceil"
-CeilNode.onExecute = function() {
+CeilNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -175,7 +175,7 @@ function CosNode() {
 	this.addOutput("Result", "number")
 }
 CosNode.title = "Cos"
-CosNode.onExecute = function() {
+CosNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -189,7 +189,7 @@ function ExpNode() {
 	this.addOutput("Result", "number")
 }
 ExpNode.title = "Exp"
-ExpNode.onExecute = function() {
+ExpNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -203,7 +203,7 @@ function Expm1Node() {
 	this.addOutput("Result", "number")
 }
 Expm1Node.title = "Exmp1"
-Expm1Node.onExecute = function() {
+Expm1Node.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -217,7 +217,7 @@ function FloorNode() {
 	this.addOutput("Result", "number")
 }
 FloorNode.title = "Floor"
-FloorNode.onExecute = function() {
+FloorNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -231,7 +231,7 @@ function LogNode() {
 	this.addOutput("Result", "number")
 }
 LogNode.title = "Log"
-LogNode.onExecute = function() {
+LogNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -246,7 +246,7 @@ function PowNode() {
 	this.addOutput("Result", "number")
 }
 PowNode.title = "Pow"
-PowNode.onExecute = function() {
+PowNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	var y = this.getInputData(1)
 	if (x === undefined) {
@@ -263,7 +263,7 @@ function RandomNode() {
 	this.addOutput("Random", "number")
 }
 RandomNode.title = "Random"
-RandomNode.onExecute = function() {
+RandomNode.prototype.onExecute = function() {
 	this.setOutputData(0, Math.random())
 }
 
@@ -273,7 +273,7 @@ function RoundNode() {
 	this.addOutput("Result", "number")
 }
 RoundNode.title = "Round"
-RoundNode.onExecute = function() {
+RoundNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -287,7 +287,7 @@ function SignNode() {
 	this.addOutput("Result", "number")
 }
 SignNode.title = "Sign"
-SignNode.onExecute = function() {
+SignNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -301,7 +301,7 @@ function SinNode() {
 	this.addOutput("Result", "number")
 }
 SinNode.title = "Sin"
-SinNode.onExecute = function() {
+SinNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -315,7 +315,7 @@ function SqrtNode() {
 	this.addOutput("Result", "number")
 }
 SqrtNode.title = "Sqrt"
-SqrtNode.onExecute = function() {
+SqrtNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -329,7 +329,7 @@ function TanNode() {
 	this.addOutput("Result", "number")
 }
 TanNode.title = "Tan"
-TanNode.onExecute = function() {
+TanNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	if (x === undefined) {
 		x = 0
@@ -344,7 +344,7 @@ function AdditionNode() {
 	this.addOutput("Result", "number")
 }
 AdditionNode.title = "Addition"
-AdditionNode.onExecute = function() {
+AdditionNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	var y = this.getInputData(1)
 	if (x === undefined) {
@@ -363,7 +363,7 @@ function SubtractionNode() {
 	this.addOutput("Result", "number")
 }
 SubtractionNode.title = "Subtraction"
-SubtractionNode.onExecute = function() {
+SubtractionNode.prototype.onExecute = function() {
 	var x = this.getInputData(0)
 	var y = this.getInputData(1)
 	if (x === undefined) {
