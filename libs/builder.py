@@ -78,6 +78,7 @@ source.append("core/components/LightComponent.js")
 # Blueprints Nodes
 source.append("../libs/litegraph/litegraph.js")
 source.append("core/blueprints/Nodes/Base.js")
+source.append("core/blueprints/Nodes/Scene.js")
 
 source.append("App.js")
 

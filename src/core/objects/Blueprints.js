@@ -1,3 +1,5 @@
+// TODO: make this useful, I mean, when you can code (using scripts) add all the available functions to the blueprints system
+
 class Blueprints extends THREE.Object3D {
 	constructor() {
 		super()
