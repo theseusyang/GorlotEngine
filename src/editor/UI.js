@@ -197,11 +197,6 @@ EditorUI.Initialize = function() {
     // Add the Canvas to the Scene Editor tab
     EditorUI.tabs_widget.getTabContent("Scene Editor").appendChild(EditorUI.canvas)
 
-    EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: false, width: "100%", closable: true, onclose: EditorUI.selectSceneEditor})
-    var a = new BlueprintsEditor(EditorUI.tabs_widget.getTabContent("Blueprints Editor " + Editor.nameId))
-    a.updateInterface()
-    Editor.nameId++
-
     // ----- CANVAS AREA SPLIT -----
     EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height], false)
     EditorUI.left_area.onresize = EditorUI.resizeCanvas
@@ -366,6 +361,18 @@ EditorUI.Initialize = function() {
             EditorUI.code.attachScript(data.attachedTo)
             EditorUI.code.updateInterface()
         }
+        // Blueprints
+        if (data.attachedTo instanceof Blueprints) {
+            EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: () => {
+                EditorUI.blueEditor.updateBlueprints()
+                EditorUI.selectSceneEditor()
+            }})
+            EditorUI.blueEditor = new BlueprintsEditor(EditorUI.tabs_widget.getTabContent("Blueprints Editor " + Editor.nameId), data.attachedTo)
+            Editor.nameId++
+
+            //EditorUI.blueEditor.attachBlueprints(data.attachedTo)
+            EditorUI.blueEditor.updateInterface()
+        }
     })
 
     // When renaming an object, renaming it in the scene
@@ -389,7 +396,7 @@ EditorUI.selectSceneEditor = function() {
 }
 
 EditorUI.updateInterface = function () {
-    EditorUI.resizeCanvas()
+    EditorUI.Resize()
 }
 
 EditorUI.updateInspector = function() {
@@ -410,6 +417,11 @@ EditorUI.hierarchyFromScene = function(scene) {
 
     Editor.program.children.forEach((item, index) => {
         var it = EditorUI.hierarchy.insertItem({id: Editor.program.children[index].name, attachedTo: Editor.program.children[index]})
+        
+        it.addEventListener("contextmenu", (e) => {
+            return EditorUI.hierarchyContext(e, {item: it, data: it.data})
+        })
+
         if(Editor.program.children[index].children.length > 0){
             EditorUI.addChildrenToHierarchy(Editor.program.children[index], Editor.program.children[index].name)
         }
@@ -437,6 +449,10 @@ EditorUI.hierarchyFromScene = function(scene) {
 EditorUI.addChildrenToHierarchy = function(object, parent) {
     object.children.forEach((v, i) => {
         var it = EditorUI.hierarchy.insertItem({id: object.children[i].name, attachedTo: object.children[i]}, parent)
+        
+        it.addEventListener("contextmenu", (e) => {
+            return EditorUI.hierarchyContext(e, {item: it, data: it.data})
+        })
 
         if (object.children[i].children.length > 0) {
             EditorUI.addChildrenToHierarchy(object.children[i], object.children[i].name, parent)

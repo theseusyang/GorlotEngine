@@ -60,25 +60,31 @@ source.append("core/objects/cameras/PerspectiveCamera.js")
 source.append("core/objects/cameras/OrthographicCamera.js")
 source.append("core/objects/Empty.js")
 source.append("core/objects/Script.js")
+source.append("core/objects/Blueprints.js")
 source.append("core/objects/Model3D.js")
 source.append("core/objects/Text3D.js")
 source.append("core/objects/Sprite.js")
 
-editor.append("core/Component.js")
-editor.append("core/ComponentManager.js")
+source.append("core/Component.js")
+source.append("core/ComponentManager.js")
 
-editor.append("core/components/ElementComponent.js")
-editor.append("core/components/Object3DComponent.js")
-editor.append("core/components/Text3DComponent.js")
-editor.append("core/components/LightComponent.js")
-# WARNING: This should always be the last file
+# Components
+
+source.append("core/components/ElementComponent.js")
+source.append("core/components/Object3DComponent.js")
+source.append("core/components/Text3DComponent.js")
+source.append("core/components/LightComponent.js")
+
+# Blueprints Nodes
+source.append("../libs/litegraph/litegraph.js")
+source.append("core/blueprints/Nodes/Base.js")
+
 source.append("App.js")
 
 # Libraries required to the Editor
 
 editorLibs.append("litegui/litegui.min.js")
 
-editorLibs.append("litegraph/litegraph.js")
 editorLibs.append("litegraph/litegraph-editor.js")
 
 editorLibs.append("codemirror/codemirror.js")

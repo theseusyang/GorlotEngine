@@ -1,5 +1,5 @@
 class BlueprintsEditor {
-	constructor(parent) {
+	constructor(parent, blueprints) {
 		this.parent = parent
 
 		this.canvas = document.createElement("canvas")
@@ -7,9 +7,20 @@ class BlueprintsEditor {
 
 		this.parent.appendChild(this.canvas)
 
-		this.graph = new LGraph()
+		// Blueprints attached to the editor
+		this.blueprints = blueprints ? blueprints : null
 
+		this.graph = new LGraph(blueprints.getData())
 		this.graphcanvas = new LGraphCanvas("#BlueprintsEditor"+Editor.nameId, this.graph)
+	}
+
+	updateBlueprints() {
+		if (this.blueprints !== null) {
+			this.blueprints.setData(this.graph.serialize())
+		}
+	}
+
+	toJSON() {
 	}
 
 	updateInterface() {
