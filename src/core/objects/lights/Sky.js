@@ -1,5 +1,5 @@
 class Sky extends THREE.Mesh {
-	constructor(auto_update, day_time, sun_distance) {
+	constructor(auto_update, day_time, sun_distance, time) {
 		super()
 
 		// Hemisphere
@@ -56,6 +56,9 @@ class Sky extends THREE.Mesh {
 		if (sun_distance !== undefined) {
 			this.sun_distance = sun_distance
 		}
+		if (time !== undefined) {
+			this.time = time
+		}
 
 		this.updateSky()
 
@@ -63,6 +66,7 @@ class Sky extends THREE.Mesh {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new SkyComponent())
 	}
 
 	addComponent(component) {
@@ -203,6 +207,7 @@ class Sky extends THREE.Mesh {
 		object.auto_update = this.auto_update
 		object.day_time = this.day_time
 		object.sun_distance = this.sun_distance
+		object.time = this.time
 		object.components = this.components
 
 		if (this.name !== '') {
@@ -281,6 +286,11 @@ class Sky extends THREE.Mesh {
 
 		 	return values
 		 } 
+	}
+
+	raycast() {
+		// Sky is not collidable
+		return null
 	}
 }
 

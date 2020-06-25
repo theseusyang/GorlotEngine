@@ -123,8 +123,7 @@ EditorUI.Initialize = function() {
 
     // ----- Add Scene -----
     EditorUI.topmenu.add("Edit/Project/Add Scene", {callback: () => {
-        var scene = new Scene()
-        Editor.program.add(scene)
+        var scene = Editor.program.addDefaultScene()
         Editor.renameObject(scene, scene.name)
         Editor.updateTreeView()
     }})
@@ -300,6 +299,22 @@ EditorUI.Initialize = function() {
         }, ".wrl, .vrml")
     }})
 
+    EditorUI.asset_explorer_menu.add("Import/Resources/Texture", {callback: () => {
+        App.chooseFile((event) => {
+            var file = event.srcElement.value
+
+            try {
+                var map = new THREE.TextureLoader().load(file)
+
+                var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
+                var sprite = new Sprite(material)
+                Editor.addToActualScene(sprite)
+
+                console.log("Texture imported")
+            } catch(e) {console.error("Error importing texture: " + e)}
+        }, "image/*")
+    }})
+
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
     // ----- CONSOLE -----
@@ -426,24 +441,6 @@ EditorUI.hierarchyFromScene = function(scene) {
             EditorUI.addChildrenToHierarchy(Editor.program.children[index], Editor.program.children[index].name)
         }
     })
-
-//    scene.children.forEach((item, index) => {
-//        var it = EditorUI.hierarchy.insertItem({id: scene.children[index].name, attachedTo: scene.children[index]})
-//        it.addEventListener("contextmenu", function(e) {
-//            return EditorUI.hierarchyContext(e, {item: it, data: it.data})
-//        })
-//
-//        if (scene.children[index].children.length > 0) {
-//            var children = scene.children[index].children.length
-//
-//            scene.children[index].children.forEach((j, k) => {
-//                var l = EditorUI.hierarchy.insertItem({id: scene.children[index].children[k].name, attachedTo: scene.children[index].children[k]}, scene.children[index].name)
-//                l.addEventListener("contextmenu", function(e) {
-//                    return EditorUI.hierarchyContext(e, {item: l, data: l.data})
-//                })
-//            })
-//        }
-//    })
 }
 
 EditorUI.addChildrenToHierarchy = function(object, parent) {

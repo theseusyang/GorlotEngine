@@ -40,9 +40,6 @@ source.append("input/Key.js")
 source.append("input/Keyboard.js")
 source.append("input/Mouse.js")
 
-source.append("core/animation/Joint.js")
-source.append("core/animation/Skeleton.js")
-
 source.append("core/ObjectLoader.js")
 source.append("core/Program.js")
 source.append("core/ObjectUtils.js")
@@ -74,6 +71,7 @@ source.append("core/components/ElementComponent.js")
 source.append("core/components/Object3DComponent.js")
 source.append("core/components/Text3DComponent.js")
 source.append("core/components/LightComponent.js")
+source.append("core/components/SkyComponent.js")
 
 # Blueprints Nodes
 source.append("../libs/litegraph/litegraph.js")

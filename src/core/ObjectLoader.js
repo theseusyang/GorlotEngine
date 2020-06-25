@@ -429,7 +429,7 @@ function parseObject(data, geometries, materials)
 	switch(data.type)
 	{
 		case 'Program':
-			object = new Program(data.name, data.description, data.author, data.version, data.vr)
+			object = new Program(data.name, data.description, data.author, data.version, data.vr, data.time)
 			break;
 		
 		case 'Blueprints':

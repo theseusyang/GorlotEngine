@@ -57,6 +57,7 @@ class Program extends THREE.Object3D {
 	
 		//Runtime variables
 		this.scene = null;
+		this.scenes = []
 
 		// Components
 		this.components = []
@@ -69,6 +70,9 @@ class Program extends THREE.Object3D {
 		// Sky
 		var sky = new Sky()
 		sky.auto_update = false
+		if (Editor.renameObject !== undefined) {
+			Editor.renameObject(sky, sky.name)
+		}
 		scene.add(sky)
 
 		// Box
@@ -78,6 +82,9 @@ class Program extends THREE.Object3D {
 		model.receiveShadow = true
 		model.castShadow = true
 		model.name = "box"
+		if (Editor.renameObject !== undefined) {
+			Editor.renameObject(model, model.name)
+		}
 		scene.add(model)
 
 		// Ground
@@ -88,10 +95,14 @@ class Program extends THREE.Object3D {
 		model.receiveShadow = true
 		model.castShadow = true
 		model.name = "ground"
+		if (Editor.renameObject !== undefined) {
+			Editor.renameObject(model, model.name)
+		}
 		scene.add(model)
 
 		// Add scene to program
 		this.add(scene)
+		return scene
 	}
 
 	remove(scene) {

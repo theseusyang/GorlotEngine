@@ -416,13 +416,22 @@ Editor.addToActualScene = function(obj) {
 
 // Checks if an object's name is unique, if not, renames it
 Editor.renameObject = function(obj, name) {
-	var toName = name
-	if (EditorUI.hierarchy.getItem(toName)) {
-		toName += "_" + Editor.nameId
-		Editor.nameId++
+	if(EditorUI.hierarchy !== undefined) {
+		var toName = name
+		if (EditorUI.hierarchy.getItem(toName)) {
+			toName += "_" + Editor.nameId
+			Editor.nameId++
+		}
+		obj.name = toName
+
+		if (obj.children.length > 0) {
+			for(var i = 0; i < obj.children.length; i++) {
+				Editor.renameObject(obj.children[i], obj.children[i].name)
+			}
+		}
+
+		Editor.updateTreeView()
 	}
-	obj.name = toName
-	Editor.updateTreeView()
 }
 
 // Update Tree View to Match Actual Scene
