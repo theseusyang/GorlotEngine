@@ -38,10 +38,6 @@ class Program extends THREE.Object3D {
 	
 		//Runtime variables
 		this.scene = null;
-
-		// Components
-		this.components = []
-		this.defaultComponents = []
 	}
 
 	addDefaultScene() {
@@ -110,10 +106,6 @@ class Program extends THREE.Object3D {
 				this.scene = this.children[0]
 			}
 		}
-	}
-
-	addComponent(compo) {
-		return false
 	}
 
 	clone() {

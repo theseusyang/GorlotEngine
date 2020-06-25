@@ -15,6 +15,7 @@ libraries.append("three/stats.min.js")
 
 libraries.append("three/loaders/OBJLoader.js")
 libraries.append("three/loaders/MTLLoader.js")
+libraries.append("three/loaders/FBXLoader.js")
 libraries.append("three/loaders/VRMLLoader.js")
 libraries.append("three/loaders/ColladaLoader.js")
 libraries.append("three/loaders/collada/Animation.js")
@@ -42,23 +43,29 @@ source.append("input/Mouse.js")
 
 source.append("core/objects/animation/Bone.js")
 source.append("core/objects/animation/Skeleton.js")
+
 source.append("core/objects/device/LeapHand.js")
 source.append("core/objects/device/KinectDevice.js")
+
 source.append("core/objects/lights/PointLight.js")
 source.append("core/objects/lights/SpotLight.js")
 source.append("core/objects/lights/AmbientLight.js")
 source.append("core/objects/lights/DirectionalLight.js")
 source.append("core/objects/lights/HemisphereLight.js")
 source.append("core/objects/lights/Sky.js")
+
 source.append("core/objects/cameras/PerspectiveCamera.js")
 source.append("core/objects/cameras/OrthographicCamera.js")
+
 source.append("core/objects/Scene.js")
 source.append("core/objects/Empty.js")
 source.append("core/objects/Script.js")
 source.append("core/objects/Blueprints.js")
 source.append("core/objects/Model3D.js")
+source.append("core/objects/AnimatedModel.js")
 source.append("core/objects/Text3D.js")
 source.append("core/objects/Sprite.js")
+
 source.append("core/ObjectLoader.js")
 source.append("core/Program.js")
 source.append("core/ObjectUtils.js")

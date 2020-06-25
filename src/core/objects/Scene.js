@@ -19,15 +19,6 @@ class Scene extends THREE.Scene {
 
 		// Runtime variables
 		this.camera = null
-
-		// Components
-		this.components = []
-		this.defaultComponents = []
-	}
-
-	addComponent(compo) {
-		// For now, you can't add components to the scenes
-		return false
 	}
 
 	initialize() {

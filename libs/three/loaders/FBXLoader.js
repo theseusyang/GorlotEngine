@@ -2574,7 +2574,7 @@
 	// what want:　normal per vertex, order vertice
 	// i have: normal per polygon
 	// i have: indice per polygon
-	parse_Data_ByPolygonVertex_Direct = function ( node, indices, strides, itemSize ) {
+	var parse_Data_ByPolygonVertex_Direct = function ( node, indices, strides, itemSize ) {
 
 		// *21204 > 3573
 		// Geometry: 690680816, "Geometry::", "Mesh" {
@@ -2684,19 +2684,19 @@
 
 	};
 
-	degToRad = function ( degrees ) {
+	var degToRad = function ( degrees ) {
 
 		return degrees * Math.PI / 180;
 
 	};
 
-	radToDeg = function ( radians ) {
+	var radToDeg = function ( radians ) {
 
 		return radians * 180 / Math.PI;
 
 	};
 
-	quatFromVec = function ( x, y, z ) {
+	var quatFromVec = function ( x, y, z ) {
 
 		var euler = new THREE.Euler( x, y, z, 'ZYX' );
 		var quat = new THREE.Quaternion();
@@ -2708,7 +2708,7 @@
 
 
 	// extend Array.prototype ?  ....uuuh
-	toInt = function ( arr ) {
+	var toInt = function ( arr ) {
 
 		return arr.map( function ( element ) {
 
@@ -2718,7 +2718,7 @@
 
 	};
 
-	toFloat = function ( arr ) {
+	var toFloat = function ( arr ) {
 
 		return arr.map( function ( element ) {
 
@@ -2728,7 +2728,7 @@
 
 	};
 
-	toRad = function ( arr ) {
+	var toRad = function ( arr ) {
 
 		return arr.map( function ( element ) {
 
@@ -2738,7 +2738,7 @@
 
 	};
 
-	toMat44 = function ( arr ) {
+	var toMat44 = function ( arr ) {
 
 		var mat = new THREE.Matrix4();
 		mat.set(

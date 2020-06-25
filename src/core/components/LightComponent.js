@@ -3,11 +3,13 @@ class LightComponent extends Component {
 		super("Light", "LightComponent")
 
 		this.objectType = null
-		this.object = Editor.selected_selected
+		this.object = null
 	}
 
 	initUI() {
 		super.initUI()
+
+		this.object = Editor.selected_object
 
 		// Every kind of Light can have this component, if some special value is required, we can create more components and call them from here, and not be added in the component manager
 		if(this.object instanceof THREE.Light) {
@@ -22,8 +24,6 @@ class LightComponent extends Component {
 				this.objectType = "Point"
 			} else if (this.object instanceof SpotLight) {
 				this.objectType = "Spot"
-			} else {
-				// TODO: create a light in the selected object child and assign "this.object" the value of the newly created only
 			}
 
 			// TODO: Selecting another kind of light from the Combo, will change the selected light's kind of

@@ -279,9 +279,27 @@ EditorUI.Initialize = function() {
 
                 console.log("Object imported")
             } catch(e) {
-                console.log("Error importing Object: " + e)
+                console.error("Error importing Object: " + e)
             }
         }, ".wrl, .vrml")
+    }})
+
+    EditorUI.asset_explorer_menu.add("Import/Objects/FBX", {callback: () => {
+        App.chooseFile(function(event) {
+            var file = event.srcElement.value
+
+            try {
+                var loader = new THREE.FBXLoader()
+                var obj = loader.parse(App.readFile(file))
+
+                ObjectUtils.setShadowCasting(obj, true)
+                ObjectUtils.setShadowReceiving(obj, true)
+                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
+            } catch(e) {
+                console.error("Error importing Object: " + e)
+            }
+
+        }, ".fbx")
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Resources/Texture", {callback: () => {
