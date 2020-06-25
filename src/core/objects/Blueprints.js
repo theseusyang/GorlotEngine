@@ -118,7 +118,7 @@ class Blueprints extends THREE.Object3D {
 
 		if (isRootObject) {
 			var geometries = extractFromCache(meta.geometries)
-			var material = extractFromCache(meta.materials)
+			var materials = extractFromCache(meta.materials)
 			var textures = extractFromCache(meta.textures)
 			var images = extractFromCache(meta.images)
 
