@@ -7,6 +7,10 @@ class Blueprints extends THREE.Object3D {
 		this.name = "blueprints"
 		this.type = "Blueprints"
 
+		// Disable auto matrix updates
+		this.rotationAutoUpdate = false
+		this.matrixAutoUpdate = false
+
 		// Data
 		if(blueprints !== undefined) {
 			this.data = blueprints

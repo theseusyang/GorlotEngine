@@ -42,7 +42,7 @@ class Sky extends THREE.Mesh {
 		this.add(this.hemisphere)
 
 		// Day Time and sun control
-		this.sun_distance = 200
+		this.sun_distance = 100
 		this.auto_update = true
 		this.day_time = 20
 		this.time = 13

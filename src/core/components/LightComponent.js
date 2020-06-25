@@ -89,7 +89,9 @@ class LightComponent extends Component {
 			}
 
 			EditorUI.form.addSlider("Intensity", Editor.selected_object.intensity, {min: 0, max: 1, step: 0.01})
-			// TODO: Include jsColor here
+
+			EditorUI.form.addColor("Color", [Editor.selected_object.color.r, Editor.selected_object.color.g, Editor.selected_object.color.b])
+
 			EditorUI.form.addString("Color Hex", "0x" + Editor.selected_object.color.getHexString())
 			EditorUI.form.addString("Color RGB", Editor.selected_object.color.getStyle())
 			EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
@@ -171,6 +173,8 @@ class LightComponent extends Component {
 
 		else if (name === "Intensity") {
 			Editor.selected_object.intensity = value
+		} else if (name === "Color") {
+			Editor.selected_object.color.setRGB(value[0], value[1], value[2])
 		} else if (name === "Color Hex") {
 			Editor.selected_object.color.setHex(value)
 			EditorUI.updateInspector()

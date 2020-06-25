@@ -99,6 +99,7 @@ class Program extends THREE.Object3D {
 			var index = this.children.indexOf(scene)
 			if (index > -1) {
 				this.children.splice(index, 1)
+				scene.parent = null
 			}
 
 			// If no scene on program, set actual scene to null
@@ -111,6 +112,7 @@ class Program extends THREE.Object3D {
 	add(scene) {
 		if (scene instanceof Scene) {
 			this.children.push(scene)
+			scene.parent = this
 
 			// If first scene, set as actual scene
 			if (this.children.length === 1) {

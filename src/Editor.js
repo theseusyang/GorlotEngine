@@ -53,8 +53,7 @@ Editor.initialize = function(canvas)
 	EditorUI.Initialize();
 
 	//Set render canvas
-	Editor.canvas = EditorUI.canvas;
-	Mouse.canvas = Editor.canvas;
+	Editor.setRenderCanvas(EditorUI.canvas)
 
 	//Debug Elements
 	Editor.tool_scene = new THREE.Scene();
@@ -455,6 +454,7 @@ Editor.draw = function()
 Editor.resize = function()
 {
 	EditorUI.updateInterface();
+	EditorUI.resizeCanvas()
 }
 
 // Show appropriate helper to selected object
@@ -589,6 +589,12 @@ Editor.createNewProgram = function() {
 	Editor.program.addDefaultScene()
 
 	Editor.resetEditingFlags()
+}
+
+// Set render canvas
+Editor.setRenderCanvas = function(canvas) {
+	Editor.canvas = canvas
+	Mouse.canvas = canvas
 }
 
 // Exit Editor

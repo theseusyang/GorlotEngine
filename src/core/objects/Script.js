@@ -6,6 +6,10 @@ class Script extends THREE.Object3D {
 		this.name = "script"
 		this.type = "Script"
 
+		// Disable auto matrix updates
+		this.rotationAutoUpdate = false
+		this.matrixAutoUpdate = false
+
 		// Script code
 		this.code_loop = ""
 		this.code_init = ""

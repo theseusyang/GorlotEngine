@@ -54,6 +54,9 @@ class Scene extends THREE.Scene {
 		this.world.gravity.set(0,-9.82,0);
 		this.world.solver.iterations = 10;
 
+		// Runtime variables
+		this.camera = null
+
 		// Components
 		this.components = []
 		this.defaultComponents = []
@@ -66,7 +69,7 @@ class Scene extends THREE.Scene {
 
 	initialize() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
+			if (this.children[i].initialize !== undefined) {
 				this.children[i].initialize()
 			}
 		}
@@ -77,7 +80,7 @@ class Scene extends THREE.Scene {
 	
 		for(var i = 0; i < this.children.length; i++)
 		{
-			if (this.children[i].update != undefined) {
+			if (this.children[i].update !== undefined) {
 				this.children[i].update()
 			}
 		}
