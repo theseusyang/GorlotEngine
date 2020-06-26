@@ -38,6 +38,7 @@ class Program extends THREE.Object3D {
 		this.initial_scene = null
 	
 		//Runtime variables
+		this.data = function(){}
 		this.scene = null;
 
 		this.components = []

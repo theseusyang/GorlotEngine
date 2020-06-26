@@ -270,7 +270,11 @@ EditorUI.Initialize = function() {
                         m.morphTargets = true
                     }
 
-                    var obj = new AnimatedModel(geometry, new THREE.MultiMaterial(materials))
+                    var material = new THREE.MeshPhongMaterial()
+                    material.skinning = true
+                    material.morphTargets = true
+
+                    var obj = new AnimatedModel(geometry, material)// new THREE.MultiMaterial(materials))
 
                     Editor.addToActualScene(obj)
                 })
@@ -302,7 +306,7 @@ EditorUI.Initialize = function() {
         }, ".wrl, .vrml")
     }})
 
-    /*EditorUI.asset_explorer_menu.add("Import/Objects/FBX", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Import/Objects/FBX", {callback: () => {
         App.chooseFile(function(event) {
             var file = event.srcElement.value
 
@@ -318,8 +322,8 @@ EditorUI.Initialize = function() {
             }
 
         }, ".fbx")
-    }})*/
-
+    }})
+    
     EditorUI.asset_explorer_menu.add("Import/Resources/Texture", {callback: () => {
         App.chooseFile((event) => {
             var file = event.srcElement.value

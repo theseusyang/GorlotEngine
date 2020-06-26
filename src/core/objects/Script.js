@@ -9,6 +9,10 @@ class Script extends THREE.Object3D {
 		// Disable auto matrix updates
 		this.rotationAutoUpdate = false
 
+		// Program and scene pointers
+		this.program = null
+		this.scene = null
+
 		// Script code
 		this.code = "//ADD CODE HERE"
 		this.func = null
@@ -40,6 +44,18 @@ class Script extends THREE.Object3D {
 	}
 
 	initialize() {
+
+		// Program and scene
+		var node = this
+		while(node.parent !== null) {
+				node = node.parent
+			if (node instanceof Scene) {
+				node.scene = node
+			} else if (node instanceof Program) {
+				node.program = node
+			}
+		}
+
 		// Run script
 		if(this.mode === Script.INIT) {
 			try {

@@ -11,6 +11,10 @@ class Blueprints extends THREE.Object3D {
 		this.rotationAutoUpdate = false
 		this.matrixAutoUpdate = false
 
+		// Program and scene pointers
+		this.program = null
+		this.scene = null
+
 		this.init = {}
 		this.loop = {}
 		
@@ -32,6 +36,18 @@ class Blueprints extends THREE.Object3D {
 
 	initialize() {
 
+		// Program and scene
+		var node = this
+		while(node.parent !== null) {
+				node = node.parent
+			if (node instanceof Scene) {
+				node.scene = node
+			} else if (node instanceof Program) {
+				node.program = node
+			}
+		}
+
+		// Execute nodes
 		this.graph = new LGraph(this.init)
 		this.run(this.graph)
 

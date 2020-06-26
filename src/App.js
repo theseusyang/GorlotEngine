@@ -55,6 +55,7 @@ App.chooseFile = function(callback, filter, savemode) {
 	// Create onchange event and trigger it
 	chooser.onchange = function(e) {
 		if (callback !== undefined) {
+			console.log(e.srcElement)
 			callback(e)
 		}
 	}
