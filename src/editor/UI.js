@@ -408,12 +408,14 @@ EditorUI.Initialize = function() {
 }
 
 EditorUI.removeAllTabs = function() {
-    if(Editor.tabs_widget !== undefined) {
+    if(EditorUI.tabs_widget !== undefined) {
         var num = EditorUI.tabs_widget.getNumOfTabs()
-    
+
         for(var i = 0; i < num; i++) {
-            console.log(i)
-            EditorUI.tabs_widget.getTabByIndex(i).destroy()
+            var tab = EditorUI.tabs_widget.getTabByIndex(i)
+            if (tab !== undefined) {
+                tab.destroy()
+            }
         }
     }
 }

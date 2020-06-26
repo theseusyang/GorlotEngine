@@ -683,6 +683,10 @@ Editor.loadProgram = function(fname) {
 	Editor.program = program
 	Editor.resetEditingFlags()
 
+	//if (EditorUI.removeAllTabs !== undefined) {
+	//	EditorUI.removeAllTabs()
+	//}
+
 	Editor.updateTreeView()
 }
 
@@ -693,6 +697,10 @@ Editor.createNewProgram = function() {
 	Editor.program = new Program()
 	Editor.program.addDefaultScene()
 	Editor.resetEditingFlags()
+
+	//if (EditorUI.removeAllTabs !== undefined) {
+	//	EditorUI.removeAllTabs()
+	//}
 
 	Editor.updateTreeView()
 }

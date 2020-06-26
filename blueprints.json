@@ -1,0 +1,500 @@
+{
+	"metadata": {
+		"version": 4.4,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "C02EF0E2-7B4D-41CC-8935-D58AB5972B2E",
+			"type": "SphereGeometry",
+			"radius": 4000,
+			"widthSegments": 32,
+			"heightSegments": 15
+		},
+		{
+			"uuid": "1AFFC46E-31F9-4203-9AC2-B43D4A720724",
+			"type": "BoxGeometry",
+			"name": "geometry",
+			"width": 2,
+			"height": 2,
+			"depth": 2
+		},
+		{
+			"uuid": "0588B757-2A7C-4E9F-BFF8-25421448F5F2",
+			"type": "BoxGeometry",
+			"name": "geometry",
+			"width": 20,
+			"height": 1,
+			"depth": 20
+		}],
+	"materials": [
+		{
+			"uuid": "6883A773-21EB-45A9-B46B-65A87871384D",
+			"type": "ShaderMaterial",
+			"side": 1,
+			"uniforms": {
+				"top_color": {
+					"type": "c",
+					"value": {
+						"r": 0,
+						"g": 0.4627450980392157,
+						"b": 1
+					}
+				},
+				"bottom_color": {
+					"type": "c",
+					"value": {
+						"r": 1,
+						"g": 1,
+						"b": 1
+					}
+				},
+				"offset": {
+					"type": "f",
+					"value": 20
+				},
+				"exponent": {
+					"type": "f",
+					"value": 0.4
+				}
+			},
+			"vertexShader": "varying vec3 vWorldPosition;\n\nvoid main() {\n\tvec4 worldPosition = modelMatrix * vec4(position, 1.0);\n\tvWorldPosition = worldPosition.xyz;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n",
+			"fragmentShader": "uniform vec3 top_color;\nuniform vec3 bottom_color;\nuniform float offset;\nuniform float exponent;\nvarying vec3 vWorldPosition;\n\nvoid main() {\n\tfloat h = normalize(vWorldPosition + offset).y;\n\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n}"
+		},
+		{
+			"uuid": "75D1A3EE-87AA-47AF-8900-F800797B7053",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		},
+		{
+			"uuid": "155684E3-CB87-4D06-BAFB-CC6F3D7E126B",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		}],
+	"object": {
+		"uuid": "8C918046-A761-429A-A673-BC12A353461E",
+		"type": "Program",
+		"name": "program",
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "239CC2FD-76B5-4FD7-9C37-839D0583A6D2",
+				"type": "Scene",
+				"name": "scene",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"children": [
+					{
+						"uuid": "3EF29F6D-68F2-4C4D-B81B-22E387313178",
+						"type": "Sky",
+						"auto_update": false,
+						"day_time": 20,
+						"sun_distance": 100,
+						"time": 13,
+						"components": [],
+						"name": "sky",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "C02EF0E2-7B4D-41CC-8935-D58AB5972B2E",
+						"material": "6883A773-21EB-45A9-B46B-65A87871384D"
+					},
+					{
+						"uuid": "E99E4912-9C5B-4D48-AD4B-746EB8AF61F5",
+						"type": "Mesh",
+						"name": "box",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "1AFFC46E-31F9-4203-9AC2-B43D4A720724",
+						"material": "75D1A3EE-87AA-47AF-8900-F800797B7053"
+					},
+					{
+						"uuid": "6F2CE385-5625-48B0-8027-9CD3CF524657",
+						"type": "Mesh",
+						"name": "ground",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.5,0,1],
+						"geometry": "0588B757-2A7C-4E9F-BFF8-25421448F5F2",
+						"material": "155684E3-CB87-4D06-BAFB-CC6F3D7E126B"
+					},
+					{
+						"uuid": "2DB27C78-4568-4847-85B6-F91D4780AB06",
+						"type": "Blueprints",
+						"init": {
+							"last_node_id": 13,
+							"last_link_id": 27,
+							"nodes": [
+								{
+									"id": 2,
+									"type": "Base/number",
+									"pos": [23,68],
+									"size": [80,60],
+									"flags": {},
+									"order": 0,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "",
+											"type": "number",
+											"links": [1,2,3]
+										}],
+									"properties": {
+										"min": -1000,
+										"max": 1000,
+										"value": 2,
+										"step": 1
+									}
+								},
+								{
+									"id": 1,
+									"type": "Vectors/Vector3",
+									"pos": [209,56],
+									"size": {
+										"0": 140,
+										"1": 66
+									},
+									"flags": {},
+									"order": 3,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": 1
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": 2
+										},
+										{
+											"name": "Z",
+											"type": "number",
+											"link": 3
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [4,5]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 3,
+									"type": "Vectors/VectorAdd",
+									"pos": [416,11],
+									"size": {
+										"0": 140,
+										"1": 46
+									},
+									"flags": {},
+									"order": 7,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Input",
+											"type": "Vector",
+											"link": 4
+										},
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"link": 5
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [11]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 8,
+									"type": "Vectors/Vector3",
+									"pos": [433,109],
+									"size": {
+										"0": 140,
+										"1": 66
+									},
+									"flags": {},
+									"order": 4,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": 14
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": 15
+										},
+										{
+											"name": "Z",
+											"type": "number",
+											"link": 16
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [13]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 9,
+									"type": "Base/number",
+									"pos": [273,177],
+									"size": [80,60],
+									"flags": {},
+									"order": 1,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "",
+											"type": "number",
+											"links": [14,15,16]
+										}],
+									"properties": {
+										"min": -1000,
+										"max": 1000,
+										"value": 2,
+										"step": 1
+									}
+								},
+								{
+									"id": 7,
+									"type": "Vectors/AddScaledVector",
+									"pos": [733,40],
+									"size": {
+										"0": 154,
+										"1": 66
+									},
+									"flags": {},
+									"order": 8,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Input",
+											"type": "Vector",
+											"link": 11
+										},
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"link": 13
+										},
+										{
+											"name": "Scalar",
+											"type": "number",
+											"link": 17
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [18]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 12,
+									"type": "Vectors/Vector3",
+									"pos": [790,157],
+									"size": {
+										"0": 140,
+										"1": 66
+									},
+									"flags": {},
+									"order": 5,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": 21
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": 23
+										},
+										{
+											"name": "Z",
+											"type": "number",
+											"link": 22
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [19]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 4,
+									"type": "Base/ConsoleLog",
+									"pos": [1352,34],
+									"size": {
+										"0": 140,
+										"1": 26
+									},
+									"flags": {
+										"collapsed": false
+									},
+									"order": 10,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "In",
+											"type": 0,
+											"link": 20
+										}],
+									"properties": {}
+								},
+								{
+									"id": 11,
+									"type": "Vectors/AddVectors",
+									"pos": [1117,33],
+									"size": {
+										"0": 140,
+										"1": 66
+									},
+									"flags": {},
+									"order": 9,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Input",
+											"type": "Vector",
+											"link": 18
+										},
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"link": 19
+										},
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"link": 24
+										}],
+									"outputs": [
+										{
+											"name": "Output",
+											"type": "Vector",
+											"links": [20]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 13,
+									"type": "Vectors/Vector3",
+									"pos": [786,262],
+									"size": {
+										"0": 140,
+										"1": 66
+									},
+									"flags": {},
+									"order": 6,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": 25
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": 27
+										},
+										{
+											"name": "Z",
+											"type": "number",
+											"link": 26
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [24]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 10,
+									"type": "Base/number",
+									"pos": [617,156],
+									"size": [80,60],
+									"flags": {},
+									"order": 2,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "",
+											"type": "number",
+											"links": [17,21,22,23,25,26,27]
+										}],
+									"properties": {
+										"min": -1000,
+										"max": 1000,
+										"value": 2,
+										"step": 1
+									}
+								}],
+							"links": [[1,2,0,1,0,
+									"number"],[2,2,0,1,1,
+									"number"],[3,2,0,1,2,
+									"number"],[4,1,0,3,0,
+									"Vector"],[5,1,0,3,1,
+									"Vector"],[11,3,0,7,0,
+									"Vector"],[13,8,0,7,1,
+									"Vector"],[14,9,0,8,0,
+									"number"],[15,9,0,8,1,
+									"number"],[16,9,0,8,2,
+									"number"],[17,10,0,7,2,
+									"number"],[18,7,0,11,0,
+									"Vector"],[19,12,0,11,1,
+									"Vector"],[20,11,0,4,0,0],[21,10,0,12,0,
+									"number"],[22,10,0,12,2,
+									"number"],[23,10,0,12,1,
+									"number"],[24,13,0,11,2,
+									"Vector"],[25,10,0,13,0,
+									"number"],[26,10,0,13,2,
+									"number"],[27,10,0,13,1,
+									"number"]],
+							"groups": [],
+							"config": {},
+							"version": 0.4
+						},
+						"loop": {},
+						"name": "blueprints_1",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"components": []
+					}]
+			}]
+	},
+	"description": "",
+	"author": "",
+	"version": "0",
+	"vr": false,
+	"initial_scene": "239CC2FD-76B5-4FD7-9C37-839D0583A6D2"
+}
