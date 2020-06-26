@@ -6,7 +6,7 @@ class BlueprintsEditor {
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			clearInterval(self.interval)
 			self.updateBlueprints()
-			EditorUI.selectSceneEditor()
+			EditorUI.selectPreviousTab()
 		}})
 
 		if (parent !== undefined) {

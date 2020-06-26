@@ -1,13 +1,17 @@
 class SceneEditor {
 	constructor(parent) {
 
-		this.id = "Scene Editor " + SceneEditor.id
-		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true})
-		
+		if(EditorUI.tabs_widget !== undefined) {
+			this.id = "Scene Editor " + SceneEditor.id
+			this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true})
+		}
+
 		if (parent !== undefined) {
 			this.parent = parent
 		} else {
-			this.parent = EditorUI.tabs_widget.getTabContent(this.id)
+			if(EditorUI.tabs_widget !== undefined) {
+				this.parent = EditorUI.tabs_widget.getTabContent(this.id)
+			}
 		}
 
 		this.element = document.createElement("canvas")
@@ -18,7 +22,9 @@ class SceneEditor {
 
 		this.scene = null
 
-		this.parent.appendChild(this.element)
+		if(this.parent !== undefined) {
+			this.parent.appendChild(this.element)
+		}
 		
 		SceneEditor.id++	
 	}

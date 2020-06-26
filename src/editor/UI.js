@@ -151,7 +151,7 @@ EditorUI.Initialize = function() {
 
         if(Editor.state === Editor.STATE_EDITING) {
             menuItem.name = "Stop"
-            EditorUI.selectSceneEditor()
+            EditorUI.selectPreviousTab()
             Editor.setState(Editor.STATE_TESTING)
         } else if(Editor.state === Editor.STATE_TESTING) {
             menuItem.name = "Run"
@@ -373,20 +373,14 @@ EditorUI.Initialize = function() {
 
         // Script
         if (data.attachedTo instanceof Script) {
+
+            var id = CodeEditor.id-1
+            EditorUI.tabs_widget.removeTab("Code Editor " + id)
+
             EditorUI.code = new CodeEditor()
             EditorUI.code.attachScript(data.attachedTo)
             EditorUI.code.updateInterface()
         }
-        // Blueprints
-//        else if (data.attachedTo instanceof Blueprints) {
-//            //EditorUI.tabs_widget.addTab("Blueprints Editor " + Editor.nameId, {selected: true, width: "100%", closable: true, onclose: () => {
-//            //    EditorUI.blueEditor.updateBlueprints()
-//            //    EditorUI.selectSceneEditor()
-//            //}})
-//            EditorUI.blueEditor = new BlueprintsEditor(undefined, data.attachedTo)
-//            EditorUI.blueEditor.updateInterface()
-//        }
-        // Scene
         else if (data.attachedTo instanceof Scene) {
             var id = SceneEditor.id-1
             EditorUI.tabs_widget.removeTab("Scene Editor " + id)
@@ -413,8 +407,25 @@ EditorUI.Initialize = function() {
     EditorUI.Resize()
 }
 
-EditorUI.selectSceneEditor = function() {
-    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+EditorUI.removeAllTabs = function() {
+    if(Editor.tabs_widget !== undefined) {
+        var num = EditorUI.tabs_widget.getNumOfTabs()
+    
+        for(var i = 0; i < num; i++) {
+            console.log(i)
+            EditorUI.tabs_widget.getTabByIndex(i).destroy()
+        }
+    }
+}
+
+EditorUI.selectPreviousTab = function() {
+    var tab = EditorUI.tabs_widget.getPreviousTab()
+
+    if(tab === undefined || Editor.state === Editor.STATE_EDITING) {
+        EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+    } else {
+        EditorUI.tabs_widget.selectTab(tab)
+    }
 }
 
 EditorUI.updateInterface = function () {
@@ -430,24 +441,28 @@ EditorUI.updateInspector = function() {
         EditorUI.ins = new ObjectInspector()
         EditorUI.form.onchange = EditorUI.ins.updateInfo
     } else {
-        EditorUI.form.clear()
+        if(EditorUI.form !== undefined) {
+            EditorUI.form.clear()
+        }
     }
 }
 
 EditorUI.hierarchyFromScene = function(scene) {
-    EditorUI.hierarchy.updateTree({id: Editor.program.name, attachedTo: Editor.program, children: []})
-
-    Editor.program.children.forEach((item, index) => {
-        var it = EditorUI.hierarchy.insertItem({id: Editor.program.children[index].name, attachedTo: Editor.program.children[index]})
-        
-        it.addEventListener("contextmenu", (e) => {
-            return EditorUI.hierarchyContext(e, {item: it, data: it.data})
+    if(EditorUI.hierarchy !== undefined) {
+        EditorUI.hierarchy.updateTree({id: Editor.program.name, attachedTo: Editor.program, children: []})
+    
+        Editor.program.children.forEach((item, index) => {
+            var it = EditorUI.hierarchy.insertItem({id: Editor.program.children[index].name, attachedTo: Editor.program.children[index]})
+            
+            it.addEventListener("contextmenu", (e) => {
+                return EditorUI.hierarchyContext(e, {item: it, data: it.data})
+            })
+    
+            if(Editor.program.children[index].children.length > 0){
+                EditorUI.addChildrenToHierarchy(Editor.program.children[index], Editor.program.children[index].name)
+            }
         })
-
-        if(Editor.program.children[index].children.length > 0){
-            EditorUI.addChildrenToHierarchy(Editor.program.children[index], Editor.program.children[index].name)
-        }
-    })
+    }
 }
 
 EditorUI.addChildrenToHierarchy = function(object, parent) {

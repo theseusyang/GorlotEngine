@@ -22,8 +22,12 @@ class Scene extends THREE.Scene {
 	}
 
 	initialize() {
-		// Initialize children
+		// Initialize children and select camera
 		for(var i = 0; i < this.children.length; i++) {
+			if (this.initial_camera === this.children[i].uuid) {
+				this.camera = this.children[i]
+			}
+
 			if (this.children[i].initialize !== undefined) {
 				this.children[i].initialize()
 			}

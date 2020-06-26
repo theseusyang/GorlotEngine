@@ -5,7 +5,7 @@ class SettingsTab {
 		this.id = "Settings Tab " + SettingsTab.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			self.applyChanges()
-			EditorUI.selectSceneEditor()
+			EditorUI.selectPreviousTab()
 		}})
 
 		if (parent !== undefined) {

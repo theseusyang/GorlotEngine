@@ -133,9 +133,9 @@ editor.append("editor/tabs/SettingsTab.js")
 editor.append("editor/tabs/BlueprintsEditor.js")
 editor.append("editor/tabs/ObjectInspector.js")
 
-editor.append("Editor.js")
-
 editor.append("editor/UI.js")
+
+editor.append("Editor.js")
 
 string = ''
 stringE = ''

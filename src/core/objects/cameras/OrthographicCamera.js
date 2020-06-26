@@ -4,8 +4,6 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 		this.name = "orthographic_camera"
 
-		this.rotationAutoUpdate = true
-
 		this.components = []
 
 		this.defaultComponents = []
@@ -20,7 +18,7 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 	initialize() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
+			if (this.children[i].initialize !== undefined) {
 				this.children[i].initialize()
 			}
 		}
@@ -28,7 +26,7 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 	update() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
+			if (this.children[i].update !== undefined) {
 				this.children[i].update()
 			}
 		}
@@ -42,3 +40,7 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 		}
 	}
 }
+
+// Camera scale mode
+OrthographicCamera.FIXED_VERTICAL = 0
+OrthographicCamera.FIXED_HORITZONTAL = 1

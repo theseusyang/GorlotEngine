@@ -3,6 +3,7 @@ class Program extends THREE.Object3D {
 		super()
 
 		// Program type
+		this.name = "Program"
 		this.type = "Program"
 
 		// Disable auto matrix updates
@@ -38,6 +39,35 @@ class Program extends THREE.Object3D {
 	
 		//Runtime variables
 		this.scene = null;
+	}
+
+	resize(x, y) {
+		// Screen resize
+
+		if (this.scene !== null) {
+			if (this.scene.camera instanceof THREE.OrthographicCamera) {
+				this.scene.camera.aspect = Editor.canvas.width / Editor.canvas.height
+				this.scene.camera.updateProjectionMatrix()
+			} else {
+				this.scene.camera.aspect = Editor.canvas.width / Editor.canvas.height
+				this.scene.camera.updateProjectionMatrix()
+			}
+		}
+	}
+
+	initialize() {
+		// Select starting scene and initialize that scene
+		if (this.initial_scene !== null) {
+			for(var i = 0; i < this.children.length; i++) {
+				if (this.children[i].uuid === this.initial_scene) {
+					this.scene = this.children[i]
+					break
+				}
+			}
+		} else {
+			this.scene = this.children[0]
+		}
+		this.scene.initialize()
 	}
 
 	setInitialScene(scene) {

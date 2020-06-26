@@ -1,9 +1,9 @@
 class CodeEditor {
 	constructor(parent) {
 
-		this.id = "Settings Tab " + CodeEditor.id
+		this.id = "Code Editor " + CodeEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
-			EditorUI.selectSceneEditor()
+			EditorUI.selectPreviousTab()
 		}})
 
 		if (parent !== undefined) {
@@ -40,6 +40,7 @@ class CodeEditor {
 		}
 
 		this.parent.appendChild(this.element)
+		CodeEditor.id++
 	}
 
 	setMode(mode) {

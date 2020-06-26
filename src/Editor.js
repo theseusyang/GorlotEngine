@@ -613,6 +613,10 @@ Editor.resizeCamera = function()
 		Editor.renderer.setSize(Editor.canvas.width, Editor.canvas.height)
 		Editor.camera.aspect = Editor.canvas.width/Editor.canvas.height
 		Editor.camera.updateProjectionMatrix()
+
+		if (Editor.state === Editor.STATE_TESTING) {
+			Editor.program_running.resize(Editor.canvas.width, Eitor.canvas.height)
+		}
 	}
 }
 
@@ -678,6 +682,7 @@ Editor.loadProgram = function(fname) {
 
 	Editor.program = program
 	Editor.resetEditingFlags()
+
 	Editor.updateTreeView()
 }
 
@@ -687,8 +692,9 @@ Editor.createNewProgram = function() {
 
 	Editor.program = new Program()
 	Editor.program.addDefaultScene()
-
 	Editor.resetEditingFlags()
+
+	Editor.updateTreeView()
 }
 
 // Set editor state
@@ -700,12 +706,14 @@ Editor.setState = function(state) {
 	} else if (state === Editor.STATE_TESTING) {
 		// Copy program and initialize scene
 		Editor.program_running = Editor.program.clone()
-		Editor.program_running.scene.initialize()
 
 		// If no camera attached, attach camera
 		if (Editor.program_running.scene.camera === null) {
 			Editor.program_running.scene.camera = Editor.camera
 		}
+
+		// Initialize scene
+		Editor.program_running.scene.initialize()
 	}
 	Editor.state = state
 }
