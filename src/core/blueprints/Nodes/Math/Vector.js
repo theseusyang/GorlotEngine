@@ -6,7 +6,7 @@ function Vector2Node() {
 
 Vector2Node.title = "Vector2"
 
-Vector2Node.onExecute = function() {
+Vector2Node.prototype.onExecute = function() {
 	var X = this.getInputData(0)
 	var Y = this.getInputData(1)
 	if (X === undefined) {
@@ -25,7 +25,7 @@ function Vector2ToVector3Node() {
 
 Vector2ToVector3Node.title = "Vector2 To Vector3"
 
-Vector2ToVector3Node.onExecute = function() {
+Vector2ToVector3Node.prototype.onExecute = function() {
 	var Vec2 = this.getInputData(0)
 	if (Vec2 === undefined) {
 		Vec2 = new THREE.Vector2()
@@ -42,7 +42,7 @@ function Vector3Node() {
 
 Vector3Node.title = "Vector3"
 
-Vector3Node.onExecute = function() {
+Vector3Node.prototype.onExecute = function() {
 	var X = this.getInputData(0)
 	var Y = this.getInputData(1)
 	var Z = this.getInputData(2)
@@ -68,7 +68,7 @@ function VectorSetNode() {
 
 VectorSetNode.title = "Set Vector"
 
-VectorSetNode.onExecute = function() {
+VectorSetNode.prototype.onExecute = function() {
 	var Vec = this.getInputData(0)
 	var X = this.getInputData(1)
 	var Y = this.getInputData(2)
@@ -88,7 +88,7 @@ function VectorGetXNode() {
 	this.addOutput("X", "number")
 }
 VectorGetXNode.title = "Get X"
-VectorGetXNode.onExecute = function() {
+VectorGetXNode.prototype.onExecute = function() {
 	var Vec = this.getInputData(0)
 	if (Vec === undefined) {
 		Vec = new THREE.Vector2(0, 0)
@@ -103,7 +103,7 @@ function VectorGetYNode() {
 	this.addOutput("Y", "number")
 }
 VectorGetYNode.title = "Get Y"
-VectorGetYNode.onExecute = function() {
+VectorGetYNode.prototype.onExecute = function() {
 	var Vec = this.getInputData(0)
 	if (Vec === undefined) {
 		Vec = new THREE.Vector2(0, 0)
@@ -118,7 +118,7 @@ function VectorGetZNode() {
 	this.addOutput("Z", "number")
 }
 VectorGetZNode.title = "Get Z"
-VectorGetZNode.onExecute = function() {
+VectorGetZNode.prototype.onExecute = function() {
 	var Vec = this.getInputData(0)
 	if (Vec === undefined) {
 		Vec = new THREE.Vector3(0, 0, 0)

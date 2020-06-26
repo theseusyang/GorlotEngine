@@ -498,7 +498,7 @@
         this.widgets_up = true;
     }
 
-    WidgetSliderGUI.title = "Inner Slider";
+    WidgetSliderGUI.title = "Slider";
 
     WidgetSliderGUI.prototype.onPropertyChanged = function(name, value) {
         if (name == "value") {
@@ -511,121 +511,6 @@
     };
 
     LiteGraph.registerNodeType("Base/internal_slider", WidgetSliderGUI);
-
-    //Widget H SLIDER
-    function WidgetHSlider() {
-        this.size = [160, 26];
-        this.addOutput("", "number");
-        this.properties = { color: "#7AF", min: 0, max: 1, value: 0.5 };
-        this.value = -1;
-    }
-
-    WidgetHSlider.title = "H.Slider";
-    WidgetHSlider.desc = "Linear slider controller";
-
-    WidgetHSlider.prototype.onDrawForeground = function(ctx) {
-        if (this.value == -1) {
-            this.value =
-                (this.properties.value - this.properties.min) /
-                (this.properties.max - this.properties.min);
-        }
-
-        //border
-        ctx.globalAlpha = 1;
-        ctx.lineWidth = 1;
-        ctx.fillStyle = "#000";
-        ctx.fillRect(2, 2, this.size[0] - 4, this.size[1] - 4);
-
-        ctx.fillStyle = this.properties.color;
-        ctx.beginPath();
-        ctx.rect(4, 4, (this.size[0] - 8) * this.value, this.size[1] - 8);
-        ctx.fill();
-    };
-
-    WidgetHSlider.prototype.onExecute = function() {
-        this.properties.value =
-            this.properties.min +
-            (this.properties.max - this.properties.min) * this.value;
-        this.setOutputData(0, this.properties.value);
-        this.boxcolor = LiteGraph.colorToString([
-            this.value,
-            this.value,
-            this.value
-        ]);
-    };
-
-    WidgetHSlider.prototype.onMouseDown = function(e) {
-        if (e.canvasY - this.pos[1] < 0) {
-            return false;
-        }
-
-        this.oldmouse = [e.canvasX - this.pos[0], e.canvasY - this.pos[1]];
-        this.captureInput(true);
-        return true;
-    };
-
-    WidgetHSlider.prototype.onMouseMove = function(e) {
-        if (!this.oldmouse) {
-            return;
-        }
-
-        var m = [e.canvasX - this.pos[0], e.canvasY - this.pos[1]];
-
-        var v = this.value;
-        var delta = m[0] - this.oldmouse[0];
-        v += delta / this.size[0];
-        if (v > 1.0) {
-            v = 1.0;
-        } else if (v < 0.0) {
-            v = 0.0;
-        }
-
-        this.value = v;
-
-        this.oldmouse = m;
-        this.setDirtyCanvas(true);
-    };
-
-    WidgetHSlider.prototype.onMouseUp = function(e) {
-        this.oldmouse = null;
-        this.captureInput(false);
-    };
-
-    WidgetHSlider.prototype.onMouseLeave = function(e) {
-        //this.oldmouse = null;
-    };
-
-    LiteGraph.registerNodeType("Base/hslider", WidgetHSlider);
-
-    function WidgetProgress() {
-        this.size = [160, 26];
-        this.addInput("", "number");
-        this.properties = { min: 0, max: 1, value: 0, color: "#AAF" };
-    }
-
-    WidgetProgress.title = "Progress";
-    WidgetProgress.desc = "Shows data in linear progress";
-
-    WidgetProgress.prototype.onExecute = function() {
-        var v = this.getInputData(0);
-        if (v != undefined) {
-            this.properties["value"] = v;
-        }
-    };
-
-    WidgetProgress.prototype.onDrawForeground = function(ctx) {
-        //border
-        ctx.lineWidth = 1;
-        ctx.fillStyle = this.properties.color;
-        var v =
-            (this.properties.value - this.properties.min) /
-            (this.properties.max - this.properties.min);
-        v = Math.min(1, v);
-        v = Math.max(0, v);
-        ctx.fillRect(2, 2, (this.size[0] - 4) * v, this.size[1] - 4);
-    };
-
-    LiteGraph.registerNodeType("Base/progress", WidgetProgress);
 
     //Constant
     function ConstantNumber() {
@@ -693,4 +578,18 @@
     }
 
     LiteGraph.registerNodeType("Base/String", ConstantString);
+
+
+    // Console.log
+    function ConsoleLogNode() {
+        this.addInput("In", null)
+    }
+
+    ConsoleLogNode.title = "Print to console"
+
+    ConsoleLogNode.prototype.onExecute = function() {
+        console.log(this.getInputData(0))
+    }
+
+    LiteGraph.registerNodeType("Base/ConsoleLog", ConsoleLogNode)
 })(this);

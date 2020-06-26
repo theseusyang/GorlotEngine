@@ -2,11 +2,11 @@ function ElementNode() {
 	this.addInput("Object", "Object3D")
 
 	this.addInput("Position", "Vector")
-	this.addInput("Rotation", "Vector")
+	this.addInput("Rotation", "Eular")
 	this.addInput("Scale", "Vector")
 
 	this.addOutput("Position", "Vector")
-	this.addOutput("Rotation", "Vector")
+	this.addOutput("Rotation", "Euler")
 	this.addOutput("Scale", "Vector")
 }
 ElementNode.title = "Element"
@@ -17,28 +17,25 @@ ElementNode.prototype.onExecute = function() {
 
 	o = this.getInputData(0)
 
-	console.log(o)
+	p = this.getInputData(1)
+	r = this.getInputData(2)
+	s = this.getInputData(3)
 
-//	p = this.getInputData(1)
-//	r = this.getInputData(2)
-//	s = this.getInputData(3)
-//
-//	if (o === undefined) {
-//		return
-//	}
-//	if (p === undefined) {
-//		p = o.position
-//	}
-//	if (r === undefined) {
-//		r = o.rotation
-//	}
-//	if (s === undefined) {
-//		s = o.scale
-//	}
-//
-//	o.position.set(p.x, p.y, p.z)
-//	o.rotation.set(r.x, r.y, r.z)
-//	o.scale.set(s.x, s.y, s.z)
+	if (p === undefined || p === null) {
+		p = o.position
+	}
+	// TODO: r = euler
+	if (s === undefined || s === null) {
+		s = o.scale
+	}
+
+	o.position.set(p.x, p.y, p.z)
+
+	o.scale.set(s.x, s.y, s.z)
+
+	this.setOutputData(0, o.position)
+	this.setOutputData(1, o.rotation)
+	this.setOutputData(2, o.scale)
 
 }
 
@@ -54,10 +51,10 @@ GetObjectByNameNode.prototype.onExecute = function() {
 	if (n === undefined) {
 		return
 	}
-	if (Editor.program.scene === undefined) {
+	if (Editor.program_running === null) {
 		return
 	}
-	this.setOutputData(0, Editor.program.scene.getObjectByName(n))
+	this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
 }
 
 LiteGraph.registerNodeType("Objects/Element", ElementNode)

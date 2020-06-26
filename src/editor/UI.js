@@ -151,6 +151,7 @@ EditorUI.Initialize = function() {
 
         if(Editor.state === Editor.STATE_EDITING) {
             menuItem.name = "Stop"
+            EditorUI.selectSceneEditor()
             Editor.setState(Editor.STATE_TESTING)
         } else if(Editor.state === Editor.STATE_TESTING) {
             menuItem.name = "Run"

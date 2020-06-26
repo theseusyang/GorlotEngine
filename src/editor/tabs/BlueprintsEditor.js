@@ -4,6 +4,7 @@ class BlueprintsEditor {
 		var self = this
 		this.id = "Blueprints Editor " + BlueprintsEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
+			clearInterval(self.interval)
 			self.updateBlueprints()
 			EditorUI.selectSceneEditor()
 		}})
@@ -37,12 +38,16 @@ class BlueprintsEditor {
 			}
 		}
 
+		this.interval = setInterval(() => {
+			// Every 5 seconds, the blueprints are gonna save
+			self.updateBlueprints()
+		}, 2000)
+
 		BlueprintsEditor.id++
 	}
 
 	updateBlueprints() {
 		if (this.blueprints !== null) {
-			this.graphcanvas.clear()
 
 			if (this.type === "Init") {
 				this.blueprints.setInit(this.graph.serialize())
