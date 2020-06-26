@@ -340,6 +340,10 @@ EditorUI.Initialize = function() {
         }, "image/*")
     }})
 
+    EditorUI.asset_explorer_menu.add("Import/Resources/Audio", {callback: () => {
+        // TODO: Import audio
+    }})
+
     // ----- CREATE -----
 
     EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {

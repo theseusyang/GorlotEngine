@@ -109,7 +109,7 @@ Editor.initialize = function(canvas)
 	Editor.tool_scene.add(Editor.spot_light_helper)
 
 	// HemisphereLight helper
-	Editor.hemisphere_light_helper = new THREE.HemisphereLightHelper(new THREE.HemisphereLight, 1)
+	Editor.hemisphere_light_helper = new THREE.HemisphereLightHelper(new THREE.HemisphereLight(), 1)
 	Editor.activateHelper(Editor.hemisphere_light_helper, false)
 	Editor.tool_scene.add(Editor.hemisphere_light_helper)
 

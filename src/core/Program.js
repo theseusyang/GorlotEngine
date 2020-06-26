@@ -51,7 +51,7 @@ class Program extends THREE.Object3D {
 		// Screen resize
 
 		if (this.scene !== null) {
-			this.scene.camera.aspect = Editor.canvas.width/Editor.canvas.height
+			this.scene.camera.aspect = x/y
 			this.scene.camera.updateProjectionMatrix()
 		}
 	}

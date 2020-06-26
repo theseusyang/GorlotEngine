@@ -22,7 +22,21 @@ class SkyComponent extends Component {
 		if (name === "Auto Update") {
 			Editor.selected_object.auto_update = value
 		} else if (name === "Day duration(s)") {
-			Editor.selected_object.day_time = value
+			// Check and set day time
+			var day_time = value
+
+			if (day_time < 0) {
+				day_time = 0
+			}
+			Editor.selected_object.day_time = day_time
+
+			// Check actual time
+			if (Editor.selected_object.time > day_time) {
+				Editor.selected_object.time = day_time
+			}
+			Editor.selected_object.updateSky()
+			EditorUI.updateInspector()
+
 		} else if (name === "Time(s)") {
 			if (value < 0) {
 				value = 0

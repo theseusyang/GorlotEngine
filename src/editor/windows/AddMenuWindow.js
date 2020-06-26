@@ -30,6 +30,10 @@ class AddMenuWindow {
 				"icon": "data/icons/models/pyramid.png"
 			},
 			{
+				"name": "Plane",
+				"icon": "data/icons/models/plane.png"
+			},
+			{
 				"name": "Empty",
 				"icon": "data/icons/models/squares.png"
 			},
@@ -105,7 +109,7 @@ class AddMenuWindow {
 		var o = this.selected_object
 
 		if (o === "Cube") {
-			var geometry = new THREE.BoxGeometry(1, 1, 1)
+			var geometry = new THREE.BoxBufferGeometry(1, 1, 1)
 			var material = new THREE.MeshPhongMaterial()
 			var obj = new Model3D(geometry, material)
 			obj.receiveShadow = true
@@ -113,7 +117,7 @@ class AddMenuWindow {
 			obj.name = "cube"
 			Editor.addToActualScene(obj)
 		} else if (o === "Cylinder") {
-			var geometry = new THREE.CylinderGeometry(1, 1, 2, 32)
+			var geometry = new THREE.CylinderBufferGeometry(1, 1, 2, 32)
         	var material = new THREE.MeshPhongMaterial()
         	var obj = new Model3D(geometry, material)
         	obj.receiveShadow = true
@@ -121,7 +125,7 @@ class AddMenuWindow {
         	obj.name = "Cylinder"
         	Editor.addToActualScene(obj)
 		} else if (o === "Sphere") {
-			var geometry = new THREE.SphereGeometry(0.6, 16, 16)
+			var geometry = new THREE.SphereBufferGeometry(0.6, 16, 16)
         	var material = new THREE.MeshPhongMaterial()
         	var obj = new Model3D(geometry, material)
         	obj.receiveShadow = true
@@ -129,7 +133,7 @@ class AddMenuWindow {
         	obj.name = "Sphere"
         	Editor.addToActualScene(obj)
 		} else if (o === "Torus") {
-			var geometry = new THREE.TorusGeometry(1, 0.5, 16, 100)
+			var geometry = new THREE.TorusBufferGeometry(1, 0.5, 16, 100)
         	var material = new THREE.MeshPhongMaterial()
         	var obj = new Model3D(geometry, material)
         	obj.receiveShadow = true
@@ -137,13 +141,21 @@ class AddMenuWindow {
         	obj.name = "Torus"
         	Editor.addToActualScene(obj)
 		} else if (o === "Pyramid") {
-			var geometry = new THREE.CylinderGeometry(0, 1, 2, 32)
+			var geometry = new THREE.CylinderBufferGeometry(0, 1, 2, 32)
         	var material = new THREE.MeshPhongMaterial()
-        	var obj = new Model3D(geometry, model)
+        	var obj = new Model3D(geometry, material)
         	obj.receiveShadow = true
         	obj.castShadow = true
         	obj.name = "Cone"
         	Editor.addToActualScene(obj)
+		} else if (o === "Plane") {
+			var geometry = new THREE.PlaneBufferGeometry(1, 1)
+			var material = new THREE.MeshPhongMaterial()
+			var obj = new Model3D(geometry, material)
+			obj.receiveShadow = true
+			obj.castShadow = true
+			obj.name = "plane"
+			Editor.addToActualScene(obj)
 		} else if (o === "Empty") {
 			var obj = new Empty()
 			Editor.addToActualScene(obj)
