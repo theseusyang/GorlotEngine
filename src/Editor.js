@@ -684,6 +684,7 @@ Editor.createNewProgram = function() {
 Editor.setState = function(state) {
 	if (state === Editor.STATE_EDITING) {
 		// Clean program running variable
+		Editor.program_running.scene.stop()
 		Editor.program_running = null
 	} else if (state === Editor.STATE_TESTING) {
 		// Copy program and initialize scene

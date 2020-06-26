@@ -39,4 +39,12 @@ class Scene extends THREE.Scene {
 			}
 		}
 	}
+
+	stop() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].stop !== undefined) {
+				this.children[i].stop()
+			}
+		}
+	}
 }

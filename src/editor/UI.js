@@ -144,7 +144,7 @@ EditorUI.Initialize = function() {
         // If added a new menu before of this one, change the "3" number
         var menuItem = EditorUI.topmenu.findMenu("Run")
 
-        if(menuItem == null) {
+        if(menuItem === null) {
             // If the menuItem name ain't Run but Stop
             var menuItem = EditorUI.topmenu.findMenu("Stop")
         }

@@ -31,10 +31,9 @@ class Blueprints extends THREE.Object3D {
 	}
 
 	initialize() {
-		// TODO: Compile  (Using LGraph without LGraphcanvas)
 
-		var graph = new LGraph(this.init)
-		graph.start()
+		this.graph = new LGraph(this.init)
+		this.run(this.graph)
 
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].initialize != undefined) {
@@ -44,11 +43,37 @@ class Blueprints extends THREE.Object3D {
 	}
 
 	update() {
-		// TODO: Compile  (Using LGraph without LGraphcanvas)
+			
+		this.graph = new LGraph(this.loop)
+		this.run(this.graph)
 
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].update !== undefined) {
 				this.children[i].update()
+			}
+		}
+	}
+
+	run(graph) {
+		if (graph !== undefined) {
+			var nodes = graph._nodes_executable ? graph._nodes_executable : graph._nodes
+			
+			if(!nodes)
+				return
+
+			for(var j = 0, l = nodes.length; j < l; ++j) {
+				var node = nodes[j]
+				if (node.mode === LiteGraph.ALWAYS && node.onExecute) {
+					node.onExecute()
+				}
+			}
+		}
+	}
+
+	stop() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].stop !== undefined) {
+				this.children[i].stop()
 			}
 		}
 	}

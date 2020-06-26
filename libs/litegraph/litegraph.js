@@ -775,40 +775,31 @@
         interval = interval || 0;
         var that = this;
 
-        // I modified the code, this will execute the code time this function is called
-        if (this.onBeforeStep) {
-            this.onBeforeStep()
-        }
-        this.runStep(1, !this.catch_errors)
-        if (this.onAfterStep) {
-            this.onAfterStep()
-        }
-
 		//execute once per frame
-//        if ( interval == 0 && typeof window != "undefined" && window.requestAnimationFrame ) {
-//            function on_frame() {
-//                if (that.execution_timer_id != -1) {
-//                    return;
-//                }
-//                window.requestAnimationFrame(on_frame);
-//				if(that.onBeforeStep)
-//					that.onBeforeStep();
-//                that.runStep(1, !that.catch_errors);
-//				if(that.onAfterStep)
-//					that.onAfterStep();
-//            }
-//            this.execution_timer_id = -1;
-//            on_frame();
-//        } else { //execute every 'interval' ms
-//            this.execution_timer_id = setInterval(function() {
-//                //execute
-//				if(that.onBeforeStep)
-//					that.onBeforeStep();
-//                that.runStep(1, !that.catch_errors);
-//				if(that.onAfterStep)
-//					that.onAfterStep();
-//            }, interval);
-//        }
+        if ( interval == 0 && typeof window != "undefined" && window.requestAnimationFrame ) {
+            function on_frame() {
+                if (that.execution_timer_id != -1) {
+                    return;
+                }
+                window.requestAnimationFrame(on_frame);
+				if(that.onBeforeStep)
+					that.onBeforeStep();
+                that.runStep(1, !that.catch_errors);
+				if(that.onAfterStep)
+					that.onAfterStep();
+            }
+            this.execution_timer_id = -1;
+            on_frame();
+        } else { //execute every 'interval' ms
+            this.execution_timer_id = setInterval(function() {
+                //execute
+				if(that.onBeforeStep)
+					that.onBeforeStep();
+                that.runStep(1, !that.catch_errors);
+				if(that.onAfterStep)
+					that.onAfterStep();
+            }, interval);
+        }
     };
 
     /**

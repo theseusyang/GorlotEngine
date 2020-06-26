@@ -17,4 +17,8 @@ class Bone extends THREE.Bone {
 	update() {
 		
 	}
+	
+	stop() {
+
+	}
 }

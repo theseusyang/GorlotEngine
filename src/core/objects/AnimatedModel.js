@@ -24,6 +24,14 @@ class AnimatedModel extends THREE.SkinnedMesh {
 		}
 	}
 
+	stop() {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].stop !== undefined) {
+				this.children[i].stop()
+			}
+		}
+	}
+
 	addComponent(compo) {
 		if (compo instanceof Component) {
 			this.components.push(compo)

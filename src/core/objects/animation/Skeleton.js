@@ -18,4 +18,8 @@ class Skeleton extends THREE.Skeleton {
 	update() {
 		
 	}
+
+	stop() {
+		
+	}
 }

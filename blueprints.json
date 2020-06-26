@@ -1,0 +1,146 @@
+{
+	"version": 4.4,
+	"type": "Object",
+	"generator": "Object3D.toJSON",
+	"geometries": [
+		{
+			"uuid": "87129A53-9509-4C3B-896B-52BD5DCCD3C6",
+			"type": "SphereGeometry",
+			"radius": 4000,
+			"widthSegments": 32,
+			"heightSegments": 15
+		},
+		{
+			"uuid": "8A9CDF32-8684-4A5F-93A5-65244C7E1CE3",
+			"type": "BoxGeometry",
+			"width": 2,
+			"height": 2,
+			"depth": 2
+		},
+		{
+			"uuid": "4BF36FF4-974F-4583-8FD8-BB3639BE17D4",
+			"type": "BoxGeometry",
+			"width": 20,
+			"height": 1,
+			"depth": 20
+		}],
+	"materials": [
+		{
+			"uuid": "B19E8D0C-7512-4D05-9474-37D948771852",
+			"type": "ShaderMaterial",
+			"side": 1,
+			"uniforms": {
+				"top_color": {
+					"type": "c",
+					"value": {
+						"r": 0,
+						"g": 0.4627450980392157,
+						"b": 1
+					}
+				},
+				"bottom_color": {
+					"type": "c",
+					"value": {
+						"r": 1,
+						"g": 1,
+						"b": 1
+					}
+				},
+				"offset": {
+					"type": "f",
+					"value": 20
+				},
+				"exponent": {
+					"type": "f",
+					"value": 0.4
+				}
+			},
+			"vertexShader": "varying vec3 vWorldPosition;\n\nvoid main() {\n\tvec4 worldPosition = modelMatrix * vec4(position, 1.0);\n\tvWorldPosition = worldPosition.xyz;\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n}\n",
+			"fragmentShader": "uniform vec3 top_color;\nuniform vec3 bottom_color;\nuniform float offset;\nuniform float exponent;\nvarying vec3 vWorldPosition;\n\nvoid main() {\n\tfloat h = normalize(vWorldPosition + offset).y;\n\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n}"
+		},
+		{
+			"uuid": "CFA786BA-2EB9-4D3C-9834-EE1CA4E9B766",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		},
+		{
+			"uuid": "BAEC53E1-DD31-463C-A261-891CB86385CB",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		}],
+	"object": {
+		"uuid": "5C4E8D05-99AE-4D89-9F8C-BF9303203C05",
+		"type": "Program",
+		"description": "",
+		"author": "",
+		"version": "0",
+		"vr": false,
+		"name": "program",
+		"castShadow": false,
+		"receiveShadow": false,
+		"visible": true,
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "E815E910-EC72-4A81-ADCB-9F1A6402F063",
+				"type": "Scene",
+				"name": "scene",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"children": [
+					{
+						"uuid": "FD3B6D9D-788F-4F63-98FA-7AA9337508E7",
+						"type": "Sky",
+						"auto_update": false,
+						"day_time": 20,
+						"sun_distance": 100,
+						"time": 13,
+						"components": [],
+						"name": "sky",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "87129A53-9509-4C3B-896B-52BD5DCCD3C6",
+						"material": "B19E8D0C-7512-4D05-9474-37D948771852"
+					},
+					{
+						"uuid": "FFEAD1F0-D1FB-46F5-AF24-D792BC9293C1",
+						"type": "Mesh",
+						"name": "box",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "8A9CDF32-8684-4A5F-93A5-65244C7E1CE3",
+						"material": "CFA786BA-2EB9-4D3C-9834-EE1CA4E9B766"
+					},
+					{
+						"uuid": "1B6E67F6-5D25-4627-8E83-F14F8559D059",
+						"type": "Mesh",
+						"name": "ground",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.5,0,1],
+						"geometry": "4BF36FF4-974F-4583-8FD8-BB3639BE17D4",
+						"material": "BAEC53E1-DD31-463C-A261-891CB86385CB"
+					},
+					{
+						"uuid": "44DA65D5-A744-4796-BC9E-F7246AF40A48",
+						"type": "Blueprints",
+						"init": {},
+						"loop": {},
+						"name": "blueprints_1",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"components": []
+					}]
+			}]
+	}
+}
