@@ -3,7 +3,7 @@
 Gorlot Engine is a 3D Game engine coded in JavaScript, based in Three.JS and nunuStudio.
 
 ## Screenshots
-**Note:** The GUI can change, and the graphics WILL vary. Don't base yourself in these screenshots, you'd better download the source code and test it out (It's nothing but 1 MB worth - for now -)
+**Note:** The GUI can change, and the graphics WILL vary. Don't base yourself in these screenshots, you'd better download the source code and test it out (It's nothing but 3 MB worth - for now -)
 
 ![The component system](imgs/4.png)
 ![Blueprints system](imgs/6.png)

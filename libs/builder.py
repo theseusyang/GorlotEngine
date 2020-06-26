@@ -24,9 +24,6 @@ libraries.append("three/loaders/collada/KeyFrameAnimation.js")
 
 libraries.append("three/cameras/CinematicCamera.js")
 
-libraries.append("threex/videotexture.js")
-libraries.append("threex/webcamtexture.js")
-
 #libraries.append("leap/leap-0.6.4.min.js")
 #libraries.append("leap/leap-plugins-0.1.11.min.js")
 
@@ -78,15 +75,20 @@ source.append("core/ComponentManager.js")
 # Components
 
 source.append("core/components/ElementComponent.js")
-source.append("core/components/Object3DComponent.js")
-source.append("core/components/Text3DComponent.js")
-source.append("core/components/LightComponent.js")
-source.append("core/components/SkyComponent.js")
-source.append("core/components/BlueprintsComponent.js")
-source.append("core/components/ScriptComponent.js")
-source.append("core/components/CameraComponent.js")
-source.append("core/components/ProgramComponent.js")
-source.append("core/components/SceneComponent.js")
+
+source.append("core/components/Objects/Object3DComponent.js")
+source.append("core/components/Objects/Text3DComponent.js")
+
+source.append("core/components/Lights/LightComponent.js")
+source.append("core/components/Lights/SkyComponent.js")
+
+source.append("core/components/Scripting/BlueprintsComponent.js")
+source.append("core/components/Scripting/ScriptComponent.js")
+
+source.append("core/components/Cameras/CameraComponent.js")
+
+source.append("core/components/Containers/ProgramComponent.js")
+source.append("core/components/Containers/SceneComponent.js")
 
 # Blueprints Nodes
 source.append("../libs/litegraph/litegraph.js")
