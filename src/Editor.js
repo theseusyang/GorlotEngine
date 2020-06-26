@@ -191,7 +191,7 @@ Editor.update = function()
 			if (Keyboard.isKeyJustPressed(Keyboard.DEL)) {
 				// Delete Selected Object
 				Editor.deleteSelectedObject()
-			} else if (Keyboard.isKeyJustPressed(Keyboard.CTRL)) {
+			} else if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
 				// Shortcuts with the CTRL key
 				if (Keyboard.isKeyPressed(Keyboard.C)) {
 					// Copy selected object
@@ -202,6 +202,12 @@ Editor.update = function()
 				} else if (Keyboard.isKeyJustPressed(Keyboard.X)) {
 					// Cut selected object
 					Editor.cutSelectedObject()
+				} else if (Keyboard.isKeyJustPressed(Keyboard.Y)) {
+					// TODO: Redo
+				} else if (Keyboard.isKeyJustPressed(Keyboard.Z)) {
+					// TODO: Undo
+				} else if (Keyboard.isKeyJustPressed(Keyboard.W)) {
+					// TODO: Close actual tab
 				}
 			}
 		}

@@ -81,6 +81,7 @@ source.append("core/components/Text3DComponent.js")
 source.append("core/components/LightComponent.js")
 source.append("core/components/SkyComponent.js")
 source.append("core/components/BlueprintsComponent.js")
+source.append("core/components/ScriptComponent.js")
 
 # Blueprints Nodes
 source.append("../libs/litegraph/litegraph.js")

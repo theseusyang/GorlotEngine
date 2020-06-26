@@ -1,5 +1,5 @@
 class Script extends THREE.Object3D {
-	constructor(code_init, code_loop) {
+	constructor(code, mode) {
 		super()
 
 		// Set default name and object type
@@ -11,25 +11,27 @@ class Script extends THREE.Object3D {
 		this.matrixAutoUpdate = false
 
 		// Script code
-		this.code_loop = "//ADD LOOP CODE HERE"
-		this.code_init = "//ADD INITIALIZATION CODE HERE"
+		this.code = "//ADD CODE HERE"
+		this.func = null
+		this.mode = Script.INIT
 
-		// Compile init and loop code
-		if (code_init !== undefined) {
-			this.setInitCode(code_init)
+		// Get arguments
+		if (code !== undefined) {
+			this.code = code
 		}
-		if (code_loop !== undefined) {
-			this.setLoopCode(code_loop)
+		if (mode !== undefined) {
+			this.mode = mode
 		}
 
 		// Script functions
-		this.setLoopCode(this.code_loop)
-		this.setInitCode(this.code_init)
+		this.setCode(this.code)
 
 		this.components = []
 		
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new ScriptComponent())
+
 	}
 
 	addComponent(component) {
@@ -40,44 +42,44 @@ class Script extends THREE.Object3D {
 
 	initialize() {
 		// Run script
-		try {
-			this.func_init()
-		} catch(e) {}
+		if(this.mode === Script.INIT) {
+			try {
+				this.func()
+			} catch(e) {}
+		}
 
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize != undefined) {
+			if (this.children[i].initialize !== undefined) {
 				this.children[i].initialize()
 			}
 		}
 	}
 
-	setInitCode(code) {
-		try {
-			this.code_init = code
-			this.func_init = Function(this.code_init)
-		} catch(e) {}
-	}
-
-	setLoopCode(code) {
-		try {
-			this.code_loop = code
-			this.func_loop = Function(this.code_loop)
-		} catch(e) {console.error(e)}
-	}
-
 	update() {
 		// Run script
-		try {
-			this.func_loop()
-		} catch (e) {
-
+		if(this.mode === Script.LOOP) {
+			try {
+				this.func()
+			} catch (e) {}
 		}
 
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update != undefined) {
+			if (this.children[i].update !== undefined) {
 				this.children[i].update()
 			}
 		}
+	}
+
+	setCode(code) {
+		try {
+			this.code = code
+			this.func = Function(this.code)
+		} catch(e) {}
+	}
+
+	setMode(mode) {
+		// Set mode
+		this.mode = mode
 	}
 
 	stop() {
@@ -114,8 +116,8 @@ class Script extends THREE.Object3D {
 		object.uuid = this.uuid
 		object.type = this.type
 
-		object.code_init = this.code_init
-		object.code_loop = this.code_loop
+		object.code = this.code
+		object.mode = this.mode
 
 		if (this.name !== "") {
 			object.name = this.name
@@ -193,3 +195,7 @@ class Script extends THREE.Object3D {
 		}
 	}
 }
+
+// Script modes
+Script.INIT = 0
+Script.LOOP = 1

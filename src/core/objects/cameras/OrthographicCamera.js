@@ -8,12 +8,11 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
-		
 	}
 
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
+	addComponent(compo) {
+		if (compo instanceof Component) {
+			this.components.push(compo)
 		}
 	}
 

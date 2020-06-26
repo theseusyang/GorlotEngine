@@ -11,8 +11,7 @@ function ElementNode() {
 }
 ElementNode.title = "Element"
 ElementNode.prototype.onExecute = function() {
-	// TODO: Set and get
-
+	
 	var o, p, r, s
 
 	o = this.getInputData(0)

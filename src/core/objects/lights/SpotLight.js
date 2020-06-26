@@ -18,19 +18,7 @@ class SpotLight extends THREE.SpotLight {
 			this.components.push(component)
 		}
 	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
+	
 	initialize() {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].initialize !== undefined) {
