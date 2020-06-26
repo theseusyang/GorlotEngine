@@ -58,7 +58,7 @@ class Scene extends THREE.Scene {
 		var data = THREE.Scene.prototype.toJSON.call(this, meta)
 
 		if (this.initial_camera !== null) {
-			data.initial_camera = this.initial_camera
+			data.object.initial_camera = this.initial_camera
 		}
 
 		return data

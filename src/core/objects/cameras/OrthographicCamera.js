@@ -86,6 +86,8 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 		data.object.aspect = this.aspect
 		data.object.mode = this.mode
 
+		data.object.components = this.components
+
 		return data
 	}
 }

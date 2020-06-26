@@ -34,8 +34,21 @@ class CameraComponent extends Component {
 				}
 			]
 
+			EditorUI.form.addSlider("Turn", Editor.selected_object.rotation.z, {min: -3.14, max: 3.14, step: 1.7})
 			EditorUI.form.addList("Mode", modeStr, {height: 55, /*TODO: Set selected selected: "Resize Horizontal"*/})
 		}
+
+		var scene = ObjectUtils.getScene(Editor.selected_object)
+		var amiInitialcamera = scene.initial_camera === Editor.selected_object.uuid
+
+		EditorUI.form.addCheckbox("Default Camera", amiInitialcamera, {callback: () => {
+			if (amiInitialcamera) {
+				scene.initial_camera = null
+			} else {
+				scene.initial_camera = Editor.selected_object.uuid
+			}
+			EditorUI.updateInspector()
+		}})
 	}
 
 	updateInfo(name, value, widget) {
@@ -52,6 +65,8 @@ class CameraComponent extends Component {
 			} else if (value === "Resize Vertical") {
 				Editor.selected_object.mode = 1 // OrthographicCamera.HORIZONTAL
 			}
+		} else if (name === "Turn") {
+			Editor.selected_object.rotation.z = value
 		}
 	}
 }
