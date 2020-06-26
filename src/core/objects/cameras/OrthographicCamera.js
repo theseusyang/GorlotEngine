@@ -1,13 +1,24 @@
 class OrthographicCamera extends THREE.OrthographicCamera {
-	constructor(left, right, top, bottom, near, far) {
-		super(left, right, top, bottom, near, far)
+	constructor(size, aspect, mode, near, far) {
+		super(-1, 1, 1, -1, near, far)
 
 		this.name = "orthographic_camera"
+
+		this.size = size
+		this.aspect = aspect
+		this.mode = OrthographicCamera.FIXED_VERTICAL
+
+		if (mode !== undefined) {
+			this.mode = mode
+		}
 
 		this.components = []
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new CameraComponent())
+
+		this.updateProjectionMatrix()
 	}
 
 	addComponent(compo) {
@@ -38,6 +49,44 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 				this.children[i].stop()
 			}
 		}
+	}
+
+	updateProjectionMatrix() {
+		// Update left right, top and bottom values from aspect and size
+		if (this.mode === OrthographicCamera.FIXED_VERTICAL) {
+			this.top = this.size / 2
+			this.bottom = - this.top
+
+			this.right = this.top * this.aspect
+			this.left = -this.right
+		} else if (this.mode === OrthographicCamera.FIXED_HORITZONTAL) {
+			this.right = this.size / 2
+			this.left = -this.right
+
+			this.top = this.right * this.aspect
+			this.bottom = -this.right
+		}
+
+		THREE.OrthographicCamera.prototype.updateProjectionMatrix.call(this)
+	}
+
+	toJSON(meta) {
+		// Create JSON for object
+		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
+
+		data.object.zoom = this.zoom
+		data.object.left = this.left
+		data.object.right = this.right
+		data.object.top = this.top
+		data.object.bottom = this.bottom
+		data.object.near = this.near
+		data.object.far = this.far
+
+		data.object.size = this.size
+		data.object.aspect = this.aspect
+		data.object.mode = this.mode
+
+		return data
 	}
 }
 

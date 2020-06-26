@@ -722,6 +722,7 @@ Editor.setState = function(state) {
 
 		// Initialize scene
 		Editor.program_running.scene.initialize()
+		Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height)
 	}
 	Editor.state = state
 }

@@ -181,7 +181,7 @@ class AddMenuWindow {
 			var obj = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 1000000)
 			Editor.addToActualScene(obj)
 		} else if (o === "Orthographic Camera") {
-			var obj = new OrthographicCamera(5, -5, 5, -5, 1, 1000000)
+			var obj = new OrthographicCamera(3, 2, undefined, 1, 1000000)
 			Editor.addToActualScene(obj)
 		} else if (o === "Script") {
 			var obj = new Script()

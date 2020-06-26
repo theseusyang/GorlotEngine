@@ -45,13 +45,8 @@ class Program extends THREE.Object3D {
 		// Screen resize
 
 		if (this.scene !== null) {
-			if (this.scene.camera instanceof THREE.OrthographicCamera) {
-				this.scene.camera.aspect = Editor.canvas.width / Editor.canvas.height
-				this.scene.camera.updateProjectionMatrix()
-			} else {
-				this.scene.camera.aspect = Editor.canvas.width / Editor.canvas.height
-				this.scene.camera.updateProjectionMatrix()
-			}
+			this.scene.camera.aspect = Editor.canvas.width/Editor.canvas.height
+			this.scene.camera.updateProjectionMatrix()
 		}
 	}
 
