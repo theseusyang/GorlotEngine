@@ -34,10 +34,14 @@ class Program extends THREE.Object3D {
 		}
 
 		// Initialization variables
-		this.initial_scene_uuid = null
+		this.initial_scene = null
 	
 		//Runtime variables
 		this.scene = null;
+	}
+
+	setInitialScene(scene) {
+		this.initial_scene = scene.uuid
 	}
 
 	addDefaultScene() {
@@ -82,17 +86,15 @@ class Program extends THREE.Object3D {
 	}
 
 	remove(scene) {
-		if(scene instanceof Scene) {
-			var index = this.children.indexOf(scene)
-			if (index > -1) {
-				this.children.splice(index, 1)
-				scene.parent = null
-			}
+		var index = this.children.indexOf(scene)
+		if (index > -1) {
+			this.children.splice(index, 1)
+			scene.parent = null
+		}
 
-			// If no scene on program, set actual scene to null
-			if (this.children.length === 0) {
-				this.scene = null
-			}
+		// If no scene on program, set actual scene to null
+		if (this.children.length === 0) {
+			this.scene = null
 		}
 	}
 
@@ -104,6 +106,7 @@ class Program extends THREE.Object3D {
 			// If first scene, set as actual scene
 			if (this.children.length === 1) {
 				this.scene = this.children[0]
+				this.setInitialScene(this.scene)
 			}
 		}
 	}
@@ -116,106 +119,17 @@ class Program extends THREE.Object3D {
 	}
 
 	toJSON(meta) {
-		var isRootObject = (meta === undefined)
-		var output = {}
+		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
-		// If root object initialize base structure
-		if (isRootObject) {
-			meta = {
-				geometries: {},
-				materials: {},
-				textures: {},
-				images: {}
-			}
+		data.description = this.description
+		data.author = this.author
+		data.version = this.version
+		data.vr = this.vr
 
-			output = {
-				version: 4.4,
-				type: 'Object',
-				generator: 'Object3D.toJSON'
-			}
+		if (this.initial_scene !== null) {
+			data.initial_scene = this.initial_scene
 		}
 
-		// Program serialization
-		var object = {}
-		object.uuid = this.uuid
-		object.type = this.type
-		object.description = this.description
-		object.author = this.author
-		object.version = this.version
-		object.vr = this.vr
-
-		if (this.name !== '') {
-			object.name = this.name
-		}
-		if (JSON.stringify(this.userData) !== '{}') {
-			object.userData = this.userData
-		}
-
-		object.castShadow = (this.castShadow === true)
-		object.receiveShadow = (this.receiveShadow === true)
-		object.visible = !(this.visible === false)
-
-		object.matrix = this.matrix.toArray()
-		object.components = this.components
-
-		if (this.geometry !== undefined) {
-			if (meta.geometries[this.geometry.uuid] === undefined) {
-				meta.geometries[this.geometry.uuid] = this.geometry.toJSON(meta)
-			}
-
-			object.geometry = this.geometry.uuid
-		}
-
-		if (this.material !== undefined) {
-			if (meta.materials[this.material.uuid] === undefined) {
-				meta.materials[this.material.uuid] = this.material.toJSON(meta)
-			}
-
-			object.material = this.material.uuid
-		}
-
-		// Collect children data
-		if (this.children.length > 0) {
-			object.children = []
-
-			for(var i = 0; i < this.children.length; i++) {
-				object.children.push(this.children[i].toJSON(meta).object)
-			}
-		}
-
-		if (isRootObject) {
-			var geometries = extractFromCache(meta.geometries)
-			var materials = extractFromCache(meta.materials)
-			var textures = extractFromCache(meta.textures)
-			var images = extractFromCache(meta.images)
-
-			if (geometries.length > 0) {
-				output.geometries = geometries
-			}
-			if (materials.length > 0) {
-				output.materials = materials
-			}
-			if (textures.length > 0) {
-				output.textures = textures
-			}
-			if (images.length > 0) {
-				output.images = images
-			}
-		}
-
-		output.object = object
-		return output
-
-		// Extract data from the cache hash, remove metadata on each item and return as array
-		function extractFromCache(cache) {
-			var values = []
-			for(var key in cache) {
-				var data = cache[key]
-				delete data.metadata
-				values.push(data)
-			}
-			
-			return values
-		}
+		return data
 	}
 }

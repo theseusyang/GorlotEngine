@@ -15,13 +15,14 @@ class Scene extends THREE.Scene {
 		this.world.solver.iterations = 10;
 
 		// Initialization variables
-		this.initial_camera_uuid = null
+		this.initial_camera = null
 
 		// Runtime variables
 		this.camera = null
 	}
 
 	initialize() {
+		// Initialize children
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].initialize !== undefined) {
 				this.children[i].initialize()
@@ -46,5 +47,16 @@ class Scene extends THREE.Scene {
 				this.children[i].stop()
 			}
 		}
+	}
+
+	toJSON(meta) {
+		// Create JSON for object
+		var data = THREE.Scene.prototype.toJSON.call(this, meta)
+
+		if (this.initial_camera !== null) {
+			data.initial_camera = this.initial_camera
+		}
+
+		return data
 	}
 }

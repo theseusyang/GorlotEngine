@@ -4,6 +4,8 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 		this.name = "orthographic_camera"
 
+		this.rotationAutoUpdate = true
+
 		this.components = []
 
 		this.defaultComponents = []

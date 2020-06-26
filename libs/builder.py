@@ -22,6 +22,8 @@ libraries.append("three/loaders/collada/Animation.js")
 libraries.append("three/loaders/collada/AnimationHandler.js")
 libraries.append("three/loaders/collada/KeyFrameAnimation.js")
 
+libraries.append("three/cameras/CinematicCamera.js")
+
 libraries.append("threex/videotexture.js")
 libraries.append("threex/webcamtexture.js")
 

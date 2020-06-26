@@ -26,6 +26,7 @@ class CameraComponent extends Component {
 	updateInfo(name, value, widget) {
 		if (name === "FOV") {
 			Editor.selected_object.fov = value
+			Editor.selected_object.updateProjectionMatrix()
 		}
 	}
 }
