@@ -29,10 +29,9 @@ class ObjectInspector {
 
 	    if(this.object.addComponent !== undefined) {
 	    	this.addComponentButton()
+	    	EditorUI.form.addSeparator()
 	    }
 
-
-	    EditorUI.form.addSeparator()
 	}
 
 	addComponentButton() {

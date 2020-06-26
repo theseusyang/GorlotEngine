@@ -39,6 +39,11 @@ class Program extends THREE.Object3D {
 	
 		//Runtime variables
 		this.scene = null;
+
+		this.components = []
+		
+		this.defaultComponents = []
+		this.defaultComponents.push(new ProgramComponent())
 	}
 
 	resize(x, y) {
@@ -53,6 +58,7 @@ class Program extends THREE.Object3D {
 	initialize() {
 		// Select starting scene and initialize that scene
 		if (this.initial_scene !== null) {
+			console.log("not null uwu")
 			for(var i = 0; i < this.children.length; i++) {
 				if (this.children[i].uuid === this.initial_scene) {
 					this.scene = this.children[i]
@@ -131,7 +137,6 @@ class Program extends THREE.Object3D {
 			// If first scene, set as actual scene
 			if (this.children.length === 1) {
 				this.scene = this.children[0]
-				this.setInitialScene(this.scene)
 			}
 		}
 	}
@@ -146,13 +151,15 @@ class Program extends THREE.Object3D {
 	toJSON(meta) {
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
-		data.description = this.description
-		data.author = this.author
-		data.version = this.version
-		data.vr = this.vr
+		data.object.description = this.description
+		data.object.author = this.author
+		data.object.version = this.version
+		data.object.vr = this.vr
+
+		data.object.components = this.components
 
 		if (this.initial_scene !== null) {
-			data.initial_scene = this.initial_scene
+			data.object.initial_scene = this.initial_scene
 		}
 
 		return data

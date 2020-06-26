@@ -19,6 +19,12 @@ class Scene extends THREE.Scene {
 
 		// Runtime variables
 		this.camera = null
+
+		// Components
+		this.components = []
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new SceneComponent())
 	}
 
 	initialize() {
@@ -50,6 +56,12 @@ class Scene extends THREE.Scene {
 			if (this.children[i].stop !== undefined) {
 				this.children[i].stop()
 			}
+		}
+	}
+
+	addComponent(compo) {
+		if (compo instanceof Component) {
+			this.component.push(compo)
 		}
 	}
 

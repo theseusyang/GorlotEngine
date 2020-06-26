@@ -90,8 +90,20 @@ EditorUI.Initialize = function() {
         }, {title: "Exit"})
     }})
 
-    // TODO: Tools in a sidebar to make its interface easier to use
-        
+    // ----- File/Export -----
+    EditorUI.topmenu.add("File/Export/Web", {callback: () => {
+        // TODO: Export to web
+    }})
+    EditorUI.topmenu.add("File/Export/Linux", {callback: () => {
+        // TODO: Export to Linux
+    }})
+    EditorUI.topmenu.add("File/Export/Windows", {callback: () => {
+        // TODO: Export to Windows
+    }})
+    EditorUI.topmenu.add("File/Export/Android", {callback: () => {
+        // TODO: Export to Android
+    }})
+
     // ----- TOOLS -----
 
     EditorUI.topmenu.add("Edit/Tools/Select", {callback: () => {
@@ -324,6 +336,32 @@ EditorUI.Initialize = function() {
         }, "image/*")
     }})
 
+    // ----- CREATE -----
+
+    EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {
+        // TODO: Create Standard Material
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create/Material/Sprite Material", {callback: () => {
+        // TODO: Create Sprite Material
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create/Material/Phong Material", {callback: () => {
+        // TODO: Create Phong Material
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create/Material/Shader Material", {callback: () => {
+        // TODO: Create Shader Material
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create/Material/Lambert Material", {callback: () => {
+        // TODO: Create Lambert Material
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create/Script", {callback: () => {
+        // TODO: The Script won't be an scene element, but an asset
+    }})
+    
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
     // ----- TREE -----
@@ -343,13 +381,8 @@ EditorUI.Initialize = function() {
 
     // When selecting an object in the hierarchy, that object will be selected
     LiteGUI.bind(EditorUI.hierarchy.root, "item_selected", function(e) {
-        if(e.detail.data.attachedTo != Editor.program) {
-            Editor.selectObject(e.detail.data.attachedTo)
-            EditorUI.updateInspector(e.detail.data.attachedTo)
-        } else {
-            // TODO: A program component in which you can modify its info
-            // Or open the project settings, and you can do so in there
-        }
+        Editor.selectObject(e.detail.data.attachedTo)
+        EditorUI.updateInspector(e.detail.data.attachedTo)
     })
 
     // When an item is moved, this will check if we should set a parent

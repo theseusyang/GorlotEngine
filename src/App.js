@@ -93,7 +93,9 @@ App.readFile = function(fname) {
 // Write File
 App.writeFile = function(fname, data) {
 	if (App.fs !== undefined) {
-		App.fs.writeFileSync(fname, data)
+		App.fs.writeFile(fname, data, (err) => {
+			if (err) {throw err}
+		})
 	}
 }
 

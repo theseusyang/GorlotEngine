@@ -63,8 +63,8 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 			this.right = this.size / 2
 			this.left = -this.right
 
-			this.top = this.right * this.aspect
-			this.bottom = -this.right
+			this.top = this.right / this.aspect
+			this.bottom = -this.top
 		}
 
 		THREE.OrthographicCamera.prototype.updateProjectionMatrix.call(this)

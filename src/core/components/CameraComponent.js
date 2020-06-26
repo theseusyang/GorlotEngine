@@ -22,6 +22,7 @@ class CameraComponent extends Component {
 
 		if (this.objectType === "Perspective") {
 			EditorUI.form.addSlider("FOV", Editor.selected_object.fov, {min: 1, max: 100, step: 1})
+			// TODO: A view from here and a set from view button
 		} else if (this.objectType === "Orthographic") {
 			EditorUI.form.addSlider("Size", Editor.selected_object.size, {min: 1, max: 10, step: 0.5})
 

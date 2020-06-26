@@ -6,21 +6,21 @@
 	},
 	"geometries": [
 		{
-			"uuid": "D2E59996-7BEB-46DF-BD5C-37E0BCEFD3F0",
+			"uuid": "AC3D5F28-2FF4-44E5-8FCD-B86F04E72ED7",
 			"type": "SphereGeometry",
 			"radius": 4000,
 			"widthSegments": 32,
 			"heightSegments": 15
 		},
 		{
-			"uuid": "BCA8C61E-9AB0-4BBB-96C3-7461B32BB2A6",
+			"uuid": "778D0F5B-DB28-4DEC-BDDB-C36A34486B68",
 			"type": "BoxGeometry",
 			"width": 2,
 			"height": 2,
 			"depth": 2
 		},
 		{
-			"uuid": "A76372CC-E8B8-400E-BDDA-ACCD0D2010C8",
+			"uuid": "FFF34B85-1661-403A-8E0E-DB09287A8081",
 			"type": "BoxGeometry",
 			"width": 20,
 			"height": 1,
@@ -28,7 +28,7 @@
 		}],
 	"materials": [
 		{
-			"uuid": "430E7BCC-8BC8-495E-81B0-996BD313CE45",
+			"uuid": "7EAE9FDA-FEBC-4CF8-8C28-E49C25528574",
 			"type": "ShaderMaterial",
 			"side": 1,
 			"uniforms": {
@@ -61,7 +61,7 @@
 			"fragmentShader": "uniform vec3 top_color;\nuniform vec3 bottom_color;\nuniform float offset;\nuniform float exponent;\nvarying vec3 vWorldPosition;\n\nvoid main() {\n\tfloat h = normalize(vWorldPosition + offset).y;\n\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n}"
 		},
 		{
-			"uuid": "804B42FA-1215-4D01-A976-71CDE296F624",
+			"uuid": "EA2D9BF5-E583-40DE-91AA-CBDA17AAEEDF",
 			"type": "MeshPhongMaterial",
 			"color": 16777215,
 			"emissive": 0,
@@ -69,7 +69,7 @@
 			"shininess": 30
 		},
 		{
-			"uuid": "34DBDF9E-075B-462E-BC1E-97BFA5603915",
+			"uuid": "CB765FDC-FEAF-4A55-9E10-0605A68A0AF5",
 			"type": "MeshPhongMaterial",
 			"color": 16777215,
 			"emissive": 0,
@@ -77,19 +77,19 @@
 			"shininess": 30
 		}],
 	"object": {
-		"uuid": "1FB2E5F2-026E-4A62-BCA4-351BACED5672",
+		"uuid": "A8584860-C0D1-4330-8FB0-B9F46C3973CD",
 		"type": "Program",
 		"name": "program",
 		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 		"children": [
 			{
-				"uuid": "C4B09A4E-4DBB-4890-9961-F4F3062E9AF4",
+				"uuid": "6F011D6D-1102-4FB0-B6BE-B279FE5AE280",
 				"type": "Scene",
 				"name": "scene",
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 				"children": [
 					{
-						"uuid": "6DE408F0-F8AD-4434-A25C-FF35A7F770AD",
+						"uuid": "963EB4D1-7378-49CD-AC89-D47B16FE98C8",
 						"type": "Sky",
 						"auto_update": false,
 						"day_time": 20,
@@ -101,50 +101,34 @@
 						"receiveShadow": false,
 						"visible": true,
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"geometry": "D2E59996-7BEB-46DF-BD5C-37E0BCEFD3F0",
-						"material": "430E7BCC-8BC8-495E-81B0-996BD313CE45"
+						"geometry": "AC3D5F28-2FF4-44E5-8FCD-B86F04E72ED7",
+						"material": "7EAE9FDA-FEBC-4CF8-8C28-E49C25528574"
 					},
 					{
-						"uuid": "A94F6FD0-820E-470D-9B38-A2E97A355D7A",
+						"uuid": "F791FBC8-A0CB-4763-89BD-16A49607CF4D",
 						"type": "Mesh",
 						"name": "box",
 						"castShadow": true,
 						"receiveShadow": true,
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"geometry": "BCA8C61E-9AB0-4BBB-96C3-7461B32BB2A6",
-						"material": "804B42FA-1215-4D01-A976-71CDE296F624"
+						"geometry": "778D0F5B-DB28-4DEC-BDDB-C36A34486B68",
+						"material": "EA2D9BF5-E583-40DE-91AA-CBDA17AAEEDF"
 					},
 					{
-						"uuid": "749A8ABB-8AFB-4AF5-AF8F-BD13B1ACD128",
+						"uuid": "FF6A355A-703F-4263-AED4-0A338E9FEB54",
 						"type": "Mesh",
 						"name": "ground",
 						"castShadow": true,
 						"receiveShadow": true,
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.5,0,1],
-						"geometry": "A76372CC-E8B8-400E-BDDA-ACCD0D2010C8",
-						"material": "34DBDF9E-075B-462E-BC1E-97BFA5603915"
-					},
-					{
-						"uuid": "383C080F-1B64-4222-961B-1E1855C4D716",
-						"type": "OrthographicCamera",
-						"name": "orthographic_camera_1",
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"zoom": 1,
-						"left": -3,
-						"right": 3,
-						"top": 1.5,
-						"bottom": -1.5,
-						"near": 1,
-						"far": 1000000,
-						"size": 3,
-						"aspect": 2,
-						"mode": 1
+						"geometry": "FFF34B85-1661-403A-8E0E-DB09287A8081",
+						"material": "CB765FDC-FEAF-4A55-9E10-0605A68A0AF5"
 					}]
-			}]
-	},
-	"description": "",
-	"author": "",
-	"version": "0",
-	"vr": false,
-	"initial_scene": "C4B09A4E-4DBB-4890-9961-F4F3062E9AF4"
+			}],
+		"description": "Nevermind this, It's simply me testing this component <3",
+		"author": "Sarah",
+		"version": "0",
+		"vr": false,
+		"components": []
+	}
 }
