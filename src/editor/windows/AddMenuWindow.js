@@ -158,10 +158,6 @@ class AddMenuWindow {
         	})
 		} else if (o === "Point Light") {
 			var obj = new PointLight()
-        	obj.castShadow = true
-        	obj.shadow.camera.near = 1
-        	obj.shadow.camera.far = 1
-        	obj.shadow.bias = 0.01
         	Editor.addToActualScene(obj)
 		} else if (o === "Ambient Light") {
 			var obj = new AmbientLight()

@@ -400,6 +400,11 @@ Editor.update = function()
 				Editor.camera.position.x += Mouse.pos_diff.x * speed * angle_sin;
 			}
 			
+			// Move Camera on Y
+			else if (Mouse.buttonPressed(Mouse.MIDDLE)) {
+				Editor.camera.position.y += Mouse.pos_diff.y * 0.1
+			}
+
 			//Move in camera direction using mouse scroll
 			if(Mouse.wheel != 0)
 			{

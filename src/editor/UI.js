@@ -250,19 +250,24 @@ EditorUI.Initialize = function() {
             var file = event.srcElement.value
 
             try {
-                var loader = new ObjectLoader()
-                var obj = loader.parse(App.readFile(file))
+                var loader = new THREE.JSONLoader()
+                loader.load(file, function(geometry, materials) {
+                    for(var i = 0; i < materials.length; i++) {
+                        var m = materials[i]
+                        m.skinning = true
+                        m.morphTargets = true
+                    }
 
-                ObjectUtils.setShadowCasting(obj, true)
-                ObjectUtils.setShadowReceiving(obj, true)
+                    var obj = new AnimatedModel(geometry, new THREE.MultiMaterial(materials))
 
-                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
+                    Editor.addToActualScene(obj)
+                })
 
                 console.log("Object imported")
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
-        }, ".json")
+        }, ".json, .js")
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Objects/VRML", {callback: () => {
@@ -285,7 +290,7 @@ EditorUI.Initialize = function() {
         }, ".wrl, .vrml")
     }})
 
-    EditorUI.asset_explorer_menu.add("Import/Objects/FBX", {callback: () => {
+    /*EditorUI.asset_explorer_menu.add("Import/Objects/FBX", {callback: () => {
         App.chooseFile(function(event) {
             var file = event.srcElement.value
 
@@ -301,7 +306,7 @@ EditorUI.Initialize = function() {
             }
 
         }, ".fbx")
-    }})
+    }})*/
 
     EditorUI.asset_explorer_menu.add("Import/Resources/Texture", {callback: () => {
         App.chooseFile((event) => {

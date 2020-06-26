@@ -1,11 +1,6 @@
 //Object tools contains some object managing helpers
 function ObjectUtils(){}
 
-// Limit object size
-ObjectUtils.fitBox = function(x, y, z) {
-	// TODO: This
-}
-
 // Convert threejs type to internal types
 ObjectUtils.convertFromThreeType = function(obj) {
 	var data = obj.toJSON()

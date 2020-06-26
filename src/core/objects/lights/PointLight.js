@@ -5,8 +5,11 @@ class PointLight extends THREE.PointLight {
 		this.name = "point_light"
 
 		this.castShadow = true
-		this.shadow.camera.near = 0
-		this.shadow.camera.far = 500
+
+		this.shadow.camera.near = 0.1
+		this.shadow.camera.far = 5000
+		this.shadow.bias = 0.01
+		
 		this.shadow.mapSize.width = 1024
 		this.shadow.mapSize.height = 1024
 
