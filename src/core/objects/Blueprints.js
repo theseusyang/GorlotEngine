@@ -33,6 +33,9 @@ class Blueprints extends THREE.Object3D {
 	initialize() {
 		// TODO: Compile  (Using LGraph without LGraphcanvas)
 
+		var graph = new LGraph(this.init)
+		graph.start()
+
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].initialize != undefined) {
 				this.children[i].initialize()

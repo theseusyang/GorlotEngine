@@ -60,9 +60,124 @@
 						"name": "model",
 						"castShadow": true,
 						"receiveShadow": true,
-						"matrix": [0.002907434245571494,0.0030489086639136076,-0.04093712940812111,0,-0.04099895432591438,-0.001840597135014832,-0.0030489086639136076,0,-0.002056810073554516,0.04099895432591438,0.0029074344784021378,0,0,0,-0.6859999895095825,1],
+						"matrix": [0.002907434944063425,0.003048909129574895,-0.04093712940812111,0,-0.04099895432591438,-0.0018405963201075792,-0.0030489088967442513,0,-0.002056809840723872,0.04099895432591438,0.002907435642555356,0,0,0,-0.6859999895095825,1],
 						"geometry": "ABD2409B-4C3E-41D7-BE7D-F2A471EC8785",
 						"material": "84FC9A8E-7433-4767-A998-42FCF16CD8D5"
+					},
+					{
+						"uuid": "F0103DA4-9E0B-4EC4-B44B-D16948D21C6D",
+						"type": "Blueprints",
+						"init": {
+							"last_node_id": 3,
+							"last_link_id": 2,
+							"nodes": [
+								{
+									"id": 1,
+									"type": "Base/String",
+									"pos": [27,122],
+									"size": [180,30],
+									"flags": {},
+									"order": 0,
+									"mode": 0,
+									"outputs": [
+										{
+											"name": "",
+											"type": "Text",
+											"links": [1]
+										}],
+									"properties": {
+										"value": "model"
+									}
+								},
+								{
+									"id": 3,
+									"type": "Objects/Element",
+									"pos": [528,51],
+									"size": {
+										"0": 144.39999389648438,
+										"1": 86
+									},
+									"flags": {},
+									"order": 2,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Object",
+											"type": "Object3D",
+											"link": 2
+										},
+										{
+											"name": "Position",
+											"type": "Vector",
+											"link": null
+										},
+										{
+											"name": "Rotation",
+											"type": "Vector",
+											"link": null
+										},
+										{
+											"name": "Scale",
+											"type": "Vector",
+											"link": null
+										}],
+									"outputs": [
+										{
+											"name": "Position",
+											"type": "Vector",
+											"links": null
+										},
+										{
+											"name": "Rotation",
+											"type": "Vector",
+											"links": null
+										},
+										{
+											"name": "Scale",
+											"type": "Vector",
+											"links": null
+										}],
+									"properties": {}
+								},
+								{
+									"id": 2,
+									"type": "Objects/GetObjectByName",
+									"pos": [266,74],
+									"size": {
+										"0": 140,
+										"1": 26
+									},
+									"flags": {},
+									"order": 1,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Name",
+											"type": "Text",
+											"link": 1
+										}],
+									"outputs": [
+										{
+											"name": "Object",
+											"type": "Object3D",
+											"links": [2]
+										}],
+									"properties": {}
+								}],
+							"links": [[1,1,0,2,0,
+									"Text"],[2,2,0,3,0,
+									"Object3D"]],
+							"groups": [],
+							"config": {},
+							"version": 0.4
+						},
+						"loop": {},
+						"name": "blueprints_3",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"components": []
 					}]
 			}]
 	}

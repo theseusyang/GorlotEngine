@@ -627,170 +627,70 @@
 
     LiteGraph.registerNodeType("Base/progress", WidgetProgress);
 
-    function WidgetText() {
-        this.addInputs("", 0);
-        this.properties = {
-            value: "...",
-            font: "Arial",
-            fontsize: 18,
-            color: "#AAA",
-            align: "left",
-            glowSize: 0,
-            decimals: 1
-        };
+    //Constant
+    function ConstantNumber() {
+        this.addOutput("value", "number");
+        this.addProperty("value", 1.0);
+        this.widget = this.addWidget("number","value",1,"value");
+        this.widgets_up = true;
+        this.size = [180, 30];
     }
 
-    WidgetText.title = "Text";
-    WidgetText.desc = "Shows the input value";
-    WidgetText.widgets = [
-        { name: "resize", text: "Resize box", type: "button" },
-        { name: "led_text", text: "LED", type: "minibutton" },
-        { name: "normal_text", text: "Normal", type: "minibutton" }
-    ];
+    ConstantNumber.title = "Float";
+    ConstantNumber.desc = "Constant number";
 
-    WidgetText.prototype.onDrawForeground = function(ctx) {
-        //ctx.fillStyle="#000";
-        //ctx.fillRect(0,0,100,60);
-        ctx.fillStyle = this.properties["color"];
-        var v = this.properties["value"];
-
-        if (this.properties["glowSize"]) {
-            ctx.shadowColor = this.properties.color;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-            ctx.shadowBlur = this.properties["glowSize"];
-        } else {
-            ctx.shadowColor = "transparent";
-        }
-
-        var fontsize = this.properties["fontsize"];
-
-        ctx.textAlign = this.properties["align"];
-        ctx.font = fontsize.toString() + "px " + this.properties["font"];
-        this.str =
-            typeof v == "number" ? v.toFixed(this.properties["decimals"]) : v;
-
-        if (typeof this.str == "string") {
-            var lines = this.str.split("\\n");
-            for (var i in lines) {
-                ctx.fillText(
-                    lines[i],
-                    this.properties["align"] == "left" ? 15 : this.size[0] - 15,
-                    fontsize * -0.15 + fontsize * (parseInt(i) + 1)
-                );
-            }
-        }
-
-        ctx.shadowColor = "transparent";
-        this.last_ctx = ctx;
-        ctx.textAlign = "left";
+    ConstantNumber.prototype.onExecute = function() {
+        this.setOutputData(0, parseFloat(this.properties["value"]));
     };
 
-    WidgetText.prototype.onExecute = function() {
-        var v = this.getInputData(0);
-        if (v != null) {
-            this.properties["value"] = v;
-        }
-        //this.setDirtyCanvas(true);
-    };
-
-    WidgetText.prototype.resize = function() {
-        if (!this.last_ctx) {
-            return;
-        }
-
-        var lines = this.str.split("\\n");
-        this.last_ctx.font =
-            this.properties["fontsize"] + "px " + this.properties["font"];
-        var max = 0;
-        for (var i in lines) {
-            var w = this.last_ctx.measureText(lines[i]).width;
-            if (max < w) {
-                max = w;
-            }
-        }
-        this.size[0] = max + 20;
-        this.size[1] = 4 + lines.length * this.properties["fontsize"];
-
-        this.setDirtyCanvas(true);
-    };
-
-    WidgetText.prototype.onPropertyChanged = function(name, value) {
-        this.properties[name] = value;
-        this.str = typeof value == "number" ? value.toFixed(3) : value;
-        //this.resize();
-        return true;
-    };
-
-    LiteGraph.registerNodeType("Base/text", WidgetText);
-
-    function WidgetPanel() {
-        this.size = [200, 100];
-        this.properties = {
-            borderColor: "#ffffff",
-            bgcolorTop: "#f0f0f0",
-            bgcolorBottom: "#e0e0e0",
-            shadowSize: 2,
-            borderRadius: 3
-        };
-    }
-
-    WidgetPanel.title = "Panel";
-    WidgetPanel.desc = "Non interactive panel";
-    WidgetPanel.widgets = [{ name: "update", text: "Update", type: "button" }];
-
-    WidgetPanel.prototype.createGradient = function(ctx) {
-        if (
-            this.properties["bgcolorTop"] == "" ||
-            this.properties["bgcolorBottom"] == ""
-        ) {
-            this.lineargradient = 0;
-            return;
-        }
-
-        this.lineargradient = ctx.createLinearGradient(0, 0, 0, this.size[1]);
-        this.lineargradient.addColorStop(0, this.properties["bgcolorTop"]);
-        this.lineargradient.addColorStop(1, this.properties["bgcolorBottom"]);
-    };
-
-    WidgetPanel.prototype.onDrawForeground = function(ctx) {
+    ConstantNumber.prototype.getTitle = function() {
         if (this.flags.collapsed) {
-            return;
+            return this.properties.value;
         }
-
-        if (this.lineargradient == null) {
-            this.createGradient(ctx);
-        }
-
-        if (!this.lineargradient) {
-            return;
-        }
-
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = this.properties["borderColor"];
-        //ctx.fillStyle = "#ebebeb";
-        ctx.fillStyle = this.lineargradient;
-
-        if (this.properties["shadowSize"]) {
-            ctx.shadowColor = "#000";
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-            ctx.shadowBlur = this.properties["shadowSize"];
-        } else {
-            ctx.shadowColor = "transparent";
-        }
-
-        ctx.roundRect(
-            0,
-            0,
-            this.size[0] - 1,
-            this.size[1] - 1,
-            this.properties["shadowSize"]
-        );
-        ctx.fill();
-        ctx.shadowColor = "transparent";
-        ctx.stroke();
+        return this.title;
     };
 
-    LiteGraph.registerNodeType("Base/panel", WidgetPanel);
+    ConstantNumber.prototype.setValue = function(v)
+    {
+        this.setProperty("value",v);
+    }
+
+    ConstantNumber.prototype.onDrawBackground = function(ctx) {
+        //show the current value
+        this.outputs[0].label = this.properties["value"].toFixed(3);
+    };
+
+    LiteGraph.registerNodeType("Base/Float", ConstantNumber);
+
+    function ConstantString() {
+        this.addOutput("", "Text");
+        this.addProperty("value", "");
+        this.widget = this.addWidget("text","value","","value");  //link to property value
+        this.widgets_up = true;
+        this.size = [180, 30];
+    }
+
+    ConstantString.title = "String";
+    ConstantString.desc = "Constant string";
+
+    ConstantString.prototype.getTitle = ConstantNumber.prototype.getTitle;
+
+    ConstantString.prototype.onExecute = function() {
+        this.setOutputData(0, this.properties["value"]);
+    };
+
+    ConstantString.prototype.setValue = ConstantNumber.prototype.setValue;
+
+    ConstantString.prototype.onDropFile = function(file)
+    {
+        var that = this;
+        var reader = new FileReader();
+        reader.onload = function(e)
+        {
+            that.setProperty("value",e.target.result);
+        }
+        reader.readAsText(file);
+    }
+
+    LiteGraph.registerNodeType("Base/String", ConstantString);
 })(this);

@@ -107,93 +107,103 @@ class AddMenuWindow {
 		if (o === "Cube") {
 			var geometry = new THREE.BoxGeometry(1, 1, 1)
 			var material = new THREE.MeshPhongMaterial()
-			var model = new Model3D(geometry, material)
-			model.receiveShadow = true
-			model.castShadow = true
-			model.name = "cube"
-			Editor.addToActualScene(model)
+			var obj = new Model3D(geometry, material)
+			obj.receiveShadow = true
+			obj.castShadow = true
+			obj.name = "cube"
+			Editor.addToActualScene(obj)
 		} else if (o === "Cylinder") {
 			var geometry = new THREE.CylinderGeometry(1, 1, 2, 32)
         	var material = new THREE.MeshPhongMaterial()
-        	var model = new Model3D(geometry, material)
-        	model.receiveShadow = true
-        	model.castShadow = true
-        	model.name = "Cylinder"
-        	Editor.addToActualScene(model)
+        	var obj = new Model3D(geometry, material)
+        	obj.receiveShadow = true
+        	obj.castShadow = true
+        	obj.name = "Cylinder"
+        	Editor.addToActualScene(obj)
 		} else if (o === "Sphere") {
 			var geometry = new THREE.SphereGeometry(0.6, 16, 16)
         	var material = new THREE.MeshPhongMaterial()
-        	var model = new Model3D(geometry, material)
-        	model.receiveShadow = true
-        	model.castShadow = true
-        	model.name = "Sphere"
-        	Editor.addToActualScene(model)
+        	var obj = new Model3D(geometry, material)
+        	obj.receiveShadow = true
+        	obj.castShadow = true
+        	obj.name = "Sphere"
+        	Editor.addToActualScene(obj)
 		} else if (o === "Torus") {
 			var geometry = new THREE.TorusGeometry(1, 0.5, 16, 100)
         	var material = new THREE.MeshPhongMaterial()
-        	var model = new Model3D(geometry, material)
-        	model.receiveShadow = true
-        	model.castShadow = true
-        	model.name = "Torus"
-        	Editor.addToActualScene(model)
+        	var obj = new Model3D(geometry, material)
+        	obj.receiveShadow = true
+        	obj.castShadow = true
+        	obj.name = "Torus"
+        	Editor.addToActualScene(obj)
 		} else if (o === "Pyramid") {
 			var geometry = new THREE.CylinderGeometry(0, 1, 2, 32)
         	var material = new THREE.MeshPhongMaterial()
-        	var model = new Model3D(geometry, model)
-        	model.receiveShadow = true
-        	model.castShadow = true
-        	model.name = "Cone"
-        	Editor.addToActualScene(model)
+        	var obj = new Model3D(geometry, model)
+        	obj.receiveShadow = true
+        	obj.castShadow = true
+        	obj.name = "Cone"
+        	Editor.addToActualScene(obj)
 		} else if (o === "Empty") {
-			Editor.addToActualScene(new Empty())
+			var obj = new Empty()
+			Editor.addToActualScene(obj)
 		} else if (o === "Text") {
+			var obj = null
 			var loader = new THREE.FontLoader().load("data/fonts/helvetiker_bold.typeface.js", function(font) {
         	    var material = new THREE.MeshPhongMaterial()
-        	    var model = new Text3D("text", font, material)
-        	    model.receiveShadow = true
-        	    model.castShadow = true
-        	    Editor.addToActualScene(model)
+        	    var obj = new Text3D("text", font, material)
+        	    obj.receiveShadow = true
+        	    obj.castShadow = true
+        	    Editor.addToActualScene(obj)
         	})
 		} else if (o === "Point Light") {
-			var light = new PointLight()
-        	light.castShadow = true
-        	light.shadow.camera.near = 1
-        	light.shadow.camera.far = 1
-        	light.shadow.bias = 0.01
-        	Editor.addToActualScene(light)
+			var obj = new PointLight()
+        	obj.castShadow = true
+        	obj.shadow.camera.near = 1
+        	obj.shadow.camera.far = 1
+        	obj.shadow.bias = 0.01
+        	Editor.addToActualScene(obj)
 		} else if (o === "Ambient Light") {
-			var light = new AmbientLight()
-        	Editor.addToActualScene(light)
+			var obj = new AmbientLight()
+        	Editor.addToActualScene(obj)
 		} else if (o === "Spot Light") {
-			var light = new SpotLight()
-        	light.castShadow = true
-        	Editor.addToActualScene(light)
+			var obj = new SpotLight()
+        	obj.castShadow = true
+        	Editor.addToActualScene(obj)
 		} else if (o === "Directional Light") {
-			var light = new DirectionalLight()
-        	light.castShadow = true
-        	Editor.addToActualScene(light)
+			var obj = new DirectionalLight()
+        	obj.castShadow = true
+        	Editor.addToActualScene(obj)
 		} else if (o === "Hemisphere Light") {
-			var light = new HemisphereLight()
-        	light.castShadow = true
-        	Editor.addToActualScene(light)
+			var obj = new HemisphereLight()
+        	obj.castShadow = true
+        	Editor.addToActualScene(obj)
 		} else if (o === "Sky") {
-			var light = new Sky()
-       		Editor.addToActualScene(light)
+			var obj = new Sky()
+       		Editor.addToActualScene(obj)
 		} else if (o === "Perspective Camera") {
-			Editor.addToActualScene(new PerspectiveCamera())
+			var obj = new PerspectiveCamera()
+			Editor.addToActualScene(obj)
 		} else if (o === "Orthographic Camera") {
-			Editor.addToActualScene(new OrthographicCamera(3, 3, 3, 3, 3, 3))
+			var obj = new OrthographicCamera(3, 3, 3, 3, 3, 3)
+			Editor.addToActualScene(obj)
 		} else if (o === "Script") {
-			Editor.addToActualScene(new Script())
+			var obj = new Script()
+			Editor.addToActualScene(obj)
 		} else if (o === "Blueprints") {
-			Editor.addToActualScene(new Blueprints())
+			var obj = new Blueprints()
+			Editor.addToActualScene(obj)
 		} else if (o === "Sprite") {
 			var map = new THREE.TextureLoader().load("data/sample.png")
         	var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
-        	var sprite = new Sprite(material)
-        	Editor.addToActualScene(sprite)
+        	var obj = new Sprite(material)
+        	Editor.addToActualScene(obj)
 		} else if (o === "Particles") {
 			// TODO: This
+		}
+
+		if(obj !== undefined && obj !== null) {
+			Editor.selectObject(obj)
 		}
 
 	}

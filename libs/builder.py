@@ -88,7 +88,7 @@ source.append("../libs/litegraph/litegraph.js")
 source.append("core/blueprints/Nodes/Base.js")
 source.append("core/blueprints/Nodes/Math/Math.js")
 source.append("core/blueprints/Nodes/Math/Vector.js")
-source.append("core/blueprints/Nodes/Element.js")
+source.append("core/blueprints/Nodes/Objects.js")
 source.append("core/blueprints/Nodes/Scene.js")
 
 source.append("App.js")
