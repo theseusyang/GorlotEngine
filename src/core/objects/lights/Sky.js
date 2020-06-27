@@ -93,10 +93,10 @@ class Sky extends THREE.Mesh {
 	}
 
 	initialize() {
+		this.updateSky()
+
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].initialize !== undefined) {
-				this.children[i].initialize()
-			}
+			this.children[i].initialize()
 		}
 	}
 
@@ -118,17 +118,13 @@ class Sky extends THREE.Mesh {
 
 		// Update children
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].update) {
-				this.children[i].update
-			}
+			this.children[i].update()
 		}
 	}
 
 	stop() {
 		for(var i = 0; i < this.children.length; i++) {
-			if (this.children[i].stop !== undefined) {
-				this.children[i].stop()
-			}
+			this.children[i].stop()
 		}
 	}
 
