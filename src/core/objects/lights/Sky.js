@@ -10,8 +10,25 @@ class Sky extends THREE.Mesh {
 		this.hemisphere.name = "horizon"
 
 		// Sky geometry and material
-		var vertex = App.readFile("data/shaders/sky_vertex.glsl")
-		var fragment = App.readFile("data/shaders/sky_fragment.glsl")
+		var vertex = `
+			varying vec3 vWorldPosition;
+			void main() {
+				vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+				vWorldPosition = worldPosition.xyz;
+				gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+			}
+		`
+		var fragment = `
+			uniform vec3 top_color;
+			uniform vec3 bottom_color;
+			uniform float offset;
+			uniform float exponent;
+			varying vec3 vWorldPosition;
+			void main() {
+				float h = normalize(vWorldPosition + offset).y;
+				gl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);
+			}
+		`
 		var uniforms = {
 			top_color: {type: "c", value: new THREE.Color(0.0, 0.46, 1.0)},
 			bottom_color: {type: "c", value: new THREE.Color(1.0, 1.0, 1.0)},
@@ -257,10 +274,10 @@ class Sky extends THREE.Mesh {
 		}
 
 		if (isRootObject) {
-			var geometries = extractFromCache( meta.geometries );
-			var materials = extractFromCache( meta.materials );
-			var textures = extractFromCache( meta.textures );
-			var images = extractFromCache( meta.images );
+			var geometries = extractFromCache(meta.geometries);
+			var materials = extractFromCache(meta.materials);
+			var textures = extractFromCache(meta.textures);
+			var images = extractFromCache(meta.images);
 
 			if(geometries.length > 0)
 			{

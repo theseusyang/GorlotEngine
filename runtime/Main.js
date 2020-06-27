@@ -6,7 +6,7 @@ Main.initialize = function(canvas) {
 	App.setMouseLock(false)
 
 	// Main program and scene
-	Main.program = Main.loadProgram("program.json")
+	Main.program = Main.loadProgram("app.json")
 
 	// Renderer and canvas
 	Main.canvas = document.createElement("canvas")
