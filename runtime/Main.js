@@ -19,6 +19,7 @@ Main.initialize = function(canvas) {
 
 	Mouse.canvas = Main.canvas
 
+	// Set renderer
 	Main.renderer = new THREE.WebGLRenderer({canvas: Main.canvas})
 	Main.renderer.autoClear = false
 	Main.renderer.shadowMap.enabled = true
@@ -26,13 +27,8 @@ Main.initialize = function(canvas) {
 	Main.renderer.setSize(Main.canvas.width, Main.canvas.height)
 
 	// Main Camera
-	Main.camera = new PerspectiveCamera(60, Main.canvas.width/Main.canvas.height, 0.1, 1000000)
-	Main.camera.position.set(0, 5, -5)
-
-	// If no camera attached, attach default camera
-	if (Main.program.scene.camera === null) {
-		Main.program.scene.camera = Main.camera
-	}
+	Main.program.default_camera = new PerspectiveCamera(60, Main.canvas.width/Main.canvas.height, 0.1, 10000000)
+	Main.program.default_camera.position.set(0, 5, -5)
 
 	// Initialize scene
 	Main.program.initialize()

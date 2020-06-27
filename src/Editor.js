@@ -1,7 +1,7 @@
 function Editor(){}
 
 //Editor state
-Editor.STATE_IDLE = 8; //Editing scripts
+Editor.STATE_IDLE = 8; //Non scene window open
 Editor.STATE_EDITING = 9; //Editing a scene
 Editor.STATE_TESTING = 11; //Testing a scene
 
@@ -10,6 +10,11 @@ Editor.MODE_SELECT = 0;
 Editor.MODE_MOVE = 1;
 Editor.MODE_RESIZE = 2;
 Editor.MODE_ROTATE = 3;
+
+// Editor version
+Editor.NAME = "Gorlot"
+Editor.VERSION = "V0.0.0"
+Editor.TIMESTAMP = "Sat 27 Jun 2020 23:18:40"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -28,6 +33,22 @@ Editor.componentManager.addComponent(new LightComponent(), true)
 //Initialize Main
 Editor.initialize = function(canvas)
 {
+
+	// Set windows close event
+	if (App.gui !== undefined) {
+		// Close event
+		App.gui.Window.get().on("close", () => {
+			var confirm = LiteGUI.confirm("All unsaved changes to the project will be lost! Do you really want to exit?", (v) => {
+				if (v) {
+					Editor.exit()
+				}
+			}, {title: "Exit"})
+		})
+	}
+
+	// Set window title
+	document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")"
+
 	// Set mouse Lock false
 	App.setMouseLock(false)
 	App.showStats(false)
@@ -729,8 +750,10 @@ Editor.createNewProgram = function() {
 Editor.setState = function(state) {
 	if (state === Editor.STATE_EDITING) {
 		// Clean program running variable
-		Editor.program_running.scene.stop()
-		Editor.program_running = null
+		if(Editor.program_running !== null) {
+			Editor.program_running.scene.stop()
+			Editor.program_running = null
+		}
 	} else if (state === Editor.STATE_TESTING) {
 		// Copy program and initialize scene
 		Editor.program_running = Editor.program.clone()
@@ -765,5 +788,8 @@ Editor.initializeRenderer = function(canvas) {
 
 // Exit Editor
 Editor.exit = function() {
-	process.exit()
+	if (App.gui !== undefined) {
+		App.gui.App.closeAllWindows()
+		App.gui.App.quit()
+	}
 }

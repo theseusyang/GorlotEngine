@@ -3,6 +3,7 @@ class CodeEditor {
 
 		this.id = "Code Editor " + CodeEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
+			CodeEditor.id--
 			EditorUI.selectPreviousTab()
 		}})
 
@@ -12,13 +13,14 @@ class CodeEditor {
 			this.parent = EditorUI.tabs_widget.getTabContent(this.id)
 		}
 
+		Editor.setState(Editor.STATE_IDLE)
 
 		this.element = document.createElement("div")
 		this.element.id = "code"
 		this.element.style.position = "absolute"
 
 		// CodeMirror Editor
-		this.code = new CodeMirror(this.element, {value: "", lineNumbers: true, mode: "javascript"})
+		this.code = new CodeMirror(this.element, {value: "", lineNumbers: true, indentWithTabs: true, indentUnit: 4, tabSize: 4, mode: "javascript"})
 		this.code.setOption("theme", "monokai")
 		this.code.setOption("mode", "javascript")
 
@@ -38,6 +40,41 @@ class CodeEditor {
 				self.updateInterface()
 			}
 		}
+
+		this.content = this.tab.content
+
+		// Context menu event
+		this.content.oncontextmenu = function(e) {
+			var context = new LiteGUI.ContextMenu([
+				{
+					title: "Auto indent",
+					callback: () => {
+						self.code.execCommand("indentAuto")
+					}
+				},
+				{
+					title: "Select all",
+					callback: () => {
+						self.code.execCommand("selectAll")
+					}
+				},
+				{
+					title: "Undo",
+					callback: () => {
+						self.code.execCommand("undo")
+					}
+				},
+				{
+					title: "Redo",
+					callback: () => {
+						self.code.execCommand("redo")
+					}
+				}
+			], {
+				title: "Script Editor",
+				event: e
+			})
+		} 
 
 		this.parent.appendChild(this.element)
 		CodeEditor.id++

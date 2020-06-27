@@ -5,6 +5,9 @@ class BlueprintsEditor {
 		this.id = "Blueprints Editor " + BlueprintsEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			clearInterval(self.interval)
+
+			BlueprintsEditor.id--
+
 			self.updateBlueprints()
 			EditorUI.selectPreviousTab()
 		}})
@@ -19,6 +22,8 @@ class BlueprintsEditor {
 		this.canvas.id = "BlueprintsEditor" + Editor.nameId
 
 		this.parent.appendChild(this.canvas)
+
+		Editor.setState(Editor.STATE_IDLE)
 
 		// Blueprints attached to the editor
 		this.blueprints = blueprints ? blueprints : null
@@ -40,9 +45,9 @@ class BlueprintsEditor {
 		}
 
 		this.interval = setInterval(() => {
-			// Every 5 seconds, the blueprints are gonna save
+			// Every second, the blueprints are gonna save
 			self.updateBlueprints()
-		}, 2000)
+		}, 1000)
 
 		BlueprintsEditor.id++
 	}

@@ -3,7 +3,9 @@ class SceneEditor {
 
 		if(EditorUI.tabs_widget !== undefined) {
 			this.id = "Scene Editor " + SceneEditor.id
-			this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true})
+			this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
+				SceneEditor.id--
+			}})
 		}
 
 		if (parent !== undefined) {

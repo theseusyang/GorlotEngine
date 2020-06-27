@@ -89,11 +89,21 @@ EditorUI.removeAllTabs = function() {
 
 EditorUI.selectPreviousTab = function() {
     var tab = EditorUI.tabs_widget.getPreviousTab()
+    var current = EditorUI.tabs_widget.getCurrentTab()
 
-    if(tab === undefined || Editor.state === Editor.STATE_EDITING) {
+    if(tab === undefined) {
+        Editor.setState(Editor.STATE_EDITING)
+        EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+    } else if (Editor.state === Editor.STATE_TESTING) {
         EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
     } else {
         EditorUI.tabs_widget.selectTab(tab)
+    }
+
+    if (tab !== undefined && tab.id === EditorUI.canvas.id) {
+        if (Editor.state !== Editor.STATE_TESTING) {
+            Editor.setState(Editor.STATE_EDITING)
+        }
     }
 }
 
@@ -160,7 +170,7 @@ EditorUI.saveProgram = function() {
 
 // Open load program window
 EditorUI.openProgram = function() {
-    var config = LiteGUI.confirm("All unsaved changes to the program will be lost! Load program?", (v) => {
+    var confirm = LiteGUI.confirm("All unsaved changes to the program will be lost! Load program?", (v) => {
         if (v) {
             App.chooseFile((e) => {
                 var file = e.srcElement.value
@@ -173,7 +183,7 @@ EditorUI.openProgram = function() {
                 }
             })
         }
-    })
+    }, {title: "Open Project"})
 }
 
 // Interface element to create new program
