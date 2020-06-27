@@ -6,6 +6,8 @@ class AnimatedModel extends THREE.SkinnedMesh {
 
 		this.components = []
 		this.defaultComponents = []
+	
+		this.defaultComponents.push(new ElementComponent())
 	}
 
 	initialize() {

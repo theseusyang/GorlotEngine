@@ -428,6 +428,14 @@ function parseObject(data, geometries, materials)
 
 	switch(data.type)
 	{
+		case "Audio":
+			object = new Audio()
+			break;
+
+		case "ParticleEmitter":
+			object = new ParticleEmitter()
+			break;
+
 		case 'Program':
 			object = new Program(data.name, data.description, data.author, data.version, data.vr, data.time)
 			if (data.initial_scene !== undefined) {

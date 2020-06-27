@@ -54,6 +54,9 @@ Editor.initialize = function(canvas)
 	Editor.renderer = null
 	Editor.canvas = null
 
+	// Default material to be used when creating objects
+	Editor.default_material = new THREE.MeshPhongMaterial()
+
 	//Initialize User Interface
 	EditorUI.Initialize();
 
@@ -442,7 +445,11 @@ Editor.selectObject = function(obj) {
 
 // Check if object is selected
 Editor.isObjectSelected = function(obj) {
-	Editor.selected_object === obj
+	if(Editor.selected_object !== null) {
+		Editor.selected_object === obj
+	}
+
+	return null
 }
 
 // Delete selected Object
@@ -512,6 +519,7 @@ Editor.addToActualScene = function(obj) {
 	Editor.program.scene.add(obj)
 	Editor.updateTreeView()
 	Editor.renameObject(obj, obj.name)
+	Editor.selectObject(obj)
 }
 
 // Checks if an object's name is unique, if not, renames it

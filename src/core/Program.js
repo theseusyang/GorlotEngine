@@ -34,7 +34,7 @@ class Program extends THREE.Object3D {
 			this.vr = vr
 		}
 
-		// Initialization variables
+		// Initial scene
 		this.initial_scene = null
 	
 		//Runtime variables
@@ -87,10 +87,12 @@ class Program extends THREE.Object3D {
 		}
 		scene.add(sky)
 
-		// Box
 		var material = new THREE.MeshPhongMaterial()
 		var geometry = new THREE.BoxGeometry(2, 2, 2)
+
+		// Box
 		var model = new Model3D(geometry, material)
+		model.position.set(0, 2, 0)
 		model.receiveShadow = true
 		model.castShadow = true
 		model.name = "box"
@@ -100,10 +102,9 @@ class Program extends THREE.Object3D {
 		scene.add(model)
 
 		// Ground
-		material = new THREE.MeshPhongMaterial()
-		geometry = new THREE.BoxGeometry(20, 1, 20)
 		model = new Model3D(geometry, material)
-		model.position.set(0, -1.5, 0)
+		model.scale.set(20, 1, 20)
+		model.position.set(0, 0, 0)
 		model.receiveShadow = true
 		model.castShadow = true
 		model.name = "ground"

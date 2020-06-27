@@ -10,6 +10,9 @@ class SceneComponent extends Component {
 		var obj = Editor.selected_object
 		this.ami = obj.uuid === program.initial_scene
 		EditorUI.form.addCheckbox("Default Scene", this.ami)
+		EditorUI.form.addCheckbox("Fog Enabled", false)
+		EditorUI.form.addNumber("Near", 0)
+		EditorUI.form.addNumber("Far", 0)
 	}
 
 	updateInfo(name, value, widget) {

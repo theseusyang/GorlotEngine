@@ -88,6 +88,10 @@ class AddMenuWindow {
 			{
 				"name": "Particles",
 				"icon": "data/icons/effects/particles.png"
+			},
+			{
+				"name": "Audio",
+				"icon": "data/icons/assets/audio_12x12.png"
 			}
 		]
 
@@ -109,57 +113,73 @@ class AddMenuWindow {
 		var o = this.selected_object
 
 		if (o === "Cube") {
+
 			var geometry = new THREE.BoxBufferGeometry(1, 1, 1)
-			var material = new THREE.MeshPhongMaterial()
-			var obj = new Model3D(geometry, material)
+			var obj = new Model3D(geometry, Editor.default_material)
 			obj.receiveShadow = true
 			obj.castShadow = true
 			obj.name = "cube"
 			Editor.addToActualScene(obj)
-		} else if (o === "Cylinder") {
+
+		}
+		else if (o === "Cylinder") {
+
 			var geometry = new THREE.CylinderBufferGeometry(1, 1, 2, 32)
-        	var material = new THREE.MeshPhongMaterial()
-        	var obj = new Model3D(geometry, material)
+        	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
         	obj.name = "Cylinder"
         	Editor.addToActualScene(obj)
-		} else if (o === "Sphere") {
+
+		}
+		else if (o === "Sphere") {
+
 			var geometry = new THREE.SphereBufferGeometry(0.6, 16, 16)
-        	var material = new THREE.MeshPhongMaterial()
-        	var obj = new Model3D(geometry, material)
+        	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
         	obj.name = "Sphere"
         	Editor.addToActualScene(obj)
-		} else if (o === "Torus") {
+
+		}
+		else if (o === "Torus") {
+
 			var geometry = new THREE.TorusBufferGeometry(1, 0.5, 16, 100)
-        	var material = new THREE.MeshPhongMaterial()
-        	var obj = new Model3D(geometry, material)
+        	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
         	obj.name = "Torus"
         	Editor.addToActualScene(obj)
-		} else if (o === "Pyramid") {
+
+		}
+		else if (o === "Pyramid") {
+
 			var geometry = new THREE.CylinderBufferGeometry(0, 1, 2, 32)
-        	var material = new THREE.MeshPhongMaterial()
-        	var obj = new Model3D(geometry, material)
+        	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
         	obj.name = "Cone"
         	Editor.addToActualScene(obj)
-		} else if (o === "Plane") {
+
+		}
+		else if (o === "Plane") {
+
 			var geometry = new THREE.PlaneBufferGeometry(1, 1)
-			var material = new THREE.MeshPhongMaterial()
-			var obj = new Model3D(geometry, material)
+			var obj = new Model3D(geometry, Editor.default_material)
 			obj.receiveShadow = true
 			obj.castShadow = true
 			obj.name = "plane"
 			Editor.addToActualScene(obj)
-		} else if (o === "Empty") {
+
+		}
+		else if (o === "Empty") {
+
 			var obj = new Empty()
 			Editor.addToActualScene(obj)
-		} else if (o === "Text") {
+
+		}
+		else if (o === "Text") {
+
 			var obj = null
 			var loader = new THREE.FontLoader().load("data/fonts/helvetiker_bold.typeface.js", function(font) {
         	    var material = new THREE.MeshPhongMaterial()
@@ -168,50 +188,87 @@ class AddMenuWindow {
         	    obj.castShadow = true
         	    Editor.addToActualScene(obj)
         	})
-		} else if (o === "Point Light") {
+
+		}
+		else if (o === "Point Light") {
+
 			var obj = new PointLight()
         	Editor.addToActualScene(obj)
-		} else if (o === "Ambient Light") {
+
+		}
+		else if (o === "Ambient Light") {
+
 			var obj = new AmbientLight()
         	Editor.addToActualScene(obj)
-		} else if (o === "Spot Light") {
+
+		}
+		else if (o === "Spot Light") {
+
 			var obj = new SpotLight()
         	obj.castShadow = true
         	Editor.addToActualScene(obj)
-		} else if (o === "Directional Light") {
+
+		}
+		else if (o === "Directional Light") {
+
 			var obj = new DirectionalLight()
         	obj.castShadow = true
         	Editor.addToActualScene(obj)
-		} else if (o === "Hemisphere Light") {
+
+		}
+		else if (o === "Hemisphere Light") {
+
 			var obj = new HemisphereLight()
         	obj.castShadow = true
         	Editor.addToActualScene(obj)
-		} else if (o === "Sky") {
+
+		}
+		else if (o === "Sky") {
+
 			var obj = new Sky()
        		Editor.addToActualScene(obj)
-		} else if (o === "Perspective Camera") {
+
+		}
+		else if (o === "Perspective Camera") {
+
 			var obj = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 1000000)
 			Editor.addToActualScene(obj)
-		} else if (o === "Orthographic Camera") {
+
+		}
+		else if (o === "Orthographic Camera") {
+
 			var obj = new OrthographicCamera(3, 2, undefined, 1, 1000000)
 			Editor.addToActualScene(obj)
-		} else if (o === "Script") {
+
+		}
+		else if (o === "Script") {
+
 			var obj = new Script()
 			Editor.addToActualScene(obj)
-		} else if (o === "Blueprints") {
+
+		}
+		else if (o === "Blueprints") {
+
 			var obj = new Blueprints()
 			Editor.addToActualScene(obj)
-		} else if (o === "Sprite") {
+
+		}
+		else if (o === "Sprite") {
+
 			var map = new THREE.TextureLoader().load("data/sample.png")
         	var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
         	var obj = new Sprite(material)
         	Editor.addToActualScene(obj)
-		} else if (o === "Particles") {
-			// TODO: This
-		}
 
-		if(obj !== undefined && obj !== null) {
-			Editor.selectObject(obj)
+		}
+		else if (o === "Particles") {
+
+			Editor.addToActualScene(new ParticleEmitter())
+
+		} else if (o === "Audio") {
+
+			Editor.addToActualScene(new Audio())
+
 		}
 
 	}

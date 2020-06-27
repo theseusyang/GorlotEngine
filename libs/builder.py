@@ -33,6 +33,7 @@ libraries.append("cannon/CannonDebugRenderer.js")
 
 libraries.append("opentype.min.js")
 libraries.append("jszip.min.js")
+libraries.append("SPE.min.js")
 
 # Then the code itself
 
@@ -44,6 +45,7 @@ source.append("core/ThreeExpand.js")
 source.append("core/ObjectLoader.js")
 source.append("core/Program.js")
 source.append("core/ObjectUtils.js")
+source.append("core/Global.js")
 
 source.append("core/objects/lights/PointLight.js")
 source.append("core/objects/lights/SpotLight.js")
@@ -64,6 +66,8 @@ source.append("core/objects/Model3D.js")
 source.append("core/objects/AnimatedModel.js")
 source.append("core/objects/Text3D.js")
 source.append("core/objects/Sprite.js")
+source.append("core/objects/ParticleEmitter.js")
+source.append("core/objects/Audio.js")
 
 source.append("core/Component.js")
 source.append("core/ComponentManager.js")

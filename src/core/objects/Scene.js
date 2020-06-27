@@ -7,6 +7,9 @@ class Scene extends THREE.Scene {
 		// Disable auto matrix updates
 		this.rotationAutoUpdate = false
 		this.matrixAutoUpdate = false
+
+		// Fog
+		this.fog = null//new THREE.Fox(0x0000ff, 1, 100)
 		
 		//Create CANNON world
 		this.world = new CANNON.World();
@@ -20,6 +23,7 @@ class Scene extends THREE.Scene {
 		// Runtime variables
 		this.data = function() {}
 		this.camera = null
+		this.listener = new THREE.AudioListener()
 
 		// Components
 		this.components = []
