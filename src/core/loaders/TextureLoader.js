@@ -1,18 +1,24 @@
 class TextureLoader {
 	constructor(manager) {
-		this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager
-	}
+		//this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager
+		if (this.manager !== undefined) {
+			this.manager = manager
+		} else {
+			this.manager = THREE.DefaultLoadingManager
+		}
 
-	parse(data) {
-		// Load image sync
-		//TODO: This
+		this.path = null
+		this.crossOrigin = null
 	}
 
 	load(url, onLoad, onProgress, onError) {
-		if (this.path !== undefined) {
+		// Load texture async
+
+		if (this.path !== null) {
 			url = this.path + url
 		}
 	
+		// Self pointer
 		var self = this
 		var cached = Cache.get(url)
 
@@ -55,7 +61,7 @@ class TextureLoader {
 			self.manager.itemError(url)
 		}, false)
 
-		if (this.crossOrigin !== undefined) {
+		if (this.crossOrigin !== null) {
 			image.crossOrigin = this.crossOrigin
 		}
 
@@ -74,4 +80,16 @@ class TextureLoader {
 		// Set working path for this loader
 		this.path = value
 	}
+}
+
+// Load texture sync
+TextureLoader.load = function(url, mapping, onLoad, onError) {
+	var loader = new THREE.TextureLoader()
+	var texture = loader.load(url, onLoad, undefined, onError)
+
+	if (mapping) {
+		texture.mapping = mapping
+	}
+
+	return texture
 }

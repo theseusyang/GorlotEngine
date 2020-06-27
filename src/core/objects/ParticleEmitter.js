@@ -61,13 +61,13 @@ class ParticleEmitter extends THREE.Object3D {
 	}
 
 	initialize() {
-		// Initialize
-		this.add(this.group.mesh)
-
 		// Initialize children
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].initialize()
 		}
+		
+		// Add particle group to self
+		this.add(this.group.mesh)
 	}
 
 	update() {
