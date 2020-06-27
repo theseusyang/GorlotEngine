@@ -135,7 +135,11 @@ editor.append("editor/tabs/CodeEditor.js")
 editor.append("editor/tabs/SceneEditor.js")
 editor.append("editor/tabs/SettingsTab.js")
 editor.append("editor/tabs/BlueprintsEditor.js")
-editor.append("editor/tabs/ObjectInspector.js")
+
+editor.append("editor/ui/ObjectInspector.js")
+editor.append("editor/ui/TopMenu.js")
+editor.append("editor/ui/AssetExplorer.js")
+editor.append("editor/ui/Hierarchy.js")
 
 editor.append("editor/UI.js")
 

@@ -95,7 +95,7 @@ class AddMenuWindow {
 
 		this.widgets = new LiteGUI.Inspector()
 
-		this.objectList = this.widgets.addList(null, this.objects, {height: this.dialog.height,callback_dblclick: function(v) {
+		this.objectList = this.widgets.addList(null, this.objects, {height: this.dialog.height-20,callback_dblclick: function(v) {
 			self.selected_object = v.name
 			self.add()
 			self.close()

@@ -1,0 +1,153 @@
+{
+	"metadata": {
+		"version": 4.4,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "31207FAC-21CA-408D-B57E-4E89C098B588",
+			"type": "SphereGeometry",
+			"radius": 4000,
+			"widthSegments": 32,
+			"heightSegments": 15
+		},
+		{
+			"uuid": "3F3CF015-2DAC-4AAE-972B-0208D4A61238",
+			"type": "BoxGeometry",
+			"width": 2,
+			"height": 2,
+			"depth": 2
+		},
+		{
+			"uuid": "B1B9D7D4-D8BD-4CE8-9811-13EB5ACF2928",
+			"type": "BoxGeometry",
+			"width": 20,
+			"height": 1,
+			"depth": 20
+		}],
+	"materials": [
+		{
+			"uuid": "AD9D9EDF-3A87-4845-A1D5-3B486F50BA0C",
+			"type": "ShaderMaterial",
+			"side": 1,
+			"uniforms": {
+				"top_color": {
+					"type": "c",
+					"value": {
+						"r": 0,
+						"g": 0.4627450980392157,
+						"b": 1
+					}
+				},
+				"bottom_color": {
+					"type": "c",
+					"value": {
+						"r": 1,
+						"g": 1,
+						"b": 1
+					}
+				},
+				"offset": {
+					"type": "f",
+					"value": 20
+				},
+				"exponent": {
+					"type": "f",
+					"value": 0.4
+				}
+			},
+			"vertexShader": "\n\t\t\tvarying vec3 vWorldPosition;\n\t\t\tvoid main() {\n\t\t\t\tvec4 worldPosition = modelMatrix * vec4(position, 1.0);\n\t\t\t\tvWorldPosition = worldPosition.xyz;\n\t\t\t\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n\t\t\t}\n\t\t",
+			"fragmentShader": "\n\t\t\tuniform vec3 top_color;\n\t\t\tuniform vec3 bottom_color;\n\t\t\tuniform float offset;\n\t\t\tuniform float exponent;\n\t\t\tvarying vec3 vWorldPosition;\n\t\t\tvoid main() {\n\t\t\t\tfloat h = normalize(vWorldPosition + offset).y;\n\t\t\t\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n\t\t\t}\n\t\t"
+		},
+		{
+			"uuid": "76067877-8F16-4A24-B58A-31794AA9EE0F",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		},
+		{
+			"uuid": "54E2F563-E599-46DC-B886-016A4CB583D6",
+			"type": "MeshPhongMaterial",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 1118481,
+			"shininess": 30
+		}],
+	"object": {
+		"uuid": "5F367CB9-5711-4146-ABB3-673581489BEA",
+		"type": "Program",
+		"description": "",
+		"author": "",
+		"version": "0",
+		"vr": false,
+		"components": [],
+		"name": "program",
+		"initial_scene": "A125608A-9CB8-4F0F-A9B4-258EA851931D",
+		"castShadow": false,
+		"receiveShadow": false,
+		"visible": true,
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "A125608A-9CB8-4F0F-A9B4-258EA851931D",
+				"type": "Scene",
+				"name": "scene_1",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"children": [
+					{
+						"uuid": "0AC5BD6D-ED28-49BB-B383-C4D1C22CF39D",
+						"type": "Sky",
+						"auto_update": false,
+						"day_time": 20,
+						"sun_distance": 100,
+						"time": 13,
+						"components": [],
+						"name": "sky",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "31207FAC-21CA-408D-B57E-4E89C098B588",
+						"material": "AD9D9EDF-3A87-4845-A1D5-3B486F50BA0C"
+					},
+					{
+						"uuid": "A3C0CDA5-A020-4CF5-8D4B-296C62E4D7EC",
+						"type": "Mesh",
+						"name": "box_3",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "3F3CF015-2DAC-4AAE-972B-0208D4A61238",
+						"material": "76067877-8F16-4A24-B58A-31794AA9EE0F"
+					},
+					{
+						"uuid": "487FDC40-ED3F-4883-9031-E19E8092A80D",
+						"type": "Mesh",
+						"name": "ground_4",
+						"castShadow": true,
+						"receiveShadow": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.5,0,1],
+						"geometry": "B1B9D7D4-D8BD-4CE8-9811-13EB5ACF2928",
+						"material": "54E2F563-E599-46DC-B886-016A4CB583D6"
+					},
+					{
+						"uuid": "02E25BDB-62CE-487C-9A7D-34EA8D9CF068",
+						"type": "PerspectiveCamera",
+						"name": "perspective_camera_5",
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0.7739999890327454,2.7039999961853027,1],
+						"fov": 99.65625,
+						"zoom": 1,
+						"near": 0.1,
+						"far": 1000000,
+						"focus": 10,
+						"aspect": 1.8458574181117533,
+						"filmGauge": 35,
+						"filmOffset": 0
+					}],
+				"initial_camera": "02E25BDB-62CE-487C-9A7D-34EA8D9CF068"
+			}]
+	}
+}
