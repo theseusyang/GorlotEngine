@@ -137,6 +137,19 @@ Editor.update = function()
 {
 	Editor.block_camera_move = false;
 
+	if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
+		if (Keyboard.isKeyJustPressed(Keyboard.S)) {
+			EditorUI.saveProgram()
+		}
+		else if (Keyboard.isKeyJustPressed(Keyboard.O)) {
+			EditorUI.loadProgram()
+		}
+		else if (Keyboard.isKeyJustPressed(Keyboard.W)) {
+			EditorUI.selectPreviousTab()
+			EditorUI.tabs_widget.getCurrentTab().destroy()
+		}
+	}
+
 	//Editing a scene
 	if(Editor.state === Editor.STATE_EDITING)
 	{
@@ -206,8 +219,6 @@ Editor.update = function()
 					// TODO: Redo
 				} else if (Keyboard.isKeyJustPressed(Keyboard.Z)) {
 					// TODO: Undo
-				} else if (Keyboard.isKeyJustPressed(Keyboard.W)) {
-					// TODO: Close actual tab
 				}
 			}
 		}
@@ -525,7 +536,7 @@ Editor.renameObject = function(obj, name) {
 
 // Update Tree View to Match Actual Scene
 Editor.updateTreeView = function() {
-	EditorUI.hierarchyFromScene(Editor.program.scene)
+	EditorUI.updateHierarchy()
 	EditorUI.updateInspector()
 }
 

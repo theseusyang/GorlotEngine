@@ -67,7 +67,7 @@ function EditorUIHierarchy() {
     
 }
 
-EditorUI.hierarchyFromScene = function(scene) {
+EditorUI.updateHierarchy = function() {
     if(EditorUI.hierarchy !== undefined) {
         EditorUI.hierarchy.updateTree({id: Editor.program.name, attachedTo: Editor.program, children: []})
     

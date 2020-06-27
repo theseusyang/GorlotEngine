@@ -9,4 +9,16 @@ class Bone extends THREE.Bone {
 		this.defaultComponents.push(new ElementComponent())
 		this.defaultComponents.push(new Object3DComponent())
 	}
+
+	initialize() {
+		for(var i = 0; i < this.children.length; i++) {
+			this.children[i].initialize()
+		}
+	}
+
+	update() {
+		for(var i = 0; i < this.children.length; i++) {
+			this.children[i].update()
+		}
+	}
 }

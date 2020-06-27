@@ -6,45 +6,45 @@ function EditorUITopMenu() {
 
     // ----- FILE -----
     EditorUI.topmenu.add("File/New", {callback: () => {
-        LiteGUI.confirm("All unsaved changes to the project will be lost! Create new project?", (v) => {
-            if(v) {
-                Editor.createNewProgram()
-                Editor.updateTreeView()
-                Editor.updateObjectHelper()
-                EditorUI.updateable = []
-            }
-        }, {title: "New Project"})
+        EditorUI.newProgram()
+        //LiteGUI.confirm("All unsaved changes to the project will be lost! Create new project?", (v) => {
+        //    if(v) {
+        //        Editor.createNewProgram()
+        //        Editor.updateTreeView()
+        //        Editor.updateObjectHelper()
+        //        EditorUI.updateable = []
+        //    }
+        //}, {title: "New Project"})
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
-
-        var confirm = LiteGUI.confirm("All unsaved changes to the project will be lost! Load file?", (v) => {
-            if(v) {
-                App.chooseFile((event) => {
-                    var file = event.srcElement.value
-                    try {
-                        Editor.loadProgram(file)
-                        console.log("Project loaded")
-                    } catch (e) { console.error("Error loading file, exception: " + e) }
-                }, ".json")
-            }
-        }, {title: "Open project"})
+        EditorUI.openProgram()
+        //var confirm = LiteGUI.confirm("All unsaved changes to the project will be lost! Load file?", (v) => {
+        //    if(v) {
+        //        App.chooseFile((event) => {
+        //            var file = event.srcElement.value
+        //            try {
+        //                Editor.loadProgram(file)
+        //                console.log("Project loaded")
+        //            } catch (e) { console.error("Error loading file, exception: " + e) }
+        //        }, ".json")
+        //    }
+        //}, {title: "Open project"})
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
-        // TODO: Create a toJSON function to every object, so the components can be serialized
-
-        App.chooseFile((event) => {
-            var file = event.srcElement.value
-
-            try {
-                Editor.saveProgram(file)
-                console.log("Project saved")
-            } catch(e) {
-                console.error("Error saving file: " + e)
-            }
-
-        }, ".json", true)
+        EditorUI.saveProgram()
+//        App.chooseFile((event) => {
+//            var file = event.srcElement.value
+//
+//            try {
+//                Editor.saveProgram(file)
+//                console.log("Project saved")
+//            } catch(e) {
+//                console.error("Error saving file: " + e)
+//            }
+//
+//        }, ".json", true)
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {

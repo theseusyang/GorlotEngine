@@ -143,3 +143,46 @@ EditorUI.deleteObject = function(object) {
 EditorUI.Resize = function() {
     EditorUI.updateInterface()
 }
+
+// Open save program window
+EditorUI.saveProgram = function() {
+    App.chooseFile((e) => {
+        var file = e.srcElement.value
+
+        try {
+            Editor.saveProgram(file)
+            console.log("Project saved")
+        } catch(e) {
+            console.error("Error saving program: " + e)
+        }
+    })
+}
+
+// Open load program window
+EditorUI.openProgram = function() {
+    var config = LiteGUI.confirm("All unsaved changes to the program will be lost! Load program?", (v) => {
+        if (v) {
+            App.chooseFile((e) => {
+                var file = e.srcElement.value
+
+                try {
+                    Editor.loadProgram(file)
+                    console.log("Project loaded")
+                } catch(e) {
+                    console.error("Error loading program: " + e)
+                }
+            })
+        }
+    })
+}
+
+// Interface element to create new program
+EditorUI.newProgram = function() {
+    LiteGUI.confirm("All unsaved changes to the program will be lost! Create new program?", (v) => {
+        if (v) {
+            Editor.createNewProgram()
+            Editor.updateTreeView()
+            Editor.updateObjectHelper()
+        }
+    }, {title: "New Project"})
+}
