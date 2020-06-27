@@ -732,14 +732,11 @@ Editor.setState = function(state) {
 		// Copy program and initialize scene
 		Editor.program_running = Editor.program.clone()
 
-		Editor.program_running.initialize()
-		
 		// If no camera attached, attach camera
-		if (Editor.program_running.scene.camera === null) {
-			Editor.program_running.scene.camera = Editor.camera
-		}
+		Editor.program_running.default_camera = Editor.camera
 
 		// Initialize scene
+		Editor.program_running.initialize()
 		Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height)
 	}
 	Editor.state = state

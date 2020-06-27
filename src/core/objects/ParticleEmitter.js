@@ -15,7 +15,7 @@ class ParticleEmitter extends THREE.Object3D {
 
 		this.emitter = new SPE.Emitter({
 			maxAge: {
-				value: 2
+				value: 3
 			},
 			position: {
 				value: new THREE.Vector3(0, 0, 0),

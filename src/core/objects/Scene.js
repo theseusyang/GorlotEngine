@@ -9,7 +9,11 @@ class Scene extends THREE.Scene {
 		this.matrixAutoUpdate = false
 
 		// Fog
-		this.fog = null//new THREE.Fox(0x0000ff, 1, 100)
+		this.fog_color = "#ffffff"
+		this.fog_near = 2
+		this.fog_far = 30
+		this.fog_density = 0.001
+		this.fog_mode = Scene.FOG_NONE
 		
 		//Create CANNON world
 		this.world = new CANNON.World();
@@ -64,9 +68,40 @@ class Scene extends THREE.Scene {
 		}
 	}
 
+	setFogMode(mode) {
+		// Set fog mode
+		this.fog_mode = mode
+
+		if (mode === Scene.FOG_LINEAR) {
+			this.fog = new THREE.Fog(this.fog_color, this.fog_near, this.fog_far)
+		} else if (mode === Scene.FOG_EXPONENTIAL) {
+			this.fog = new THREE.FogExp2(this.fog_color, this.fog_density)
+		} else {
+			this.fog = null
+		}
+	}
+
+	updateFog() {
+		// Update fog from stored value
+		if (this.fog instanceof THREE.Fog) {
+			this.fog.color.setHex(this.fog_color)
+			this.fog.far = this.fog_far
+			this.fog_near = this.fog_near
+		} else if (this.fog instanceof THREE.FogExp2) {
+			this.fog.color.setHex(this.fog_color)
+			this.fog.density = this.fog_density
+		}
+	}
+
 	toJSON(meta) {
 		// Create JSON for object
 		var data = THREE.Scene.prototype.toJSON.call(this, meta)
+
+		data.object.fog_color = this.fog_color
+		data.object.fog_density = this.fog_density
+		data.object.fog_near = this.fog_near
+		data.object.fog_far = this.fog_far
+		data.object.fog_mode = this.fog_mode
 
 		if (this.initial_camera !== null) {
 			data.object.initial_camera = this.initial_camera
@@ -75,3 +110,8 @@ class Scene extends THREE.Scene {
 		return data
 	}
 }
+
+// Fog modes
+Scene.FOG_NONE = 0
+Scene.FOG_LINEAR = 1
+Scene.FOG_EXPONENTIAL = 2

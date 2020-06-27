@@ -34,12 +34,14 @@ class Program extends THREE.Object3D {
 			this.vr = vr
 		}
 
-		// Initial scene
+		// Initial values
 		this.initial_scene = null
-	
+		this.default_camera = null
+
 		//Runtime variables
-		this.data = function(){}
+		this.renderer = null
 		this.scene = null;
+		this.data = function(){}
 
 		this.components = []
 		
@@ -49,7 +51,6 @@ class Program extends THREE.Object3D {
 
 	resize(x, y) {
 		// Screen resize
-
 		if (this.scene !== null) {
 			this.scene.camera.aspect = x/y
 			this.scene.camera.updateProjectionMatrix()
@@ -62,14 +63,24 @@ class Program extends THREE.Object3D {
 			console.log("not null uwu")
 			for(var i = 0; i < this.children.length; i++) {
 				if (this.children[i].uuid === this.initial_scene) {
-					this.scene = this.children[i]
+					this.setScene(this.children[i])
 					break
 				}
 			}
 		} else {
-			this.scene = this.children[0]
+			this.setScene(this.children[0])
 		}
-		this.scene.initialize()
+	}
+
+	setScene(scene) {
+		if (scene instanceof Scene) {
+			this.scene = scene
+			this.scene.initialize()
+			
+			if (this.scene.camera === null) {
+				this.scene.camera = this.default_camera
+			}
+		}
 	}
 
 	setInitialScene(scene) {
@@ -119,6 +130,7 @@ class Program extends THREE.Object3D {
 	}
 
 	remove(scene) {
+		// Remove Scene
 		var index = this.children.indexOf(scene)
 		if (index > -1) {
 			this.children.splice(index, 1)
