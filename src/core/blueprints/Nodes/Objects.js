@@ -20,11 +20,11 @@ ElementNode.prototype.onExecute = function() {
 	r = this.getInputData(2)
 	s = this.getInputData(3)
 
-	if (p === undefined || p === null) {
+	if (p === undefined || p === null && o !== undefined) {
 		p = o.position
 	}
 	// TODO: r = euler
-	if (s === undefined || s === null) {
+	if (s === undefined || s === null && o !== undefined) {
 		s = o.scale
 	}
 
@@ -56,5 +56,34 @@ GetObjectByNameNode.prototype.onExecute = function() {
 	this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
 }
 
+function GetObjectByUUIDNode() {
+	this.addInput("UUID", "Text")
+	this.addOutput("Object", "Object3D")
+}
+GetObjectByUUIDNode.title = "Get Object By UUID"
+GetObjectByUUIDNode.prototype.onExecute = function() {
+	var uuid = this.getInputData(0)
+	if (uuid !== undefined) {
+		//var obj = THREE.Object3D.prototype.getObjectByProperty("uuid", uuid)
+		//this.setOutputData(0, obj)
+		var obj = Editor.program_running.getObjectByProperty("uuid", uuid)
+		this.setOutputData(0, obj)
+	}
+}
+
+function ThisNode() {
+	this.addOutput("This", "Object3D")
+	this.properties = {uuid: ""}
+}
+ThisNode.title = "This"
+ThisNode.prototype.onExecute = function() {
+	if (this.properties.uuid !== "" && this.properties.uuid !== undefined) {
+		var obj = Editor.program_running.getObjectByProperty("uuid", this.properties.uuid)
+		this.setOutputData(0, obj)
+	}
+}
+
 LiteGraph.registerNodeType("Objects/Element", ElementNode)
 LiteGraph.registerNodeType("Objects/GetObjectByName", GetObjectByNameNode)
+LiteGraph.registerNodeType("Objects/GetObjectByUUID", GetObjectByUUIDNode)
+LiteGraph.registerNodeType("Objects/This", ThisNode)

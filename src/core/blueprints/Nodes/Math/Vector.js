@@ -401,6 +401,278 @@ VectorDistanceToSquaredNode.prototype.onExecute = function() {
 	}
 }
 
+function VectorDivideNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+
+	this.addOutput("Output", "Vector")
+}
+VectorDivideNode.title = "Divide"
+VectorDivideNode.prototype.onExecute = function() {
+	var input = this.getInputData(0)
+	var v = this.getInputData(1)
+
+	if (input !== undefined && v !== undefined) {
+		input.divide(v)
+	}
+
+	this.setOutputData(0, input)
+}
+
+function VectorDivideScalarNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Scalar", "number")
+
+	this.addOutput("Output", "Vector")
+}
+VectorDivideScalarNode.title = "Divide Scalar"
+VectorDivideScalarNode.prototype.onExecute = function() {
+	var v = this.getInputData(0)
+	var s = this.getInputData(1)
+
+	if (v !== undefined && s !== undefined) {
+		v.divideScalar(s)
+	}
+
+	this.setOutputData(0, v)
+}
+
+function VectorDotNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+
+	this.addOutput("Product", "number")
+}
+VectorDotNode.title = "Dot"
+VectorDotNode.prototype.onExecute = function() {
+	var v = this.getInputData(0)
+	var v1 = this.getInputData(1)
+
+	if(v !== undefined && v1 !== undefined) {
+		var d = v.dot(v1)
+		this.setOutputData(0, d)
+	}
+}
+
+function VectorFloorNode() {
+	this.addInput("Input", "Vector")
+	this.addOutput("Output", "Vector")
+}
+VectorFloorNode.title = "Floor"
+VectorFloorNode.prototype.onExecute = function() {
+	var v = this.getInputData(0)
+
+	if (v !== undefined) {
+		v.floor()
+	}
+
+	this.setOutputData(0, v)
+}
+
+function VectorGetComponentNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Index", "number")
+
+	this.addOutput("Component", "number")
+}
+VectorGetComponentNode.title = "Get Component"
+VectorGetComponentNode.prototype.onExecute = function() {
+	var v = this.getInputData(0)
+	var i = this.getInputData(1)
+
+	if (v !== undefined && i !== undefined) {
+		var comp = v.getComponent(i)
+		this.setOutputData(0, comp)
+	}
+}
+
+function VectorLengthNode() {
+	this.addInput("Input", "Vector")
+	this.addOutput("Length", "number")
+}
+VectorLengthNode.title = "Length"
+VectorLengthNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	if (i !== undefined) {
+		var l = i.length()
+		this.setOutputData(l)
+	}
+}
+
+function VectorManhattanLengthNode() {
+	this.addInput("Input", "Vector")
+	this.addOutput("Length", "number")
+}
+VectorManhattanLengthNode.title = "Manhattan Length"
+VectorManhattanLengthNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+
+	if (i !== undefined) {
+		var l = i.manhattanLength()
+		this.setOutputData(0, l)
+	}
+}
+
+function VectorLengthSqNode(argument) {
+	this.addInput("Input", "Vector")
+	this.addOutput("Length", "number")
+}
+VectorLengthSqNode.title = "Length Sq"
+VectorLengthSqNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	if (i !== undefined) {
+		var l = i.lengthSq()
+		this.setOutputData(0, l)
+	}
+}
+
+function VectorLerpNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+	this.addInput("Alpha", "number")
+
+	this.addOutput("Output", "Vector3")
+}
+VectorLerpNode.title = "Lerp"
+VectorLerpNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	var v = this.getInputData(1)
+	var a = this.getInputData(2)
+
+	if (i !== undefined && v !== undefined && a !== undefined) {
+		i.lerp(v, a)
+	}
+
+	this.setOutputData(i)
+}
+
+function VectorLerpVectorsNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+	this.addInput("Vector", "Vector")
+	this.addInput("Alpha", "number")
+
+	this.addOutput("Output", "Vector")
+}
+VectorLerpVectorsNode.title = "Lerp Vectors"
+VectorLerpVectorsNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	var v1 = this.getInputData(1)
+	var v2 = this.getInputData(2)
+	var a = this.getInputData(3)
+
+	if (i !== undefined && v1 !== undefined && v2 !== undefined && a !== undefined) {
+		i.lerpVectors(v1, v2, a)
+	}
+
+	this.setOutputData(0, i)
+}
+
+function VectorMaxNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+
+	this.addOutput("Output", "Vector")
+}
+VectorMaxNode.title = "Max"
+VectorMaxNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	var v = this.getInputData(1)
+
+	if (i !== undefined && v !== undefined) {
+		i.max(v)
+	}
+
+	this.setOutputData(0, i)
+}
+
+function VectorMinNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+
+	this.addOutput("Output", "Vector")
+}
+VectorMinNode.title = "Min"
+VectorMinNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	var v = this.getInputData(1)
+
+	if (i !== undefined && v !== undefined) {
+		i.min(v)
+	}
+
+	this.setOutputData(0, i)
+}
+
+function VectorMultiplyNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+
+	this.addOutput("Output", "Vector")
+}
+VectorMultiplyNode.title = "Multiply"
+VectorMultiplyNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	var v = this.getInputData(1)
+
+	if (i !== undefined && v !== undefined) {
+		i.multiply(v)
+	}
+
+	this.setOutputData(0, i)
+}
+
+function VectorMultiplyScalarNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Scalar", "number")
+
+	this.addOutput("Output", "Vector")
+}
+VectorMultiplyScalarNode.title = "Multiply Scalar"
+VectorMultiplyScalarNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	var s = this.getInputData(1)
+
+	if (i !== undefined && v !== undefined) {
+		i.multiplyScalar(s)
+	}
+
+	this.setOutputData(0, i)
+}
+
+function VectorMultiplyVectorsNode() {
+	this.addInput("Input", "Vector")
+	this.addInput("Vector", "Vector")
+	this.addInput("Vector", "Vector")
+
+	this.addOutput("Output", "Vector")
+}
+VectorMultiplyVectorsNode.title = "Multiply Vectors"
+VectorMultiplyVectorsNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	var v1 = this.getInputData(1)
+	var v2 = this.getInputData(2)
+
+	if (i !== undefined && v1 !== undefined && v2 !== undefined) {
+		i.multiplyVectors(v1, v2)
+	}
+
+	this.setOutputData(0, i)
+}
+
+function VectorNegateNode() {
+	this.addInput("Input", "Vector")
+	this.addOutput("Output", "Vector")
+}
+VectorNegateNode.title = "Negate"
+VectorNegateNode.prototype.onExecute = function() {
+	var i = this.getInputData(0)
+	if (i !== undefined) {
+		i.negate()
+	}
+	this.setOutputData(0, i)
+}
+
 // REGISTER THE NODES
 LiteGraph.registerNodeType("Vectors/Vector2", Vector2Node)
 LiteGraph.registerNodeType("Vectors/Vector3", Vector3Node)
@@ -423,3 +695,19 @@ LiteGraph.registerNodeType("Vectors/VectorCrossVectors", VectorCrossVectorsNode)
 LiteGraph.registerNodeType("Vectors/VectorDistanceTo", VectorDistanceToNode)
 LiteGraph.registerNodeType("Vectors/VectorManhattanDistanceTo", VectorManhattanDistanceToNode)
 LiteGraph.registerNodeType("Vectors/VectorDistanceToSquared", VectorDistanceToSquaredNode)
+LiteGraph.registerNodeType("Vectors/VectorDivide", VectorDivideNode)
+LiteGraph.registerNodeType("Vectors/VectorDivideScalar", VectorDivideScalarNode)
+LiteGraph.registerNodeType("Vectors/VectorDot", VectorDotNode)
+LiteGraph.registerNodeType("Vectors/VectorFloor", VectorFloorNode)
+LiteGraph.registerNodeType("Vectors/VectorGetComponent", VectorGetComponentNode)
+LiteGraph.registerNodeType("Vectors/VectorLength", VectorLengthNode)
+LiteGraph.registerNodeType("Vectors/VectorManhattanLength", VectorManhattanLengthNode)
+LiteGraph.registerNodeType("Vectors/VectorLengthSq", VectorLengthSqNode)
+LiteGraph.registerNodeType("Vectors/VectorLerp", VectorLerpNode)
+LiteGraph.registerNodeType("Vectors/VectorLerpVectors", VectorLerpVectorsNode)
+LiteGraph.registerNodeType("Vectors/VectorMax", VectorMaxNode)
+LiteGraph.registerNodeType("Vectors/VectorMin", VectorMinNode)
+LiteGraph.registerNodeType("Vectors/VectorMultiply", VectorMultiplyNode)
+LiteGraph.registerNodeType("Vectors/VectorMultiplyScalar", VectorMultiplyScalarNode)
+LiteGraph.registerNodeType("Vectors/VectorMultiplyVectors", VectorMultiplyVectorsNode)
+LiteGraph.registerNodeType("Vectors/VectorNegate", VectorNegateNode)

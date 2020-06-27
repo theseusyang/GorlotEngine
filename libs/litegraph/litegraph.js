@@ -9986,7 +9986,7 @@ LGraphNode.prototype.executeAction = function(action)
                     callback: LGraphCanvas.showMenuNodeOptionalOutputs
                 },
                 null,
-                {
+                { 
                     content: "Properties",
                     has_submenu: true,
                     callback: LGraphCanvas.onShowMenuNodeProperties

@@ -5,12 +5,14 @@ function GetRunningScene() {
 GetRunningScene.title = "Get Running Scene"
 
 GetRunningScene.prototype.onExecute = function() {
-	this.setOutputData(0, Editor.program.scene)
+	this.setOutputData(0, Editor.program_running.scene)
 }
 
 function addObjectToScene() {
 	this.addInput("Object", "Object3D")
 	this.addInput("Scene", "Scene")
+
+	this.addOutput("Object", "Object3D")
 }
 
 addObjectToScene.title = "Add Object To Scene"

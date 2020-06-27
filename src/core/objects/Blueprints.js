@@ -15,8 +15,38 @@ class Blueprints extends THREE.Object3D {
 		this.program = null
 		this.scene = null
 
-		this.init = {}
-		this.loop = {}
+		var defaultB = {
+			config: {},
+			groupd: {},
+			last_link_id: 0,
+			last_node_id: 1,
+			links: [],
+			nodes: [
+				{
+					flags: {},
+					id: 1,
+					inputs: [],
+					mode: 0,
+					order: 0,
+					outputs: [
+						{
+							name: "This",
+							type: "Object3D",
+							links: null
+						}
+					],
+					pos: [206, 237],
+					properties: {
+						uuid: this.uuid
+					},
+					size: [120, 50],
+					type: "Objects/This"
+				}
+			],
+			version: 0.4
+		}
+		this.init = defaultB
+		this.loop = defaultB
 		
 		// Data
 		if(blueprintsInit !== undefined) {

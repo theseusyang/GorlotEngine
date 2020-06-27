@@ -31,6 +31,7 @@ class BlueprintsEditor {
 		}
 
 		this.graphcanvas = new LGraphCanvas("#BlueprintsEditor"+Editor.nameId, this.graph)
+		this.graphcanvas.onShowMenuNodeProperties = null
 		
 		if (parent === undefined) {
 			EditorUI.mainarea.onresize = function(e) {
