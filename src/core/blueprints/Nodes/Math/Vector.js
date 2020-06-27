@@ -15,7 +15,7 @@ Vector2Node.prototype.onExecute = function() {
 	if (Y === undefined) {
 		Y = 0
 	}
-	this.setOutputData(0, new THREE.Vector2(X, Y, Z))
+	this.setOutputData(0, new THREE.Vector2(X, Y))
 }
 
 function Vector2ToVector3Node() {
@@ -673,6 +673,42 @@ VectorNegateNode.prototype.onExecute = function() {
 	this.setOutputData(0, i)
 }
 
+function VectorGetXNode() {
+	this.addInput("Vector", "Vector")
+	this.addOutput("X", "number")
+}
+VectorGetXNode.title = "Get X"
+VectorGetXNode.prototype.onExecute = function() {
+	var vec = this.getInputData(0)
+	if (vec !== undefined) {
+		this.setOutputData(0, vec.x)
+	}
+}
+
+function VectorGetYNode() {
+	this.addInput("Vector", "Vector")
+	this.addOutput("Y", "number")
+}
+VectorGetYNode.title = "Get Y"
+VectorGetYNode.prototype.onExecute = function() {
+	var vec = this.getInputData(0)
+	if (vec !== undefined) {
+		this.setOutputData(0, vec.y)
+	}
+}
+
+function VectorGetZNode() {
+	this.addInput("Vector", "Vector")
+	this.addOutput("Z", "number")
+}
+VectorGetZNode.title = "Get Z"
+VectorGetZNode.prototype.onExecute = function() {
+	var vec = this.getInputData(0)
+	if (vec !== undefined) {
+		this.setOutputData(0, vec.z)
+	}
+}
+
 // REGISTER THE NODES
 LiteGraph.registerNodeType("Vectors/Vector2", Vector2Node)
 LiteGraph.registerNodeType("Vectors/Vector3", Vector3Node)
@@ -711,3 +747,6 @@ LiteGraph.registerNodeType("Vectors/VectorMultiply", VectorMultiplyNode)
 LiteGraph.registerNodeType("Vectors/VectorMultiplyScalar", VectorMultiplyScalarNode)
 LiteGraph.registerNodeType("Vectors/VectorMultiplyVectors", VectorMultiplyVectorsNode)
 LiteGraph.registerNodeType("Vectors/VectorNegate", VectorNegateNode)
+LiteGraph.registerNodeType("Vectors/VectorGetX", VectorGetXNode)
+LiteGraph.registerNodeType("Vectors/VectorGetY", VectorGetYNode)
+LiteGraph.registerNodeType("Vectors/VectorGetZ", VectorGetZNode)

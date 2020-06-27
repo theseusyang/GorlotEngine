@@ -39,7 +39,7 @@ class Blueprints extends THREE.Object3D {
 					properties: {
 						uuid: this.uuid
 					},
-					size: [120, 50],
+					size: [140, 32],
 					type: "Objects/This"
 				}
 			],
