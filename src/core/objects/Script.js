@@ -105,6 +105,8 @@ class Script extends THREE.Object3D {
 		data.object.mode = this.mode
 		data.object.code = this.code
 		data.object.components = this.components
+
+		return data
 	}
 }
 

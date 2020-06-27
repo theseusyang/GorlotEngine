@@ -6,31 +6,22 @@
 	},
 	"geometries": [
 		{
-			"uuid": "39825215-5BEC-4B5C-B667-7F91EB8F7CE2",
+			"uuid": "C87F5F45-81B1-4970-9A8B-EB5C8A2A60DB",
 			"type": "SphereGeometry",
 			"radius": 4000,
 			"widthSegments": 32,
 			"heightSegments": 15
 		},
 		{
-			"uuid": "3F3CF015-2DAC-4AAE-972B-0208D4A61238",
+			"uuid": "DF619D85-5B3C-4EE2-8DCA-409DA48C154F",
 			"type": "BoxGeometry",
-			"name": "geometry",
 			"width": 2,
 			"height": 2,
 			"depth": 2
-		},
-		{
-			"uuid": "B1B9D7D4-D8BD-4CE8-9811-13EB5ACF2928",
-			"type": "BoxGeometry",
-			"name": "geometry",
-			"width": 20,
-			"height": 1,
-			"depth": 20
 		}],
 	"materials": [
 		{
-			"uuid": "4A6DBBDA-DB1F-4199-A49C-FAF8780D34EA",
+			"uuid": "2F7A418A-A1AE-4E9E-A14C-3272F163EE09",
 			"type": "ShaderMaterial",
 			"side": 1,
 			"uniforms": {
@@ -63,15 +54,7 @@
 			"fragmentShader": "\n\t\t\tuniform vec3 top_color;\n\t\t\tuniform vec3 bottom_color;\n\t\t\tuniform float offset;\n\t\t\tuniform float exponent;\n\t\t\tvarying vec3 vWorldPosition;\n\t\t\tvoid main() {\n\t\t\t\tfloat h = normalize(vWorldPosition + offset).y;\n\t\t\t\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n\t\t\t}\n\t\t"
 		},
 		{
-			"uuid": "76067877-8F16-4A24-B58A-31794AA9EE0F",
-			"type": "MeshPhongMaterial",
-			"color": 16777215,
-			"emissive": 0,
-			"specular": 1118481,
-			"shininess": 30
-		},
-		{
-			"uuid": "54E2F563-E599-46DC-B886-016A4CB583D6",
+			"uuid": "A654265F-5666-4045-B132-89D11ED66E0B",
 			"type": "MeshPhongMaterial",
 			"color": 16777215,
 			"emissive": 0,
@@ -79,7 +62,7 @@
 			"shininess": 30
 		}],
 	"object": {
-		"uuid": "5F367CB9-5711-4146-ABB3-673581489BEA",
+		"uuid": "162C9E67-3A14-4B9D-996F-FBFAED0626E3",
 		"type": "Program",
 		"description": "",
 		"author": "",
@@ -87,16 +70,15 @@
 		"vr": false,
 		"components": [],
 		"name": "program",
-		"initial_scene": "A125608A-9CB8-4F0F-A9B4-258EA851931D",
 		"castShadow": false,
 		"receiveShadow": false,
 		"visible": true,
 		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 		"children": [
 			{
-				"uuid": "A125608A-9CB8-4F0F-A9B4-258EA851931D",
+				"uuid": "308890BF-835F-4E40-9ED2-DA30078A3E70",
 				"type": "Scene",
-				"name": "scene_1",
+				"name": "scene",
 				"components": [],
 				"castShadow": false,
 				"receiveShadow": false,
@@ -104,7 +86,7 @@
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 				"children": [
 					{
-						"uuid": "0AC5BD6D-ED28-49BB-B383-C4D1C22CF39D",
+						"uuid": "31375D23-C1C0-4600-BF85-6097DD3930FC",
 						"type": "Sky",
 						"auto_update": false,
 						"day_time": 20,
@@ -116,52 +98,253 @@
 						"receiveShadow": false,
 						"visible": true,
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"geometry": "39825215-5BEC-4B5C-B667-7F91EB8F7CE2",
-						"material": "4A6DBBDA-DB1F-4199-A49C-FAF8780D34EA"
+						"geometry": "C87F5F45-81B1-4970-9A8B-EB5C8A2A60DB",
+						"material": "2F7A418A-A1AE-4E9E-A14C-3272F163EE09"
 					},
 					{
-						"uuid": "A3C0CDA5-A020-4CF5-8D4B-296C62E4D7EC",
+						"uuid": "A859F47F-31AC-40B9-901C-BBC5BF4A9B2C",
 						"type": "Mesh",
-						"name": "box_3",
+						"name": "box",
 						"components": [],
 						"castShadow": true,
 						"receiveShadow": true,
 						"visible": true,
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"geometry": "3F3CF015-2DAC-4AAE-972B-0208D4A61238",
-						"material": "76067877-8F16-4A24-B58A-31794AA9EE0F"
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,0,1],
+						"geometry": "DF619D85-5B3C-4EE2-8DCA-409DA48C154F",
+						"material": "A654265F-5666-4045-B132-89D11ED66E0B"
 					},
 					{
-						"uuid": "487FDC40-ED3F-4883-9031-E19E8092A80D",
+						"uuid": "A23D3716-E8CC-4391-B84F-139F39DF2608",
 						"type": "Mesh",
-						"name": "ground_4",
+						"name": "ground",
 						"components": [],
 						"castShadow": true,
 						"receiveShadow": true,
 						"visible": true,
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.5,0,1],
-						"geometry": "B1B9D7D4-D8BD-4CE8-9811-13EB5ACF2928",
-						"material": "54E2F563-E599-46DC-B886-016A4CB583D6"
+						"matrix": [20,0,0,0,0,1,0,0,0,0,20,0,0,0,0,1],
+						"geometry": "DF619D85-5B3C-4EE2-8DCA-409DA48C154F",
+						"material": "A654265F-5666-4045-B132-89D11ED66E0B"
 					},
 					{
-						"uuid": "02E25BDB-62CE-487C-9A7D-34EA8D9CF068",
-						"type": "PerspectiveCamera",
-						"name": "perspective_camera_5",
-						"components": [],
+						"uuid": "55B72A57-02AC-4602-87DD-67ECEC1626CE",
+						"type": "Blueprints",
+						"init": {
+							"last_node_id": 5,
+							"last_link_id": 6,
+							"nodes": [
+								{
+									"id": 1,
+									"type": "Objects/This",
+									"pos": [103,208],
+									"size": {
+										"0": 120,
+										"1": 50
+									},
+									"flags": {},
+									"order": 0,
+									"mode": 0,
+									"inputs": [],
+									"outputs": [
+										{
+											"name": "This",
+											"type": "Object3D",
+											"links": null
+										}],
+									"properties": {
+										"uuid": "55B72A57-02AC-4602-87DD-67ECEC1626CE"
+									}
+								},
+								{
+									"id": 4,
+									"type": "Vectors/Vector3",
+									"pos": [341,215],
+									"size": {
+										"0": 140,
+										"1": 66
+									},
+									"flags": {},
+									"order": 1,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "X",
+											"type": "number",
+											"link": null
+										},
+										{
+											"name": "Y",
+											"type": "number",
+											"link": null
+										},
+										{
+											"name": "Z",
+											"type": "number",
+											"link": null
+										}],
+									"outputs": [
+										{
+											"name": "Vector",
+											"type": "Vector",
+											"links": [2,4]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 2,
+									"type": "Logic/IfEquals",
+									"pos": [516,233],
+									"size": {
+										"0": 140,
+										"1": 46
+									},
+									"flags": {},
+									"order": 2,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Input 1",
+											"type": 0,
+											"link": 2
+										},
+										{
+											"name": "Input 2",
+											"type": 0,
+											"link": 4
+										}],
+									"outputs": [
+										{
+											"name": "Output",
+											"type": "Boolean",
+											"links": [6]
+										}],
+									"properties": {}
+								},
+								{
+									"id": 3,
+									"type": "Logic/Subgraph",
+									"pos": [832,216],
+									"size": {
+										"0": 140,
+										"1": 46
+									},
+									"flags": {},
+									"order": 3,
+									"mode": 0,
+									"inputs": [
+										{
+											"name": "Enabled",
+											"type": "Boolean",
+											"link": 6
+										}],
+									"properties": {},
+									"subgraph": {
+										"last_node_id": 2,
+										"last_link_id": 1,
+										"nodes": [
+											{
+												"id": 1,
+												"type": "Base/ConsoleLog",
+												"pos": [572,114],
+												"size": {
+													"0": 140,
+													"1": 26
+												},
+												"flags": {},
+												"order": 1,
+												"mode": 0,
+												"inputs": [
+													{
+														"name": "In",
+														"type": 0,
+														"link": 1
+													}],
+												"properties": {}
+											},
+											{
+												"id": 2,
+												"type": "Math/Euler",
+												"pos": [393,95],
+												"size": {
+													"0": 140,
+													"1": 26
+												},
+												"flags": {},
+												"order": 0,
+												"mode": 0,
+												"outputs": [
+													{
+														"name": "E",
+														"type": "number",
+														"links": [1]
+													}],
+												"properties": {}
+											}],
+										"links": [[1,2,0,1,0,0]],
+										"groups": [],
+										"config": {},
+										"version": 0.4
+									}
+								}],
+							"links": [[2,4,0,2,0,0],[4,4,0,2,1,0],[6,2,0,3,0,
+									"Boolean"]],
+							"groups": [],
+							"config": {},
+							"version": 0.4
+						},
+						"loop": {
+							"config": {},
+							"groupd": {},
+							"last_link_id": 0,
+							"last_node_id": 1,
+							"links": [
+								null,
+								{
+									"id": 1,
+									"type": "Boolean",
+									"origin_id": 2,
+									"origin_slot": 0,
+									"target_id": 3,
+									"target_slot": 0,
+									"_data": null,
+									"_pos": {
+										"0": 0,
+										"1": 0
+									}
+								}],
+							"nodes": [
+								{
+									"flags": {},
+									"id": 1,
+									"inputs": [],
+									"mode": 0,
+									"order": 0,
+									"outputs": [
+										{
+											"name": "This",
+											"type": "Object3D",
+											"links": null
+										}],
+									"pos": [206,237],
+									"properties": {
+										"uuid": "55B72A57-02AC-4602-87DD-67ECEC1626CE"
+									},
+									"size": [120,50],
+									"type": "Objects/This"
+								}],
+							"version": 0.4
+						},
+						"name": "blueprints_1",
 						"castShadow": false,
 						"receiveShadow": false,
 						"visible": true,
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0.7739999890327454,2.7039999961853027,1],
-						"fov": 99.65625,
-						"zoom": 1,
-						"near": 0.1,
-						"far": 1000000,
-						"focus": 10,
-						"aspect": 1.8458574181117533,
-						"filmGauge": 35,
-						"filmOffset": 0
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"components": []
 					}],
-				"initial_camera": "02E25BDB-62CE-487C-9A7D-34EA8D9CF068"
+				"fog_color": "#ffffff",
+				"fog_density": 0.001,
+				"fog_near": 2,
+				"fog_far": 30,
+				"fog_mode": 0
 			}]
 	}
 }

@@ -140,22 +140,25 @@ Editor.update = function()
 {
 	Editor.block_camera_move = false;
 
-	if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
-		if (Keyboard.isKeyJustPressed(Keyboard.S)) {
-			EditorUI.saveProgram()
-		}
-		else if (Keyboard.isKeyJustPressed(Keyboard.O)) {
-			EditorUI.loadProgram()
-		}
-		else if (Keyboard.isKeyJustPressed(Keyboard.W)) {
-			EditorUI.selectPreviousTab()
-			EditorUI.tabs_widget.getCurrentTab().destroy()
-		}
-	}
 
 	//Editing a scene
 	if(Editor.state === Editor.STATE_EDITING)
 	{
+
+		// Save or load files
+		if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
+			if (Keyboard.isKeyJustPressed(Keyboard.S)) {
+				EditorUI.saveProgram()
+			}
+			else if (Keyboard.isKeyJustPressed(Keyboard.O)) {
+				EditorUI.loadProgram()
+			}
+			else if (Keyboard.isKeyJustPressed(Keyboard.W)) {
+				EditorUI.selectPreviousTab()
+				EditorUI.tabs_widget.getCurrentTab().destroy()
+			}
+		}
+
 		//If object select display tools
 		if(Editor.selected_object !== null && Editor.selected_object !== undefined)
 		{

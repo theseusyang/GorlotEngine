@@ -1,160 +1,6 @@
 (function(global) {
     var LiteGraph = global.LiteGraph;
 
-    /* Button ****************/
-
-    function WidgetButton() {
-        this.addOutput("", LiteGraph.EVENT);
-        this.addOutput("", "boolean");
-        this.addProperty("text", "click me");
-        this.addProperty("font_size", 30);
-        this.addProperty("message", "");
-        this.size = [164, 84];
-        this.clicked = false;
-    }
-
-    WidgetButton.title = "Button";
-    WidgetButton.desc = "Triggers an event";
-
-    WidgetButton.font = "Arial";
-    WidgetButton.prototype.onDrawForeground = function(ctx) {
-        if (this.flags.collapsed) {
-            return;
-        }
-        var margin = 10;
-        ctx.fillStyle = "black";
-        ctx.fillRect(
-            margin + 1,
-            margin + 1,
-            this.size[0] - margin * 2,
-            this.size[1] - margin * 2
-        );
-        ctx.fillStyle = "#AAF";
-        ctx.fillRect(
-            margin - 1,
-            margin - 1,
-            this.size[0] - margin * 2,
-            this.size[1] - margin * 2
-        );
-        ctx.fillStyle = this.clicked
-            ? "white"
-            : this.mouseOver
-            ? "#668"
-            : "#334";
-        ctx.fillRect(
-            margin,
-            margin,
-            this.size[0] - margin * 2,
-            this.size[1] - margin * 2
-        );
-
-        if (this.properties.text || this.properties.text === 0) {
-            var font_size = this.properties.font_size || 30;
-            ctx.textAlign = "center";
-            ctx.fillStyle = this.clicked ? "black" : "white";
-            ctx.font = font_size + "px " + WidgetButton.font;
-            ctx.fillText(
-                this.properties.text,
-                this.size[0] * 0.5,
-                this.size[1] * 0.5 + font_size * 0.3
-            );
-            ctx.textAlign = "left";
-        }
-    };
-
-    WidgetButton.prototype.onMouseDown = function(e, local_pos) {
-        if (
-            local_pos[0] > 1 &&
-            local_pos[1] > 1 &&
-            local_pos[0] < this.size[0] - 2 &&
-            local_pos[1] < this.size[1] - 2
-        ) {
-            this.clicked = true;
-            this.triggerSlot(0, this.properties.message);
-            return true;
-        }
-    };
-
-    WidgetButton.prototype.onExecute = function() {
-        this.setOutputData(1, this.clicked);
-    };
-
-    WidgetButton.prototype.onMouseUp = function(e) {
-        this.clicked = false;
-    };
-
-    LiteGraph.registerNodeType("Base/button", WidgetButton);
-
-    function WidgetToggle() {
-        this.addInput("", "boolean");
-        this.addInput("e", LiteGraph.ACTION);
-        this.addOutput("v", "boolean");
-        this.addOutput("e", LiteGraph.EVENT);
-        this.properties = { font: "", value: false };
-        this.size = [160, 44];
-    }
-
-    WidgetToggle.title = "Toggle";
-    WidgetToggle.desc = "Toggles between true or false";
-
-    WidgetToggle.prototype.onDrawForeground = function(ctx) {
-        if (this.flags.collapsed) {
-            return;
-        }
-
-        var size = this.size[1] * 0.5;
-        var margin = 0.25;
-        var h = this.size[1] * 0.8;
-        ctx.font = this.properties.font || (size * 0.8).toFixed(0) + "px Arial";
-        var w = ctx.measureText(this.title).width;
-        var x = (this.size[0] - (w + size)) * 0.5;
-
-        ctx.fillStyle = "#AAA";
-        ctx.fillRect(x, h - size, size, size);
-
-        ctx.fillStyle = this.properties.value ? "#AEF" : "#000";
-        ctx.fillRect(
-            x + size * margin,
-            h - size + size * margin,
-            size * (1 - margin * 2),
-            size * (1 - margin * 2)
-        );
-
-        ctx.textAlign = "left";
-        ctx.fillStyle = "#AAA";
-        ctx.fillText(this.title, size * 1.2 + x, h * 0.85);
-        ctx.textAlign = "left";
-    };
-
-    WidgetToggle.prototype.onAction = function(action) {
-        this.properties.value = !this.properties.value;
-        this.trigger("e", this.properties.value);
-    };
-
-    WidgetToggle.prototype.onExecute = function() {
-        var v = this.getInputData(0);
-        if (v != null) {
-            this.properties.value = v;
-        }
-        this.setOutputData(0, this.properties.value);
-    };
-
-    WidgetToggle.prototype.onMouseDown = function(e, local_pos) {
-        if (
-            local_pos[0] > 1 &&
-            local_pos[1] > 1 &&
-            local_pos[0] < this.size[0] - 2 &&
-            local_pos[1] < this.size[1] - 2
-        ) {
-            this.properties.value = !this.properties.value;
-            this.graph._version++;
-            this.trigger("e", this.properties.value);
-            return true;
-        }
-    };
-
-    LiteGraph.registerNodeType("Base/toggle", WidgetToggle);
-
     /* Number ****************/
 
     function WidgetNumber() {
@@ -272,6 +118,339 @@
 
     LiteGraph.registerNodeType("Base/number", WidgetNumber);
 
+    //Constant
+    function ConstantNumber() {
+        this.addOutput("value", "number");
+        this.addProperty("value", 1.0);
+        this.widget = this.addWidget("number","value",1,"value");
+        this.widgets_up = true;
+        this.size = [180, 30];
+    }
+
+    ConstantNumber.title = "Float";
+    ConstantNumber.desc = "Constant number";
+
+    ConstantNumber.prototype.onExecute = function() {
+        this.setOutputData(0, parseFloat(this.properties["value"]));
+    };
+
+    ConstantNumber.prototype.getTitle = function() {
+        if (this.flags.collapsed) {
+            return this.properties.value;
+        }
+        return this.title;
+    };
+
+    ConstantNumber.prototype.setValue = function(v)
+    {
+        this.setProperty("value",v);
+    }
+
+    ConstantNumber.prototype.onDrawBackground = function(ctx) {
+        //show the current value
+        this.outputs[0].label = this.properties["value"].toFixed(3);
+    };
+
+    LiteGraph.registerNodeType("Base/Float", ConstantNumber);
+
+    function ConstantString() {
+        this.addOutput("", "Text");
+        this.addProperty("value", "");
+        this.widget = this.addWidget("text","value","","value");  //link to property value
+        this.widgets_up = true;
+        this.size = [180, 30];
+    }
+
+    ConstantString.title = "String";
+    ConstantString.desc = "Constant string";
+
+    ConstantString.prototype.getTitle = ConstantNumber.prototype.getTitle;
+
+    ConstantString.prototype.onExecute = function() {
+        this.setOutputData(0, this.properties["value"]);
+    };
+
+    ConstantString.prototype.setValue = ConstantNumber.prototype.setValue;
+
+    ConstantString.prototype.onDropFile = function(file)
+    {
+        var that = this;
+        var reader = new FileReader();
+        reader.onload = function(e)
+        {
+            that.setProperty("value",e.target.result);
+        }
+        reader.readAsText(file);
+    }
+
+    LiteGraph.registerNodeType("Base/String", ConstantString);
+
+
+    // Console.log
+    function ConsoleLogNode() {
+        this.addInput("In", null)
+    }
+
+    ConsoleLogNode.title = "Print to console"
+
+    ConsoleLogNode.prototype.onExecute = function() {
+        console.log(this.getInputData(0))
+    }
+
+    LiteGraph.registerNodeType("Base/ConsoleLog", ConsoleLogNode)
+
+
+    // Subgraph
+    function Subgraph() {
+        var self = this
+        this.size = [140, 80]
+        this.properties = {type: "if"}
+        this.addInput("Condition", "Boolean")
+
+        // Create inner graph
+        this.subgraph = new LiteGraph.LGraph()
+        this.subgraph._subgraph_node = this
+        this.subgraph._is_subgraph = true
+
+        this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this)
+
+        // Nodes input node added inside
+        this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this)
+        this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this)
+        this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this)
+        this.subgraph.onInputRemoved = this.onSubgraphRemovedInput.bind(this)
+
+        this.subgraph.onOutputAdded = this.onSubgraphNewOutput.bind(this)
+        this.subgraph.onOutputRenamed = this.onSubgraphRenamedOutput.bind(this)
+        this.subgraph.onOutputTypeChanged = this.onSubgraphTypeChangeOutput.bind(this)
+        this.subgraph.onOutputRemoved = this.onSubgraphRemovedOutput.bind(this)
+    }
+
+    Subgraph.title = "If"
+    Subgraph.desc = "Checks for a condition (Executed in a SubGraph)"
+    Subgraph.title_color = "#334"
+
+    //Subgraph.prototype.onGetInputs = function() {
+    //    return [["enabled","boolean"]]
+    //}
+
+    Subgraph.prototype.onDrawTitle = function(ctx) {
+        if (this.flags.collapsed) {
+            return
+        }
+
+        ctx.fillStyle = "#555"
+        var w = LiteGraph.NODE_TITLE_HEIGHT
+        var x = this.size[0] - w
+        ctx.fillRect(x, -w, w, w)
+        ctx.fillStyle = "#333"
+        ctx.beginPath()
+        ctx.moveTo(x + w * 0.2, -w * 0.6)
+        ctx.lineTo(x + w * 0.8, -w * 0.6)
+        ctx.lineTo(x + w * 0.5, -w * 0.3)
+        ctx.fill()
+    }
+
+    Subgraph.prototype.onDblClick = function(e, pos, graphcanvas) {
+        var self = this
+        setTimeout(function() {
+            graphcanvas.openSubgraph(self.subgraph)
+        }, 10)
+    }
+
+    Subgraph.prototype.onMouseDown = function(e, pos, graphcanvas) {
+        if (!this.flags.collapsed && pos[0] > this.size[0] - LiteGraph.NODE_TITLE_HEIGHT && pos[1] < 0) {
+            var self = this
+            setTimeout(function() {
+                graphcanvas.openSubgraph(self.subgraph)
+            }, 10)
+        }
+    }
+
+    Subgraph.prototype.onAction = function(action, param) {
+        this.subgraph.onAction(action, param)
+    }
+
+    Subgraph.prototype.onExecute = function() {
+        this.enabled = this.getInputData(0)
+        if (!this.enabled && this.properties.type === "if") {
+            return
+        } else if (this.enabled && this.properties.type === "ifnot") {
+            return
+        }
+
+        // Sends input to subgraph global inputs
+        if (this.inputs) {
+            for(var i = 0; i < this.inputs.length; i++) {
+                var input = this.inputs[i]
+                var value = this.getInputData(i)
+                this.subgraph.setInputData(input.name, value)
+            }
+        }
+
+        // Execute. TODO: Rewrite this and put here the blueprints' compile system
+        this.subgraph.runStep()
+
+        // Sends Subgraph global outputs to outputs
+        if (this.outputs) {
+            for(var i = 0; i < this.outputs.length; i++) {
+                var output = this.outputs[i]
+                var value = this.subgraph.getOutputData(output.name)
+                this.setOutputData(i, value)
+            }
+        }
+    }
+
+    Subgraph.prototype.sendEventToAllNodes = function(eventname, param, mode) {
+        if (this.enabled) {
+            this.subgraph.sendEventToAllNodes(eventname, param, mode)
+        }
+    }
+
+    // ** INPUTS *****
+    Subgraph.prototype.onSubgraphTrigger = function(event, param) {
+        var slot = this.findOutputSlot(event)
+        if (slot !== 1) {
+            this.triggerSlot(slot)
+        }
+    }
+
+    Subgraph.prototype.onSubgraphNewInput = function(name, type) {
+        var slot = this.findInputSlot(name)
+        if (slot === -1) {
+            // Add input to the node
+            this.addInput(name, type)
+        }
+    }
+
+    Subgraph.prototype.onSubgraphRenamedInput = function(oldname, name) {
+        var slot = this.findInputSlot(oldname)
+        if (slot === -1) {
+            return
+        }
+
+        var info = this.getInputInfo(slot)
+        info.name
+    }
+
+    Subgraph.prototype.onSubgraphTypeChangeInput = function(name, type) {
+        var slot = this.findInputSlot(name)
+        if (slot === -1) {
+            return
+        }
+        var info = this.getInputInfo(slot)
+        info.type = type
+    }
+
+    Subgraph.prototype.onSubgraphRemovedInput = function(name) {
+        var slot = this.findInputSlot(name)
+        if (slot === -1) {
+            return
+        }
+
+        this.removeInput(slot)
+    }
+
+    // ** OUTPUTS *****
+    Subgraph.prototype.onSubgraphNewOutput = function(name, type) {
+        var slot = this.findOutputSlot(name)
+        if (slot === -1) {
+            this.addOutput(name, type)
+        }
+    }
+
+    Subgraph.prototype.onSubgraphRenamedOutput = function(oldname, name) {
+        var slot = this.findOutputSlot(oldname)
+        if (slot === -1) {
+            return
+        }
+        var info = this.getOutputInfo(slot)
+        info.name = name
+    }
+
+    Subgraph.prototype.onSubgraphTypeChangeOutput = function(name, type) {
+        var slot = this.findOutputSlot(name)
+        if (slot === -1) {
+            return
+        }
+
+        var info = this.getOutputInfo(slot)
+        info.type = type
+    }
+
+    Subgraph.prototype.onSubgraphRemovedOutput = function(name) {
+        var slot = this.findInputSlot(name)
+        if (slot === -1) {
+            return
+        }
+        this.removeOutput(slot)
+    }
+
+    // *******
+
+    Subgraph.prototype.getExtraMenuOptions = function(graphcanvas) {
+        var self = this
+        return [
+            {
+                content: "Open",
+                callback: function() {
+                    graphcanvas.openSubgraph(self.subgraph)
+                }
+            }
+        ]
+    }
+
+    Subgraph.prototype.onResize = function(size) {
+        size[1] += 20
+    }
+
+    Subgraph.prototype.serialize = function() {
+        var data = LiteGraph.LGraphNode.prototype.serialize.call(this)
+        data.subgraph = this.subgraph.serialize()
+        return data
+    }
+
+    Subgraph.prototype.clone = function() {
+        var node = LiteGraph.createNode(this.type)
+        var data = this.serialize()
+        delete data["id"]
+        delete data["inputs"]
+        delete data["outputs"]
+        node.configure(data)
+        return node
+    }
+
+    Subgraph.prototype.buildFromNodes = function(nodes) {
+        // TODO
+    }
+
+    // Register
+
+    LiteGraph.Subgraph = Subgraph
+    LiteGraph.registerNodeType("Logic/Subgraph", Subgraph)
+
+    // ** Boolean *****
+    function ConstantBoolean() {
+        this.addOutput("", "Boolean")
+        this.addProperty("value", true)
+        this.widget = this.addWidget("toggle", "value", true, "value")
+        this.widgets_up = true
+        this.size = [140, 30]
+    }
+    ConstantBoolean.title = "Boolean"
+    ConstantBoolean.desc = "Boolean"
+
+    ConstantBoolean.prototype.onExecute = function() {
+        this.setOutputData(0, this.properties["value"])
+    }
+
+    ConstantBoolean.prototype.setValue = ConstantNumber.prototype.setValue
+
+    ConstantBoolean.prototype.onAction = function(action) {
+        this.setValue(!this.properties.value)
+    }
+
+    LiteGraph.registerNodeType("Logic/Boolean", ConstantBoolean)
 
     /* Combo ****************/
 
@@ -511,85 +690,4 @@
     };
 
     LiteGraph.registerNodeType("Base/internal_slider", WidgetSliderGUI);
-
-    //Constant
-    function ConstantNumber() {
-        this.addOutput("value", "number");
-        this.addProperty("value", 1.0);
-        this.widget = this.addWidget("number","value",1,"value");
-        this.widgets_up = true;
-        this.size = [180, 30];
-    }
-
-    ConstantNumber.title = "Float";
-    ConstantNumber.desc = "Constant number";
-
-    ConstantNumber.prototype.onExecute = function() {
-        this.setOutputData(0, parseFloat(this.properties["value"]));
-    };
-
-    ConstantNumber.prototype.getTitle = function() {
-        if (this.flags.collapsed) {
-            return this.properties.value;
-        }
-        return this.title;
-    };
-
-    ConstantNumber.prototype.setValue = function(v)
-    {
-        this.setProperty("value",v);
-    }
-
-    ConstantNumber.prototype.onDrawBackground = function(ctx) {
-        //show the current value
-        this.outputs[0].label = this.properties["value"].toFixed(3);
-    };
-
-    LiteGraph.registerNodeType("Base/Float", ConstantNumber);
-
-    function ConstantString() {
-        this.addOutput("", "Text");
-        this.addProperty("value", "");
-        this.widget = this.addWidget("text","value","","value");  //link to property value
-        this.widgets_up = true;
-        this.size = [180, 30];
-    }
-
-    ConstantString.title = "String";
-    ConstantString.desc = "Constant string";
-
-    ConstantString.prototype.getTitle = ConstantNumber.prototype.getTitle;
-
-    ConstantString.prototype.onExecute = function() {
-        this.setOutputData(0, this.properties["value"]);
-    };
-
-    ConstantString.prototype.setValue = ConstantNumber.prototype.setValue;
-
-    ConstantString.prototype.onDropFile = function(file)
-    {
-        var that = this;
-        var reader = new FileReader();
-        reader.onload = function(e)
-        {
-            that.setProperty("value",e.target.result);
-        }
-        reader.readAsText(file);
-    }
-
-    LiteGraph.registerNodeType("Base/String", ConstantString);
-
-
-    // Console.log
-    function ConsoleLogNode() {
-        this.addInput("In", null)
-    }
-
-    ConsoleLogNode.title = "Print to console"
-
-    ConsoleLogNode.prototype.onExecute = function() {
-        console.log(this.getInputData(0))
-    }
-
-    LiteGraph.registerNodeType("Base/ConsoleLog", ConsoleLogNode)
 })(this);

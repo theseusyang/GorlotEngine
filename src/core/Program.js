@@ -162,6 +162,11 @@ class Program extends THREE.Object3D {
 		return loader.parse(data)
 	}
 
+	dispose() {
+		// Dispose program data (to avoid memory leaks)
+		// TODO: This
+	}
+
 	toJSON(meta) {
 		var isRootObject = (meta === undefined);
 		var output = {};

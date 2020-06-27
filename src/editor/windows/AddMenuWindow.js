@@ -180,14 +180,10 @@ class AddMenuWindow {
 		}
 		else if (o === "Text") {
 
-			var obj = null
-			var loader = new THREE.FontLoader().load("data/fonts/helvetiker_bold.typeface.js", function(font) {
-        	    var material = new THREE.MeshPhongMaterial()
-        	    var obj = new Text3D("text", font, material)
-        	    obj.receiveShadow = true
-        	    obj.castShadow = true
-        	    Editor.addToActualScene(obj)
-        	})
+			var obj = new Text3D("text", Editor.default_material)
+			obj.receiveShadow = true
+			obj.castShadow = true
+			Editor.addToActualScene(obj)
 
 		}
 		else if (o === "Point Light") {

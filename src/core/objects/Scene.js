@@ -37,18 +37,20 @@ class Scene extends THREE.Scene {
 	}
 
 	initialize() {
-		// Initialize children and select camera
-		for(var i = 0; i < this.children.length; i++) {
-			if (this.initial_camera === this.children[i].uuid) {
-				this.camera = this.children[i]
-			}
+		// Get initial camera
+		var camera = this.getInitialCamera()
+		if (camera !== null) {
+			this.camera = camera
+		}
 
+		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].initialize()
 		}
 	}
 
 	update() {
-		//this.world.step(1/60);
+		// Update physics
+		this.world.step(1/60);
 	
 		for(var i = 0; i < this.children.length; i++)
 		{
@@ -60,6 +62,26 @@ class Scene extends THREE.Scene {
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].stop()
 		}
+	}
+
+	getInitialCamera(obj) {
+		// Get default camera
+		if (obj === undefined) {
+			obj = this
+		}
+
+		if (this.initial_camera === obj.uuid) {
+			return obj
+		}
+
+		for(var i = 0; i < obj.children.length; i++) {
+			var camera = this.getInitialCamera(obj.children[i])
+			if (camera !== null) {
+				return camera
+			}
+		}
+
+		return null
 	}
 
 	addComponent(compo) {

@@ -47,6 +47,9 @@ source.append("core/Program.js")
 source.append("core/ObjectUtils.js")
 source.append("core/Global.js")
 
+source.append("core/loaders/TextureLoader.js")
+source.append("core/loaders/FontLoader.js")
+
 source.append("core/objects/lights/PointLight.js")
 source.append("core/objects/lights/SpotLight.js")
 source.append("core/objects/lights/AmbientLight.js")
@@ -97,6 +100,7 @@ source.append("core/blueprints/Nodes/Base.js")
 source.append("core/blueprints/Nodes/Math/Math.js")
 source.append("core/blueprints/Nodes/Math/Vector.js")
 source.append("core/blueprints/Nodes/Objects.js")
+source.append("core/blueprints/Nodes/Logic.js")
 source.append("core/blueprints/Nodes/Scene.js")
 
 source.append("App.js")

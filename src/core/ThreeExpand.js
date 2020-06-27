@@ -87,11 +87,9 @@ THREE.Object3D.prototype.toJSON = function(meta) {
 	{
 		object.children = [];
 
-		for(var i = 0; i < this.children.length; i ++)
+		for(var i = 0; i < this.children.length; i++)
 		{
-			if(object !== undefined) {
-				object.children.push( this.children[ i ].toJSON(meta).object);
-			}
+			object.children.push( this.children[ i ].toJSON(meta).object);
 		}
 	}
 
