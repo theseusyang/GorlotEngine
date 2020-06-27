@@ -55,10 +55,19 @@ class Text3D extends THREE.Mesh {
 	}
 
 	toJSON(meta) {
+		// Backup Geometry and set to undefined, to avoid being stored
+		var geometry = this.geometry
+		this.geometry = undefined
+
+		// Generate JSON
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
-		data.object.components = this.components
 		data.object.text = this.text
+		data.object.font = JSON.stringify(this.font)
+		data.object.components = this.components
+
+		// Restore Geometry
+		this.geometry = geometry
 
 		return data
 	}

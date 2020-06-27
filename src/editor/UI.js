@@ -155,7 +155,7 @@ EditorUI.saveProgram = function() {
         } catch(e) {
             console.error("Error saving program: " + e)
         }
-    })
+    }, ".json", true)
 }
 
 // Open load program window

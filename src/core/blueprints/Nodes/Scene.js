@@ -1,11 +1,18 @@
 function GetRunningScene() {
+	this.addInput("Object", "Object3D")
 	this.addOutput("Scene", "Scene")
 }
 
 GetRunningScene.title = "Get Running Scene"
 
 GetRunningScene.prototype.onExecute = function() {
-	this.setOutputData(0, Editor.program_running.scene)
+	var obj = this.getInputData(0)	
+
+	if(obj !== undefined && obj instanceof THREE.Object3D) {
+		var scene = ObjectUtils.getScene(obj)
+		this.setOutputData(0, scene)
+	}
+	// This output doesn't work :'(.this.setOutputData(0, Editor.program_running.scene)
 }
 
 function addObjectToScene() {

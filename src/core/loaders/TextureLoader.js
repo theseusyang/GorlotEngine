@@ -9,7 +9,9 @@ class TextureLoader {
 	}
 
 	load(url, onLoad, onProgress, onError) {
-		if (this.path !== undefined) {url = this.path + url}
+		if (this.path !== undefined) {
+			url = this.path + url
+		}
 	
 		var self = this
 		var cached = Cache.get(url)

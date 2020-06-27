@@ -436,6 +436,11 @@ function parseObject(data, geometries, materials)
 			object = new ParticleEmitter()
 			break;
 
+		case "Text3D":
+			var material = getMaterial(data.material)
+			object = new Text3D(data.text, material)
+			break;
+
 		case 'Program':
 			object = new Program(data.name, data.description, data.author, data.version, data.vr, data.time)
 			if (data.initial_scene !== undefined) {
