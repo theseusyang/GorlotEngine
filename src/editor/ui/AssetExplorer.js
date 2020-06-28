@@ -121,7 +121,7 @@ function EditorUIAssetExplorer() {
             var file = event.srcElement.value
 
             try {
-                var map = new THREE.TextureLoader().load(file)
+                var map = new Texture(file)
 
                 var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
                 var sprite = new Sprite(material)
@@ -132,8 +132,23 @@ function EditorUIAssetExplorer() {
         }, "image/*")
     }})
 
+    EditorUI.asset_explorer_menu.add("Import/Resources/Video", {callback: () => {
+        App.chooseFile((event) => {
+            var file = event.srcElement.value
+
+            try {
+                var map = new VideoTexture(file)
+                var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
+                var sprite = new Sprite(material)
+                Editor.addToActualScene(sprite)
+            } catch(e) {console.error("Error loading file: " + e)}
+        }, "video/*")
+    }})
+
     EditorUI.asset_explorer_menu.add("Import/Resources/Audio", {callback: () => {
-        // TODO: Import audio
+        App.chooseFile((event) => {
+
+        }, "audio/*")
     }})
 
     // ----- CREATE -----

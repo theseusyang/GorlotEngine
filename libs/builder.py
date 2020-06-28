@@ -47,7 +47,11 @@ source.append("core/Program.js")
 source.append("core/ObjectUtils.js")
 source.append("core/Global.js")
 
-source.append("core/loaders/TextureLoader.js")
+source.append("core/texture/TextTexture.js")
+source.append("core/texture/VideoTexture.js")
+source.append("core/texture/WebcamTexture.js")
+source.append("core/texture/Texture.js")
+
 source.append("core/loaders/FontLoader.js")
 
 source.append("core/objects/lights/PointLight.js")
