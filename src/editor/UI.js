@@ -100,7 +100,7 @@ EditorUI.selectPreviousTab = function() {
         EditorUI.tabs_widget.selectTab(tab)
     }
 
-    if (tab !== undefined && tab.id === EditorUI.canvas.id) {
+    if (tab !== undefined || tab !== null && tab.id === EditorUI.canvas.id) {
         if (Editor.state !== Editor.STATE_TESTING) {
             Editor.setState(Editor.STATE_EDITING)
         }
