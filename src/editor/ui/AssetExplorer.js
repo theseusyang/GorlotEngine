@@ -180,21 +180,26 @@ function EditorUIAssetExplorer() {
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
     EditorUI.asset_explorer_inspector = new LiteGUI.Inspector()
-    EditorUI.asset_explorer_list = EditorUI.asset_explorer_inspector.addList(null, EditorUI.asset_explorer_objects)
+    EditorUI.asset_explorer_list = EditorUI.asset_explorer_inspector.addList(null, EditorUI.asset_explorer_objects, {height: EditorUI.mainarea.getSection(0).getSection(1).getHeight()-60, callback_dblclick: (v) => {
+        console.log(v.attachedTo)
+    }})
     EditorUI.asset_explorer_objects = []
 
-    EditorUI.addObject("Test Script", "Script")
-    EditorUI.addObject("Script 2", "Script")
-    EditorUI.addObject("Material", "Material")
+    EditorUI.addObject("Test Script", "Script", new THREE.MeshPhongMaterial())
+    EditorUI.addObject("Script 2", "Script", new THREE.MeshPhongMaterial())
+    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
 
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)
 }
 
-EditorUI.addObject = function(name, type) {
+EditorUI.addObject = function(name, type, attachedTo) {
     
     var obj = {
         "name": name,
-        "type": type
+        "type": type,
+        "icon": "data/icons/assets/video.png",
+        "attachedTo": attachedTo,
+        "style": "width: 74px; display: inline-block; text-align: center;"
     }
 
     EditorUI.asset_explorer_objects.push(obj)
