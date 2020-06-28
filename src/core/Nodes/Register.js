@@ -4,7 +4,7 @@ function unregisterNodes() {
 }
 
 function registerMaterialNodes() {
-	
+	registerMaterialNodeNodes()
 }
 
 function registerBlueprintsNodes() {

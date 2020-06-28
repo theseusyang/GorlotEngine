@@ -1,6 +1,8 @@
 class MaterialEditor {
 	constructor(parent, material) {
 
+		// TODO: Create an area with an horizontal split, in the left will be an sphere with the editing material, and in the left, the material node editor
+
 		var self = this
 		this.id = "Material Editor " + MaterialEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
@@ -30,10 +32,41 @@ class MaterialEditor {
 		Editor.setState(Editor.STATE_IDLE)
 
 		// Material attached to the editor
-		this.material = material ? material : null
+		this.material = material ? material : new THREE.MeshPhongMaterial
 
-		// TODO: Store the nodes of a material
-		this.graph = new LGraph()
+		var defaultNodes = {
+			config: {},
+			groups: [],
+			last_link_id: 0,
+			last_node_id: 1,
+			links: [],
+			nodes: [
+				{
+					flags: {},
+					id: 1,
+					mode: 0,
+					outputs: [{
+
+					}],
+					pos: [184, 189],
+					properties: {
+						mat: this.material
+					},
+					size: [140, 26],
+					type: "Material/Material"
+				}
+			],
+			version: 0.4
+		}
+
+		this.nodes = this.material.nodes
+		console.log(this.nodes)
+
+		if (JSON.stringify(this.nodes) === '{}') {
+			this.graph = new LGraph(defaultNodes)
+		} else {
+			this.graph = new LGraph(this.nodes)
+		}
 
 		this.graphcanvas = new LGraphCanvas("#MaterialEditor"+MaterialEditor.id, this.graph)
 
@@ -44,7 +77,7 @@ class MaterialEditor {
 		}
 
 		this.interval = setInterval(() => {
-			// Every second, the material is gonna be saved
+			// Every second, the material is saved
 			self.updateMaterial()
 		}, 1000)
 
@@ -52,7 +85,9 @@ class MaterialEditor {
 	}
 
 	updateMaterial() {
-		// TODO: Store the nodes of the material
+		if (this.material.updateNodes !== undefined) {
+			this.material.updateNodes(this.graph.serialize())
+		}
 	}
 
 	updateInterface() {

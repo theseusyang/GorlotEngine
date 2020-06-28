@@ -212,7 +212,7 @@ function EditorUIAssetExplorer() {
     EditorUI.asset_explorer_objects = []
 
     for(var i = 0; i < 25; i++) {
-        EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
+        EditorUI.addObject("Material", "Material", new MeshPhongMaterial())
     }
 
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)
@@ -220,11 +220,14 @@ function EditorUIAssetExplorer() {
 
 EditorUI.addObject = function(name, type, attachedTo) {
     
+    var ins = attachedTo
+    ins.name = name
+
     var obj = {
         name: name,
         type: type,
         icon: "data/icons/assets/video.png",
-        attachedTo: attachedTo,
+        attachedTo: ins,
         style: "width: 80px; display: inline-block; text-align: center;"
     }
 

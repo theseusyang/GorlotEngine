@@ -108,7 +108,13 @@ source.append("core/Nodes/Blueprints/Arrays.js")
 source.append("core/Nodes/Blueprints/Objects.js")
 source.append("core/Nodes/Blueprints/Scene.js")
 
+# Materials nodes
+source.append("core/Nodes/Materials/Material.js")
+
 source.append("core/Nodes/Register.js")
+
+# Assets
+source.append("core/assets/Materials/MeshPhongMaterial.js")
 
 source.append("App.js")
 
