@@ -1,12 +1,12 @@
 class MaterialEditor {
 	constructor(parent, material) {
 
-		// TODO: Create an area with an horizontal split, in the left will be an sphere with the editing material, and in the left, the material node editor
+		// TODO: Fix this, apparently, when you are editing a material (and the changes are applied) and then you close that MaterialEditor, when you reopen it, the changes ain't applied
 
 		var self = this
 		this.id = "Material Editor " + MaterialEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
-			this.graph.stop()
+			self.graph.stop()
 			clearInterval(self.interval)
 			MaterialEditor.id--
 			
@@ -14,7 +14,12 @@ class MaterialEditor {
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
 			// This is useful when handling different types of editors and one single Graph library <3
+			if(self.preview !== undefined) {
+				Mouse.canvas = self.preview
+			}
+
 			unregisterNodes()
+			registerBaseNodes()
 			registerMaterialNodes()
 
 			Editor.setState(Editor.STATE_IDLE)
@@ -43,6 +48,8 @@ class MaterialEditor {
 		this.preview.style.position = "relative"
 		this.parent.appendChild(this.preview)
 
+		Mouse.canvas = this.preview
+
 		// Material preview renderer
 		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: true})
 		this.renderer.setSize(200, 200)
@@ -60,11 +67,6 @@ class MaterialEditor {
 
 		// Material attached to the editor
 		this.material = material
-		
-		// Sphere
-		var sphere = new Model3D(new THREE.SphereBufferGeometry(1, 32, 32), this.material)
-		sphere.position.set(0, 0, -2.5)
-		this.scene.add(sphere)
 
 		var defaultNodes = {
 			config: {},
@@ -77,22 +79,55 @@ class MaterialEditor {
 					flags: {},
 					id: 1,
 					mode: 0,
+					inputs: [
+						{
+							name: "Colour",
+							type: "Color",
+							link: null
+						},
+						{
+							name: "Emissive",
+							type: "number",
+							link: null
+						},
+						{
+							name: "Reflectivity",
+							type: "number",
+							link: null
+						},
+						{
+							name: "Shininess",
+							type: "number",
+							link: null
+						},
+						{
+							name: "Specular",
+							type: "Color",
+							link: null
+						},
+						{
+							name: "Wireframe",
+							type: "Boolean",
+							link: null
+						}
+					],
 					outputs: [{
-
+						name: "Material",
+						type: "Material",
+						links: null
 					}],
-					pos: [184, 189],
+					pos: [208, 140],
 					properties: {
 						mat: this.material
 					},
-					size: [140, 26],
-					type: "Material/Material"
+					size: [178, 126],
+					type: "Material/MeshPhongMaterial"
 				}
 			],
 			version: 0.4
 		}
 
 		this.nodes = this.material.nodes
-		console.log(this.nodes)
 
 		if (JSON.stringify(this.nodes) === '{}') {
 			this.graph = new LGraph(defaultNodes)
@@ -100,6 +135,11 @@ class MaterialEditor {
 			this.graph = new LGraph(this.nodes)
 		}
 
+		// Sphere
+		this.sphere = new Model3D(new THREE.SphereBufferGeometry(1, 32, 32), this.material)
+		this.sphere.position.set(0, 0, -2.5)
+		this.scene.add(this.sphere)
+		
 		this.graphcanvas = new LGraphCanvas("#MaterialEditor"+MaterialEditor.id, this.graph)
 
 		if (parent === undefined) {
@@ -114,7 +154,7 @@ class MaterialEditor {
 			// Every second, the material is saved
 			self.updateMaterial()
 			self.update()
-		}, 1000/120)
+		}, 1000/60)
 
 		MaterialEditor.id++
 	
@@ -123,6 +163,7 @@ class MaterialEditor {
 	updateMaterial() {
 		if (this.material.updateNodes !== undefined) {
 			this.material.updateNodes(this.graph.serialize())
+			this.material.update(this.material)
 		}
 	}
 
@@ -132,6 +173,12 @@ class MaterialEditor {
 
 	update() {
 		this.renderer.render(this.scene, this.camera)
+	
+		if (Mouse.insideCanvas()) {
+			if (Mouse.buttonPressed(Mouse.LEFT)) {
+				// TODO: Sphere rotation
+			}
+		}
 	}
 }
 

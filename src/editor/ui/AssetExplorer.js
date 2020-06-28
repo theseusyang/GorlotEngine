@@ -165,6 +165,7 @@ function EditorUIAssetExplorer() {
         if (v.attachedTo instanceof THREE.MeshPhongMaterial) {
             var mat = new MaterialEditor(undefined, v.attachedTo)
             mat.updateInterface()
+            console.log(v.attachedTo)
         }
     }, callback_contextmenu: (v, e) => {
         var context = new LiteGUI.ContextMenu([

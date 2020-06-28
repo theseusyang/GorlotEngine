@@ -8,6 +8,11 @@ class SceneEditor {
 			this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 				SceneEditor.id--
 			}, callback: () => {
+
+				if (self.element !== undefined) {
+					Mouse.canvas = self.element
+				}
+
 				Editor.setState(Editor.STATE_EDITING)
 			}, ondrop: (e) => {
 				e.preventDefault()

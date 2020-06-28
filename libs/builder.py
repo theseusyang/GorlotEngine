@@ -110,6 +110,7 @@ source.append("core/Nodes/Blueprints/Scene.js")
 
 # Materials nodes
 source.append("core/Nodes/Materials/Material.js")
+source.append("core/Nodes/Materials/Color.js")
 
 source.append("core/Nodes/Register.js")
 
