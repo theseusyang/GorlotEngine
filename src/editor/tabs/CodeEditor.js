@@ -6,7 +6,8 @@ class CodeEditor {
 			CodeEditor.id--
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
-			
+			Editor.setState(Editor.STATE_IDLE)
+			Editor.resetEditingFlags()
 		}})
 
 		if (parent !== undefined) {

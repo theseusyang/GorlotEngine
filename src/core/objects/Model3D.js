@@ -4,6 +4,9 @@ class Model3D extends THREE.Mesh {
 
 		this.name = "model"
 
+		this.receiveShadow = true
+		this.castShadow = true
+
 		this.components = []
 
 		this.defaultComponents = []

@@ -15,7 +15,8 @@ class BlueprintsEditor {
 			unregisterNodes()
 			registerBlueprintsNodes()
 
-			Editor.setState(Editor.STATE_EDITING)
+			Editor.setState(Editor.STATE_IDLE)
+			Editor.resetEditingFlags()
 		}})
 
 		if (parent !== undefined) {

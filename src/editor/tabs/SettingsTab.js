@@ -9,6 +9,7 @@ class SettingsTab {
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
 			Editor.setState(Editor.STATE_IDLE)
+			Editor.resetEditingFlags()
 		}})
 
 		Editor.setState(Editor.STATE_IDLE)
