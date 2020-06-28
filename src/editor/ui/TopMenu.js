@@ -60,18 +60,7 @@ function EditorUITopMenu() {
         App.chooseFile(function(e) {
             var file = e.srcElement.value
             try {
-                var zip = new JSZip()
-                var output = Editor.program.toJSON()
-                var json = JSON.stringify(output)
-
-                zip.file("app.json", json)
-                zip.file("index.html", App.readFile("runtime/index.html"))
-                zip.file("Main.js", App.readFile("runtime/Main.js"))
-
-                //var zfile = zip.generate({type: "blob"})
-                //console.log(zfile)
-                //App.writeFile(file, zfile)
-                //TODO: This
+                Editor.exportWebProject(file)
             } catch(e) {
                 console.error("Error saving file: " + e)
             }
@@ -148,6 +137,7 @@ function EditorUITopMenu() {
             menuItem.name = "Stop"
             EditorUI.selectPreviousTab()
             Editor.setState(Editor.STATE_TESTING)
+            registerAllNodes()
         } else if(Editor.state === Editor.STATE_TESTING) {
             menuItem.name = "Run"
             Editor.setState(Editor.STATE_EDITING)

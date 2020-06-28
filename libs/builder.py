@@ -100,13 +100,15 @@ source.append("core/components/Containers/SceneComponent.js")
 # Blueprints Nodes
 source.append("../libs/litegraph/litegraph.js")
 
-source.append("core/blueprints/Nodes/Base.js")
-source.append("core/blueprints/Nodes/Math/Math.js")
-source.append("core/blueprints/Nodes/Math/Vector.js")
-source.append("core/blueprints/Nodes/Logic.js")
-source.append("core/blueprints/Nodes/Arrays.js")
-source.append("core/blueprints/Nodes/Objects.js")
-source.append("core/blueprints/Nodes/Scene.js")
+source.append("core/Nodes/Blueprints/Base.js")
+source.append("core/Nodes/Blueprints/Math/Math.js")
+source.append("core/Nodes/Blueprints/Math/Vector.js")
+source.append("core/Nodes/Blueprints/Logic.js")
+source.append("core/Nodes/Blueprints/Arrays.js")
+source.append("core/Nodes/Blueprints/Objects.js")
+source.append("core/Nodes/Blueprints/Scene.js")
+
+source.append("core/Nodes/Register.js")
 
 source.append("App.js")
 
@@ -114,8 +116,6 @@ source.append("App.js")
 
 editorLibs.append("litegui/litegui.js")
 editorLibs.append("jscolor/jscolor.js")
-
-editorLibs.append("litegraph/litegraph-editor.js")
 
 editorLibs.append("codemirror/codemirror.js")
 editorLibs.append("codemirror/mode/javascript/javascript.js")
@@ -125,7 +125,6 @@ editorLibs.append("codemirror/mode/javascript/javascript.js")
 editorCss.append("libs/litegui/litegui.css")
 
 editorCss.append("libs/litegraph/litegraph.css")
-editorCss.append("libs/litegraph/litegraph-editor.css")
 
 editorCss.append("libs/codemirror/codemirror.css")
 editorCss.append("libs/codemirror/theme/monokai.css")
@@ -141,6 +140,7 @@ editor.append("editor/tools/RotateTool.js")
 editor.append("editor/windows/AddMenuWindow.js")
 
 editor.append("editor/tabs/CodeEditor.js")
+editor.append("editor/tabs/MaterialEditor.js")
 editor.append("editor/tabs/SceneEditor.js")
 editor.append("editor/tabs/SettingsTab.js")
 editor.append("editor/tabs/BlueprintsEditor.js")

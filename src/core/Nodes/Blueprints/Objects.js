@@ -83,7 +83,9 @@ ThisNode.prototype.onExecute = function() {
 	}
 }
 
-LiteGraph.registerNodeType("Objects/Element", ElementNode)
-LiteGraph.registerNodeType("Objects/GetObjectByName", GetObjectByNameNode)
-LiteGraph.registerNodeType("Objects/GetObjectByUUID", GetObjectByUUIDNode)
-LiteGraph.registerNodeType("Objects/This", ThisNode)
+function registerObjectNodes() {
+	LiteGraph.registerNodeType("Objects/Element", ElementNode)
+	LiteGraph.registerNodeType("Objects/GetObjectByName", GetObjectByNameNode)
+	LiteGraph.registerNodeType("Objects/GetObjectByUUID", GetObjectByUUIDNode)
+	LiteGraph.registerNodeType("Objects/This", ThisNode)
+}

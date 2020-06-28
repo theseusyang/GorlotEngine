@@ -1,5 +1,5 @@
-(function(global) {
-    var LiteGraph = global.LiteGraph;
+//(function(global) {
+    //var LiteGraph = global.LiteGraph;
 
     /* Number ****************/
 
@@ -116,8 +116,6 @@
         }
     };
 
-    LiteGraph.registerNodeType("Base/number", WidgetNumber);
-
     //Constant
     function ConstantNumber() {
         this.addOutput("value", "number");
@@ -151,8 +149,6 @@
         this.outputs[0].label = this.properties["value"].toFixed(3);
     };
 
-    LiteGraph.registerNodeType("Base/Float", ConstantNumber);
-
     function ConstantString() {
         this.addOutput("", "Text");
         this.addProperty("value", "");
@@ -183,9 +179,6 @@
         reader.readAsText(file);
     }
 
-    LiteGraph.registerNodeType("Base/String", ConstantString);
-
-
     // Console.log
     function ConsoleLogNode() {
         this.addInput("In", null)
@@ -196,9 +189,6 @@
     ConsoleLogNode.prototype.onExecute = function() {
         console.log(this.getInputData(0))
     }
-
-    LiteGraph.registerNodeType("Base/ConsoleLog", ConsoleLogNode)
-
 
     // Subgraph
     function Subgraph() {
@@ -424,11 +414,6 @@
         // TODO
     }
 
-    // Register
-
-    LiteGraph.Subgraph = Subgraph
-    LiteGraph.registerNodeType("Logic/Subgraph", Subgraph)
-
     // ** Boolean *****
     function ConstantBoolean() {
         this.addOutput("", "Boolean")
@@ -449,8 +434,6 @@
     ConstantBoolean.prototype.onAction = function(action) {
         this.setValue(!this.properties.value)
     }
-
-    LiteGraph.registerNodeType("Logic/Boolean", ConstantBoolean)
 
     /* Combo ****************/
 
@@ -488,8 +471,6 @@
             this.widget.value = value;
         }
     };
-
-    LiteGraph.registerNodeType("Base/combo", WidgetCombo);
 
 
     /* Knob ****************/
@@ -652,8 +633,6 @@
         }
     };
 
-    LiteGraph.registerNodeType("Base/knob", WidgetKnob);
-
     //Show value inside the debug console
     function WidgetSliderGUI() {
         this.addOutput("", "number");
@@ -689,5 +668,18 @@
         this.setOutputData(0, this.properties.value);
     };
 
-    LiteGraph.registerNodeType("Base/internal_slider", WidgetSliderGUI);
-})(this);
+
+    function registerBaseNodes() {
+        LiteGraph.registerNodeType("Base/number", WidgetNumber);
+        LiteGraph.registerNodeType("Base/Float", ConstantNumber);
+        LiteGraph.registerNodeType("Base/String", ConstantString);
+        LiteGraph.registerNodeType("Base/ConsoleLog", ConsoleLogNode)
+        LiteGraph.registerNodeType("Logic/Subgraph", Subgraph)
+        LiteGraph.registerNodeType("Logic/Boolean", ConstantBoolean)
+        LiteGraph.registerNodeType("Base/combo", WidgetCombo);
+        LiteGraph.registerNodeType("Base/knob", WidgetKnob);
+        LiteGraph.registerNodeType("Base/internal_slider", WidgetSliderGUI);
+    }
+
+
+//})(this);

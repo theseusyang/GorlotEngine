@@ -11,6 +11,10 @@ class BlueprintsEditor {
 			self.updateBlueprints()
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
+			// This is useful when handling different types of editors and one single Graph library <3
+			unregisterNodes()
+			registerBlueprintsNodes()
+
 			Editor.setState(Editor.STATE_EDITING)
 		}})
 
@@ -21,7 +25,7 @@ class BlueprintsEditor {
 		}
 
 		this.canvas = document.createElement("canvas")
-		this.canvas.id = "BlueprintsEditor" + Editor.nameId
+		this.canvas.id = "BlueprintsEditor" + BlueprintsEditor.id
 
 		this.parent.appendChild(this.canvas)
 
@@ -37,7 +41,7 @@ class BlueprintsEditor {
 			this.graph = new LGraph(blueprints.getLoop())
 		}
 
-		this.graphcanvas = new LGraphCanvas("#BlueprintsEditor"+Editor.nameId, this.graph)
+		this.graphcanvas = new LGraphCanvas("#BlueprintsEditor"+CodeEditor.id, this.graph)
 		this.graphcanvas.onShowMenuNodeProperties = null
 		
 		if (parent === undefined) {

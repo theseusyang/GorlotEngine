@@ -46,6 +46,8 @@ GetArrayPositionItemNode.prototype.onExecute = function() {
 	}
 }
 
-LiteGraph.registerNodeType("Array/Array", ArrayNode)
-LiteGraph.registerNodeType("Array/GetArrayLength", GetArrayLengthNode)
-LiteGraph.registerNodeType("Array/GetArrayPositionItem", GetArrayPositionItemNode)
+function registerArrayNodes() {
+	LiteGraph.registerNodeType("Array/Array", ArrayNode)
+	LiteGraph.registerNodeType("Array/GetArrayLength", GetArrayLengthNode)
+	LiteGraph.registerNodeType("Array/GetArrayPositionItem", GetArrayPositionItemNode)
+}

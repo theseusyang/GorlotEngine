@@ -14,7 +14,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0"
-Editor.TIMESTAMP = "Sat 27 Jun 2020 23:18:40"
+Editor.TIMESTAMP = "Sun 28 Jun 2020 17:44:02"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -729,6 +729,24 @@ Editor.loadProgram = function(fname) {
 	//}
 
 	Editor.updateTreeView()
+}
+
+// Export web project to a file
+Editor.exportWebProject = function(fname) {
+	var zip = new JSZip()
+	var output = Editor.program.toJSON()
+	var json = JSON.stringify()
+
+	zip.file("app.json", json)
+	zip.file("index.html", App.readFile("runtime/index.html"))
+	zip.file("Main.js", App.readFile("runtime/Main.js"))
+
+	var zfile = zip.generate({type: "blob"})
+	console.log(zfile)
+
+	// TODO: This
+
+	// App.writeFile(fname, zfile)
 }
 
 // New Program

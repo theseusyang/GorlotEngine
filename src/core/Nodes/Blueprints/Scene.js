@@ -39,5 +39,7 @@ addObjectToScene.prototype.onExecute = function() {
 	var obj = scene.add(object3d)
 }
 
-LiteGraph.registerNodeType("Scenes/GetRunningScene", GetRunningScene)
-LiteGraph.registerNodeType("Scenes/AddObjectToScene", addObjectToScene)
+function registerSceneNodes() {
+	LiteGraph.registerNodeType("Scenes/GetRunningScene", GetRunningScene)
+	LiteGraph.registerNodeType("Scenes/AddObjectToScene", addObjectToScene)
+}

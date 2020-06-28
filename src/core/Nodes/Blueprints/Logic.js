@@ -60,7 +60,9 @@ IfLessThanNode.prototype.onExecute = function() {
 	}
 }
 
-LiteGraph.registerNodeType("Logic/IfEquals", IfEqualsNode)
-LiteGraph.registerNodeType("Logic/IfNotEquals", IfNotEqualsNode)
-LiteGraph.registerNodeType("Logic/IfGreaterThan", IfGreaterThanNode)
-LiteGraph.registerNodeType("Logic/IfLessThan", IfLessThanNode)
+function registerLogicNodes() {
+	LiteGraph.registerNodeType("Logic/IfEquals", IfEqualsNode)
+	LiteGraph.registerNodeType("Logic/IfNotEquals", IfNotEqualsNode)
+	LiteGraph.registerNodeType("Logic/IfGreaterThan", IfGreaterThanNode)
+	LiteGraph.registerNodeType("Logic/IfLessThan", IfLessThanNode)
+}

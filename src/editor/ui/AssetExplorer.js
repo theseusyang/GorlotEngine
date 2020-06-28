@@ -181,7 +181,10 @@ function EditorUIAssetExplorer() {
 
     EditorUI.asset_explorer_inspector = new LiteGUI.Inspector()
     EditorUI.asset_explorer_list = EditorUI.asset_explorer_inspector.addList(null, EditorUI.asset_explorer_objects, {height: EditorUI.mainarea.getSection(0).getSection(1).getHeight()-60, callback_dblclick: (v) => {
-        console.log(v.attachedTo)
+        if (v.attachedTo instanceof THREE.MeshPhongMaterial) {
+            var mat = new MaterialEditor(undefined, v.attachedTo)
+            mat.updateInterface()
+        }
     }, callback_contextmenu: (v, e) => {
         // TODO: This
     }, callback_ondragstart: (v, e) => {
@@ -208,23 +211,9 @@ function EditorUIAssetExplorer() {
     }})
     EditorUI.asset_explorer_objects = []
 
-    // TODO: Remove this
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
-    EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
+    for(var i = 0; i < 25; i++) {
+        EditorUI.addObject("Material", "Material", new THREE.MeshPhongMaterial())
+    }
 
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)
 }
