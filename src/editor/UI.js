@@ -53,6 +53,7 @@ EditorUI.Initialize = function() {
 
     // ----- CANVAS -----
     EditorUI.canvas = new SceneEditor()
+    EditorUI.canvas.setScene(Editor.program.children[0])
 
     // ----- CANVAS AREA SPLIT -----
     EditorUI.left_area.split("vertical", [null, EditorUI.assetEx_height-26], false)

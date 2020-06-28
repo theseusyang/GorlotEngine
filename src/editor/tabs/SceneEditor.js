@@ -1,6 +1,8 @@
 class SceneEditor {
 	constructor(parent) {
 
+		var self = this
+
 		if(EditorUI.tabs_widget !== undefined) {
 			this.id = "Scene Editor " + SceneEditor.id
 			this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
@@ -9,7 +11,37 @@ class SceneEditor {
 				Editor.setState(Editor.STATE_EDITING)
 			}, ondrop: (e) => {
 				e.preventDefault()
-				console.log(e)
+
+				if (self.scene !== null) {
+					// Canvas element
+					var canvas = self.element
+					var rect = canvas.getBoundingClientRect()
+
+					// Update raycaster direction
+					var position = new THREE.Vector2(event.clientX - rect.left, event.clientY - rect.top)
+					var position_normalized = new THREE.Vector2((position.x/self.element.width)*2 - 1, -(position.y/self.element.height)*2 + 1)
+					Editor.updateRaycaster(position_normalized.x, position_normalized.y)
+
+					// Check intersected objects
+					var intersections = Editor.raycaster.intersectObjects(self.scene.children, true)
+
+					if (intersections.length > 0) {
+						var object = intersections[0].object
+
+						if (object instanceof THREE.Mesh) {
+							// Get first file from event
+							var file = event.dataTransfer.files[0]
+
+							if (file.type.startsWith("image")) {
+								// Create new material with selected image
+								var texture = new Texture(file.path)
+								var material = new THREE.MeshPhongMaterial({map: texture, color: 0xffffff, specular: 0x333333, shininess: 80})
+								object.material = material
+							}
+						}
+					}
+				}
+
 			}, ondragover: (e) => {
 				e.preventDefault()
 				//console.log(e)

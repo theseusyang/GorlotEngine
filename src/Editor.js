@@ -76,7 +76,8 @@ Editor.initialize = function(canvas)
 	Editor.canvas = null
 
 	// Default material to be used when creating objects
-	Editor.default_material = new THREE.MeshPhongMaterial()
+	Editor.default_material = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x777777, shininess: 60})
+	Editor.default_material.name = "default material"
 
 	//Initialize User Interface
 	EditorUI.Initialize();
@@ -353,7 +354,7 @@ Editor.update = function()
 			{
 				if(Mouse.buttonJustPressed(Mouse.LEFT))
 				{
-					Editor.updateRaycaster();
+					Editor.updateRaycasterFromMouse();
 					var intersects =  Editor.raycaster.intersectObjects(Editor.program.scene.children, true);
 					if(intersects.length > 0)
 					{
@@ -365,7 +366,7 @@ Editor.update = function()
 			//Move objects
 			else if(Editor.tool_mode === Editor.MODE_MOVE)
 			{
-				Editor.updateRaycaster();
+				Editor.updateRaycasterFromMouse();
 				var move = Editor.move_tool.highlightSelectedComponents(Editor.raycaster);
 				if(move.selected && Mouse.buttonJustPressed(Mouse.LEFT))
 				{	
@@ -378,7 +379,7 @@ Editor.update = function()
 			//Resize
 			else if(Editor.tool_mode === Editor.MODE_RESIZE)
 			{
-				Editor.updateRaycaster();
+				Editor.updateRaycasterFromMouse();
 				var resize = Editor.resize_tool.highlightSelectedComponents(Editor.raycaster);
 				if(resize.selected && Mouse.buttonJustPressed(Mouse.LEFT))
 				{	
@@ -391,7 +392,7 @@ Editor.update = function()
 			//Rotate
 			else if(Editor.tool_mode === Editor.MODE_ROTATE)
 			{
-				Editor.updateRaycaster();
+				Editor.updateRaycasterFromMouse();
 				var rotate = Editor.rotate_tool.highlightSelectedComponents(Editor.raycaster);
 				if(rotate.selected && Mouse.buttonJustPressed(Mouse.LEFT))
 				{	
@@ -678,10 +679,15 @@ Editor.setCameraRotation = function(camera_rotation, camera)
 }
 
 //Update editor raycaster
-Editor.updateRaycaster = function()
+Editor.updateRaycasterFromMouse = function()
 {
 	var mouse = new THREE.Vector2((Mouse.pos.x/Editor.canvas.width )*2 - 1, -(Mouse.pos.y/Editor.canvas.height)*2 + 1);
 	Editor.raycaster.setFromCamera(mouse, Editor.camera);
+}
+
+// Update editor raycaster with new x and y positions (normalized, -1 to 1)
+Editor.updateRaycaster = function(x, y) {
+	Editor.raycaster.setFromCamera(new THREE.Vector2(x, y), Editor.camera)
 }
 
 // Reset editing flags

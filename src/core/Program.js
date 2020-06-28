@@ -98,7 +98,7 @@ class Program extends THREE.Object3D {
 		}
 		scene.add(sky)
 
-		var material = new THREE.MeshPhongMaterial()
+		var material = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x777777, shininess: 60})
 		var geometry = new THREE.BoxGeometry(2, 2, 2)
 
 		// Box
