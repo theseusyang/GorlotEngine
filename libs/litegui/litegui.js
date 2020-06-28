@@ -3986,6 +3986,22 @@ LiteGUI.Console = Console;
 		this.root = root;
 		this.root.tabs = this;
 
+		if (options.ondrop) {
+			root.ondrop = ondrop
+		} else {
+			root.ondrop = function(e) {
+				e.preventDefault()
+			}
+		}
+
+		if (options.ondragover) {
+			root.ondragover = ondragover
+		} else {
+			root.ondragover = function(e) {
+				e.preventDefault()
+			}
+		}
+
 		this.current_tab = null; //current tab array [id, tab, content]
 
 		if(mode == "horizontal")
@@ -6200,6 +6216,22 @@ LiteGUI.Console = Console;
 			this.root.style.position = "absolute";
 			this.root.style.left = LiteGUI.sizeToCSS( options.position[0] );
 			this.root.style.top = LiteGUI.sizeToCSS( options.position[1] );
+		}
+
+		if (options.ondrop) {
+			this.root.ondrop = options.ondrop
+		} else {
+			this.root.ondrop = function(e) {
+				e.preventDefault()
+			}
+		}
+
+		if (options.ondragover) {
+			this.root.ondragover = options.ondragover
+		} else {
+			this.root.ondragover = function(e) {
+				e.preventDefault()
+			}
 		}
 
 		//if(options.scroll == false)	this.content.style.overflow = "hidden";
