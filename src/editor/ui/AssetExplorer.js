@@ -195,6 +195,16 @@ function EditorUIAssetExplorer() {
     }, callback_ondragover: (v, e) => {
         // TODO: This
         e.preventDefault()
+    }, ondragstart: (e) => {
+        // TODO: This
+    }, ondragend: (e) => {
+        // TODO: This
+    }, ondrop: (e) => {
+        // TODO This
+        e.preventDefault()
+    }, ondragover: (e) => {
+        // TODO: This
+        e.preventDefault()
     }})
     EditorUI.asset_explorer_objects = []
 

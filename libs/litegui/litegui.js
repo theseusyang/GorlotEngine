@@ -9193,6 +9193,15 @@ Inspector.prototype.addList = function(name, values, options)
 
 	var list_element = element.querySelector(".lite-list");
 
+	if (options.ondragstart)
+		element.ondragstart = options.ondragstart
+	if (options.ondragend)
+		element.ondragend = options.ondragend
+	if (options.ondrop) 
+		element.ondrop = options.ondrop
+	if (options.ondragover) 
+		element.ondragover = options.ondragover
+
 	var inputfield = element.querySelector(".inputfield");
 	inputfield.style.height = "100%";
 	inputfield.style.paddingBottom = "0.2em";
