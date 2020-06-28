@@ -112,7 +112,7 @@ source.append("App.js")
 
 # Libraries required to the Editor
 
-editorLibs.append("litegui/litegui.min.js")
+editorLibs.append("litegui/litegui.js")
 editorLibs.append("jscolor/jscolor.js")
 
 editorLibs.append("litegraph/litegraph-editor.js")

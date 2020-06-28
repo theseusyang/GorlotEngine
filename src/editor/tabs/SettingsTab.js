@@ -7,6 +7,8 @@ class SettingsTab {
 			self.applyChanges()
 			SettingsTab.id--
 			EditorUI.selectPreviousTab()
+		}, callback: () => {
+			Editor.setState(Editor.STATE_IDLE)
 		}})
 
 		Editor.setState(Editor.STATE_IDLE)

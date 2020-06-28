@@ -5,6 +5,8 @@ class CodeEditor {
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			CodeEditor.id--
 			EditorUI.selectPreviousTab()
+		}, callback: () => {
+			
 		}})
 
 		if (parent !== undefined) {

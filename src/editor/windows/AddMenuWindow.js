@@ -174,8 +174,7 @@ class AddMenuWindow {
 		}
 		else if (o === "Empty") {
 
-			var obj = new Empty()
-			Editor.addToActualScene(obj)
+			Editor.addToActualScene(new Empty())
 
 		}
 		else if (o === "Text") {
@@ -188,41 +187,32 @@ class AddMenuWindow {
 		}
 		else if (o === "Point Light") {
 
-			var obj = new PointLight()
-        	Editor.addToActualScene(obj)
+        	Editor.addToActualScene(new PointLight())
 
 		}
 		else if (o === "Ambient Light") {
 
-			var obj = new AmbientLight()
-        	Editor.addToActualScene(obj)
+        	Editor.addToActualScene(new AmbientLight())
 
 		}
 		else if (o === "Spot Light") {
 
-			var obj = new SpotLight()
-        	obj.castShadow = true
-        	Editor.addToActualScene(obj)
+        	Editor.addToActualScene(new SpotLight())
 
 		}
 		else if (o === "Directional Light") {
 
-			var obj = new DirectionalLight()
-        	obj.castShadow = true
-        	Editor.addToActualScene(obj)
+        	Editor.addToActualScene(new DirectionalLight())
 
 		}
 		else if (o === "Hemisphere Light") {
 
-			var obj = new HemisphereLight()
-        	obj.castShadow = true
-        	Editor.addToActualScene(obj)
+        	Editor.addToActualScene(new HemisphereLight())
 
 		}
 		else if (o === "Sky") {
 
-			var obj = new Sky()
-       		Editor.addToActualScene(obj)
+       		Editor.addToActualScene(new Sky())
 
 		}
 		else if (o === "Perspective Camera") {

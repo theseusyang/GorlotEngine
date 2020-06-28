@@ -10,6 +10,8 @@ class BlueprintsEditor {
 
 			self.updateBlueprints()
 			EditorUI.selectPreviousTab()
+		}, callback: () => {
+			Editor.setState(Editor.STATE_EDITING)
 		}})
 
 		if (parent !== undefined) {

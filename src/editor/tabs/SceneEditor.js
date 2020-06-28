@@ -5,6 +5,8 @@ class SceneEditor {
 			this.id = "Scene Editor " + SceneEditor.id
 			this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 				SceneEditor.id--
+			}, callback: () => {
+				Editor.setState(Editor.STATE_EDITING)
 			}})
 		}
 

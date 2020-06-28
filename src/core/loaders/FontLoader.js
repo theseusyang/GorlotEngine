@@ -4,8 +4,7 @@ class FontLoader {
 	}
 
 	parse(data) {
-		var font = new THREE.Font(JSON.parse(data.substring(65, data.length - 2)))
-		return font
+		return new THREE.Font(JSON.parse(data.substring(65, data.length - 2)))
 	}
 
 	load(url, onLoad, onProgress, onError) {

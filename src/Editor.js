@@ -404,8 +404,8 @@ Editor.update = function()
 			//Rotate camera
 			if(Mouse.buttonPressed(Mouse.LEFT) && !Editor.block_camera_move)
 			{
-				Editor.camera_rotation.x -= 0.01 * Mouse.SENSITIVITY * Mouse.pos_diff.x;
-				Editor.camera_rotation.y -= 0.01 * Mouse.SENSITIVITY * Mouse.pos_diff.y;
+				Editor.camera_rotation.x -= 0.002 * Mouse.pos_diff.x;
+				Editor.camera_rotation.y -= 0.002 * Mouse.pos_diff.y;
 
 				//Limit Vertical Rotation to 90 degrees
 				var pid2 = 1.57;
