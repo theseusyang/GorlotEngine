@@ -57,10 +57,9 @@ function EditorUITopMenu() {
 
     // ----- File/Export -----
     EditorUI.topmenu.add("File/Export/Web", {callback: () => {
-        App.chooseFile(function(e) {
-            var file = e.srcElement.value
+        App.chooseFile((fname) => {
             try {
-                Editor.exportWebProject(file)
+                Editor.exportWebProject(fname)
             } catch(e) {
                 console.error("Error saving file: " + e)
             }

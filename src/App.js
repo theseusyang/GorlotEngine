@@ -43,20 +43,18 @@ App.chooseFile = function(callback, filter, savemode) {
 	// Create file chooser element
 	var chooser = document.createElement("input")
 	chooser.type = "file"
-	chooser.style.display = "none"
+
 	if (filter !== undefined) {
 		chooser.accept = filter
 	}
 	if (savemode === true) {
 		chooser.nwsaveas = "file"
 	}
-	document.body.appendChild(chooser)
 
 	// Create onchange event and trigger it
 	chooser.onchange = function(e) {
 		if (callback !== undefined) {
-			console.log(e.srcElement)
-			callback(e)
+			callback(chooser.value)
 		}
 	}
 	chooser.click()
@@ -65,14 +63,20 @@ App.chooseFile = function(callback, filter, savemode) {
 // Read File
 App.readFile = function(fname, sync, callback) {
 	
-	// Check if sync defined
+	// If sync defined, set true
 	if (sync === undefined) {
 		sync = true
 	}
 
 	// Check if node available
 	if (App.fs !== undefined) {
-		return App.fs.readFileSync(fname, "utf8")
+		// If sync
+		if (sync) {
+			return App.fs.readFileSync(fname, "utf8")
+		} else {
+			App.fs.readFile(fname, "utf8", callback)
+			return null
+		}
 	} else {
 		var file = new XMLHttpRequest()
 		var ready = false
@@ -86,24 +90,34 @@ App.readFile = function(fname, sync, callback) {
 			if (file.readyState === 4) {
 				if (file.status === 200 || file.status === 0) {
 					data = file.responseText
+
+					// Callback
+					if (callback !== undefined) {
+						callback(file.responseText)
+					}
 				}
 				ready = true
 			}
 		}
 
 		// Send null to ensure that file was received
-		file.send(null)
+		if (sync) {
+			file.send(null)
+		}
 
 		return data
 	}
 }
 
 // Write File
-App.writeFile = function(fname, data, sync, callback) {
+App.writeFile = function(fname, data) {
 	if (App.fs !== undefined) {
-		App.fs.writeFile(fname, data, (err) => {
+		/*App.fs.writeFile(fname, data, (err) => {
 			if (err) {throw err}
-		})
+		})*/
+		var stream = App.fs.createWriteStream(fname, "utf8")
+		stream.write(data)
+		stream.end()
 	}
 }
 

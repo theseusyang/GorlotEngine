@@ -7,6 +7,12 @@ class SceneEditor {
 				SceneEditor.id--
 			}, callback: () => {
 				Editor.setState(Editor.STATE_EDITING)
+			}, ondrop: (e) => {
+				e.preventDefault()
+				console.log(e)
+			}, ondragover: (e) => {
+				e.preventDefault()
+				//console.log(e)
 			}})
 		}
 

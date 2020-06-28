@@ -150,11 +150,10 @@ EditorUI.Resize = function() {
 
 // Open save program window
 EditorUI.saveProgram = function() {
-    App.chooseFile((e) => {
-        var file = e.srcElement.value
+    App.chooseFile((fname) => {
 
         try {
-            Editor.saveProgram(file)
+            Editor.saveProgram(fname)
             console.log("Project saved")
         } catch(e) {
             console.error("Error saving program: " + e)
@@ -166,11 +165,10 @@ EditorUI.saveProgram = function() {
 EditorUI.openProgram = function() {
     var confirm = LiteGUI.confirm("All unsaved changes to the program will be lost! Load program?", (v) => {
         if (v) {
-            App.chooseFile((e) => {
-                var file = e.srcElement.value
+            App.chooseFile((fname) => {
 
                 try {
-                    Editor.loadProgram(file)
+                    Editor.loadProgram(fname)
                     console.log("Project loaded")
                 } catch(e) {
                     console.error("Error loading program: " + e)

@@ -7,8 +7,8 @@
 
 		// Create the video element
 		var video = document.createElement("video")
-		video.width = 320
-		video.height = 240
+		video.width = 256
+		video.height = 256
 		video.autoplay = true
 		video.loop = true
 

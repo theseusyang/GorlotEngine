@@ -3986,22 +3986,6 @@ LiteGUI.Console = Console;
 		this.root = root;
 		this.root.tabs = this;
 
-		if (options.ondrop) {
-			root.ondrop = ondrop
-		} else {
-			root.ondrop = function(e) {
-				e.preventDefault()
-			}
-		}
-
-		if (options.ondragover) {
-			root.ondragover = ondragover
-		} else {
-			root.ondragover = function(e) {
-				e.preventDefault()
-			}
-		}
-
 		this.current_tab = null; //current tab array [id, tab, content]
 
 		if(mode == "horizontal")
@@ -4022,6 +4006,22 @@ LiteGUI.Console = Console;
 					this.root.style.width = "100%";
 				else
 					this.root.style.width = options.size;
+			}
+		}
+
+		if (options.ondrop) {
+			this.root.ondrop = options.ondrop
+		} else {
+			this.root.ondrop = function(e) {
+				e.preventDefault()
+			}
+		}
+
+		if (options.ondragover) {
+			this.root.ondragover = options.ondragover
+		} else {
+			this.root.ondragover = function(e) {
+				e.preventDefault()
 			}
 		}
 
@@ -4327,6 +4327,23 @@ LiteGUI.Console = Console;
 			content.style.width = typeof(options.width) === "string" ? options.width : options.width + "px";
 		if(options.height !== undefined )
 			content.style.height = typeof(options.height) === "string" ? options.height : options.height + "px";
+
+		if (options.ondrop) {
+			content.ondrop = options.ondrop
+		} else {
+			content.ondrop = function(e) {
+				e.preventDefault()
+			}
+		}
+
+		if (options.ondragover) {
+			content.ondragover = options.ondragover
+		} else {
+			content.ondragover = function(e) {
+				e.preventDefault()
+			}
+		}
+
 
 		//add content
 		if(options.content)

@@ -9,20 +9,14 @@ function EditorUIAssetExplorer() {
     EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
 
     EditorUI.asset_explorer_menu.add("Import/Objects/OBJ", {callback: () => {
-        App.chooseFile((event) => {
-            var file = event.srcElement.value
-
+        App.chooseFile((fname) => {
             try {
                 var loader = new THREE.OBJLoader()
-
-                var obj = loader.parse(App.readFile(file))
+                var obj = loader.parse(App.readFile(fname))
 
                 ObjectUtils.setShadowCasting(obj, true)
                 ObjectUtils.setShadowReceiving(obj, true)
-
                 Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
-
-                console.log("Object imported")
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -30,19 +24,17 @@ function EditorUIAssetExplorer() {
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Objects/DAE", {callback: () => {
-        App.chooseFile((event) => {
-            var file = event.srcElement.value
+        App.chooseFile((fname) => {
+
             try {
                 var loader = new THREE.ColladaLoader()
 
-                var obj = loader.parse(App.readFile(file))
+                var obj = loader.parse(App.readFile(fname))
 
                 ObjectUtils.setShadowCasting(obj.scene, true)
                 ObjectUtils.setShadowReceiving(obj.scene, true)
 
                 Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj.scene))
-
-                console.log("Object imported")
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -50,12 +42,11 @@ function EditorUIAssetExplorer() {
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Objects/JSON", {callback: () => {
-        App.chooseFile((event) => {
-            var file = event.srcElement.value
+        App.chooseFile((fname) => {
 
             try {
                 var loader = new THREE.JSONLoader()
-                loader.load(file, function(geometry, materials) {
+                loader.load(fname, function(geometry, materials) {
                     for(var i = 0; i < materials.length; i++) {
                         var m = materials[i]
                         m.skinning = true
@@ -70,8 +61,6 @@ function EditorUIAssetExplorer() {
 
                     Editor.addToActualScene(obj)
                 })
-
-                console.log("Object imported")
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -79,19 +68,16 @@ function EditorUIAssetExplorer() {
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Objects/VRML", {callback: () => {
-        App.chooseFile(function(event) {
-            var file = event.srcElement.value
+        App.chooseFile((fname) => {
 
             try {
                 var loader = new THREE.VRMLLoader()
-                var obj = loader.parse(App.readFile(file))
+                var obj = loader.parse(App.readFile(fname))
 
                 ObjectUtils.setShadowCasting(obj, true)
                 ObjectUtils.setShadowReceiving(obj, true)
 
                 Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
-
-                console.log("Object imported")
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -99,12 +85,11 @@ function EditorUIAssetExplorer() {
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Objects/FBX", {callback: () => {
-        App.chooseFile(function(event) {
-            var file = event.srcElement.value
+        App.chooseFile((fname) => {
 
             try {
                 var loader = new THREE.FBXLoader()
-                var obj = loader.parse(App.readFile(file))
+                var obj = loader.parse(App.readFile(fname))
 
                 ObjectUtils.setShadowCasting(obj, true)
                 ObjectUtils.setShadowReceiving(obj, true)
@@ -117,27 +102,23 @@ function EditorUIAssetExplorer() {
     }})
     
     EditorUI.asset_explorer_menu.add("Import/Resources/Texture", {callback: () => {
-        App.chooseFile((event) => {
-            var file = event.srcElement.value
+        App.chooseFile((fname) => {
 
             try {
-                var map = new Texture(file)
+                var map = new Texture(fname)
 
                 var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
                 var sprite = new Sprite(material)
                 Editor.addToActualScene(sprite)
-
-                console.log("Texture imported")
             } catch(e) {console.error("Error importing texture: " + e)}
         }, "image/*")
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Resources/Video", {callback: () => {
-        App.chooseFile((event) => {
-            var file = event.srcElement.value
+        App.chooseFile((fname) => {
 
             try {
-                var map = new VideoTexture(file)
+                var map = new VideoTexture(fname)
                 var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
                 var sprite = new Sprite(material)
                 Editor.addToActualScene(sprite)
@@ -147,7 +128,7 @@ function EditorUIAssetExplorer() {
 
     EditorUI.asset_explorer_menu.add("Import/Resources/Audio", {callback: () => {
         App.chooseFile((event) => {
-
+            // TODO: This
         }, "audio/*")
     }})
 
@@ -186,7 +167,26 @@ function EditorUIAssetExplorer() {
             mat.updateInterface()
         }
     }, callback_contextmenu: (v, e) => {
-        // TODO: This
+        var context = new LiteGUI.ContextMenu([
+            {
+                title: "Rename",
+                callback: () => {
+
+                }
+            },
+            {
+                title: "Delete",
+                callback: () => {
+
+                }
+            },
+            {
+                title: "Copy",
+                callback: () => {
+                    
+                }
+            }
+        ], {title: v.name, event: e})
     }, callback_ondragstart: (v, e) => {
         // TODO: This
     }, callback_ondragend: (v, e) => {
