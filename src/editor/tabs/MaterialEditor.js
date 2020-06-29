@@ -184,7 +184,9 @@ class MaterialEditor {
 	
 		if (Mouse.insideCanvas()) {
 			if (Mouse.buttonPressed(Mouse.LEFT)) {
-				// TODO: Sphere rotation
+				var delta = new THREE.Quaternion()
+				delta.setFromEuler(new THREE.Euler(Mouse.pos_diff.y * 0.01, Mouse.pos_diff.x * 0.01, 0, 'XYZ'))
+				this.sphere.quaternion.multiplyQuaternions(delta, this.sphere.quaternion)
 			}
 		}
 	}
