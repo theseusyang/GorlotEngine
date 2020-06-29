@@ -190,6 +190,25 @@
         console.log(this.getInputData(0))
     }
 
+// ** Boolean *****
+
+    function ConstantBoolean() {
+        this.addOutput("", "Boolean")
+        this.addProperty("value", true)
+        this.widget = this.addWidget("toggle", "value", true, "value")
+        this.widgets_up = true
+        this.size = [140, 30]
+    }
+    ConstantBoolean.title = "Boolean"
+    ConstantBoolean.desc = "Boolean"
+    ConstantBoolean.prototype.onExecute = function() {
+        this.setOutputData(0, this.properties["value"])
+    }
+    ConstantBoolean.prototype.setValue = ConstantNumber.prototype.setValue
+    ConstantBoolean.prototype.onAction = function(action) {
+        this.setValue(!this.properties.value)
+    }
+
     /* Combo ****************/
 
     function WidgetCombo() {
@@ -428,6 +447,7 @@
         LiteGraph.registerNodeType("Base/number", WidgetNumber);
         LiteGraph.registerNodeType("Base/Float", ConstantNumber);
         LiteGraph.registerNodeType("Base/String", ConstantString);
+        LiteGraph.registerNodeType("Base/Boolean", ConstantBoolean)
         LiteGraph.registerNodeType("Base/ConsoleLog", ConsoleLogNode)
 
         LiteGraph.registerNodeType("Base/combo", WidgetCombo);

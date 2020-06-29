@@ -188,24 +188,6 @@ Subgraph.prototype.buildFromNodes = function(nodes) {
     // TODO
 }
 
-// ** Boolean *****
-function ConstantBoolean() {
-    this.addOutput("", "Boolean")
-    this.addProperty("value", true)
-    this.widget = this.addWidget("toggle", "value", true, "value")
-    this.widgets_up = true
-    this.size = [140, 30]
-}
-ConstantBoolean.title = "Boolean"
-ConstantBoolean.desc = "Boolean"
-ConstantBoolean.prototype.onExecute = function() {
-    this.setOutputData(0, this.properties["value"])
-}
-ConstantBoolean.prototype.setValue = ConstantNumber.prototype.setValue
-ConstantBoolean.prototype.onAction = function(action) {
-    this.setValue(!this.properties.value)
-}
-
 function IfEqualsNode() {
 	this.addInput("Input 1")
 	this.addInput("Input 2")
@@ -270,7 +252,6 @@ IfLessThanNode.prototype.onExecute = function() {
 
 function registerLogicNodes() {
 	LiteGraph.registerNodeType("Logic/Subgraph", Subgraph)
-	LiteGraph.registerNodeType("Logic/Boolean", ConstantBoolean)
 	LiteGraph.registerNodeType("Logic/IfEquals", IfEqualsNode)
 	LiteGraph.registerNodeType("Logic/IfNotEquals", IfNotEqualsNode)
 	LiteGraph.registerNodeType("Logic/IfGreaterThan", IfGreaterThanNode)
