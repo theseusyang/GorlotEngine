@@ -1,23 +1,22 @@
 class MaterialEditor {
 	constructor(parent, material) {
 
-		// TODO: Fix this, apparently, when you are editing a material (and the changes are applied) and then you close that MaterialEditor, when you reopen it, the changes ain't applied
-
 		var self = this
 		this.id = "Material Editor " + MaterialEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			self.graph.stop()
 			clearInterval(self.interval)
+
 			MaterialEditor.id--
-			
 			self.updateMaterial()
+			self.material = null
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
-			// This is useful when handling different types of editors and one single Graph library <3
 			if(self.preview !== undefined) {
 				Mouse.canvas = self.preview
 			}
 
+			// This is useful when handling different types of editors and one single Graph library <3
 			unregisterNodes()
 			registerBaseNodes()
 			registerMaterialNodes()
@@ -135,6 +134,8 @@ class MaterialEditor {
 			this.graph = new LGraph(this.nodes)
 		}
 
+		this.genesisNode = undefined
+
 		// Sphere
 		this.sphere = new Model3D(new THREE.SphereBufferGeometry(1, 32, 32), this.material)
 		this.sphere.position.set(0, 0, -2.5)
@@ -151,7 +152,6 @@ class MaterialEditor {
 		this.graph.start(1000/60)
 
 		this.interval = setInterval(() => {
-			// Every second, the material is saved
 			self.updateMaterial()
 			self.update()
 		}, 1000/60)
@@ -161,9 +161,17 @@ class MaterialEditor {
 	}
 
 	updateMaterial() {
+
+		if(this.nodes.nodes !== undefined) {
+			for(var i = 0; i < this.nodes.nodes.length; i++) {
+				if (this.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
+					this.material.setValues(this.nodes.nodes[i].properties.mat)
+				}
+			}
+		}
+
 		if (this.material.updateNodes !== undefined) {
 			this.material.updateNodes(this.graph.serialize())
-			this.material.update(this.material)
 		}
 	}
 

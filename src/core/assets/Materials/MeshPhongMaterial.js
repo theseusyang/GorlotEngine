@@ -3,6 +3,7 @@ class MeshPhongMaterial extends THREE.MeshPhongMaterial {
 		super()
 	
 		this.nodes = {}
+		this.json = {}
 	}
 
 	updateNodes(nodes) {
