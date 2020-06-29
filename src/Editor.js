@@ -14,7 +14,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0"
-Editor.TIMESTAMP = "Sun 28 Jun 2020 17:44:02"
+Editor.TIMESTAMP = "Mon 29 Jun 2020 18:03:50"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -77,7 +77,7 @@ Editor.initialize = function(canvas)
 
 	// Default material to be used when creating objects
 	Editor.default_material = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x777777, shininess: 60})
-	Editor.default_material.name = "default material"
+	Editor.default_material.name = "default"
 
 	//Initialize User Interface
 	EditorUI.Initialize();
@@ -571,6 +571,18 @@ Editor.renameObject = function(obj, name) {
 Editor.updateTreeView = function() {
 	EditorUI.updateHierarchy()
 	EditorUI.updateInspector()
+
+	// Get material list
+	var materials = ObjectUtils.getMaterials(Editor.program)
+	
+	if(EditorUI.asset_explorer_objects !== undefined) {
+		EditorUI.asset_explorer_objects = []
+	}
+
+	// Add materials to asset explorer
+	for(var i = 0; i < materials.length; i++) {
+		EditorUI.addObject(materials[i].name, materials[i])
+	}
 }
 
 //Draw stuff into screen

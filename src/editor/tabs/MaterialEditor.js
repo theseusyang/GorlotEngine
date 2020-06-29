@@ -63,6 +63,7 @@ class MaterialEditor {
 
 		// Light
 		this.scene.add(new PointLight(0x444444))
+		this.scene.add(new AmbientLight(0x333333))
 
 		// Material attached to the editor
 		this.material = material
@@ -170,8 +171,8 @@ class MaterialEditor {
 			}
 		}
 
-		if (this.material.updateNodes !== undefined) {
-			this.material.updateNodes(this.graph.serialize())
+		if (this.material.nodes !== undefined) {
+			this.material.nodes = this.graph.serialize()
 		}
 	}
 

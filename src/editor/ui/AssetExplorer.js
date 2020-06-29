@@ -212,26 +212,29 @@ function EditorUIAssetExplorer() {
     }})
     EditorUI.asset_explorer_objects = []
 
-    for(var i = 0; i < 25; i++) {
-        EditorUI.addObject("Material", "Material", new MeshPhongMaterial())
-    }
-
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)
 }
 
-EditorUI.addObject = function(name, type, attachedTo) {
+EditorUI.addObject = function(name, attachedTo) {
     
     var ins = attachedTo
-    ins.name = name
+    if (ins.name === undefined || ins.name === "" || ins.name === null) {
+        if (attachedTo instanceof THREE.Material) {
+            var name = "Material"
+        }
+    } else {
+        var name = ins.name
+    }
 
     var obj = {
         name: name,
-        type: type,
-        icon: "data/icons/misc/material.png",
+        icon: ins.icon,
         attachedTo: ins,
         style: "width: 80px; display: inline-block; text-align: center;"
     }
 
-    EditorUI.asset_explorer_objects.push(obj)
-    EditorUI.asset_explorer_list.updateItems(EditorUI.asset_explorer_objects)
+    if(EditorUI.asset_explorer_objects !== undefined) {
+        EditorUI.asset_explorer_objects.push(obj)
+        EditorUI.asset_explorer_list.updateItems(EditorUI.asset_explorer_objects)
+    }
 }

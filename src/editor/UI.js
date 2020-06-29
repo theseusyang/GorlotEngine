@@ -92,14 +92,16 @@ EditorUI.selectPreviousTab = function() {
     var tab = EditorUI.tabs_widget.getPreviousTab()
     var current = EditorUI.tabs_widget.getCurrentTab()
 
-    if(tab === undefined) {
-        Editor.setState(Editor.STATE_EDITING)
-        EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
-    } else if (Editor.state === Editor.STATE_TESTING) {
-        EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
-    } else {
-        EditorUI.tabs_widget.selectTab(tab)
-    }
+    EditorUi.tabs_widget.selectTab(EditorUI.canvas.id)
+
+    //if(tab === undefined) {
+    //    Editor.setState(Editor.STATE_EDITING)
+    //    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+    //} else if (Editor.state === Editor.STATE_TESTING) {
+    //    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+    //} else {
+    //    EditorUI.tabs_widget.selectTab(tab)
+    //}
 }
 
 EditorUI.updateInterface = function () {
@@ -183,6 +185,7 @@ EditorUI.openProgram = function() {
 EditorUI.newProgram = function() {
     LiteGUI.confirm("All unsaved changes to the program will be lost! Create new program?", (v) => {
         if (v) {
+            EditorUI.asset_explorer_objects = []
             Editor.createNewProgram()
             Editor.updateTreeView()
             Editor.updateObjectHelper()

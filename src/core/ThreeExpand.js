@@ -1,3 +1,8 @@
+// Materials
+THREE.Material.prototype.nodes = {}
+THREE.Material.prototype.icon = "data/icons/misc/material.png"
+THREE.Material.prototype.name = "Material"
+
 // Initialize object
 THREE.Object3D.prototype.initialize = function() {
 	for(var i = 0; i < this.children.length; i++) {
