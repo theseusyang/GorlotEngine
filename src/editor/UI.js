@@ -92,7 +92,7 @@ EditorUI.selectPreviousTab = function() {
     var tab = EditorUI.tabs_widget.getPreviousTab()
     var current = EditorUI.tabs_widget.getCurrentTab()
 
-    EditorUi.tabs_widget.selectTab(EditorUI.canvas.id)
+    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
 
     //if(tab === undefined) {
     //    Editor.setState(Editor.STATE_EDITING)

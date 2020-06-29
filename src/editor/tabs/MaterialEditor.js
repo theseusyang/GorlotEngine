@@ -67,6 +67,7 @@ class MaterialEditor {
 
 		// Material attached to the editor
 		this.material = material
+		EditorUI.editingMaterial = this.material
 
 		var defaultNodes = {
 			config: {},
@@ -118,7 +119,7 @@ class MaterialEditor {
 					}],
 					pos: [208, 140],
 					properties: {
-						mat: this.material
+						//mat: this.material
 					},
 					size: [178, 126],
 					type: "Material/MeshPhongMaterial"
@@ -163,16 +164,22 @@ class MaterialEditor {
 
 	updateMaterial() {
 
+		var genesis = null
+
 		if(this.nodes.nodes !== undefined) {
 			for(var i = 0; i < this.nodes.nodes.length; i++) {
 				if (this.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
+					this.genesis = this.nodes.nodes[i]
+					
+					delete this.nodes.nodes[i].properties.mat.metadata
+					
 					this.material.setValues(this.nodes.nodes[i].properties.mat)
 				}
 			}
 		}
 
 		if (this.material.nodes !== undefined) {
-			this.material.nodes = this.graph.serialize()
+			this.material.updateNodes(this.graph.serialize(), null)
 		}
 	}
 

@@ -53,7 +53,7 @@ function EditorUIAssetExplorer() {
                         m.morphTargets = true
                     }
 
-                    var material = new THREE.MeshPhongMaterial()
+                    var material = new MeshPhongMaterial()
                     material.skinning = true
                     material.morphTargets = true
 
@@ -165,7 +165,6 @@ function EditorUIAssetExplorer() {
         if (v.attachedTo instanceof THREE.MeshPhongMaterial) {
             var mat = new MaterialEditor(undefined, v.attachedTo)
             mat.updateInterface()
-            console.log(v.attachedTo)
         }
     }, callback_contextmenu: (v, e) => {
         var context = new LiteGUI.ContextMenu([

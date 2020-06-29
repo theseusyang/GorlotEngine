@@ -76,7 +76,7 @@ Editor.initialize = function(canvas)
 	Editor.canvas = null
 
 	// Default material to be used when creating objects
-	Editor.default_material = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x777777, shininess: 60})
+	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x777777, shininess: 60})
 	Editor.default_material.name = "default"
 
 	//Initialize User Interface

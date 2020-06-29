@@ -40,7 +40,7 @@ class SceneEditor {
 							if (file.type.startsWith("image")) {
 								// Create new material with selected image
 								var texture = new Texture(file.path)
-								var material = new THREE.MeshPhongMaterial({map: texture, color: 0xffffff, specular: 0x333333, shininess: 80})
+								var material = new MeshPhongMaterial({map: texture, color: 0xffffff, specular: 0x333333, shininess: 80})
 								object.material = material
 							}
 						}

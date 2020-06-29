@@ -126,7 +126,7 @@ ObjectUtils.createCylinderBetweenPoints = function(a, b) {
 	var dist = Math.sqrt(Math.pow((a.x - b.x),2) + Math.pow((a.y - b.y), 2) + Math.pow((a.z - b.z)), 2)
 
 	var geometry = new THREE.CylinderGeometry(0.1, 0.1, dist, 16, 32, false)
-	var material = new THREE.MeshPhongMaterial({color: 0xff0000})
+	var material = new MeshPhongMaterial({color: 0xff0000})
 	var cylinder = new Model3D(geometry, material)
 	cylinder.position.set(0, dist/2, 0)
 
