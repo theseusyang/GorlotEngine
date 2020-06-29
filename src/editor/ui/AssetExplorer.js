@@ -8,7 +8,7 @@ function EditorUIAssetExplorer() {
 
     EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
 
-    EditorUI.asset_explorer_menu.add("Import/Objects/OBJ", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Import/Objects/Wavefront", {callback: () => {
         App.chooseFile((fname) => {
             try {
                 var loader = new THREE.OBJLoader()
@@ -134,15 +134,15 @@ function EditorUIAssetExplorer() {
 
     // ----- CREATE -----
 
-    EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Create/Material/Phong Material", {callback: () => {
         // TODO: Create Standard Material
     }})
 
-    EditorUI.asset_explorer_menu.add("Create/Material/Sprite Material", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {
         // TODO: Create Sprite Material
     }})
 
-    EditorUI.asset_explorer_menu.add("Create/Material/Phong Material", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Create/Material/Sprite Material", {callback: () => {
         // TODO: Create Phong Material
     }})
 
@@ -227,7 +227,7 @@ EditorUI.addObject = function(name, type, attachedTo) {
     var obj = {
         name: name,
         type: type,
-        icon: "data/icons/assets/video.png",
+        icon: "data/icons/misc/material.png",
         attachedTo: ins,
         style: "width: 80px; display: inline-block; text-align: center;"
     }

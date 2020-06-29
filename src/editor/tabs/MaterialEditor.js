@@ -56,13 +56,13 @@ class MaterialEditor {
 		this.renderer.shadowMap.type = THREE.PCFShadowMap
 
 		// Material preview camera
-		this.camera = new PerspectiveCamera(60, 200/200, 0.1, 1000000)
+		this.camera = new PerspectiveCamera(50, 200/200, 0.1, 1000000)
 
 		// Material Preview Scene
 		this.scene = new Scene()
 
 		// Light
-		this.scene.add(new PointLight(0x555555))
+		this.scene.add(new PointLight(0x444444))
 
 		// Material attached to the editor
 		this.material = material
@@ -185,7 +185,7 @@ class MaterialEditor {
 		if (Mouse.insideCanvas()) {
 			if (Mouse.buttonPressed(Mouse.LEFT)) {
 				var delta = new THREE.Quaternion()
-				delta.setFromEuler(new THREE.Euler(Mouse.pos_diff.y * 0.01, Mouse.pos_diff.x * 0.01, 0, 'XYZ'))
+				delta.setFromEuler(new THREE.Euler(Mouse.pos_diff.y * 0.005, Mouse.pos_diff.x * 0.005, 0, 'XYZ'))
 				this.sphere.quaternion.multiplyQuaternions(delta, this.sphere.quaternion)
 			}
 		}

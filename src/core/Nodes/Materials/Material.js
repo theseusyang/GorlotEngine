@@ -1,3 +1,5 @@
+// TODO: Texture map, Bump Map, Bump Map Scale, Normal Map, Normal Map Scale, Displacement Map, Displacement map scale, Displacement map bias, Specular map, Alpha Map, Environment Map, 
+
 function MeshPhongMaterialNode() {
 	this.addInput("Colour", "Color")
 	this.addInput("Emissive", "number")
@@ -57,7 +59,53 @@ SetMaterialColorNode.prototype.onExecute = function() {
 	}
 }
 
+function SetMaterialTransparentNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Transparent", "Boolean")
+}
+SetMaterialTransparentNode.title = "Set Transparent"
+SetMaterialTransparentNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var t = this.getInputData(1)
+
+	if (m !== undefined && t !== undefined) {
+		m.transparent = t
+	}
+}
+
+function SetMaterialOpacityNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Opacity", "number")
+}
+SetMaterialOpacityNode.title = "Set Opacity"
+SetMaterialOpacityNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var o = this.getInputData(1)
+
+	if (m !== undefined && o !== undefined) {
+		m.opacity = o
+	}
+}
+
+function SetMaterialTextureNode() {
+	// TODO: This
+	this.addInput("Material", "Material")
+	this.addInput("Texture", "Texture")
+}
+SetMaterialTextureNode.title = "Set Texture"
+SetMaterialTextureNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var t = this.getInputData(1)
+
+	if (m !== undefined && t !== undefined) {
+		m.map = t
+	}
+}
+
 function registerMaterialNodeNodes(argument) {
 	LiteGraph.registerNodeType("Material/MeshPhongMaterial", MeshPhongMaterialNode)
 	LiteGraph.registerNodeType("Material/SetMaterialColor", SetMaterialColorNode)
+	LiteGraph.registerNodeType("Material/SetMaterialTransparent", SetMaterialTransparentNode)
+	LiteGraph.registerNodeType("Material/SetMaterialOpacity", SetMaterialOpacityNode)
+	LiteGraph.registerNodeType("Material/SetMaterialTexture", SetMaterialTextureNode)
 }

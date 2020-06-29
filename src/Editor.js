@@ -801,12 +801,12 @@ Editor.setRenderCanvas = function(canvas) {
 
 // Initialize the renderer
 Editor.initializeRenderer = function(canvas) {
-	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas})
+	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true})
 	Editor.renderer.autoClear = false
 
 	// Enable shadow maps
 	Editor.renderer.shadowMap.enabled = true
-	Editor.renderer.shadowMap.type = THREE.PCFShadowMao
+	Editor.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 	Editor.renderer.setSize(canvas.width, canvas.height)
 }
 
