@@ -57,15 +57,19 @@ class ObjectInspector {
 			Editor.renameObject(Editor.selected_object, str)
 		}
 
-		if (Editor.selected_object.defaultComponents.length > 0) {
-			for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
-				Editor.selected_object.defaultComponents[i].updateInfo(name, value, widget)
+		if(Editor.selected_object.defaultComponents !== undefined) {
+			if (Editor.selected_object.defaultComponents.length > 0) {
+				for(var i = 0; i < Editor.selected_object.defaultComponents.length; i++) {
+					Editor.selected_object.defaultComponents[i].updateInfo(name, value, widget)
+				}
 			}
 		}
 
-		if(Editor.selected_object.components.length > 0) {
-			for(var i = 0; i < Editor.selected_object.components.length; i++) {
-				Editor.selected_object.components[i].updateInfo(name, value, widget)
+		if(Editor.selected_object.components !== undefined) {
+			if(Editor.selected_object.components.length > 0) {
+				for(var i = 0; i < Editor.selected_object.components.length; i++) {
+					Editor.selected_object.components[i].updateInfo(name, value, widget)
+				}
 			}
 		}
 	}

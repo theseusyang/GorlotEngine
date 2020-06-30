@@ -174,8 +174,8 @@ function EditorUIAssetExplorer() {
                     if (v.attachedTo !== undefined || v.attachedTo !== null) {
                         var p = LiteGUI.prompt("Rename: " + v.attachedTo.name, (value) => {
                             if (value !== null) {
-                                v.attachedTo.name = value
-                                Editor.updateObjectViews()
+                                    Editor.renameObject(v.attachedTo, value)
+                                //Editor.updateObjectViews()
                             }
                         }, {title: "Rename", value: v.attachedTo.name})
                     }
@@ -216,6 +216,12 @@ function EditorUIAssetExplorer() {
         // TODO: This
         e.preventDefault()
     }})
+
+    EditorUI.asset_explorer_inspector.onchange = function(element, value, name) {  
+        if (value.attachedTo !== undefined || value.attachedTo !== null) {
+            Editor.selectObject(value.attachedTo)
+        }
+    }
     EditorUI.asset_explorer_objects = []
 
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)

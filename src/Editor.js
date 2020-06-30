@@ -561,9 +561,11 @@ Editor.renameObject = function(obj, name) {
 		}
 		obj.name = toName
 
-		if (obj.children.length > 0) {
-			for(var i = 0; i < obj.children.length; i++) {
-				Editor.renameObject(obj.children[i], obj.children[i].name)
+		if(obj.children !== undefined) {
+			if (obj.children.length > 0) {
+				for(var i = 0; i < obj.children.length; i++) {
+					Editor.renameObject(obj.children[i], obj.children[i].name)
+				}
 			}
 		}
 
