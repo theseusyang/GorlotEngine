@@ -14,8 +14,11 @@ function SubstractiveBlendingNode() {
 function MultiplyBlendingNode() {
 	return THREE.MultiplyBlending
 }
+function CustomBlendingNode() {
+	return THREE.CustomBlending
+}
 
-// Blending Source
+// Blending Factors
 function DstColorFactorNode() {
 	return THREE.DstColorFactor
 }
@@ -26,7 +29,6 @@ function SrcAlphaSaturateFactorNode() {
 	return THREE.SrcAlphaSaturateFactor
 }
 
-// Blending Destination
 function ZeroFactorNode() {
 	return THREE.ZeroFactor
 }
@@ -52,6 +54,43 @@ function OneMinusDstAlphaFactorNode() {
 	return THREE.OneMinusDstAlphaFactor
 }
 
+// Equation
+function AddEquationNode() {
+	return THREE.AddEquation
+}
+function SubtractEquationNode() {
+	return THREE.SubstractEquation
+}
+function ReverseSubtractEquationNode() {
+	return THREE.ReverseSubtractEquation
+}
+function MinEquationNode() {
+	return THREE.MinEquation
+}
+function MaxEquationNode() {
+	return THREE.MaxEquation
+}
+
+// Constants
+function FrontSideNode() {
+	return THREE.FrontSide
+}
+function BackSideNode() {
+	return THREE.BackSide
+}
+function DoubleSideNode() {
+	return THREE.DoubleSide
+}
+function HighPrecisionNode() {
+	return "highp"
+}
+function MediumPrecisionNode() {
+	return "mediump"
+}
+function LowPrecisionNode() {
+	return "lowp"
+}
+
 function registerMaterialNodeConstants() {
 	// Blending mode
 	LiteGraph.wrapFunctionAsNode("BlendingModes/NoBlending", NoBlendingNode, null, "number")
@@ -59,16 +98,30 @@ function registerMaterialNodeConstants() {
 	LiteGraph.wrapFunctionAsNode("BlendingModes/AdditiveBlending", AdditiveBlendingNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("BlendingModes/SubstractiveBlending", SubstractiveBlendingNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("BlendingModes/MultiplyBlending", MultiplyBlendingNode, null, "number")
-	// Blending source
-	LiteGraph.wrapFunctionAsNode("BlendingSource/DstColorFactor", DstColorFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingSource/OneMinusDstColorFactor", OneMinusDstColorFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingSource/SrcAlphaSaturateFactor", SrcAlphaSaturateFactorNode, null, "number")
-	// Blending Destination
-	LiteGraph.wrapFunctionAsNode("BlendingDestination/ZeroFactor", ZeroFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingDestination/OneFactor", OneFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingDestination/SrcColorFactor", SrcColorFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingDestination/SrcAlphaFactor", SrcAlphaFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingDestination/OneMinusSrcAlphaFactor", OneMinusSrcAlphaFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingDestination/DstAlphaFactor", DstAlphaFactorNode, null, "number")
-	LiteGraph.wrapFunctionAsNode("BlendingDestination/OneMinusDstAlphaFactor", OneMinusDstAlphaFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingModes/CustomBlending", CustomBlendingNode, null, "number")
+	// Blending Factors
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/DstColorFactor", DstColorFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/OneMinusDstColorFactor", OneMinusDstColorFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/SrcAlphaSaturateFactor", SrcAlphaSaturateFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/ZeroFactor", ZeroFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/OneFactor", OneFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/SrcColorFactor", SrcColorFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/SrcAlphaFactor", SrcAlphaFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/OneMinusSrcAlphaFactor", OneMinusSrcAlphaFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/DstAlphaFactor", DstAlphaFactorNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingFactors/OneMinusDstAlphaFactor", OneMinusDstAlphaFactorNode, null, "number")
+	// Equation
+	LiteGraph.wrapFunctionAsNode("BlendingEquations/AddEquation", AddEquationNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingEquations/SubtractEquation", SubtractEquationNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingEquations/ReverseSubtractEquation", ReverseSubtractEquationNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingEquations/MinEquation", MinEquationNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("BlendingEquations/MaxEquation", MaxEquationNode, null, "number")
+	// Constants
+	LiteGraph.wrapFunctionAsNode("Constants/FrontSide", FrontSideNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/BackSide", BackSideNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/DoubleSide", DoubleSideNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/HighPrecision", HighPrecisionNode, null, "Text")
+	LiteGraph.wrapFunctionAsNode("Constants/MediumPrecision", MediumPrecisionNode, null, "Text")
+	LiteGraph.wrapFunctionAsNode("Constants/LowPrecision", LowPrecisionNode, null, "Text")
+
 }

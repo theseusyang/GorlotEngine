@@ -50,7 +50,7 @@ function SetMaterialColorNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Colour", "Color")
 }
-SetMaterialColorNode.title = "Set Colour"
+SetMaterialColorNode.title = "Colour"
 SetMaterialColorNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
 	var c = this.getInputData(1)
@@ -64,7 +64,7 @@ function SetMaterialTransparentNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Transparent", "Boolean")
 }
-SetMaterialTransparentNode.title = "Set Transparent"
+SetMaterialTransparentNode.title = "Transparent"
 SetMaterialTransparentNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
 	var t = this.getInputData(1)
@@ -78,7 +78,7 @@ function SetMaterialOpacityNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Opacity", "number")
 }
-SetMaterialOpacityNode.title = "Set Opacity"
+SetMaterialOpacityNode.title = "Opacity"
 SetMaterialOpacityNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
 	var o = this.getInputData(1)
@@ -92,7 +92,7 @@ function SetBlendingModeMaterialNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Blending Mode", "number")
 }
-SetBlendingModeMaterialNode.title = "Set Blending Mode"
+SetBlendingModeMaterialNode.title = "Blending"
 SetBlendingModeMaterialNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
 	var b = this.getInputData(1)
@@ -106,7 +106,7 @@ function SetBlendingSourceNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Blending source", "number")
 }
-SetBlendingSourceNode.title = "Set Blending Source"
+SetBlendingSourceNode.title = "Blend Source"
 SetBlendingSourceNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
 	var bs = this.getInputData(1)
@@ -116,17 +116,143 @@ SetBlendingSourceNode.prototype.onExecute = function() {
 	}
 }
 
+function SetBlendingSourceAlphaNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Alpha", "number")
+}
+SetBlendingSourceAlphaNode.title = "Blend Source Alpha"
+SetBlendingSourceAlphaNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var a = this.getInputData(1)
+
+	if (m !== undefined && a !== undefined) {
+		m.blendSrcAlpha = a
+	}
+}
+
 function SetBlendingDestinationNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Blending Destination", "number")
 }
-SetBlendingDestinationNode.title = "Set Blending Destination"
+SetBlendingDestinationNode.title = "Blend Destination"
 SetBlendingDestinationNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
 	var bdst = this.getInputData(1)
 
 	if (m !== undefined && bdst !== undefined) {
 		m.blendDst = bdst
+	}
+}
+
+function SetBlendingDestinationAlphaNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Alpha", "number")
+}
+SetBlendingDestinationAlphaNode.title = "Blend Destination Alpha"
+SetBlendingDestinationAlphaNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var a = this.getInputData(1)
+
+	if (m !== undefined && a !== undefined) {
+		m.blendDst = a
+	}
+}
+
+function SetBlendEquationNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Equation", "number")
+}
+SetBlendEquationNode.title = "Blend Equation"
+SetBlendEquationNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var e = this.getInputData(1)
+
+	if (m !== undefined && e !== undefined) {
+		m.blendEquation = e
+	}
+}
+
+function SetBlendEquationAlphaNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Alpha", "number")
+}
+SetBlendEquationAlphaNode.title = "Blend Equation Alpha"
+SetBlendEquationAlphaNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var a = this.getInputData(1)
+
+	if (m !== undefined && a !== undefined) {
+		m.blendEquationAlpha = a
+	}
+}
+
+function SetAlphaTestNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Alpha Test", "number")
+}
+SetAlphaTestNode.title = "Alpha Test"
+SetAlphaTestNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var a = this.getInputData(1)
+
+	if (m !== undefined && a !== undefined) {
+		m.alphaTest = a
+	}
+}
+
+function FlatShadingNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Value", "Boolean")
+}
+FlatShadingNode.title = "Flat Shading"
+FlatShadingNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var v = this.getInputData(1)
+
+	if (m !== undefined && v !== undefined) {
+		m.flatShading = v
+	}
+}
+
+function AffectedByFogNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Value", "Boolean")
+}
+AffectedByFogNode.title = "Affected By Fog"
+AffectedByFogNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var v = this.getInputData(1)
+
+	if (m !== undefined && v !== undefined) {
+		m.fog = v
+	}
+}
+
+function SetPrecisionNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Precision", "Text")
+}
+SetPrecisionNode.title = "Precision"
+SetPrecisionNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var p = this.getInputData(1)
+
+	if (m !== undefined && p !== undefined) {
+		m.precision = p
+	}
+}
+
+function ShadowSideNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Side", "number")
+}
+ShadowSideNode.title = "Shadow Side"
+ShadowSideNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var s = this.getInputData(1)
+
+	if (m !== undefined && s !== undefined) {
+		m.shadowSide = s
 	}
 }
 
@@ -137,5 +263,14 @@ function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/SetMaterialOpacity", SetMaterialOpacityNode)
 	LiteGraph.registerNodeType("Material/SetBlendingModeMaterial", SetBlendingModeMaterialNode)
 	LiteGraph.registerNodeType("Material/SetBlendingSource", SetBlendingSourceNode)
+	LiteGraph.registerNodeType("Material/SetBlendingSourceAlpha", SetBlendingSourceAlphaNode)
 	LiteGraph.registerNodeType("Material/SetBlendingDestination", SetBlendingDestinationNode)
+	LiteGraph.registerNodeType("Material/SetBlendingDestinationAlpha", SetBlendingDestinationAlphaNode)
+	LiteGraph.registerNodeType("Material/SetBlendEquation", SetBlendEquationNode)
+	LiteGraph.registerNodeType("Material/SetBlendEquationAlpha", SetBlendEquationAlphaNode)
+	LiteGraph.registerNodeType("Material/SetAlphaTest", SetAlphaTestNode)
+	LiteGraph.registerNodeType("Material/FlatShading", FlatShadingNode)
+	LiteGraph.registerNodeType("Material/AffectedByFog", AffectedByFogNode)
+	LiteGraph.registerNodeType("Material/SetPrecision", SetPrecisionNode)
+	LiteGraph.registerNodeType("Material/ShadowSide", ShadowSideNode)
 }
