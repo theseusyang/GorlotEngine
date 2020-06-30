@@ -88,25 +88,54 @@ SetMaterialOpacityNode.prototype.onExecute = function() {
 	}
 }
 
-function SetMaterialTextureNode() {
-	// TODO: This
+function SetBlendingModeMaterialNode() {
 	this.addInput("Material", "Material")
-	this.addInput("Texture", "Texture")
+	this.addInput("Blending Mode", "number")
 }
-SetMaterialTextureNode.title = "Set Texture"
-SetMaterialTextureNode.prototype.onExecute = function() {
+SetBlendingModeMaterialNode.title = "Set Blending Mode"
+SetBlendingModeMaterialNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
-	var t = this.getInputData(1)
+	var b = this.getInputData(1)
 
-	if (m !== undefined && t !== undefined) {
-		m.map = t
+	if (m !== undefined && b !== undefined) {
+		m.blending = b
 	}
 }
 
-function registerMaterialNodeNodes(argument) {
+function SetBlendingSourceNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Blending source", "number")
+}
+SetBlendingSourceNode.title = "Set Blending Source"
+SetBlendingSourceNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var bs = this.getInputData(1)
+
+	if (m !== undefined && bs !== undefined) {
+		m.blendSrc = bs
+	}
+}
+
+function SetBlendingDestinationNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Blending Destination", "number")
+}
+SetBlendingDestinationNode.title = "Set Blending Destination"
+SetBlendingDestinationNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var bdst = this.getInputData(1)
+
+	if (m !== undefined && bdst !== undefined) {
+		m.blendDst = bdst
+	}
+}
+
+function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/MeshPhongMaterial", MeshPhongMaterialNode)
 	LiteGraph.registerNodeType("Material/SetMaterialColor", SetMaterialColorNode)
 	LiteGraph.registerNodeType("Material/SetMaterialTransparent", SetMaterialTransparentNode)
 	LiteGraph.registerNodeType("Material/SetMaterialOpacity", SetMaterialOpacityNode)
-	LiteGraph.registerNodeType("Material/SetMaterialTexture", SetMaterialTextureNode)
+	LiteGraph.registerNodeType("Material/SetBlendingModeMaterial", SetBlendingModeMaterialNode)
+	LiteGraph.registerNodeType("Material/SetBlendingSource", SetBlendingSourceNode)
+	LiteGraph.registerNodeType("Material/SetBlendingDestination", SetBlendingDestinationNode)
 }

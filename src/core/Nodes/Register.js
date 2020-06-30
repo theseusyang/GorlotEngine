@@ -6,7 +6,7 @@ function unregisterNodes() {
 function registerMaterialNodes() {
 	registerMaterialNodeNodes()
 	registerMaterialNodeColor()
-	registerMaterialNodeTexture()
+	registerMaterialNodeConstants()
 }
 
 function registerBlueprintsNodes() {

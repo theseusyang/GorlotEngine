@@ -90,7 +90,7 @@ class Program extends THREE.Object3D {
 	addDefaultScene(material) {
 		
 		if (material === undefined) {
-			material = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
+			material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
 			material.name = "default"
 		}
 
