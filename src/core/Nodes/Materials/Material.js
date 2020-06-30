@@ -99,7 +99,7 @@ SetMaterialTextureNode.prototype.onExecute = function() {
 	var t = this.getInputData(1)
 
 	if (m !== undefined && t !== undefined) {
-		m.map = new Texture(t)
+		m.map = t
 	}
 }
 
