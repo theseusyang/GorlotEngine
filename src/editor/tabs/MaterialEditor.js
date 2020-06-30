@@ -67,76 +67,11 @@ class MaterialEditor {
 
 		// Material attached to the editor
 		this.material = material
-		EditorUI.editingMaterial = this.material
-
-		var defaultNodes = {
-			config: {},
-			groups: [],
-			last_link_id: 0,
-			last_node_id: 1,
-			links: [],
-			nodes: [
-				{
-					flags: {},
-					id: 1,
-					mode: 0,
-					inputs: [
-						{
-							name: "Colour",
-							type: "Color",
-							link: null
-						},
-						{
-							name: "Emissive",
-							type: "number",
-							link: null
-						},
-						{
-							name: "Reflectivity",
-							type: "number",
-							link: null
-						},
-						{
-							name: "Shininess",
-							type: "number",
-							link: null
-						},
-						{
-							name: "Specular",
-							type: "Color",
-							link: null
-						},
-						{
-							name: "Wireframe",
-							type: "Boolean",
-							link: null
-						}
-					],
-					outputs: [{
-						name: "Material",
-						type: "Material",
-						links: null
-					}],
-					pos: [208, 140],
-					properties: {
-						//mat: this.material
-					},
-					size: [178, 126],
-					type: "Material/MeshPhongMaterial"
-				}
-			],
-			version: 0.4
-		}
-
 		this.nodes = this.material.nodes
+		var mat = this.material
+		mat.nodes = {}
 
-		if (JSON.stringify(this.nodes) === '{}') {
-			this.graph = new LGraph(defaultNodes)
-		} else {
-			this.graph = new LGraph(this.nodes)
-		}
-
-		this.genesisNode = undefined
+		this.graph = new LGraph(this.nodes)
 
 		// Sphere
 		this.sphere = new Model3D(new THREE.SphereBufferGeometry(1, 32, 32), this.material)
@@ -169,17 +104,15 @@ class MaterialEditor {
 		if(this.nodes.nodes !== undefined) {
 			for(var i = 0; i < this.nodes.nodes.length; i++) {
 				if (this.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
-					this.genesis = this.nodes.nodes[i]
-					
-					delete this.nodes.nodes[i].properties.mat.metadata
-					
-					this.material.setValues(this.nodes.nodes[i].properties.mat)
+					var genesis = this.nodes.nodes[i]
+					delete genesis.properties.mat.metadata
+					this.material.setValues(genesis.properties.mat)
 				}
 			}
 		}
 
 		if (this.material.nodes !== undefined) {
-			this.material.updateNodes(this.graph.serialize(), null)
+			this.material.updateNodes(this.graph.serialize())
 		}
 	}
 

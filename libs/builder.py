@@ -41,8 +41,10 @@ source.append("input/Key.js")
 source.append("input/Keyboard.js")
 source.append("input/Mouse.js")
 
-source.append("core/ThreeExpand.js")
 source.append("core/ObjectLoader.js")
+source.append("core/MaterialLoader.js")
+
+source.append("core/ThreeExpand.js")
 source.append("core/Program.js")
 source.append("core/ObjectUtils.js")
 source.append("core/Global.js")

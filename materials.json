@@ -1,0 +1,254 @@
+{
+	"metadata": {
+		"version": 4.4,
+		"type": "Object",
+		"generator": "Object3D.toJSON"
+	},
+	"geometries": [
+		{
+			"uuid": "0724A3FC-D2C9-47AD-9DDB-F06E0F50832F",
+			"type": "BoxBufferGeometry",
+			"name": "geometry",
+			"width": 2,
+			"height": 2,
+			"depth": 2
+		}],
+	"materials": [
+		{
+			"uuid": "BD61CDDE-C0D9-4F9D-B3FE-306E4CA97FFA",
+			"type": "MeshPhongMaterial",
+			"name": "default",
+			"color": 130817,
+			"emissive": 0,
+			"specular": 3355443,
+			"shininess": 71.57894736842105,
+			"nodes": {
+				"last_node_id": 4,
+				"last_link_id": 3,
+				"nodes": [
+					{
+						"id": 1,
+						"type": "Material/MeshPhongMaterial",
+						"pos": [208,140],
+						"size": {
+							"0": 178,
+							"1": 126
+						},
+						"flags": {},
+						"order": 3,
+						"mode": 0,
+						"inputs": [
+							{
+								"name": "Colour",
+								"type": "Color",
+								"link": 1
+							},
+							{
+								"name": "Emissive",
+								"type": "number",
+								"link": null
+							},
+							{
+								"name": "Reflectivity",
+								"type": "number",
+								"link": null
+							},
+							{
+								"name": "Shininess",
+								"type": "number",
+								"link": 3
+							},
+							{
+								"name": "Specular",
+								"type": "Color",
+								"link": null
+							},
+							{
+								"name": "Wireframe",
+								"type": "Boolean",
+								"link": null
+							}],
+						"outputs": [
+							{
+								"name": "Material",
+								"type": "Material",
+								"links": null
+							}],
+						"properties": {
+							"mat": {
+								"uuid": "BD61CDDE-C0D9-4F9D-B3FE-306E4CA97FFA",
+								"type": "MeshPhongMaterial",
+								"name": "default",
+								"color": {
+									"r": 0.00392156862745098,
+									"g": 1,
+									"b": 0.00392156862745098
+								},
+								"emissive": 0,
+								"specular": 3355443,
+								"shininess": 71.57894736842105,
+								"nodes": {}
+							}
+						}
+					},
+					{
+						"id": 2,
+						"type": "Colour/Colour",
+						"pos": [12,147],
+						"size": {
+							"0": 140,
+							"1": 66
+						},
+						"flags": {},
+						"order": 2,
+						"mode": 0,
+						"inputs": [
+							{
+								"name": "Red",
+								"type": "number",
+								"link": null
+							},
+							{
+								"name": "Green",
+								"type": "number",
+								"link": 2
+							},
+							{
+								"name": "Blue",
+								"type": "number",
+								"link": null
+							}],
+						"outputs": [
+							{
+								"name": "Colour",
+								"type": "Color",
+								"links": [1]
+							}],
+						"properties": {}
+					},
+					{
+						"id": 3,
+						"type": "Base/number",
+						"pos": [-109,158],
+						"size": [80,60],
+						"flags": {
+							"collapsed": false
+						},
+						"order": 0,
+						"mode": 0,
+						"outputs": [
+							{
+								"name": "",
+								"type": "number",
+								"links": [2]
+							}],
+						"properties": {
+							"min": -1000,
+							"max": 1000,
+							"value": 255,
+							"step": 1
+						}
+					},
+					{
+						"id": 4,
+						"type": "Base/internal_slider",
+						"pos": [-86,276],
+						"size": {
+							"0": 210,
+							"1": 58
+						},
+						"flags": {},
+						"order": 1,
+						"mode": 0,
+						"outputs": [
+							{
+								"name": "",
+								"type": "number",
+								"links": [3]
+							}],
+						"properties": {
+							"value": 71.57894736842105,
+							"min": 0,
+							"max": 100,
+							"text": "V"
+						}
+					}],
+				"links": [[1,2,0,1,0,
+						"Color"],[2,3,0,2,1,
+						"number"],[3,4,0,1,3,
+						"number"]],
+				"groups": [],
+				"config": {},
+				"version": 0.4
+			}
+		}],
+	"object": {
+		"uuid": "0B242ACE-7F5B-42DD-886D-09DF75004EAA",
+		"type": "Program",
+		"description": "",
+		"author": "",
+		"version": "0",
+		"vr": false,
+		"components": [],
+		"name": "program",
+		"castShadow": false,
+		"receiveShadow": false,
+		"visible": true,
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "8ED731A6-F3DA-4D12-B096-CBD3E4919CDA",
+				"type": "Scene",
+				"name": "scene",
+				"components": [],
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"children": [
+					{
+						"uuid": "034FB0E4-0790-4F52-8B9A-F841DC760A27",
+						"type": "Mesh",
+						"name": "box",
+						"components": [],
+						"castShadow": true,
+						"receiveShadow": true,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,0,1],
+						"geometry": "0724A3FC-D2C9-47AD-9DDB-F06E0F50832F",
+						"material": "BD61CDDE-C0D9-4F9D-B3FE-306E4CA97FFA"
+					},
+					{
+						"uuid": "25B2B345-61C0-4081-956E-0B7A46F07B59",
+						"type": "Mesh",
+						"name": "ground",
+						"components": [],
+						"castShadow": true,
+						"receiveShadow": true,
+						"visible": true,
+						"matrix": [20,0,0,0,0,1,0,0,0,0,20,0,0,0,0,1],
+						"geometry": "0724A3FC-D2C9-47AD-9DDB-F06E0F50832F",
+						"material": "BD61CDDE-C0D9-4F9D-B3FE-306E4CA97FFA"
+					},
+					{
+						"uuid": "9F876D03-7335-458F-9CBD-A9F901C4DBE9",
+						"type": "PointLight",
+						"name": "point_light_1",
+						"components": [],
+						"castShadow": true,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,4.7779998779296875,3.7679998874664307,1],
+						"color": 16777215,
+						"intensity": 1,
+						"distance": 0,
+						"decay": 1
+					}],
+				"fog_color": "#ffffff",
+				"fog_density": 0.001,
+				"fog_near": 2,
+				"fog_far": 30,
+				"fog_mode": 0
+			}]
+	}
+}

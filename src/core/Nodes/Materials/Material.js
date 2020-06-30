@@ -9,13 +9,11 @@ function MeshPhongMaterialNode() {
 	this.addInput("Wireframe", "Boolean")
 
 	this.addOutput("Material", "Material")
-
-	this.properties = {mat: EditorUI.editingMaterial}
 }
 MeshPhongMaterialNode.title = "Material"
 MeshPhongMaterialNode.prototype.onExecute = function() {
-	EditorUI.editingMaterial.nodes = {}
 	var mat = this.properties.mat	
+	mat.nodes = {}
 
 	var c = this.getInputData(0)
 	var e = this.getInputData(1)

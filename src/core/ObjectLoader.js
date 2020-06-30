@@ -259,7 +259,7 @@ function parseMaterials(json, textures)
 	if(json !== undefined)
 	{
 		// TODO: Rewrite MaterialLoader, so it fits in my project <3
-		var loader = new THREE.MaterialLoader();
+		var loader = new MaterialLoader();
 		loader.setTextures(textures);
 
 		for(var i = 0, l = json.length; i < l; i ++)
