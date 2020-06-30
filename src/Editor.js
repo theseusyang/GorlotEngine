@@ -1,3 +1,41 @@
+include("libs/litegui/litegui.js")
+include("libs/jscolor/jscolor.js")
+
+include("libs/codemirror/codemirror.js")
+include("libs/codemirror/mode/javascript/javascript.js")
+
+// Css Files to the editor
+
+include("libs/litegui/litegui.css")
+
+include("libs/litegraph/litegraph.css")
+
+include("libs/codemirror/codemirror.css")
+include("libs/codemirror/theme/monokai.css")
+
+include("src/editor/utils/editor.css")
+
+// Editor Code
+
+include("src/editor/tools/MoveTool.js")
+include("src/editor/tools/ResizeTool.js")
+include("src/editor/tools/RotateTool.js")
+
+include("src/editor/windows/AddMenuWindow.js")
+
+include("src/editor/tabs/CodeEditor.js")
+include("src/editor/tabs/MaterialEditor.js")
+include("src/editor/tabs/SceneEditor.js")
+include("src/editor/tabs/SettingsTab.js")
+include("src/editor/tabs/BlueprintsEditor.js")
+
+include("src/editor/UI.js")
+
+include("src/editor/ui/ObjectInspector.js")
+include("src/editor/ui/TopMenu.js")
+include("src/editor/ui/AssetExplorer.js")
+include("src/editor/ui/Hierarchy.js")
+
 function Editor(){}
 
 //Editor state
@@ -14,7 +52,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Tue 30 Jun 2020 18:19:22"
+Editor.TIMESTAMP = "Tue 30 Jun 2020 22:44:56"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
