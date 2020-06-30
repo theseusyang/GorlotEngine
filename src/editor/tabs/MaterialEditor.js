@@ -73,10 +73,11 @@ class MaterialEditor {
 
 		this.graph = new LGraph(this.nodes)
 
-		// Sphere
-		this.sphere = new Model3D(new THREE.SphereBufferGeometry(1, 32, 32), this.material)
-		this.sphere.position.set(0, 0, -2.5)
-		this.scene.add(this.sphere)
+		// Material preview object
+		this.obj = new Model3D(new THREE.SphereBufferGeometry(1, 64, 64), this.material)
+		this.obj.position.set(0, 0, -2.5)
+		this.scene.add(this.obj)
+		this.prevIn = 0 // Preview Index
 		
 		this.graphcanvas = new LGraphCanvas("#MaterialEditor"+MaterialEditor.id, this.graph)
 
@@ -124,10 +125,34 @@ class MaterialEditor {
 		this.renderer.render(this.scene, this.camera)
 	
 		if (Mouse.insideCanvas()) {
+
 			if (Mouse.buttonPressed(Mouse.LEFT)) {
 				var delta = new THREE.Quaternion()
 				delta.setFromEuler(new THREE.Euler(Mouse.pos_diff.y * 0.005, Mouse.pos_diff.x * 0.005, 0, 'XYZ'))
-				this.sphere.quaternion.multiplyQuaternions(delta, this.sphere.quaternion)
+				this.obj.quaternion.multiplyQuaternions(delta, this.obj.quaternion)
+			}
+			if (Mouse.buttonPressed(Mouse.RIGHT)) {
+
+				if (this.prevIn < 3) {
+					this.prevIn++
+				} else {
+					this.prevIn = 0
+				}
+
+				if (this.prevIn === 0) {
+					// Sphere
+					this.obj.geometry = new THREE.SphereBufferGeometry(1, 64, 64)
+				} else if (this.prevIn === 1) {
+					// Torus
+					this.obj.geometry = new THREE.TorusBufferGeometry(0.8, 0.4, 64, 128)
+				} else if (this.prevIn === 2) {
+					// Cube
+					this.obj.geometry = new THREE.BoxBufferGeometry(1, 1, 1, 32, 32, 32)
+				} else if (this.prevIn === 3) {
+					// Torus Knot
+					this.obj.geometry = new THREE.TorusKnotBufferGeometry(0.7, 0.3, 128, 32)
+				}
+
 			}
 		}
 	}

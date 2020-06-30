@@ -41,7 +41,11 @@ class SceneEditor {
 								// Create new material with selected image
 								var texture = new Texture(file.path)
 								var material = new MeshPhongMaterial({map: texture, color: 0xffffff, specular: 0x333333, shininess: 80})
+								material.name = file.name
 								object.material = material
+
+								// Update Asset Explorer
+								EditorUI.updateAssetExplorer()
 							}
 						}
 					}

@@ -18,10 +18,13 @@ class ElementComponent extends Component {
 
 		if (name === "Position") {
 			Editor.selected_object.position.set(val[0], val[1], val[2])
+			Editor.selected_object.updateMatrix()
 		} else if (name === "Rotation") {
 			Editor.selected_object.rotation.set(val[0], val[1], val[2])
+			Editor.selected_object.updateMatrix()
 		} else if (name === "Scale") {
 			Editor.selected_object.scale.set(val[0], val[1], val[2])
+			Editor.selected_object.updateMatrix()
 		}
 	}
 }

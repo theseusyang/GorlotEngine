@@ -13,8 +13,8 @@ Editor.MODE_ROTATE = 3;
 
 // Editor version
 Editor.NAME = "Gorlot"
-Editor.VERSION = "V0.0.0"
-Editor.TIMESTAMP = "Mon 29 Jun 2020 18:03:50"
+Editor.VERSION = "V0.0.1"
+Editor.TIMESTAMP = "Tue 30 Jun 2020 14:50:50"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -76,7 +76,7 @@ Editor.initialize = function(canvas)
 	Editor.canvas = null
 
 	// Default material to be used when creating objects
-	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x777777, shininess: 60})
+	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x444444, shininess: 60})
 	Editor.default_material.name = "default"
 
 	//Initialize User Interface
@@ -94,8 +94,9 @@ Editor.initialize = function(canvas)
 	Editor.setRenderCanvas(EditorUI.canvas.element)
 
 	//Editor Camera
-	Editor.camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 1000000);
-	Editor.camera.position.set(0, 5, -5);
+	Editor.default_camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 1000000);
+	Editor.default_camera.position.set(0, 5, -5);
+	Editor.camera = Editor.default_camera
 	Editor.camera_rotation = new THREE.Vector2(0,0);
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
 
@@ -154,7 +155,7 @@ Editor.initialize = function(canvas)
 	Editor.tool_scene_top.add(Editor.rotate_tool);
 
 	// TODO: Delete
-	Editor.updateTreeView()
+	Editor.updateObjectViews()
 }
 
 //Update Editor
@@ -481,7 +482,7 @@ Editor.isObjectSelected = function(obj) {
 Editor.deleteSelectedObject = function() {
 	if (Editor.selected_object.parent !== null) {
 		Editor.selected_object.parent.remove(Editor.selected_object)
-		Editor.updateTreeView()
+		Editor.updateObjectViews()
 		Editor.resetEditingFlags()
 	}
 }
@@ -504,7 +505,7 @@ Editor.cutSelectedObject = function() {
 			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
 			if (Editor.selected_object.parent !== null) {
 				Editor.selected_object.parent.remove(Editor.selected_object)
-				Editor.updateTreeView()
+				Editor.updateObjectViews()
 				Editor.resetEditingFlags()
 			}
 		} catch(e) {
@@ -533,7 +534,7 @@ Editor.pasteIntoSelectedObject = function() {
 			Editor.program.scene.add(obj)
 		}
 
-		Editor.updateTreeView()
+		Editor.updateObjectViews()
 	} catch(e) {
 		console.error("Error pasting object: " + e)
 	}
@@ -542,7 +543,7 @@ Editor.pasteIntoSelectedObject = function() {
 // Add object to actual scene
 Editor.addToActualScene = function(obj) {
 	Editor.program.scene.add(obj)
-	Editor.updateTreeView()
+	Editor.updateObjectViews()
 	Editor.renameObject(obj, obj.name)
 	Editor.selectObject(obj)
 }
@@ -563,14 +564,26 @@ Editor.renameObject = function(obj, name) {
 			}
 		}
 
-		Editor.updateTreeView()
+		Editor.updateObjectViews()
 	}
+}
+
+// Update all object views
+Editor.updateObjectViews = function() {
+	Editor.updateTreeView()
+	Editor.updateAssetExplorer()
+	EditorUI.updateInspector()
 }
 
 // Update Tree View to Match Actual Scene
 Editor.updateTreeView = function() {
+	// Update tree view from program
 	EditorUI.updateHierarchy()
-	EditorUI.updateInspector()
+	//EditorUI.updateInspector()
+}
+
+// Update asset explorer
+Editor.updateAssetExplorer = function() {
 
 	// Get material list
 	var materials = ObjectUtils.getMaterials(Editor.program)
@@ -746,7 +759,7 @@ Editor.loadProgram = function(fname) {
 	//	EditorUI.removeAllTabs()
 	//}
 
-	Editor.updateTreeView()
+	Editor.updateObjectViews()
 }
 
 // Export web project to a file
@@ -779,7 +792,7 @@ Editor.createNewProgram = function() {
 	//	EditorUI.removeAllTabs()
 	//}
 
-	Editor.updateTreeView()
+	Editor.updateObjectViews()
 }
 
 // Set editor state

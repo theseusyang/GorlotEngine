@@ -7,10 +7,10 @@ class Object3DComponent extends Component {
 		super.initUI()
 	
 		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible)
+		EditorUI.form.addCheckbox("Static", Editor.selected_object.matrixAutoUpdate)
 		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
 		EditorUI.form.addCheckbox("Rotation Auto Update", Editor.selected_object.rotationAutoUpdate)
-		EditorUI.form.addCheckbox("Matrix Auto Update", Editor.selected_object.matrixAutoUpdate)
 
 		var self = this
 		this.addRemoveButton(this)
@@ -27,10 +27,14 @@ class Object3DComponent extends Component {
 
 		if (name === "Visible") {
 			Editor.selected_object.visible = str
-		} if (name === "Cast Shadow") {
+		} else if (name === "Cast Shadow") {
 			ObjectUtils.setShadowCasting(Editor.selected_object, str)
-		} if (name === "Receive Shadow") {
+		} else if (name === "Receive Shadow") {
 			ObjectUtils.setShadowReceiving(Editor.selected_object, str)
+		} else if (name === "Static") {
+			Editor.selected_object.matrixAutoUpdate = str
 		}
+
+		EditorUI.updateInspector()
 	}
 }

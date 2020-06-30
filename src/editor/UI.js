@@ -138,7 +138,7 @@ EditorUI.deleteObject = function(object) {
             }
         }
 
-        Editor.updateTreeView()
+        Editor.updateObjectViews()
     }
 
     // If this object is selected, reset editing flags
@@ -187,7 +187,7 @@ EditorUI.newProgram = function() {
         if (v) {
             EditorUI.asset_explorer_objects = []
             Editor.createNewProgram()
-            Editor.updateTreeView()
+            Editor.updateObjectViews()
             Editor.updateObjectHelper()
         }
     }, {title: "New Project"})

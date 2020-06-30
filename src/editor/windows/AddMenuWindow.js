@@ -134,7 +134,7 @@ class AddMenuWindow {
 		}
 		else if (o === "Sphere") {
 
-			var geometry = new THREE.SphereBufferGeometry(0.6, 16, 16)
+			var geometry = new THREE.SphereBufferGeometry(0.6, 32, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
@@ -144,7 +144,7 @@ class AddMenuWindow {
 		}
 		else if (o === "Torus") {
 
-			var geometry = new THREE.TorusBufferGeometry(1, 0.5, 16, 100)
+			var geometry = new THREE.TorusBufferGeometry(1, 0.5, 16, 96)
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true

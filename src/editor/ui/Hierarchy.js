@@ -28,9 +28,9 @@ function EditorUIHierarchy() {
 
             if (parObj != null) {
                 parObj.add(obj)
-                Editor.updateTreeView()
+                Editor.updateObjectViews()
             } else {
-                Editor.updateTreeView()
+                Editor.updateObjectViews()
             }
         }
     })

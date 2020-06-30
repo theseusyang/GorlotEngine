@@ -105,7 +105,7 @@ function EditorUITopMenu() {
     EditorUI.topmenu.add("Edit/Project/Add Scene", {callback: () => {
         var scene = Editor.program.addDefaultScene()
         Editor.renameObject(scene, scene.name)
-        Editor.updateTreeView()
+        Editor.updateObjectViews()
     }})
 
     // ----- Preferences -----

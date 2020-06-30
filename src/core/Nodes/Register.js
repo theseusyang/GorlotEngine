@@ -23,3 +23,5 @@ function registerAllNodes() {
 	registerBlueprintsNodes()
 	registerMaterialNodes()
 }
+
+registerAllNodes()
