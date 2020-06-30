@@ -14,7 +14,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Tue 30 Jun 2020 14:50:50"
+Editor.TIMESTAMP = "Tue 30 Jun 2020 17:17:44"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -76,8 +76,11 @@ Editor.initialize = function(canvas)
 	Editor.canvas = null
 
 	// Default material to be used when creating objects
-	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x444444, shininess: 60})
+	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
 	Editor.default_material.name = "default"
+
+	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff})
+	Editor.default_sprite_material.name = "sprite"
 
 	//Initialize User Interface
 	EditorUI.Initialize();
@@ -798,7 +801,7 @@ Editor.createNewProgram = function() {
 // Set editor state
 Editor.setState = function(state) {
 	if (state === Editor.STATE_EDITING) {
-		// Clean program running variable
+		// Dispose running program if there is one
 		if(Editor.program_running !== null) {
 			Editor.program_running.scene.stop()
 			Editor.program_running = null

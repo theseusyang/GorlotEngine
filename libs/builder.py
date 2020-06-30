@@ -15,20 +15,19 @@ libraries.append("three/stats.min.js")
 
 libraries.append("three/loaders/OBJLoader.js")
 libraries.append("three/loaders/MTLLoader.js")
-libraries.append("three/loaders/FBXLoader.js")
 libraries.append("three/loaders/VRMLLoader.js")
+libraries.append("three/loaders/FBXLoader.js")
 libraries.append("three/loaders/ColladaLoader.js")
 libraries.append("three/loaders/collada/Animation.js")
 libraries.append("three/loaders/collada/AnimationHandler.js")
 libraries.append("three/loaders/collada/KeyFrameAnimation.js")
 
-libraries.append("three/cameras/CinematicCamera.js")
+#libraries.append("three/cameras/CinematicCamera.js")
 
 #libraries.append("leap/leap-0.6.4.min.js")
 #libraries.append("leap/leap-plugins-0.1.11.min.js")
 
 libraries.append("cannon/cannon.js")
-libraries.append("cannon/ConvexGeometry.js")
 libraries.append("cannon/CannonDebugRenderer.js")
 
 libraries.append("opentype.min.js")

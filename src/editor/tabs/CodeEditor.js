@@ -50,6 +50,31 @@ class CodeEditor {
 		this.content.oncontextmenu = function(e) {
 			var context = new LiteGUI.ContextMenu([
 				{
+					title: "Copy",
+					callback: () => {
+						var text = self.code.getSelection()
+						if (text !== "") {
+							App.clipboard.set(text, "text")
+						}
+					}
+				},
+				{
+					title: "Cut",
+					callback: () => {
+						var text = self.code.getSelection()
+						if (text !== "") {
+							App.clipboard.set(text, "text")
+							self.code.replaceSelection("")
+						}
+					}
+				},
+				{
+					title: "Paste",
+					callback: () => {
+						self.code.replaceSelection(App.clipboard.get("text"))
+					}
+				},
+				{
 					title: "Auto indent",
 					callback: () => {
 						self.code.execCommand("indentAuto")

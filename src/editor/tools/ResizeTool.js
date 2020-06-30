@@ -17,7 +17,7 @@ class ResizeTool extends THREE.Scene {
 		this.material_white = new THREE.MeshBasicMaterial({color: 0xffffff});
 	
 		//X
-		var geometry = new THREE.CylinderGeometry(0.01, 0.015, 1, 5);
+		var geometry = new THREE.CylinderGeometry(0.015, 0.015, 1, 5);
 		var mesh = new THREE.Mesh(geometry, this.material_red);
 		mesh.position.set(0, 0.5, 0);
 		this.x.add(mesh);
@@ -29,7 +29,7 @@ class ResizeTool extends THREE.Scene {
 		this.x.updateMatrix();
 	
 		//Y
-		geometry = new THREE.CylinderGeometry(0.01, 0.015, 1, 5);
+		geometry = new THREE.CylinderGeometry(0.015, 0.015, 1, 5);
 		mesh = new THREE.Mesh(geometry, this.material_green);
 		mesh.position.set(0, 0.5, 0);
 		this.y.add(mesh);
@@ -39,7 +39,7 @@ class ResizeTool extends THREE.Scene {
 		this.y.add(mesh);
 	
 		//Z
-		geometry = new THREE.CylinderGeometry(0.01, 0.015, 1, 5);
+		geometry = new THREE.CylinderGeometry(0.015, 0.015, 1, 5);
 		mesh = new THREE.Mesh(geometry, this.material_blue);
 		mesh.position.set(0, 0.5, 0);
 		this.z.add(mesh);

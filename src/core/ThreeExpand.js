@@ -44,8 +44,7 @@ THREE.Object3D.prototype.toJSON = function(meta) {
 		output.metadata =
 		{
 			version: 4.4,
-			type: 'Object',
-			generator: 'Object3D.toJSON'
+			generator: 'GorlotProgram'
 		};
 	}
 

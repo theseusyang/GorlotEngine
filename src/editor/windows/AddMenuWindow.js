@@ -241,10 +241,7 @@ class AddMenuWindow {
 		}
 		else if (o === "Sprite") {
 
-			var map = new Texture("data/sample.png")
-        	var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
-        	var obj = new Sprite(material)
-        	Editor.addToActualScene(obj)
+			Editor.addToActualScene(new Sprite(Editor.default_sprite_material))
 
 		}
 		else if (o === "Particles") {

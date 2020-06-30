@@ -87,7 +87,14 @@ class Program extends THREE.Object3D {
 		this.initial_scene = scene.uuid
 	}
 
-	addDefaultScene() {
+	addDefaultScene(material) {
+		
+		if (material === undefined) {
+			material = new THREE.MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
+			material.name = "default"
+		}
+
+		// Create new scene
 		var scene = new Scene()
 
 		// Sky
@@ -98,11 +105,9 @@ class Program extends THREE.Object3D {
 		}
 		scene.add(sky)
 
-		var material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 60})
-		material.name = "default"
-		var geometry = new THREE.BoxBufferGeometry(2, 2, 2)
 
 		// Box
+		var geometry = new THREE.BoxBufferGeometry(2, 2, 2)
 		var model = new Model3D(geometry, material)
 		model.position.set(0, 2, 0)
 		model.receiveShadow = true
@@ -186,8 +191,7 @@ class Program extends THREE.Object3D {
 			output.metadata =
 			{
 				version: 4.4,
-				type: 'Object',
-				generator: 'Object3D.toJSON'
+				generator: 'GorlotProgram'
 			};
 		}
 
