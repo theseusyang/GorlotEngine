@@ -52,7 +52,7 @@ class MeshPhongMaterial extends THREE.MeshPhongMaterial {
 					}],
 					pos: [208, 140],
 					properties: {
-						mat: this
+						mat: this.uuid
 					},
 					size: [178, 126],
 					type: "Material/MeshPhongMaterial"

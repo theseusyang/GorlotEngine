@@ -107,7 +107,7 @@ class MaterialEditor {
 				if (this.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
 					var genesis = this.nodes.nodes[i]
 					delete genesis.properties.mat.metadata
-					this.material.setValues(genesis.properties.mat)
+					this.material.setValues(Editor.getAssetByUUID(genesis.properties.mat))
 				}
 			}
 		}

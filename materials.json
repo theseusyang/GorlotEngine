@@ -5,14 +5,7 @@
 	},
 	"geometries": [
 		{
-			"uuid": "D2A6458D-A561-4639-ADBE-832317BF64DC",
-			"type": "SphereGeometry",
-			"radius": 4000,
-			"widthSegments": 32,
-			"heightSegments": 15
-		},
-		{
-			"uuid": "8DFD062B-30B7-4E34-9471-B51314257B3F",
+			"uuid": "28CD9ECC-93C4-406B-85DC-95900B3E05D9",
 			"type": "BoxBufferGeometry",
 			"width": 2,
 			"height": 2,
@@ -20,137 +13,17 @@
 		}],
 	"materials": [
 		{
-			"uuid": "C761F63D-691D-4B0D-B362-94CDB55A0FC5",
-			"type": "ShaderMaterial",
-			"name": "sky",
-			"side": 1,
-			"uniforms": {
-				"top_color": {
-					"type": "c",
-					"value": {
-						"r": 0,
-						"g": 0.4627450980392157,
-						"b": 1
-					}
-				},
-				"bottom_color": {
-					"type": "c",
-					"value": {
-						"r": 1,
-						"g": 1,
-						"b": 1
-					}
-				},
-				"offset": {
-					"type": "f",
-					"value": 20
-				},
-				"exponent": {
-					"type": "f",
-					"value": 0.4
-				}
-			},
-			"vertexShader": "\n\t\t\tvarying vec3 vWorldPosition;\n\t\t\tvoid main() {\n\t\t\t\tvec4 worldPosition = modelMatrix * vec4(position, 1.0);\n\t\t\t\tvWorldPosition = worldPosition.xyz;\n\t\t\t\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n\t\t\t}\n\t\t",
-			"fragmentShader": "\n\t\t\tuniform vec3 top_color;\n\t\t\tuniform vec3 bottom_color;\n\t\t\tuniform float offset;\n\t\t\tuniform float exponent;\n\t\t\tvarying vec3 vWorldPosition;\n\t\t\tvoid main() {\n\t\t\t\tfloat h = normalize(vWorldPosition + offset).y;\n\t\t\t\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n\t\t\t}\n\t\t"
-		},
-		{
-			"uuid": "90D38271-472D-474C-BF24-8ED89048958B",
+			"uuid": "9907ACF0-91E6-439B-9A69-0C6E734AD391",
 			"type": "MeshPhongMaterial",
 			"name": "default",
-			"color": 6562660,
+			"color": 16711937,
 			"emissive": 0,
 			"specular": 3355443,
-			"shininess": 83.6842105263158,
+			"shininess": 255,
 			"nodes": {
-				"last_node_id": 12,
-				"last_link_id": 11,
+				"last_node_id": 4,
+				"last_link_id": 3,
 				"nodes": [
-					{
-						"id": 2,
-						"type": "Material/SetBlendingSource",
-						"pos": [472,99],
-						"size": {
-							"0": 140,
-							"1": 46
-						},
-						"flags": {},
-						"order": 9,
-						"mode": 0,
-						"inputs": [
-							{
-								"name": "Material",
-								"type": "Material",
-								"link": 1
-							},
-							{
-								"name": "Blending source",
-								"type": "number",
-								"link": 2
-							}],
-						"properties": {}
-					},
-					{
-						"id": 3,
-						"type": "BlendingSource/OneMinusDstColorFactor",
-						"pos": [479,210],
-						"size": {
-							"0": 140,
-							"1": 26
-						},
-						"flags": {},
-						"order": 0,
-						"mode": 0,
-						"outputs": [
-							{
-								"name": "out",
-								"type": "number",
-								"links": [2]
-							}],
-						"properties": {}
-					},
-					{
-						"id": 4,
-						"type": "Material/SetBlendingModeMaterial",
-						"pos": [389,18],
-						"size": {
-							"0": 140,
-							"1": 46
-						},
-						"flags": {},
-						"order": 10,
-						"mode": 0,
-						"inputs": [
-							{
-								"name": "Material",
-								"type": "Material",
-								"link": 3
-							},
-							{
-								"name": "Blending Mode",
-								"type": "number",
-								"link": 4
-							}],
-						"properties": {}
-					},
-					{
-						"id": 5,
-						"type": "BlendingModes/NormalBlending",
-						"pos": [199,45],
-						"size": {
-							"0": 140,
-							"1": 26
-						},
-						"flags": {},
-						"order": 1,
-						"mode": 0,
-						"outputs": [
-							{
-								"name": "out",
-								"type": "number",
-								"links": [4]
-							}],
-						"properties": {}
-					},
 					{
 						"id": 1,
 						"type": "Material/MeshPhongMaterial",
@@ -160,13 +33,13 @@
 							"1": 126
 						},
 						"flags": {},
-						"order": 8,
+						"order": 3,
 						"mode": 0,
 						"inputs": [
 							{
 								"name": "Colour",
 								"type": "Color",
-								"link": 7
+								"link": 1
 							},
 							{
 								"name": "Emissive",
@@ -181,7 +54,7 @@
 							{
 								"name": "Shininess",
 								"type": "number",
-								"link": 11
+								"link": 3
 							},
 							{
 								"name": "Specular",
@@ -197,204 +70,95 @@
 							{
 								"name": "Material",
 								"type": "Material",
-								"links": [1,3,5]
+								"links": null
 							}],
 						"properties": {
-							"mat": {
-								"uuid": "90D38271-472D-474C-BF24-8ED89048958B",
-								"type": "MeshPhongMaterial",
-								"name": "default",
-								"color": {
-									"r": 0.39215686274509803,
-									"g": 0.13725490196078433,
-									"b": 0.39215686274509803
-								},
-								"emissive": 0,
-								"specular": 3355443,
-								"shininess": 83.6842105263158,
-								"nodes": {},
-								"blendSrc": 209,
-								"blending": 1,
-								"blendDst": 202
-							}
+							"mat": "9907ACF0-91E6-439B-9A69-0C6E734AD391"
 						}
 					},
 					{
-						"id": 6,
-						"type": "BlendingDestination/SrcColorFactor",
-						"pos": [357,321],
-						"size": {
-							"0": 140,
-							"1": 26
-						},
-						"flags": {},
-						"order": 2,
-						"mode": 0,
-						"outputs": [
-							{
-								"name": "out",
-								"type": "number",
-								"links": [6]
-							}],
-						"properties": {}
-					},
-					{
-						"id": 7,
-						"type": "Material/SetBlendingDestination",
-						"pos": [549,283],
-						"size": {
-							"0": 178,
-							"1": 46
-						},
-						"flags": {},
-						"order": 11,
-						"mode": 0,
-						"inputs": [
-							{
-								"name": "Material",
-								"type": "Material",
-								"link": 5
-							},
-							{
-								"name": "Blending Destination",
-								"type": "number",
-								"link": 6
-							}],
-						"properties": {}
-					},
-					{
-						"id": 9,
-						"type": "Base/number",
-						"pos": [-153,64],
-						"size": [80,60],
-						"flags": {},
-						"order": 3,
-						"mode": 0,
-						"outputs": [
-							{
-								"name": "",
-								"type": "number",
-								"links": [8]
-							}],
-						"properties": {
-							"min": -1000,
-							"max": 1000,
-							"value": 100,
-							"step": 1
-						}
-					},
-					{
-						"id": 11,
-						"type": "Base/number",
-						"pos": [-133,276],
-						"size": [80,60],
-						"flags": {},
-						"order": 4,
-						"mode": 0,
-						"outputs": [
-							{
-								"name": "",
-								"type": "number",
-								"links": [10]
-							}],
-						"properties": {
-							"min": -1000,
-							"max": 1000,
-							"value": 100,
-							"step": 1
-						}
-					},
-					{
-						"id": 10,
-						"type": "Base/number",
-						"pos": [-165,161],
-						"size": [80,60],
-						"flags": {},
-						"order": 5,
-						"mode": 0,
-						"outputs": [
-							{
-								"name": "",
-								"type": "number",
-								"links": [9]
-							}],
-						"properties": {
-							"min": -1000,
-							"max": 1000,
-							"value": 35,
-							"step": 1
-						}
-					},
-					{
-						"id": 8,
+						"id": 2,
 						"type": "Colour/Colour",
-						"pos": [-13,138],
+						"pos": [9,183],
 						"size": {
 							"0": 140,
 							"1": 66
 						},
 						"flags": {},
-						"order": 7,
+						"order": 2,
 						"mode": 0,
 						"inputs": [
 							{
 								"name": "Red",
 								"type": "number",
-								"link": 8
+								"link": 2
 							},
 							{
 								"name": "Green",
 								"type": "number",
-								"link": 9
+								"link": null
 							},
 							{
 								"name": "Blue",
 								"type": "number",
-								"link": 10
+								"link": null
 							}],
 						"outputs": [
 							{
 								"name": "Colour",
 								"type": "Color",
-								"links": [7]
+								"links": [1]
 							}],
 						"properties": {}
 					},
 					{
-						"id": 12,
-						"type": "Base/internal_slider",
-						"pos": [-26,273],
-						"size": {
-							"0": 210,
-							"1": 58
-						},
+						"id": 3,
+						"type": "Base/number",
+						"pos": [-122,212],
+						"size": [80,60],
 						"flags": {},
-						"order": 6,
+						"order": 0,
 						"mode": 0,
 						"outputs": [
 							{
 								"name": "",
 								"type": "number",
-								"links": [11]
+								"links": [2]
 							}],
 						"properties": {
-							"value": 83.6842105263158,
+							"min": -1000,
+							"max": 1000,
+							"value": 255,
+							"step": 1
+						}
+					},
+					{
+						"id": 4,
+						"type": "Base/internal_slider",
+						"pos": [-26,305],
+						"size": {
+							"0": 210,
+							"1": 58
+						},
+						"flags": {},
+						"order": 1,
+						"mode": 0,
+						"outputs": [
+							{
+								"name": "",
+								"type": "number",
+								"links": [3]
+							}],
+						"properties": {
+							"value": 255,
 							"min": 0,
-							"max": 100,
+							"max": 255,
 							"text": "V"
 						}
 					}],
-				"links": [[1,1,0,2,0,
-						"Material"],[2,3,0,2,1,
-						"number"],[3,1,0,4,0,
-						"Material"],[4,5,0,4,1,
-						"number"],[5,1,0,7,0,
-						"Material"],[6,6,0,7,1,
-						"number"],[7,8,0,1,0,
-						"Color"],[8,9,0,8,0,
-						"number"],[9,10,0,8,1,
-						"number"],[10,11,0,8,2,
-						"number"],[11,12,0,1,3,
+				"links": [[1,2,0,1,0,
+						"Color"],[2,3,0,2,0,
+						"number"],[3,4,0,1,3,
 						"number"]],
 				"groups": [],
 				"config": {},
@@ -402,7 +166,7 @@
 			}
 		}],
 	"object": {
-		"uuid": "773F3B42-BB8D-4215-9790-F4720F06B3AD",
+		"uuid": "A2A68F3A-6E6F-4C81-97F3-AFF76143E371",
 		"type": "Program",
 		"description": "",
 		"author": "",
@@ -416,7 +180,7 @@
 		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 		"children": [
 			{
-				"uuid": "29E959B5-CF92-4C4D-87DD-561952337830",
+				"uuid": "DCA0A800-25E8-4EC9-9D93-8B8EB28A3D3C",
 				"type": "Scene",
 				"name": "scene",
 				"components": [],
@@ -426,23 +190,7 @@
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 				"children": [
 					{
-						"uuid": "2F41F77D-1DB2-49DC-9FE0-0FDC2C6F289E",
-						"type": "Sky",
-						"auto_update": false,
-						"day_time": 20,
-						"sun_distance": 100,
-						"time": 13,
-						"components": [],
-						"name": "sky",
-						"castShadow": false,
-						"receiveShadow": false,
-						"visible": true,
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
-						"geometry": "D2A6458D-A561-4639-ADBE-832317BF64DC",
-						"material": "C761F63D-691D-4B0D-B362-94CDB55A0FC5"
-					},
-					{
-						"uuid": "2077A63E-E015-4FE4-86B9-49683A42BEA4",
+						"uuid": "CBB0C042-68B1-4EFB-8375-A51DF1EF532F",
 						"type": "Mesh",
 						"name": "box",
 						"components": [],
@@ -450,11 +198,11 @@
 						"receiveShadow": true,
 						"visible": true,
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,0,1],
-						"geometry": "8DFD062B-30B7-4E34-9471-B51314257B3F",
-						"material": "90D38271-472D-474C-BF24-8ED89048958B"
+						"geometry": "28CD9ECC-93C4-406B-85DC-95900B3E05D9",
+						"material": "9907ACF0-91E6-439B-9A69-0C6E734AD391"
 					},
 					{
-						"uuid": "DEC6973D-E768-47F0-AB44-AB4A8381200E",
+						"uuid": "C055BAE0-D635-4C60-B693-2D6CBEA7916D",
 						"type": "Mesh",
 						"name": "ground",
 						"components": [],
@@ -462,8 +210,22 @@
 						"receiveShadow": true,
 						"visible": true,
 						"matrix": [20,0,0,0,0,1,0,0,0,0,20,0,0,0,0,1],
-						"geometry": "8DFD062B-30B7-4E34-9471-B51314257B3F",
-						"material": "90D38271-472D-474C-BF24-8ED89048958B"
+						"geometry": "28CD9ECC-93C4-406B-85DC-95900B3E05D9",
+						"material": "9907ACF0-91E6-439B-9A69-0C6E734AD391"
+					},
+					{
+						"uuid": "F9FEFB36-910B-4A6F-AC3E-3C18907F1FE9",
+						"type": "PointLight",
+						"name": "point_light_1",
+						"components": [],
+						"castShadow": true,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,7.039000034332275,6.873000144958496,1],
+						"color": 16777215,
+						"intensity": 1,
+						"distance": 0,
+						"decay": 1
 					}],
 				"fog_color": "#ffffff",
 				"fog_density": 0.001,

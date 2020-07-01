@@ -12,7 +12,7 @@ function MeshPhongMaterialNode() {
 }
 MeshPhongMaterialNode.title = "Material"
 MeshPhongMaterialNode.prototype.onExecute = function() {
-	var mat = this.properties.mat	
+	var mat = Editor.getAssetByUUID(this.properties.mat)	
 	mat.nodes = {}
 
 	var c = this.getInputData(0)
@@ -22,7 +22,7 @@ MeshPhongMaterialNode.prototype.onExecute = function() {
 	var s1 = this.getInputData(4)
 	var w = this.getInputData(5)
 
-	if (mat !== undefined) {
+	if (mat !== undefined && mat instanceof THREE.MeshPhongMaterial) {
 		if (c !== undefined) {
 			mat.color = c
 		}
@@ -43,7 +43,7 @@ MeshPhongMaterialNode.prototype.onExecute = function() {
 		}
 	}
 
-	this.setOutputData(0, this.properties.mat)
+	this.setOutputData(0, mat)
 }
 
 function SetMaterialColorNode() {

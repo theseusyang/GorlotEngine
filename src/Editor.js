@@ -774,6 +774,17 @@ Editor.resetEditingFlags = function() {
 	}
 }
 
+// Get an asset through its UUID
+Editor.getAssetByUUID = function(uuid) {
+	if (EditorUI.asset_explorer_objects !== undefined && EditorUI.asset_explorer_objects.length > 0) {
+		for(var i = 0; i < EditorUI.asset_explorer_objects.length; i++) {
+			if (EditorUI.asset_explorer_objects[i].attachedTo.uuid === uuid) {
+				return EditorUI.asset_explorer_objects[i].attachedTo
+			}
+		}
+	}
+}
+
 // Save program to file
 Editor.saveProgram = function(fname) {
 	var output = Editor.program.toJSON()
