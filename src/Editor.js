@@ -28,7 +28,6 @@ include("src/editor/tabs/MaterialEditor.js")
 include("src/editor/tabs/SceneEditor.js")
 include("src/editor/tabs/SettingsTab.js")
 include("src/editor/tabs/BlueprintsEditor.js")
-include("src/editor/tabs/MaterialShaderEditor.js")
 
 include("src/editor/UI.js")
 

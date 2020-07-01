@@ -39,7 +39,7 @@ class Sky extends THREE.Mesh {
 
 		// Sky
 		var geometry = new THREE.SphereGeometry(4000, 32, 15)
-		var material = new ShaderMaterial({vertexShader: vertex, fragmentShader: fragment, uniforms: uniforms, side: THREE.BackSide})
+		var material = new THREE.ShaderMaterial({vertexShader: vertex, fragmentShader: fragment, uniforms: uniforms, side: THREE.BackSide})
 		material.name = "sky"
 
 		// Set the sky geometry and material to the Mesh

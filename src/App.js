@@ -114,7 +114,6 @@ include("src/core/Nodes/Register.js")
 
 // Assets
 include("src/core/assets/Materials/MeshPhongMaterial.js")
-include("src/core/assets/Materials/ShaderMaterial.js")
 
 //App class
 function App(){}
