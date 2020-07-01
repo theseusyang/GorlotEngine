@@ -92,16 +92,16 @@ EditorUI.selectPreviousTab = function() {
     var tab = EditorUI.tabs_widget.getPreviousTab()
     var current = EditorUI.tabs_widget.getCurrentTab()
 
-    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+    //EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
 
-    //if(tab === undefined) {
-    //    Editor.setState(Editor.STATE_EDITING)
-    //    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
-    //} else if (Editor.state === Editor.STATE_TESTING) {
-    //    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
-    //} else {
-    //    EditorUI.tabs_widget.selectTab(tab)
-    //}
+    if(tab === undefined) {
+        Editor.setState(Editor.STATE_EDITING)
+        EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+    } else if (Editor.state === Editor.STATE_TESTING) {
+        EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+    } else {
+        EditorUI.tabs_widget.selectTab(tab)
+    }
 }
 
 EditorUI.updateInterface = function () {

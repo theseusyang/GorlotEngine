@@ -1,27 +1,25 @@
 class VRControls {
 	constructor(object, onError) {
 		this.vr_input = null
-		this.standing_matrix = new THREE.Matrix4()
-		this.object = object
-
-		// The Rift SDK returns the position in meters, this scale factor allows the user to define how meters are converted into scene units
-		this.scale = 1
-
-		// If true, will use "standing space" coordinate system where y=0 is the floor, and x=0, z=0 is the center of the room
+		this.scale = 1 // Scale from real units to world units
 		this.standing = false
+		this.userHeight = 1.6 // Meters
+		this.object = null
 
-		// Distance from the user's eyes to the floor in meters, used when standing mode enabled but the VRDisplay doesn't provide stageParameters
-		this.userHeight = 1.6
+		if (object !== undefined) {
+			this.object = object
+		}
+
+		// Position and rotation matrix
+		this.position = new THREE.Vector3()
+		this.quaternion = new THREE.Quaternion()
 
 		// Self pointer
 		var self = this
 
 		// Get VR Display devices
-		if (navigator.getVRDisplays) {
+		if (navigator.getVRDisplays !== undefined) {
 			navigator.getVRDisplays().then(gotVRDevices)
-		} else if (navigator.getVRDevices) {
-			//Deprecated API
-			navigator.getVRDevices().then(gotVRDevices)
 		}
 
 		// Return VR display devices
@@ -51,33 +49,32 @@ class VRControls {
 
 	update() {
 		if (this.vr_input !== null) {
-			//if (this.vr_input.getPose) {
-				var pose = this.vr_input.getPose()
+			var pose = this.vr_input.getPose()
 
-				if (pose.orientation !== null) {
-					this.object.quaternion.fromArray(pose.orientation)
-				}
+			// Orientation
+			if (pose.orientation !== null) {
+				this.quaternion.fromArray(pose.orientation)
+			}
 
-				if (pose.position !== null) {
-					this.object.position.fromArray(pose.position)
-				} else {
-					this.object.position.set(0, 0, 0)
-				}
-			//}
+			// Position
+			if (pose.position !== null) {
+				this.position.fromArray(pose.position)
+			} else {
+				this.position.set(0, 0, 0)
+			}
 
 			// If standing mode enabled
 			if (this.standing) {
-				if (this.vr_input.stageParameters) {
-					this.object.updateMatrix()
-
-					this.standing_matrix.fromArray(this.vr_input.stageParameters.sittingFromStandingTransform)
-					this.object.applyMatrix(this.standing_matrix)
-				} else {
-					this.object.position.setY(this.object.position.y + this.userHeight)
-				}
+				this.position.y += this.userHeight
 			}
 
-			this.object.position.multiplyScalar(this.scale)
+			// Scale
+			this.position.multiplyScalar(this.scale)
+
+			if (this.object !== null) {
+				this.object.position.copy(this.position)
+				this.object.quaternion.copy(this.quaternion)
+			}
 		}
 	}
 
@@ -93,7 +90,11 @@ class VRControls {
 
 	resetPose() {
 		if (this.vr_input !== null) {
-			// TODO: This
+			this.vr_input.resetPose()
 		}
+	}
+
+	attachObject(object) {
+		this.object = object
 	}
 }

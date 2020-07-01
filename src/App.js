@@ -12,7 +12,6 @@ include("libs/three/loaders/collada/KeyFrameAnimation.js")
 
 //include("three/cameras/CinematicCamera.js")
 
-include("libs/three/webvr/VRControls.js")
 include("libs/three/webvr/VREffect.js")
 include("libs/three/webvr/WebVR.js")
 
@@ -115,6 +114,7 @@ include("src/core/Nodes/Register.js")
 
 // Assets
 include("src/core/assets/Materials/MeshPhongMaterial.js")
+include("src/core/assets/Materials/ShaderMaterial.js")
 
 //App class
 function App(){}

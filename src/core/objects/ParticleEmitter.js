@@ -9,9 +9,13 @@ class ParticleEmitter extends THREE.Object3D {
 
 		this.group = new SPE.Group({
 			texture: {
-				value: new Texture("./data/particle.png")
-			}
+				value: new Texture("data/particle.png")
+			},
+			blending: THREE.AdditiveBlending
 		})
+
+		// Disable frustum culling
+		this.group.mesh.frustumCulled = false
 
 		this.emitter = new SPE.Emitter({
 			

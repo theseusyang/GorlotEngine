@@ -28,6 +28,7 @@ include("src/editor/tabs/MaterialEditor.js")
 include("src/editor/tabs/SceneEditor.js")
 include("src/editor/tabs/SettingsTab.js")
 include("src/editor/tabs/BlueprintsEditor.js")
+include("src/editor/tabs/MaterialShaderEditor.js")
 
 include("src/editor/UI.js")
 
@@ -109,8 +110,8 @@ Editor.initialize = function(canvas)
 	Editor.program_running = null
 	Editor.createNewProgram()
 
-	// VR effect and control
-	Editor.vr_controls = null
+	// VR effect and controls
+	Editor.vr_controls = new VRControls()
 	Editor.vr_effect = null
 
 	// Renderer and canvas
@@ -144,9 +145,6 @@ Editor.initialize = function(canvas)
 	Editor.camera = Editor.default_camera
 	Editor.camera_rotation = new THREE.Vector2(0,0);
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
-
-	// TODO: Make this to function
-	Editor.vr_controls = new VRControls(Editor.camera)
 
 	//Update interface
 	EditorUI.updateInterface();
@@ -651,31 +649,41 @@ Editor.updateAssetExplorer = function() {
 //Draw stuff into screen
 Editor.draw = function()
 {
-	if(WEBVR.isAvailable()) {
-		Editor.vr_controls.update()
-		//Editor.renderer.clear()
-		if (Editor.state === Editor.STATE_EDITING) {
-			// Render scene
-			Editor.vr_effect.render(Editor.program.scene, Editor.camera)
+	Editor.renderer.clear()
 
-			// TODO: Render debug scene
-		} else if (Editor.state === Editor.STATE_TESTING) {
-			Editor.vr_effect.render(Editor.program_running.scene, Editor.program_running.scene.camera)
-		}
-	} else {
-		Editor.renderer.clear();
-	
-		//Render debug scene
-		if(Editor.state == Editor.STATE_EDITING)
-		{
+	if (Editor.state === Editor.STATE_EDITING) {
+		// Render scene
+		Editor.renderer.render(Editor.program.scene, Editor.camera)
+
+		// Render debug scene
+		Editor.cannon_renderer.update()
+		Editor.renderer.render(Editor.tool_scene, Editor.camera)
+		Editor.renderer.clearDepth()
+
+		Editor.renderer.render(Editor.tool_scene_top, Editor.camera)
+	} else if (Editor.state === Editor.STATE_TESTING) {
+		// If VR is enabled
+		if (Editor.vr_controls !== null && Editor.vr_effect !== null) {
+			// Update VR controls
+			Editor.vr_controls.scale = 5
+			Editor.vr_controls.update()
+
+			// Backup camera attributes
+			var camera = Editor.program_running.scene.camera
+			var position = camera.position.clone()
+			var quaternion = camera.quaternion.clone()
+
+			// Apply VR controller offsets to actual camera
+			camera.position.add(Editor.vr_controls.position)
+			camera.quaternion.multiply(Editor.vr_controls.quaternion)
+
 			// Render scene
-			Editor.renderer.render(Editor.program.scene, Editor.camera)
-	
-			Editor.cannon_renderer.update();
-			Editor.renderer.render(Editor.tool_scene, Editor.camera);
-			Editor.renderer.clearDepth();
-			Editor.renderer.render(Editor.tool_scene_top, Editor.camera);
-		} else if (Editor.state === Editor.STATE_TESTING) {
+			Editor.vr_effect.render(Editor.program_running.scene, camera)
+
+			// Backup camera attributes
+			camera.position.copy(position)
+			camera.quaternion.copy(quaternion)
+		} else {
 			Editor.renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera)
 		}
 	}
@@ -874,8 +882,9 @@ Editor.setState = function(state) {
 	if (state === Editor.STATE_EDITING) {
 		// Dispose running program if there is one
 		if(Editor.program_running !== null) {
-			Editor.program_running.scene.stop()
+			Editor.program_running.dispose()
 			Editor.program_running = null
+			Editor.vr_effect = null
 		}
 	} else if (state === Editor.STATE_TESTING) {
 		// Copy program and initialize scene
@@ -887,6 +896,11 @@ Editor.setState = function(state) {
 		// Initialize scene
 		Editor.program_running.initialize()
 		Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height)
+
+		if (WEBVR.isAvailable()) {
+			Editor.vr_effect = new THREE.VREffect(Editor.renderer)
+			document.body.appendChild(WEBVR.getButton(Editor.vr_effect))
+		}
 	}
 	Editor.state = state
 }
@@ -907,12 +921,6 @@ Editor.initializeRenderer = function(canvas) {
 	Editor.renderer.shadowMap.enabled = true
 	Editor.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 	Editor.renderer.setSize(canvas.width, canvas.height)
-
-	// TODO: VR
-	if (WEBVR.isAvailable()) {
-		Editor.vr_effect = new THREE.VREffect(Editor.renderer)
-		document.body.appendChild(WEBVR.getButton(Editor.vr_effect))
-	}
 }
 
 // Exit Editor

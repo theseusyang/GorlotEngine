@@ -10,6 +10,6 @@
 		"min_width": 1024,
 		"min_height": 768,
 		"as_desktop": true,
-		"resizable": true		
+		"resizable": false		
 	}
 }

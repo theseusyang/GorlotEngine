@@ -9,6 +9,7 @@ class MaterialEditor {
 
 			MaterialEditor.id--
 			self.updateMaterial()
+			//console.log(self.material.nodes)
 			self.material = null
 			EditorUI.selectPreviousTab()
 		}, callback: () => {

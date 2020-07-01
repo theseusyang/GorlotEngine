@@ -270,6 +270,22 @@ CombineNode.prototype.onExecute = function() {
 	}
 }
 
+function ShaderNode() {
+	this.addInput("Material", "Material")
+	this.properties = {frag: "", ver: ""}
+}
+ShaderNode.title = "Shader"
+ShaderNode.prototype.onDblClick = function() {
+	//console.log("oniichan you dblclicked me uwu *moans")
+	var m = this.getInputData(0)
+	var f = this.properties.frag
+	var v = this.properties.ver
+
+	if (m !== undefined && f !== undefined && v !== undefined) {
+		var ed = new MaterialShaderEditor(m, f, v)
+	}
+}
+
 function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/MeshPhongMaterial", MeshPhongMaterialNode)
 	LiteGraph.registerNodeType("Material/SetMaterialColor", SetMaterialColorNode)
@@ -288,4 +304,5 @@ function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/SetPrecision", SetPrecisionNode)
 	LiteGraph.registerNodeType("Material/ShadowSide", ShadowSideNode)
 	LiteGraph.registerNodeType("Material/Combine", CombineNode)
+	LiteGraph.registerNodeType("Material/Shader", ShaderNode)
 }
