@@ -40,7 +40,7 @@ EditorUI.Initialize = function() {
 
     // ----- MAINAREA SPLIT ----- 
     EditorUI.mainarea = new LiteGUI.Area({autoresize: true})
-    EditorUI.mainarea.split("horizontal", [null, 400], true)
+    EditorUI.mainarea.split("horizontal", [null, 400], false)
     EditorUI.mainarea.onresize = EditorUI.Resize
     LiteGUI.add(EditorUI.mainarea)
 

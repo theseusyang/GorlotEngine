@@ -31,6 +31,8 @@ include("src/editor/tabs/BlueprintsEditor.js")
 
 include("src/editor/UI.js")
 
+include("src/editor/ui/components/AbsButton.js")
+
 include("src/editor/ui/ObjectInspector.js")
 include("src/editor/ui/TopMenu.js")
 include("src/editor/ui/AssetExplorer.js")
@@ -52,7 +54,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Tue 01 Jul 2020 16:52:12"
+Editor.TIMESTAMP = "Tue 01 Jul 2020 21:40:12"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -140,7 +142,7 @@ Editor.initialize = function(canvas)
 
 	//Editor Camera
 	Editor.default_camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 1000000);
-	Editor.default_camera.position.set(0, 5, -5);
+	Editor.default_camera.position.set(0, 5, -10);
 	Editor.camera = Editor.default_camera
 	Editor.camera_rotation = new THREE.Vector2(0,0);
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
@@ -662,7 +664,7 @@ Editor.draw = function()
 		Editor.renderer.render(Editor.tool_scene_top, Editor.camera)
 	} else if (Editor.state === Editor.STATE_TESTING) {
 		// If VR is enabled
-		if (Editor.vr_controls !== null && Editor.vr_effect !== null) {
+		if (Editor.vr_effect !== null) {
 			// Update VR controls
 			Editor.vr_controls.scale = 5
 			Editor.vr_controls.update()
@@ -754,7 +756,7 @@ Editor.resizeCamera = function()
 		Editor.camera.updateProjectionMatrix()
 
 		if (Editor.state === Editor.STATE_TESTING) {
-			Editor.program_running.resize(Editor.canvas.width, Eitor.canvas.height)
+			Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height)
 		}
 	}
 }
@@ -879,12 +881,11 @@ Editor.createNewProgram = function() {
 // Set editor state
 Editor.setState = function(state) {
 	if (state === Editor.STATE_EDITING) {
-		// Dispose running program if there is one
-		if(Editor.program_running !== null) {
-			Editor.program_running.dispose()
-			Editor.program_running = null
-			Editor.vr_effect = null
-		}
+		// Dispose running program
+		Editor.disposeRunningProgram()
+
+		Editor.program_running = null
+		Editor.vr_effect = null
 	} else if (state === Editor.STATE_TESTING) {
 		// Copy program and initialize scene
 		Editor.program_running = Editor.program.clone()
@@ -896,12 +897,27 @@ Editor.setState = function(state) {
 		Editor.program_running.initialize()
 		Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height)
 
-		if (WEBVR.isAvailable()) {
+		if (Editor.program_running.vr && App.webvrAvailable()) {
+			// Create VREffect instance
 			Editor.vr_effect = new THREE.VREffect(Editor.renderer)
-			document.body.appendChild(WEBVR.getButton(Editor.vr_effect))
 		}
+	} else if (state === Editor.STATE_IDLE) {
+		// Dispose running program
+		Editor.disposeRunningProgram()
 	}
+
+	// Set editor state
 	Editor.state = state
+}
+
+// Dispose running program, if there is one
+Editor.disposeRunningProgram = function() {
+	// Dispose running program, if there is one
+	if (Editor.program_running !== null) {
+		Editor.program_running.dispose()
+		Editor.program_running = null
+		Editor.vr_effect = null
+	}
 }
 
 // Set render canvas

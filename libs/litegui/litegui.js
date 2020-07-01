@@ -9405,7 +9405,25 @@ Inspector.prototype.addList = function(name, values, options)
 			li_element.addEventListener("dragstart", inner_item_ondragstart)
 		if (options.callback_ondragover) 
 			li_element.addEventListener("dragover", inner_item_ondragover)
+		if (options.callback_onmouseenter)
+			li_element.addEventListener("mouseenter", inner_item_mouseenter)
+		if (options.callback_onmouseleave) 
+			li_element.addEventListener("mouseleave", inner_item_mouseleave)
 		return li_element;
+	}
+
+	// I added dis
+	function inner_item_mouseenter(e) {
+		var value = values[this.dataset["pos"]]
+		if (options.callback_onmouseenter)
+			options.callback_onmouseenter(that, value, e)
+	}
+
+	// I added disabled
+	function inner_item_mouseleave(e) {
+		var value = values[this.dataset["pos"]]
+		if (options.callback_onmouseleave) 
+			options.callback_onmouseleave(that, value, e)
 	}
 
 	// I added dis

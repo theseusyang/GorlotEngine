@@ -160,6 +160,9 @@ function EditorUIAssetExplorer() {
     
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
+    this.color = new THREE.Color(0, 0, 0)
+    var self = this
+
     EditorUI.asset_explorer_inspector = new LiteGUI.Inspector()
     EditorUI.asset_explorer_list = EditorUI.asset_explorer_inspector.addList(null, EditorUI.asset_explorer_objects, {height: EditorUI.mainarea.getSection(0).getSection(1).getHeight()-60, callback_dblclick: (v) => {
         if (v.attachedTo instanceof THREE.MeshPhongMaterial) {
@@ -205,16 +208,31 @@ function EditorUIAssetExplorer() {
     }, callback_ondragover: (v, e) => {
         // TODO: This
         e.preventDefault()
-    }, ondragstart: (e) => {
+    }, ondragstart: (v, e) => {
         // TODO: This
-    }, ondragend: (e) => {
+    }, ondragend: (v, e) => {
         // TODO: This
-    }, ondrop: (e) => {
+    }, ondrop: (v, e) => {
         // TODO This
         e.preventDefault()
-    }, ondragover: (e) => {
+    }, ondragover: (v, e) => {
         // TODO: This
         e.preventDefault()
+    }, callback_onmouseenter: (v, e) => {
+        // When the mouse enters, the material is highlighted
+        if (e.attachedTo instanceof THREE.Material) {
+            if (e.attachedTo.color !== undefined) {
+                self.color.copy(e.attachedTo.color)
+                e.attachedTo.color.setRGB(1, 0, 0)
+            }
+        }
+    }, callback_onmouseleave: (v, e) => {
+        // When the mouse leaves, then the material returns to its original colour
+        if (e.attachedTo instanceof THREE.Material) {
+            if (e.attachedTo.color !== undefined) {
+                e.attachedTo.color.copy(self.color)
+            }
+        }
     }})
 
     EditorUI.asset_explorer_inspector.onchange = function(element, value, name) {  

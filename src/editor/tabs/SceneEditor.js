@@ -94,8 +94,8 @@ class SceneEditor {
 
 	updateInterface() {
 		this.element.width = EditorUI.left_area.getWidth()
-    	this.element.height= EditorUI.left_area.getHeight() - EditorUI.assetEx_height // - left_area.getSection().getHeight()
-		
+    	this.element.height = EditorUI.left_area.getHeight() - EditorUI.assetEx_height // - left_area.getSection().getHeight()
+
 		Editor.resizeCamera()
 
 	}

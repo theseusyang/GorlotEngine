@@ -136,11 +136,13 @@ function EditorUITopMenu() {
             menuItem.name = "Stop"
             EditorUI.selectPreviousTab()
             Editor.setState(Editor.STATE_TESTING)
+            EditorUI.canvas.updateInterface()
             unregisterNodes()
             registerAllNodes()
         } else if(Editor.state === Editor.STATE_TESTING) {
             menuItem.name = "Run"
             Editor.setState(Editor.STATE_EDITING)
+            EditorUI.canvas.updateInterface()
         }
 
         //EditorUI.updateInterface()

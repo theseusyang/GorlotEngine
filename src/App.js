@@ -13,7 +13,6 @@ include("libs/three/loaders/collada/KeyFrameAnimation.js")
 //include("three/cameras/CinematicCamera.js")
 
 include("libs/three/webvr/VREffect.js")
-include("libs/three/webvr/WebVR.js")
 
 include("libs/leap/leap-0.6.4.min.js")
 
@@ -256,6 +255,11 @@ App.showStats = function(value)
 	{
 		App.stats.domElement.style.visibility = "hidden";
 	}
+}
+
+// Check if WebVR is available
+App.webvrAvailable = function() {
+	return (navigator.getVRDisplays !== undefined)
 }
 
 //Set if mouse locked
