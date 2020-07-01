@@ -74,6 +74,10 @@ class AddMenuWindow {
 				"icon": "data/icons/camera/orthographic.png"
 			},
 			{
+				"name": "Leap Hand",
+				"icon": ""
+			},
+			{
 				"name": "Script",
 				"icon": "data/icons/script/script.png"
 			},
@@ -226,6 +230,8 @@ class AddMenuWindow {
 			var obj = new OrthographicCamera(3, 2, undefined, 1, 1000000)
 			Editor.addToActualScene(obj)
 
+		} else if (o === "Leap Hand") {
+			Editor.addToActualScene(new LeapHand())
 		}
 		else if (o === "Script") {
 

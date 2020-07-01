@@ -256,6 +256,20 @@ ShadowSideNode.prototype.onExecute = function() {
 	}
 }
 
+function CombineNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Mode", "number")
+}
+CombineNode.title = "Combine"
+CombineNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var mode = this.getInputData(1)
+
+	if (m !== undefined && mode !== undefined) {
+		m.combine = mode
+	}
+}
+
 function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/MeshPhongMaterial", MeshPhongMaterialNode)
 	LiteGraph.registerNodeType("Material/SetMaterialColor", SetMaterialColorNode)
@@ -273,4 +287,5 @@ function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/AffectedByFog", AffectedByFogNode)
 	LiteGraph.registerNodeType("Material/SetPrecision", SetPrecisionNode)
 	LiteGraph.registerNodeType("Material/ShadowSide", ShadowSideNode)
+	LiteGraph.registerNodeType("Material/Combine", CombineNode)
 }

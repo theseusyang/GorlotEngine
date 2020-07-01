@@ -16,8 +16,7 @@ include("libs/three/webvr/VRControls.js")
 include("libs/three/webvr/VREffect.js")
 include("libs/three/webvr/WebVR.js")
 
-//include("leap/leap-0.6.4.min.js")
-//include("leap/leap-plugins-0.1.11.min.js")
+include("libs/leap/leap-0.6.4.min.js")
 
 include("libs/cannon/cannon.js")
 include("libs/cannon/CannonDebugRenderer.js")
@@ -41,12 +40,16 @@ include("src/core/Program.js")
 include("src/core/ObjectUtils.js")
 include("src/core/Global.js")
 
+include("src/core/webvr/VRControls.js")
+
 include("src/core/texture/TextTexture.js")
 include("src/core/texture/VideoTexture.js")
 include("src/core/texture/WebcamTexture.js")
 include("src/core/texture/Texture.js")
 
 include("src/core/loaders/FontLoader.js")
+
+include("src/core/objects/device/LeapHand.js")
 
 include("src/core/objects/lights/PointLight.js")
 include("src/core/objects/lights/SpotLight.js")

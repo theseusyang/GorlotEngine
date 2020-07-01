@@ -52,7 +52,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Tue 30 Jun 2020 22:44:56"
+Editor.TIMESTAMP = "Tue 01 Jul 2020 16:52:12"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -109,6 +109,10 @@ Editor.initialize = function(canvas)
 	Editor.program_running = null
 	Editor.createNewProgram()
 
+	// VR effect and control
+	Editor.vr_controls = null
+	Editor.vr_effect = null
+
 	// Renderer and canvas
 	Editor.renderer = null
 	Editor.canvas = null
@@ -140,6 +144,9 @@ Editor.initialize = function(canvas)
 	Editor.camera = Editor.default_camera
 	Editor.camera_rotation = new THREE.Vector2(0,0);
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
+
+	// TODO: Make this to function
+	Editor.vr_controls = new VRControls(Editor.camera)
 
 	//Update interface
 	EditorUI.updateInterface();
@@ -644,20 +651,33 @@ Editor.updateAssetExplorer = function() {
 //Draw stuff into screen
 Editor.draw = function()
 {
-	Editor.renderer.clear();
+	if(WEBVR.isAvailable()) {
+		Editor.vr_controls.update()
+		//Editor.renderer.clear()
+		if (Editor.state === Editor.STATE_EDITING) {
+			// Render scene
+			Editor.vr_effect.render(Editor.program.scene, Editor.camera)
 
-	//Render debug scene
-	if(Editor.state == Editor.STATE_EDITING)
-	{
-		// Render scene
-		Editor.renderer.render(Editor.program.scene, Editor.camera)
-
-		Editor.cannon_renderer.update();
-		Editor.renderer.render(Editor.tool_scene, Editor.camera);
-		Editor.renderer.clearDepth();
-		Editor.renderer.render(Editor.tool_scene_top, Editor.camera);
-	} else if (Editor.state === Editor.STATE_TESTING) {
-		Editor.renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera)
+			// TODO: Render debug scene
+		} else if (Editor.state === Editor.STATE_TESTING) {
+			Editor.vr_effect.render(Editor.program_running.scene, Editor.program_running.scene.camera)
+		}
+	} else {
+		Editor.renderer.clear();
+	
+		//Render debug scene
+		if(Editor.state == Editor.STATE_EDITING)
+		{
+			// Render scene
+			Editor.renderer.render(Editor.program.scene, Editor.camera)
+	
+			Editor.cannon_renderer.update();
+			Editor.renderer.render(Editor.tool_scene, Editor.camera);
+			Editor.renderer.clearDepth();
+			Editor.renderer.render(Editor.tool_scene_top, Editor.camera);
+		} else if (Editor.state === Editor.STATE_TESTING) {
+			Editor.renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera)
+		}
 	}
 }
 
@@ -887,6 +907,12 @@ Editor.initializeRenderer = function(canvas) {
 	Editor.renderer.shadowMap.enabled = true
 	Editor.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 	Editor.renderer.setSize(canvas.width, canvas.height)
+
+	// TODO: VR
+	if (WEBVR.isAvailable()) {
+		Editor.vr_effect = new THREE.VREffect(Editor.renderer)
+		document.body.appendChild(WEBVR.getButton(Editor.vr_effect))
+	}
 }
 
 // Exit Editor

@@ -91,6 +91,16 @@ function LowPrecisionNode() {
 	return "lowp"
 }
 
+function MultiplyNode() {
+	return THREE.MultiplyOperation
+}
+function MixNode() {
+	return THREE.MixOperation
+}
+function AddNode() {
+	return THREE.AddOperation
+}
+
 function registerMaterialNodeConstants() {
 	// Blending mode
 	LiteGraph.wrapFunctionAsNode("BlendingModes/NoBlending", NoBlendingNode, null, "number")
@@ -123,5 +133,8 @@ function registerMaterialNodeConstants() {
 	LiteGraph.wrapFunctionAsNode("Constants/HighPrecision", HighPrecisionNode, null, "Text")
 	LiteGraph.wrapFunctionAsNode("Constants/MediumPrecision", MediumPrecisionNode, null, "Text")
 	LiteGraph.wrapFunctionAsNode("Constants/LowPrecision", LowPrecisionNode, null, "Text")
+	LiteGraph.wrapFunctionAsNode("Constants/Multiply", MultiplyNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/Mix", MixNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/Add", AddNode, null, "number")
 
 }

@@ -448,6 +448,24 @@ function parseObject(data, geometries, materials)
 				object.initial_scene = data.initial_scene
 			}
 			break;
+
+		case "LeapDevice": 
+			object = new LeapHand()
+			object.mode = data.mode
+			object.use_arm = data.use_arm
+			if(data.debug_model !== undefined)
+			{
+				object.debug_model = data.debug_model
+			}
+			if(data.gestures_enabled !== undefined)
+			{
+				object.gestures_enabled = data.gestures_enabled
+			}
+			if(data.poses_enabled !== undefined)
+			{
+				object.poses_enabled = data.poses_enabled
+			}
+			break;
 		
 		case 'Blueprints':
 			object = new Blueprints(data.init, data.loop)
