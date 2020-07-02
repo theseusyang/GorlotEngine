@@ -56,7 +56,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Thu 02 Jul 2020 22:52:50"
+Editor.TIMESTAMP = "Thu 02 Jul 2020 23:12:00"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -657,7 +657,7 @@ Editor.updateAssetExplorer = function() {
 
 	// Add materials to asset explorer
 	for(var i = 0; i < materials.length; i++) {
-		EditorUI.addObject(materials[i].name, materials[i])
+		EditorUI.addAsset(materials[i].name, materials[i])
 	}
 }
 

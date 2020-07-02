@@ -33,21 +33,44 @@ class SceneEditor {
 					if (intersections.length > 0) {
 						var object = intersections[0].object
 
-						if (object instanceof THREE.Mesh) {
-							// Get first file from event
-							var file = event.dataTransfer.files[0]
+						// Get first file from event
+						var file = event.dataTransfer.files[0]
 
-							if (file.type.startsWith("image")) {
+						if (file.type.startsWith("image")) {
+							if (object instanceof THREE.Mesh) {
 								// Create new material with selected image
 								var texture = new Texture(file.path)
 								var material = new MeshPhongMaterial({map: texture, color: 0xffffff, specular: 0x333333, shininess: 80})
 								material.name = file.name
 								object.material = material
-
-								// Update Asset Explorer
+								EditorUI.addAsset(undefined, material)
+								EditorUI.updateAssetExplorer()
+							} else if (object instanceof THREE.Sprite) {
+								// Create new material with selected image
+								var texture = new Texture(file.path)
+								var material = new THREE.SpriteMaterial({map: texture, color: 0xffffff})
+								material.name = file.name
+								object.material = material
+								EditorUI.addAsset(undefined, material)
 								EditorUI.updateAssetExplorer()
 							}
 						}
+
+//						if (object instanceof THREE.Mesh) {
+//							// Get first file from event
+//							var file = event.dataTransfer.files[0]
+//
+//							if (file.type.startsWith("image")) {
+//								// Create new material with selected image
+//								var texture = new Texture(file.path)
+//								var material = new MeshPhongMaterial({map: texture, color: 0xffffff, specular: 0x333333, shininess: 80})
+//								material.name = file.name
+//								object.material = material
+//
+//								// Update Asset Explorer
+//								EditorUI.updateAssetExplorer()
+//							}
+//						}
 					}
 				}
 

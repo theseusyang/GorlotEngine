@@ -179,7 +179,14 @@ function EditorUIAssetExplorer() {
                 title: "Copy",
                 callback: () => {
                     if (v.attachedTo !== undefined || v.attachedTo !== null) {
-                        // TODO: Copy
+                        if (v.attachedTo instanceof MeshPhongMaterial) {
+                            // TODO: Every material can be copied
+                            try {
+                                App.clipboard.set(JSON.stringify(v.attachedTo.toJSON()), "text")
+                            } catch(e) {
+                                console.log(e)
+                            }
+                        }
                     }
                 }
             }
@@ -232,7 +239,7 @@ function EditorUIAssetExplorer() {
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)
 }
 
-EditorUI.addObject = function(name, attachedTo) {
+EditorUI.addAsset = function(name, attachedTo) {
     
     var ins = attachedTo
     if (ins.name === undefined || ins.name === "" || ins.name === null) {

@@ -108,31 +108,43 @@ EditorUI.addChildrenToHierarchy = function(object, parent) {
 
 EditorUI.hierarchyContext = function(e, data) {
     var object = data.data.attachedTo
-    // Editor.selectObject(object)
+    Editor.selectObject(object)
 
-    var context = new LiteGUI.ContextMenu([
-        {title: "Copy", callback: () => {
-            Editor.copySelectedObject()
-        }},
-        {title: "Cut", callback: () => {
-            Editor.cutSelectedObject()
-        }},
-        {title: "Paste", callback: () => {
-            Editor.pasteIntoSelectedObject()
-        }},
-        {title: "Duplicate", callback: () => {
-            // TODO: This
-        }},
-        {title: "Set Static", callback: () => {
-            ObjectUtils.setMatrixAutoUpdate(object, false)
-            EditorUI.updateInspector()
-        }},
-        {title: "Set Dynamic", callback: () => {
-            ObjectUtils.setMatrixAutoUpdate(object, true)
-            EditorUI.updateInspector()
-        }},
-        {title: "Delete", callback: () => {
-            EditorUI.deleteObject(object)
-        }}
-    ], {title: "Edit item", event: e})
+    var content = []
+
+    if (!(object instanceof Program) && !(object instanceof Scene)) {
+        content.push(
+            {title: "New Material", callback: () => {
+                var mat = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
+                mat.name = object.name
+                object.material = mat
+                EditorUI.addAsset(undefined, mat)
+            }},
+            {title: "Copy", callback: () => {
+                Editor.copySelectedObject()
+            }},
+            {title: "Cut", callback: () => {
+                Editor.cutSelectedObject()
+            }},
+            {title: "Paste", callback: () => {
+                Editor.pasteIntoSelectedObject()
+            }},
+            {title: "Duplicate", callback: () => {
+                // TODO: This
+            }},
+            {title: "Set Static", callback: () => {
+                ObjectUtils.setMatrixAutoUpdate(object, false)
+                EditorUI.updateInspector()
+            }},
+            {title: "Set Dynamic", callback: () => {
+                ObjectUtils.setMatrixAutoUpdate(object, true)
+                EditorUI.updateInspector()
+            }},
+            {title: "Delete", callback: () => {
+                EditorUI.deleteObject(object)
+            }}
+        )
+    }
+
+    var context = new LiteGUI.ContextMenu(content, {title: "Edit item", event: e})
 }
