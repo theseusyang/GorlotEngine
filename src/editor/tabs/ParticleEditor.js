@@ -96,6 +96,8 @@ class ParticleEditor {
 
 	updateInterface() {
 		this.graphcanvas.resize(EditorUI.mainarea.getSection(0).getWidth()/2, EditorUI.mainarea.getSection(0).getHeight() - EditorUI.assetEx_height)
+		this.renderer.setSize((EditorUI.mainarea.getSection(0).getWidth()/2)-5, EditorUI.mainarea.getSection(0).getHeight() - EditorUI.assetEx_height)
+		this.camera.aspect = this.preview.width / this.preview.height/2
 	}
 
 	update() {
