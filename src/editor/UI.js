@@ -104,6 +104,10 @@ EditorUI.selectPreviousTab = function() {
     }
 }
 
+EditorUI.selectSceneTab = function() {
+    EditorUI.tabs_widget.selectTab(EditorUI.canvas.id)
+}
+
 EditorUI.updateInterface = function () {
     EditorUI.canvas.updateInterface()
 }

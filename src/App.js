@@ -127,7 +127,14 @@ App.initialize = function(main)
 		App.clipboard = App.gui.Clipboard.get()
 	} catch(e) {console.error("Error: " + e)}
 
-	//Stas tool
+	App.components = []
+	App.componentManager = new ComponentManager()
+	
+	App.componentManager.addComponent(new Object3DComponent(), true)
+	App.componentManager.addComponent(new Text3DComponent(), true)
+	App.componentManager.addComponent(new LightComponent(), true)
+
+	//Stats tool
 	App.stats = new Stats();
 	App.stats.setMode(0);
 	App.stats.domElement.style.position = "absolute";

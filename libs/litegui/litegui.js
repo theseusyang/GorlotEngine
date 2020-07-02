@@ -9358,6 +9358,7 @@ Inspector.prototype.addList = function(name, values, options)
 
 		var item_style = null;
 		var icon = "";
+		var icon_style = ""
 		if( value != null )
 		{
 			if( value.constructor === String || value.constructor === Number || value.constructor === Boolean )
@@ -9368,8 +9369,10 @@ Inspector.prototype.addList = function(name, values, options)
 			{
 				item_title = value.content || value.title || value.name || index;
 				item_style = value.style;
+				if (value.icon_style)
+					icon_style = value.icon_style
 				if(value.icon)
-					icon = "<img src='"+value.icon+"' class='icon' /> ";
+					icon = "<img src='"+value.icon+"' class='icon' style='"+icon_style+"' /> ";
 				if(value.selected)
 					selected = true;
 			}

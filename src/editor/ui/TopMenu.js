@@ -134,7 +134,7 @@ function EditorUITopMenu() {
 
         if(Editor.state === Editor.STATE_EDITING) {
             menuItem.name = "Stop"
-            EditorUI.selectPreviousTab()
+            EditorUI.selectSceneTab()
             Editor.setState(Editor.STATE_TESTING)
             EditorUI.canvas.updateInterface()
             unregisterNodes()

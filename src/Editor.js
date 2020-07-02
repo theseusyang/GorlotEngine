@@ -54,22 +54,13 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Tue 01 Jul 2020 21:40:12"
+Editor.TIMESTAMP = "Tue 01 Jul 2020 00:40:08"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
 
 // This variable determines whether we can click and modify what is inside the canvas
 Editor.clickable = true
-
-//Editor component system
-Editor.components = [] // For creating a new component, push a Component to this array
-Editor.componentManager = new ComponentManager()
-
-Editor.componentManager.addComponent(new Object3DComponent(), true)
-Editor.componentManager.addComponent(new Text3DComponent(), true)
-Editor.componentManager.addComponent(new LightComponent(), true)
-
 //Initialize Main
 Editor.initialize = function(canvas)
 {

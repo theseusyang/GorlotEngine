@@ -3,6 +3,6 @@ class ComponentManager {
 	}
 
 	addComponent(component, ui) {
-		Editor.components.push(component)
+		App.components.push(component)
 	}
 }

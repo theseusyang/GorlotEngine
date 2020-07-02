@@ -50,36 +50,77 @@ GetObjectByNameNode.prototype.onExecute = function() {
 	if (n === undefined) {
 		return
 	}
-	if (Editor.program_running === null) {
-		return
+	if (Editor.program_running === undefined || Editor.program_running === null) {
+		if (Main.program === null || Main.program === undefined) {
+			return
+		} else {
+			this.setOutputData(0, Main.program.scene.getObjectByName(n))
+		}
+	} else {
+		this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
 	}
-	this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
 }
 
 function GetObjectByUUIDNode() {
-	this.addInput("UUID", "Text")
+	this.properties = {uuid: ""}
 	this.addOutput("Object", "Object3D")
 }
 GetObjectByUUIDNode.title = "Get Object By UUID"
 GetObjectByUUIDNode.prototype.onExecute = function() {
-	var uuid = this.getInputData(0)
-	if (uuid !== undefined) {
+	var uuid = this.properties.uuid
+	if (uuid !== undefined || uuid !== "") {
 		//var obj = THREE.Object3D.prototype.getObjectByProperty("uuid", uuid)
 		//this.setOutputData(0, obj)
-		var obj = Editor.program_running.getObjectByProperty("uuid", uuid)
+		//var obj = Editor.program_running.getObjectByProperty("uuid", uuid)
+		if (Editor.program_running === undefined || Editor.program_running === null) {
+			if (Main.program === null || Main.program === undefined) {
+				return
+			} else {
+				var obj = Main.program.getObjectByProperty("uuid", uuid)
+			}
+		} else {
+			var obj = Editor.program_running.getObjectByProperty("uuid", uuid)
+		}
 		this.setOutputData(0, obj)
 	}
 }
 
-function ThisNode() {
-	this.addOutput("This", "Object3D")
-	this.properties = {uuid: ""}
+function GetObjectPositionNode() {
+	this.addInput("Object", "Object3D")
+	this.addOutput("Position", "Vector")
 }
-ThisNode.title = "This"
-ThisNode.prototype.onExecute = function() {
-	if (this.properties.uuid !== "" && this.properties.uuid !== undefined) {
-		var obj = Editor.program_running.getObjectByProperty("uuid", this.properties.uuid)
-		this.setOutputData(0, obj)
+GetObjectPositionNode.title = "Get Position"
+GetObjectPositionNode.prototype.onExecute = function() {
+	var o = this.getInputData(0)
+
+	if (o !== undefined) {
+		this.setOutputData(0, o.position)
+	}
+}
+
+function GetObjectRotationNode() {
+	this.addInput("Object", "Object3D")
+	this.addOutput("Rotation", "Euler")
+}
+GetObjectRotationNode.title = "Get Rotation"
+GetObjectRotationNode.prototype.onExecute = function() {
+	var o = this.getInputData(0)
+
+	if (o !== undefined) {
+		this.setOutputData(0, o.rotation)
+	}
+}
+
+function GetObjectScaleNode() {
+	this.addInput("Object", "Object3D")
+	this.addOutput("Scale", "Vector")
+}
+GetObjectScaleNode.title = "Get Scale"
+GetObjectScaleNode.prototype.onExecute = function() {
+	var o = this.getInputData(0)
+
+	if (o !== undefined) {
+		this.setOutputData(0, o.scale)
 	}
 }
 
@@ -87,5 +128,7 @@ function registerObjectNodes() {
 	LiteGraph.registerNodeType("Objects/Element", ElementNode)
 	LiteGraph.registerNodeType("Objects/GetObjectByName", GetObjectByNameNode)
 	LiteGraph.registerNodeType("Objects/GetObjectByUUID", GetObjectByUUIDNode)
-	LiteGraph.registerNodeType("Objects/This", ThisNode)
+	LiteGraph.registerNodeType("Objects/GetObjectPosition", GetObjectPositionNode)
+	LiteGraph.registerNodeType("Objects/GetObjectRotation", GetObjectRotationNode)
+	LiteGraph.registerNodeType("Objects/GetObjectScale", GetObjectScaleNode)
 }

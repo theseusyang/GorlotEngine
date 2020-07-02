@@ -260,7 +260,8 @@ EditorUI.addObject = function(name, attachedTo) {
         name: name,
         icon: ins.icon,
         attachedTo: ins,
-        style: "width: 80px; display: inline-block; text-align: center;"
+        style: "width: 60px; max-width: 60px; display: inline-block; text-align: center; margin-right: 10px",
+        icon_style: "width:50px; height: 50px;"
     }
 
     if(EditorUI.asset_explorer_objects !== undefined) {

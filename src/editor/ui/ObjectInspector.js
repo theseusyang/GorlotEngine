@@ -85,7 +85,7 @@ class ObjectInspector {
 
 		var selected_component = null
 		var widgets = new LiteGUI.Inspector()
-		var list_widget = widgets.addList(null, Editor.components, {height: 364, callback_dblclick: function(v) {
+		var list_widget = widgets.addList(null, App.components, {height: 364, callback_dblclick: function(v) {
 			Editor.selected_object.addComponent(v)
 			EditorUI.updateInspector()
 			dialog.close()
