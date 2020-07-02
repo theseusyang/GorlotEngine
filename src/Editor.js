@@ -56,7 +56,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Thu 02 Jul 2020 18:26:38"
+Editor.TIMESTAMP = "Thu 02 Jul 2020 19:34:32"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -205,7 +205,7 @@ Editor.update = function()
 
 
 	// If not on test mode
-	if(Editor.state !== Editor.STATE_TESTING)
+	if(Editor.state !== Editor.STATE_TESTING && Editor.state !== Editor.STATE_IDLE)
 	{
 
 		// Save or load files

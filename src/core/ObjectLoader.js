@@ -45,7 +45,7 @@ function parse(json, onLoad)
 	var textures  = this.parseTextures(json.textures, images);
 	var materials = this.parseMaterials(json.materials, textures);
 
-	var object = this.parseObject(json.object, geometries, materials);
+	var object = this.parseObject(json.object, geometries, materials, textures);
 
 	if(json.animations)
 	{
@@ -398,10 +398,18 @@ function parseTextures(json, images)
 	return textures;
 }
 
-function parseObject(data, geometries, materials)
+function parseObject(data, geometries, materials, textures)
 {
 	var matrix = new THREE.Matrix4();
 	var object;
+
+	function getTexture(name) {
+		if (textures[name] === undefined) {
+			console.warn("ObjectLoader: Undefined texture", name)
+		}
+
+		return textures[name]
+	}
 
 	function getGeometry( name )
 	{
@@ -434,7 +442,8 @@ function parseObject(data, geometries, materials)
 			break;
 
 		case "ParticleEmitter":
-			object = new ParticleEmitter()
+			var texture = getTexture(data.group.texture)
+			object = new ParticleEmitter(texture)
 			break;
 
 		case "Text3D":
@@ -644,7 +653,7 @@ function parseObject(data, geometries, materials)
 	{
 		for(var child in data.children)
 		{
-			object.add(this.parseObject( data.children[ child ], geometries, materials));
+			object.add(this.parseObject( data.children[ child ], geometries, materials, textures));
 		}
 	}
 

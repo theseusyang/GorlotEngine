@@ -1,0 +1,226 @@
+{
+	"metadata": {
+		"version": 1,
+		"generator": "GorlotProgram"
+	},
+	"geometries": [
+		{
+			"uuid": "0B247A9B-9D89-433F-9235-87669488C37F",
+			"type": "SphereGeometry",
+			"radius": 4000,
+			"widthSegments": 32,
+			"heightSegments": 15
+		},
+		{
+			"uuid": "8E2362ED-3A62-4600-B0E5-3313D8C41DE5",
+			"type": "BoxBufferGeometry",
+			"width": 2,
+			"height": 2,
+			"depth": 2
+		}],
+	"materials": [
+		{
+			"uuid": "34C64BDD-6C75-483B-BCCD-1B0501B09B00",
+			"type": "ShaderMaterial",
+			"name": "sky",
+			"side": 1,
+			"uniforms": {
+				"top_color": {
+					"type": "c",
+					"value": {
+						"r": 0,
+						"g": 0.4627450980392157,
+						"b": 1
+					}
+				},
+				"bottom_color": {
+					"type": "c",
+					"value": {
+						"r": 1,
+						"g": 1,
+						"b": 1
+					}
+				},
+				"offset": {
+					"type": "f",
+					"value": 20
+				},
+				"exponent": {
+					"type": "f",
+					"value": 0.4
+				}
+			},
+			"vertexShader": "\n\t\t\tvarying vec3 vWorldPosition;\n\t\t\tvoid main() {\n\t\t\t\tvec4 worldPosition = modelMatrix * vec4(position, 1.0);\n\t\t\t\tvWorldPosition = worldPosition.xyz;\n\t\t\t\tgl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);\n\t\t\t}\n\t\t",
+			"fragmentShader": "\n\t\t\tuniform vec3 top_color;\n\t\t\tuniform vec3 bottom_color;\n\t\t\tuniform float offset;\n\t\t\tuniform float exponent;\n\t\t\tvarying vec3 vWorldPosition;\n\t\t\tvoid main() {\n\t\t\t\tfloat h = normalize(vWorldPosition + offset).y;\n\t\t\t\tgl_FragColor = vec4(mix(bottom_color, top_color, max(pow(max(h, 0.0), exponent), 0.0)), 1.0);\n\t\t\t}\n\t\t"
+		},
+		{
+			"uuid": "6C69D238-18C1-41EC-8CA1-210A944F144A",
+			"type": "MeshPhongMaterial",
+			"name": "default",
+			"color": 16777215,
+			"emissive": 0,
+			"specular": 3355443,
+			"shininess": 30,
+			"nodes": {
+				"config": {},
+				"groups": [],
+				"last_link_id": 0,
+				"last_node_id": 1,
+				"links": [],
+				"nodes": [
+					{
+						"flags": {},
+						"id": 1,
+						"mode": 0,
+						"inputs": [
+							{
+								"name": "Colour",
+								"type": "Color",
+								"link": null
+							},
+							{
+								"name": "Emissive",
+								"type": "number",
+								"link": null
+							},
+							{
+								"name": "Reflectivity",
+								"type": "number",
+								"link": null
+							},
+							{
+								"name": "Shininess",
+								"type": "number",
+								"link": null
+							},
+							{
+								"name": "Specular",
+								"type": "Color",
+								"link": null
+							},
+							{
+								"name": "Wireframe",
+								"type": "Boolean",
+								"link": null
+							}],
+						"outputs": [
+							{
+								"name": "Material",
+								"type": "Material",
+								"links": null
+							}],
+						"pos": [208,140],
+						"properties": {
+							"mat": "6C69D238-18C1-41EC-8CA1-210A944F144A"
+						},
+						"size": [178,126],
+						"type": "Material/MeshPhongMaterial"
+					}],
+				"version": 0.4
+			}
+		}],
+	"object": {
+		"uuid": "27D7F9E0-E7DE-4088-811E-C19F3CA6CA8A",
+		"type": "Program",
+		"name": "program",
+		"components": [],
+		"castShadow": false,
+		"receiveShadow": false,
+		"visible": true,
+		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+		"children": [
+			{
+				"uuid": "ECED860A-152C-4ADD-B58B-E2A533D38A97",
+				"type": "Scene",
+				"name": "scene",
+				"components": [],
+				"castShadow": false,
+				"receiveShadow": false,
+				"visible": true,
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"children": [
+					{
+						"uuid": "A6429BD4-FAFE-4E41-948F-4778C15DBD7A",
+						"type": "Sky",
+						"auto_update": false,
+						"day_time": 20,
+						"sun_distance": 100,
+						"time": 13,
+						"components": [],
+						"name": "sky",
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"geometry": "0B247A9B-9D89-433F-9235-87669488C37F",
+						"material": "34C64BDD-6C75-483B-BCCD-1B0501B09B00"
+					},
+					{
+						"uuid": "1EEB6597-0B59-4BE2-9F98-D724D226061B",
+						"type": "Mesh",
+						"name": "box",
+						"components": [],
+						"castShadow": true,
+						"receiveShadow": true,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,0,1],
+						"geometry": "8E2362ED-3A62-4600-B0E5-3313D8C41DE5",
+						"material": "6C69D238-18C1-41EC-8CA1-210A944F144A"
+					},
+					{
+						"uuid": "8A28A73C-BBFD-4349-99F1-A051C07F7F47",
+						"type": "Mesh",
+						"name": "ground",
+						"components": [],
+						"castShadow": true,
+						"receiveShadow": true,
+						"visible": true,
+						"matrix": [20,0,0,0,0,1,0,0,0,0,20,0,0,0,0,1],
+						"geometry": "8E2362ED-3A62-4600-B0E5-3313D8C41DE5",
+						"material": "6C69D238-18C1-41EC-8CA1-210A944F144A"
+					},
+					{
+						"uuid": "DCE10C5F-583F-4E27-B6D8-DB383EBC3C9C",
+						"type": "ParticleEmitter",
+						"name": "particle_1",
+						"components": [],
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+						"nodes": {
+							"last_node_id": 0,
+							"last_link_id": 0,
+							"nodes": [],
+							"links": [],
+							"groups": [],
+							"config": {},
+							"version": 0.4
+						},
+						"group": {
+							"texture": "201BA9B7-6BB3-442D-8889-6FC54DB0346B",
+							"textureFrames": {
+								"x": 1,
+								"y": 1
+							},
+							"textureFrameCount": 1,
+							"textureLoop": 1,
+							"hasPerspective": true,
+							"colorize": true,
+							"maxParticleCount": null,
+							"blending": 2
+						}
+					}],
+				"fog_color": "#ffffff",
+				"fog_density": 0.001,
+				"fog_near": 2,
+				"fog_far": 30,
+				"fog_mode": 0
+			}],
+		"author": "",
+		"description": "",
+		"version": "0",
+		"vr": false,
+		"vr_scale": 1
+	}
+}

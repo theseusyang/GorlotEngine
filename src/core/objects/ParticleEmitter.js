@@ -1,5 +1,5 @@
 class ParticleEmitter extends THREE.Scene {
-	constructor() {
+	constructor(texture) {
 		super()
 
 		this.type = "ParticleEmitter"
@@ -11,7 +11,7 @@ class ParticleEmitter extends THREE.Scene {
 
 		this.group = new SPE.Group({
 			texture: {
-				value: new Texture("data/particle.png")
+				value: (texture !== undefined) ? texture : new Texture("data/particle.png")
 			},
 			blending: THREE.AdditiveBlending
 		})
@@ -94,5 +94,37 @@ class ParticleEmitter extends THREE.Scene {
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].update()
 		}
+	}
+
+	stop() {
+		for(var i = 0; i < this.children.length; i++) {
+			this.children[i].stop()
+		}
+	}
+
+	addComponent(compo) {
+		if (compo instanceof Component) {
+			this.components.push(compo)
+		}
+	}
+
+	toJSON(meta) {
+		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
+	
+		data.object.components = this.components
+		data.object.nodes = this.nodes
+
+		// Particle group
+		data.object.group = {}
+		data.object.group.texture = this.group.texture.uuid
+		data.object.group.textureFrames = this.group.textureFrames
+		data.object.group.textureFrameCount = this.group.textureFrameCount
+		data.object.group.textureLoop = this.group.textureLoop
+		data.object.group.hasPerspective = this.group.hasPerspective
+		data.object.group.colorize = this.group.colorize
+		data.object.group.maxParticleCount = this.group.maxParticleCount
+		data.object.group.blending = this.group.blending
+
+		return data
 	}
 }
