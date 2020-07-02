@@ -7,7 +7,7 @@ class Object3DComponent extends Component {
 		super.initUI()
 	
 		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible)
-		EditorUI.form.addCheckbox("Static", Editor.selected_object.matrixAutoUpdate)
+		EditorUI.form.addCheckbox("Dynamic", Editor.selected_object.matrixAutoUpdate)
 		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
 		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
 		EditorUI.form.addCheckbox("Rotation Auto Update", Editor.selected_object.rotationAutoUpdate)

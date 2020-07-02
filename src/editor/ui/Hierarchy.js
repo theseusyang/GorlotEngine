@@ -108,7 +108,7 @@ EditorUI.addChildrenToHierarchy = function(object, parent) {
 
 EditorUI.hierarchyContext = function(e, data) {
     var object = data.data.attachedTo
-    Editor.selectObject(object)
+    // Editor.selectObject(object)
 
     var context = new LiteGUI.ContextMenu([
         {title: "Copy", callback: () => {
@@ -122,6 +122,14 @@ EditorUI.hierarchyContext = function(e, data) {
         }},
         {title: "Duplicate", callback: () => {
             // TODO: This
+        }},
+        {title: "Set Static", callback: () => {
+            ObjectUtils.setMatrixAutoUpdate(object, false)
+            EditorUI.updateInspector()
+        }},
+        {title: "Set Dynamic", callback: () => {
+            ObjectUtils.setMatrixAutoUpdate(object, true)
+            EditorUI.updateInspector()
         }},
         {title: "Delete", callback: () => {
             EditorUI.deleteObject(object)
