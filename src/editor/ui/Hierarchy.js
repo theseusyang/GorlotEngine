@@ -49,14 +49,21 @@ function EditorUIHierarchy() {
             EditorUI.code.attachScript(data.attachedTo)
             EditorUI.code.updateInterface()
         }
+        else if (data.attachedTo instanceof ParticleEmitter) {
+            var id = ParticleEditor.id-1
+            EditorUI.tabs_widget.removeTab("Particle Editor " + id)
+
+            EditorUI.partEd = new ParticleEditor(data.attachedTo)
+            EditorUI.partEd.updateInterface()
+        }
         else if (data.attachedTo instanceof Scene) {
             var id = SceneEditor.id-1
             EditorUI.tabs_widget.removeTab("Scene Editor " + id)
 
-            var container = new SceneEditor()
-            container.setScene(data.attachedTo)
-            container.updateInterface()
-            container.activate()
+            EditorUI.canvas = new SceneEditor()
+            EditorUI.canvas.setScene(data.attachedTo)
+            EditorUI.canvas.updateInterface()
+            EditorUI.canvas.activate()
         }
     })
 

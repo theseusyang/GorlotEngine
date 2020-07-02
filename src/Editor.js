@@ -25,6 +25,7 @@ include("src/editor/windows/AddMenuWindow.js")
 
 include("src/editor/tabs/CodeEditor.js")
 include("src/editor/tabs/MaterialEditor.js")
+include("src/editor/tabs/ParticleEditor.js")
 include("src/editor/tabs/SceneEditor.js")
 include("src/editor/tabs/SettingsTab.js")
 include("src/editor/tabs/BlueprintsEditor.js")

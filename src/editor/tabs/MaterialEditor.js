@@ -37,7 +37,6 @@ class MaterialEditor {
 		this.canvas = document.createElement("canvas")
 		this.canvas.id = "MaterialEditor"+MaterialEditor.id
 		this.canvas.style.position = "absolute"
-
 		this.parent.appendChild(this.canvas)
 
 		// Material preview canvas
@@ -51,7 +50,7 @@ class MaterialEditor {
 		Mouse.canvas = this.preview
 
 		// Material preview renderer
-		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: true})
+		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: true, antialias: true})
 		this.renderer.setSize(200, 200)
 		this.renderer.shadowMap.ebaled = true
 		this.renderer.shadowMap.type = THREE.PCFShadowMap
@@ -62,7 +61,7 @@ class MaterialEditor {
 		// Material Preview Scene
 		this.scene = new Scene()
 
-		// Light
+		// Material Preview Lights
 		this.scene.add(new PointLight(0x444444))
 		this.scene.add(new AmbientLight(0x333333))
 
@@ -119,7 +118,7 @@ class MaterialEditor {
 	}
 
 	updateInterface(canvas) {
-		this.graphcanvas.resize(EditorUI.mainarea.getSection(0).getWidth(), EditorUI.mainarea.getSection(0).getHeight(0) - EditorUI.assetEx_height)
+		this.graphcanvas.resize(EditorUI.mainarea.getSection(0).getWidth(), EditorUI.mainarea.getSection(0).getHeight() - EditorUI.assetEx_height)
 	}
 
 	update() {

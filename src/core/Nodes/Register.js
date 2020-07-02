@@ -20,6 +20,10 @@ function registerBlueprintsNodes() {
 	registerSceneNodes()
 }
 
+function registerParticleNodes() {
+	// TODO: Nodes for handling particles
+}
+
 function registerAllNodes() {
 	registerBlueprintsNodes()
 	registerMaterialNodes()

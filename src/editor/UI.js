@@ -40,7 +40,7 @@ EditorUI.Initialize = function() {
 
     // ----- MAINAREA SPLIT ----- 
     EditorUI.mainarea = new LiteGUI.Area({autoresize: true})
-    EditorUI.mainarea.split("horizontal", [null, 400], false)
+    EditorUI.mainarea.split("horizontal", [null, 400], true)
     EditorUI.mainarea.onresize = EditorUI.Resize
     LiteGUI.add(EditorUI.mainarea)
 
@@ -110,6 +110,23 @@ EditorUI.selectSceneTab = function() {
 
 EditorUI.updateInterface = function () {
     EditorUI.canvas.updateInterface()
+
+    if (EditorUI.code !== undefined) {
+        // Script Editor
+        EditorUI.code.updateInterface()
+    }
+    if (EditorUI.partEd !== undefined) {
+        // Particle Editor
+        EditorUI.partEd.updateInterface()
+    }
+    if (EditorUI.matEd !== undefined) {
+        // Material Editor
+        EditorUI.matEd.updateInterface()
+    }
+    if (EditorUI.blue !== undefined) {
+        // Blueprint Editor
+        EditorUI.blue.updateInterface()
+    }
 }
 
 EditorUI.updateInspector = function() {

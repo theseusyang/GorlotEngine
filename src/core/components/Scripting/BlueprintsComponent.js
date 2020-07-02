@@ -14,16 +14,16 @@ class BlueprintsComponent extends Component {
             var id = BlueprintsEditor.id-1
             EditorUI.tabs_widget.removeTab("Blueprints Editor " + id)
 
-			var blue = new BlueprintsEditor(undefined, Editor.selected_object, "Init")
-			blue.updateInterface()
+			EditorUI.blue = new BlueprintsEditor(undefined, Editor.selected_object, "Init")
+			EditorUI.blue.updateInterface()
 		}
 
 		loop.onclick = function(e) {
             var id = BlueprintsEditor.id-1
             EditorUI.tabs_widget.removeTab("Blueprints Editor " + id)
 
-			var blue = new BlueprintsEditor(undefined, Editor.selected_object, "Loop")
-			blue.updateInterface()
+			EditorUI.blue = new BlueprintsEditor(undefined, Editor.selected_object, "Loop")
+			EditorUI.blue.updateInterface()
 		}
 
 	}

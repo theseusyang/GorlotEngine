@@ -5,6 +5,8 @@ class ParticleEmitter extends THREE.Object3D {
 		this.type = "ParticleEmitter"
 		this.name = "particle"
 
+		this.nodes = {}
+
 		this.clock = new THREE.Clock()
 
 		this.group = new SPE.Group({
@@ -68,6 +70,10 @@ class ParticleEmitter extends THREE.Object3D {
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
 		this.defaultComponents.push(new Object3DComponent())
+	}
+
+	updateNodes(nodes) {
+		this.nodes = nodes
 	}
 
 	initialize() {

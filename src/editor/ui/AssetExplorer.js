@@ -166,8 +166,8 @@ function EditorUIAssetExplorer() {
     EditorUI.asset_explorer_inspector = new LiteGUI.Inspector()
     EditorUI.asset_explorer_list = EditorUI.asset_explorer_inspector.addList(null, EditorUI.asset_explorer_objects, {height: EditorUI.mainarea.getSection(0).getSection(1).getHeight()-60, callback_dblclick: (v) => {
         if (v.attachedTo instanceof THREE.MeshPhongMaterial) {
-            var mat = new MaterialEditor(undefined, v.attachedTo)
-            mat.updateInterface()
+            EditorUI.matEd = new MaterialEditor(undefined, v.attachedTo)
+            EditorUI.matEd.updateInterface()
         }
     }, callback_contextmenu: (v, e) => {
         var context = new LiteGUI.ContextMenu([
