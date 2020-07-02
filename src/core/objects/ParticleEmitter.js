@@ -62,6 +62,12 @@ class ParticleEmitter extends THREE.Object3D {
 		})
 
 		this.group.addEmitter(this.emitter)
+
+		this.components = []
+
+		this.defaultComponents = []
+		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 	}
 
 	initialize() {

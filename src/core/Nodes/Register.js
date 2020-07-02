@@ -13,6 +13,7 @@ function registerBlueprintsNodes() {
 	registerBaseNodes()
 	registerMathNodes()
 	registerVectorNodes()
+	registerQuaternionNodes()
 	registerLogicNodes()
 	registerArrayNodes()
 	registerObjectNodes()
