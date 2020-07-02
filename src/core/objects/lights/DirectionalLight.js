@@ -12,9 +12,6 @@ class DirectionalLight extends THREE.DirectionalLight {
 		this.shadow.camera.top = 10
 		this.shadow.camera.bottom = -10
 
-		//this.shadow.mapSize.width = 2048
-		//this.shadow.mapSize.height= 2048
-
 		this.components = []
 
 		this.defaultComponents = []
@@ -45,5 +42,18 @@ class DirectionalLight extends THREE.DirectionalLight {
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].stop()
 		}
+	}
+
+	toJSON(meta) {
+		// Create JSON for this object
+		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
+
+		data.object.components = this.components
+		data.shadow_left = this.shadow.camera.left
+		data.shadow_right = this.shadow.camera.right
+		data.shadow_top = this.shadow.camera.top
+		data.shadow_bottom = this.shadow.camera.bottom
+
+		return data
 	}
 }

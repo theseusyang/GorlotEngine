@@ -175,12 +175,14 @@ App.chooseFile = function(callback, filter, savemode) {
 		chooser.nwsaveas = "file"
 	}
 
-	// Create onchange event and trigger it
+	// Create onchange event
 	chooser.onchange = function(e) {
 		if (callback !== undefined) {
 			callback(chooser.value)
 		}
 	}
+
+	// Force trigger onchange event
 	chooser.click()
 }
 

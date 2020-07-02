@@ -163,9 +163,7 @@ class Program extends THREE.Object3D {
 
 	clone() {
 		// Clone program, keep uuid and everything else
-		var data = this.toJSON()
-		var loader = new ObjectLoader()
-		return loader.parse(data)
+		return new ObjectLoader().parse(this.toJSON())
 	}
 
 	dispose() {
@@ -190,7 +188,7 @@ class Program extends THREE.Object3D {
 
 			output.metadata =
 			{
-				version: 4.4,
+				version: 1.0,
 				generator: 'GorlotProgram'
 			};
 		}

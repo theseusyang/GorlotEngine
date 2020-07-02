@@ -214,9 +214,8 @@ class Sky extends THREE.Mesh {
 			}
 
 			output.metadata = {
-				version: 4.4,
-				type: 'Object',
-				generator: 'Object3D.toJSON'
+				version: 1.0,
+				generator: 'GorlotProgram'
 			}
 		}
 

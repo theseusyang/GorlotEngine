@@ -10,7 +10,8 @@ class ParticleEditor {
 			ParticleEditor.id--
 			self.updateParticle()
 
-			self.particleEmitter = null
+			self.particle = null
+			self.particle_runtime = null
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
 			if (self.preview !== undefined) {
@@ -56,10 +57,11 @@ class ParticleEditor {
 		this.scene.add(new THREE.AxisHelper(100))
 
 		// Particle
-		this.particleEmitter = particleEmitter
-		this.particleEmitter.initialize()
-		this.container.add(this.particleEmitter)
-		this.nodes = this.particleEmitter.nodes
+		this.particle = particleEmitter
+		this.particle_runtime = new ObjectLoader().parse(this.particle.toJSON())
+		this.particle_runtime.initialize()
+		this.container.add(this.particle_runtime)
+		this.nodes = this.particle.nodes
 
 		// Particle Preview renderer
 		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: false, antialias: true})
@@ -87,8 +89,8 @@ class ParticleEditor {
 	}
 
 	updateParticle() {
-		if (this.particleEmitter.nodes !== undefined) {
-			this.particleEmitter.updateNodes(this.graph.serialize())
+		if (this.particle.nodes !== undefined) {
+			this.particle.updateNodes(this.graph.serialize())
 		}
 	}
 

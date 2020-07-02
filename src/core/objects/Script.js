@@ -60,7 +60,9 @@ class Script extends THREE.Object3D {
 		if(this.mode === Script.INIT) {
 			try {
 				this.func()
-			} catch(e) {}
+			} catch(e) {
+				console.error(e.message)
+			}
 		}
 
 		for(var i = 0; i < this.children.length; i++) {
@@ -73,7 +75,9 @@ class Script extends THREE.Object3D {
 		if(this.mode === Script.LOOP) {
 			try {
 				this.func()
-			} catch (e) {}
+			} catch (e) {
+				console.error(e.message)
+			}
 		}
 
 		for(var i = 0; i < this.children.length; i++) {
@@ -85,7 +89,13 @@ class Script extends THREE.Object3D {
 		try {
 			this.code = code
 			this.func = Function(this.code)
-		} catch(e) {}
+		} catch(e) {
+			if (e instanceof SyntaxError) {
+				return e.message
+			}
+
+			return null
+		}
 	}
 
 	setMode(mode) {

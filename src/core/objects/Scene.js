@@ -119,6 +119,7 @@ class Scene extends THREE.Scene {
 		// Create JSON for object
 		var data = THREE.Scene.prototype.toJSON.call(this, meta)
 
+		data.object.components = this.components
 		data.object.fog_color = this.fog_color
 		data.object.fog_density = this.fog_density
 		data.object.fog_near = this.fog_near
