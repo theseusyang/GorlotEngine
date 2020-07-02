@@ -32,7 +32,7 @@
 		}
 	}
 
-	update(delta, now) {
+	update() {
 		if (this.video.readyState >= this.video.HAVE_CURRENT_DATA) {
 			this.texture.needsUpdate = true
 		}

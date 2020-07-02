@@ -35,8 +35,8 @@ include("src/core/MaterialLoader.js")
 
 include("src/core/ThreeExpand.js")
 include("src/core/Program.js")
+include("src/core/Scene.js")
 include("src/core/ObjectUtils.js")
-include("src/core/Global.js")
 
 include("src/core/webvr/VRControls.js")
 
@@ -60,7 +60,6 @@ include("src/core/objects/cameras/PerspectiveCamera.js")
 include("src/core/objects/cameras/OrthographicCamera.js")
 
 include("src/core/objects/Bone.js")
-include("src/core/objects/Scene.js")
 include("src/core/objects/Empty.js")
 include("src/core/objects/Script.js")
 include("src/core/objects/Blueprints.js")

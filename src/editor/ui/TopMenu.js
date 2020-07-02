@@ -80,8 +80,8 @@ function EditorUITopMenu() {
 
     // ----- Preferences -----
     EditorUI.topmenu.add("Edit/Project/Project Settings", {callback: () => {
-        EditorUI.projectSettings = new SettingsTab()
-        EditorUI.projectSettings.updateInterface()
+        EditorUI.projSets = new SettingsTab()
+        EditorUI.projSets.updateInterface()
     }})
 
     // ----- Execute script -----

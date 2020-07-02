@@ -1,4 +1,4 @@
-class ParticleEmitter extends THREE.Object3D {
+class ParticleEmitter extends THREE.Scene {
 	constructor() {
 		super()
 

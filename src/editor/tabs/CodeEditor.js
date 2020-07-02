@@ -3,6 +3,7 @@ class CodeEditor {
 
 		this.id = "Code Editor " + CodeEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
+			clearInterval(self.interval)
 			CodeEditor.id--
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
@@ -24,8 +25,12 @@ class CodeEditor {
 
 		// CodeMirror Editor
 		this.code = new CodeMirror(this.element, {value: "", lineNumbers: true, indentWithTabs: true, indentUnit: 4, tabSize: 4, mode: "javascript"})
-		this.code.setOption("theme", "monokai")
+		this.code.setOption("theme", Settings.code_theme)
 		this.code.setOption("mode", "javascript")
+
+		// Font size
+		this.font_size = Settings.code_font_size
+		this.setFontSize(this.font_size)
 
 		// Code changed event
 		var self = this
@@ -104,6 +109,10 @@ class CodeEditor {
 			})
 		} 
 
+		this.interval = setInterval(() => {
+			self.update()
+		}, 1000/60)
+
 		this.parent.appendChild(this.element)
 		CodeEditor.id++
 	}
@@ -131,8 +140,29 @@ class CodeEditor {
 		}
 	}
 
+	setFontSize(size) {
+		// Set code editor font size
+		this.font_size = size
+		this.code.display.wrapper.style.fontSize = size + "px"
+		this.code.refresh()
+	}
+
 	updateInterface() {
 		this.code.setSize(EditorUI.mainarea.getSection(0).getWidth() - 2, EditorUI.mainarea.getSection(0).getHeight()-EditorUI.assetEx_height)
+	}
+
+	update() {
+
+		if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
+			if (Mouse.wheel !== 0) {
+				this.font_size -= Mouse.wheel/100
+				if (this.font_size < 5) {
+					this.font_size = 5
+				}
+				this.setFontSize(this.font_size)
+			}
+		}
+
 	}
 }
 

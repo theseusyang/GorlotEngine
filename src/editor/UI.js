@@ -127,6 +127,10 @@ EditorUI.updateInterface = function () {
         // Blueprint Editor
         EditorUI.blue.updateInterface()
     }
+    if (EditorUI.projSets !== undefined) {
+        // Project Settings
+        EditorUI.projSets.updateInterface()
+    }
 }
 
 EditorUI.updateInspector = function() {

@@ -31,6 +31,7 @@ include("src/editor/tabs/SettingsTab.js")
 include("src/editor/tabs/BlueprintsEditor.js")
 
 include("src/editor/UI.js")
+include("src/editor/Settings.js")
 
 include("src/editor/ui/components/AbsButton.js")
 
@@ -55,7 +56,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Thu 02 Jul 2020 16:04:32"
+Editor.TIMESTAMP = "Thu 02 Jul 2020 17:55:08"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -203,8 +204,8 @@ Editor.update = function()
 	Editor.block_camera_move = false;
 
 
-	//Editing a scene
-	if(Editor.state === Editor.STATE_EDITING)
+	// If not on test mode
+	if(Editor.state !== Editor.STATE_TESTING)
 	{
 
 		// Save or load files
@@ -221,51 +222,54 @@ Editor.update = function()
 			}
 		}
 
-		//If object select display tools
-		if(Editor.selected_object !== null && Editor.selected_object !== undefined)
-		{
-			Editor.updateObjectHelper()
-
-			if(Editor.tool_mode === Editor.MODE_MOVE)
+		// If editing an scene
+		if(Editor.state === Editor.STATE_EDITING) {
+			//If object select display tools
+			if(Editor.selected_object !== null && Editor.selected_object !== undefined)
 			{
-				Editor.move_tool.visible = true;
-				Editor.rotate_tool.visible = false;
-				Editor.resize_tool.visible = false;
-
-				var position = ObjectUtils.objectAbsolutePosition(Editor.selected_object)
-				var distance = Editor.camera.position.distanceTo(position)/5
-				Editor.move_tool.scale.set(distance, distance, distance)
-				Editor.move_tool.position.copy(position);
-			}
-			else if(Editor.tool_mode === Editor.MODE_RESIZE)
-			{
-				Editor.resize_tool.visible = true;
-				Editor.move_tool.visible = false;
-				Editor.rotate_tool.visible = false;
-
-				var position = ObjectUtils.objectAbsolutePosition(Editor.selected_object)
-				var distance = Editor.camera.position.distanceTo(position)/5
-				Editor.resize_tool.scale.set(distance, distance, distance)
-				Editor.resize_tool.position.copy(position);
-				
-			}
-			else if(Editor.tool_mode === Editor.MODE_ROTATE)
-			{
-				Editor.rotate_tool.visible = true;
-				Editor.move_tool.visible = false;
-				Editor.resize_tool.visible = false;
-
-				var position = ObjectUtils.objectAbsolutePosition(Editor.selected_object)
-				var distance = Editor.camera.position.distanceTo(position)/5
-				Editor.rotate_tool.scale.set(distance, distance, distance)
-				Editor.rotate_tool.rotation.copy(Editor.selected_object.rotation)
-				Editor.rotate_tool.position.copy(position);
-			}
-			else
-			{
-				Editor.move_tool.visible = false;
-				Editor.rotate_tool.visible = false;
-				Editor.resize_tool.visible = false;
+				Editor.updateObjectHelper()
+	
+				if(Editor.tool_mode === Editor.MODE_MOVE)
+				{
+					Editor.move_tool.visible = true;
+					Editor.rotate_tool.visible = false;
+					Editor.resize_tool.visible = false;
+	
+					var position = Editor.selected_object.getWorldPosition()
+					var distance = Editor.camera.position.distanceTo(position)/5
+					Editor.move_tool.scale.set(distance, distance, distance)
+					Editor.move_tool.position.copy(position);
+				}
+				else if(Editor.tool_mode === Editor.MODE_RESIZE)
+				{
+					Editor.resize_tool.visible = true;
+					Editor.move_tool.visible = false;
+					Editor.rotate_tool.visible = false;
+	
+					var position = Editor.selected_object.getWorldPosition()
+					var distance = Editor.camera.position.distanceTo(position)/5
+					Editor.resize_tool.scale.set(distance, distance, distance)
+					Editor.resize_tool.position.copy(position);
+					
+				}
+				else if(Editor.tool_mode === Editor.MODE_ROTATE)
+				{
+					Editor.rotate_tool.visible = true;
+					Editor.move_tool.visible = false;
+					Editor.resize_tool.visible = false;
+	
+					var position = Editor.selected_object.getWorldPosition()
+					var distance = Editor.camera.position.distanceTo(position)/5
+					Editor.rotate_tool.scale.set(distance, distance, distance)
+					Editor.rotate_tool.rotation.copy(Editor.selected_object.rotation)
+					Editor.rotate_tool.position.copy(position);
+				}
+				else
+				{
+					Editor.move_tool.visible = false;
+					Editor.rotate_tool.visible = false;
+					Editor.resize_tool.visible = false;
+				}
 			}
 
 			// Keyboard shortcuts
@@ -313,7 +317,7 @@ Editor.update = function()
 				//Moving object
 				if(Editor.tool_mode === Editor.MODE_MOVE)
 				{
-					var speed = Editor.camera.position.distanceTo(ObjectUtils.objectAbsolutePosition(Editor.selected_object))/500;
+					var speed = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/500;
 					if(Editor.editing_object_args.x)
 					{
 						Editor.selected_object.position.x -= Mouse.pos_diff.y * speed * Math.sin(Editor.camera_rotation.x);
@@ -335,7 +339,7 @@ Editor.update = function()
 				//Resize mode
 				else if(Editor.tool_mode === Editor.MODE_RESIZE)
 				{
-					var speed = Editor.camera.position.distanceTo(ObjectUtils.objectAbsolutePosition(Editor.selected_object))/1000;
+					var speed = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/1000;
 					if(Editor.editing_object_args.center) {
 						var size = (Mouse.pos_diff.x - Mouse.pos_diff.y) * speed/3
 
@@ -698,7 +702,7 @@ Editor.updateObjectHelper = function() {
 
 	if (Editor.selected_object !== null && Editor.selected_object !== undefined) {
 		
-		var position = ObjectUtils.objectAbsolutePosition(Editor.selected_object)
+		var position = Editor.selected_object.getWorldPosition()
 		if (Editor.selected_object instanceof THREE.Camera) {
 			Editor.activateHelper(Editor.camera_helper, true)
 			Editor.camera_helper.camera = Editor.selected_object
@@ -725,7 +729,7 @@ Editor.updateObjectHelper = function() {
 			Editor.hemisphere_light_helper.light = Editor.selected_object
 			Editor.hemisphere_light_helper.position.copy(position)
 			Editor.hemisphere_light_helper.update()
-		} else if (Editor.selected_object instanceof THREE.Mesh) {
+		} else if (Editor.selected_object instanceof THREE.Object3D) {
 			Editor.activateHelper(Editor.box_helper, true)
 			Editor.box_helper.update(Editor.selected_object)
 		}

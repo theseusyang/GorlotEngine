@@ -42,7 +42,7 @@ class ParticleEditor {
 		
 		// Particle Preview Camera
 		this.camera = new PerspectiveCamera(90, this.preview.width/this.preview.height, 0.1, 1000000)
-		this.camera_rotation = new THREE.Vector2(0, 0)
+		this.camera_rotation = new THREE.Vector2(0, 0.5)
 		this.camera_distance = 5
 
 		// Particle Preview Scene
@@ -54,7 +54,7 @@ class ParticleEditor {
 		this.scene.add(new PointLight(0x666666))
 		this.scene.add(new AmbientLight(0x444444))
 		this.scene.add(new THREE.GridHelper(50, 1))
-		this.scene.add(new THREE.AxisHelper(100))
+		this.scene.add(new THREE.AxisHelper(50))
 
 		// Particle
 		this.particle = particleEmitter
@@ -100,6 +100,15 @@ class ParticleEditor {
 		this.camera.aspect = this.preview.width / (this.preview.height/2)
 	}
 
+	// Update camera position and rotation
+	updateCamera() {
+		// Calculate direction vector
+		var cos_angle_y = Math.cos(this.camera_rotation.y)
+		var position = new THREE.Vector3(this.camera_distance * Math.cos(this.camera_rotation.x)*cos_angle_y, this.camera_distance * Math.sin(this.camera_rotation.y), this.camera_distance * Math.sin(this.camera_rotation.x)*cos_angle_y)
+		this.camera.position.copy(position)
+		this.camera.lookAt(new THREE.Vector3(0, 0, 0))
+	}
+
 	update() {
 
 		// Get mouse input
@@ -126,14 +135,13 @@ class ParticleEditor {
 				this.camera_distance = 0.1
 			}
 
-			// Calculate direction vector
-			var cos_angle_y = Math.cos(this.camera_rotation.y)
-			var position = new THREE.Vector3(this.camera_distance * Math.cos(this.camera_rotation.x)*cos_angle_y, this.camera_distance * Math.sin(this.camera_rotation.y), this.camera_distance * Math.sin(this.camera_rotation.x)*cos_angle_y)
-			this.camera.position.copy(position)
-			this.camera.lookAt(new THREE.Vector3(0, 0, 0))
+			this.updateCamera()
 		}
 
+		// Update particle
 		this.container.update()
+
+		// Render editor scene
 		this.renderer.render(this.scene, this.camera)
 	}
 }

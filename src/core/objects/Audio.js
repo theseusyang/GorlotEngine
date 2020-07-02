@@ -1,11 +1,11 @@
 class Audio extends THREE.Audio {
 	constructor() {
-		super(Global.listener)
+		super(Audio.listener)
 
 		this.name = "audio"
 		this.type = "Audio"
 
-		this.autoplay = true
+		this.autoplay = false
 		this.file = "data/test.ogg"
 
 		this.components = []
@@ -60,3 +60,5 @@ class Audio extends THREE.Audio {
 		return data
 	}
 }
+
+Audio.listener = new THREE.AudioListener()

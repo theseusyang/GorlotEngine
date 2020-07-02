@@ -168,6 +168,8 @@ function EditorUIAssetExplorer() {
         if (v.attachedTo instanceof THREE.MeshPhongMaterial) {
             EditorUI.matEd = new MaterialEditor(undefined, v.attachedTo)
             EditorUI.matEd.updateInterface()
+        } else if (v.attachedTo instanceof THREE.Texture) {
+            // TODO: Texture viewer/editor?
         }
     }, callback_contextmenu: (v, e) => {
         var context = new LiteGUI.ContextMenu([
@@ -177,8 +179,7 @@ function EditorUIAssetExplorer() {
                     if (v.attachedTo !== undefined || v.attachedTo !== null) {
                         var p = LiteGUI.prompt("Rename: " + v.attachedTo.name, (value) => {
                             if (value !== null) {
-                                    Editor.renameObject(v.attachedTo, value)
-                                //Editor.updateObjectViews()
+                                Editor.renameObject(v.attachedTo, value)
                             }
                         }, {title: "Rename", value: v.attachedTo.name})
                     }
@@ -187,13 +188,17 @@ function EditorUIAssetExplorer() {
             {
                 title: "Delete",
                 callback: () => {
-
+                    if (v.attachedTo !== undefined || v.attachedTo !== null) {
+                        // TODO: Delete
+                    }
                 }
             },
             {
                 title: "Copy",
                 callback: () => {
-                    
+                    if (v.attachedTo !== undefined || v.attachedTo !== null) {
+                        // TODO: Copy
+                    }
                 }
             }
         ], {title: v.name, event: e})

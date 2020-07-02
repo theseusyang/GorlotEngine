@@ -16,10 +16,10 @@ class Scene extends THREE.Scene {
 		this.fog_mode = Scene.FOG_NONE
 		
 		//Create CANNON world
-		this.world = new CANNON.World();
-		this.world.broadphase = new CANNON.NaiveBroadphase();
-		this.world.gravity.set(0, -9.8, 0);
-		this.world.solver.iterations = 10;
+		this.world = new CANNON.World()
+		this.world.broadphase = new CANNON.NaiveBroadphase()
+		this.world.gravity.set(0, -9.8, 0)
+		this.world.solver.iterations = 10
 
 		// Initialization variables
 		this.initial_camera = null
