@@ -44,6 +44,7 @@ class ParticleEditor {
 		this.camera = new PerspectiveCamera(90, this.preview.width/this.preview.height, 0.1, 1000000)
 		this.camera_rotation = new THREE.Vector2(0, 0.5)
 		this.camera_distance = 5
+		this.updateCamera()
 
 		// Particle Preview Scene
 		this.scene = new Scene()
@@ -61,7 +62,41 @@ class ParticleEditor {
 		this.particle_runtime = new ObjectLoader().parse(this.particle.toJSON())
 		this.particle_runtime.initialize()
 		this.container.add(this.particle_runtime)
-		this.nodes = this.particle.nodes
+
+		if(this.particle.nodes === {}) {
+			// When an editor is opened, the particle.nodes is overwritten by this one
+			this.nodes = {
+				config: {},
+				groups: [],
+				last_link_id: 0,
+				last_node_id: 1,
+				links: [],
+				nodes: [
+					{
+						flags: {},
+						id: 1,
+						mode: 0,
+						order: 0,
+						outputs: [
+							{
+								links: null,
+								name: "Particles",
+								type: "Particles"
+							}
+						],
+						pos: [130, 130],
+						properties: {
+							uuid: this.particle.uuid
+						},
+						size: [140, 26],
+						type: "Particles/Particles"
+					}
+				],
+				version: 0.4
+			}
+		} else {
+			this.nodes = this.particle.nodes
+		}
 
 		// Particle Preview renderer
 		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: false, antialias: true})
@@ -139,7 +174,7 @@ class ParticleEditor {
 		}
 
 		// Update particle
-		this.container.update()
+		this.particle_runtime.update()
 
 		// Render editor scene
 		this.renderer.render(this.scene, this.camera)

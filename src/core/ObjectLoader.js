@@ -444,6 +444,21 @@ function parseObject(data, geometries, materials, textures)
 		case "ParticleEmitter":
 			var texture = getTexture(data.group.texture)
 			object = new ParticleEmitter(texture)
+
+			var update = false
+
+			if (data.group.blending !== undefined) {
+				object.group.blending = data.group.blending
+				update = true
+			}
+			if (data.emitter.direction !== undefined) {
+				object.emitter.direction = data.emitter.direction
+			}
+
+			if (update) {
+				object.updateValues()
+			}
+
 			break;
 
 		case "Text3D":

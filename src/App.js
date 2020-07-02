@@ -103,6 +103,9 @@ include("src/core/Nodes/Blueprints/Arrays.js")
 include("src/core/Nodes/Blueprints/Objects.js")
 include("src/core/Nodes/Blueprints/Scene.js")
 
+// Particles Nodes
+include("src/core/Nodes/Particles/Particles.js")
+
 // Materials nodes
 include("src/core/Nodes/Materials/Material.js")
 include("src/core/Nodes/Materials/Color.js")

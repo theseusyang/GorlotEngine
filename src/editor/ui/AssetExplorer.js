@@ -14,8 +14,6 @@ function EditorUIAssetExplorer() {
                 var loader = new THREE.OBJLoader()
                 var obj = loader.parse(App.readFile(fname))
 
-                ObjectUtils.setShadowCasting(obj, true)
-                ObjectUtils.setShadowReceiving(obj, true)
                 Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
             } catch(e) {
                 console.error("Error importing Object: " + e)
@@ -31,9 +29,6 @@ function EditorUIAssetExplorer() {
 
                 var obj = loader.parse(App.readFile(fname))
 
-                ObjectUtils.setShadowCasting(obj.scene, true)
-                ObjectUtils.setShadowReceiving(obj.scene, true)
-
                 Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj.scene))
             } catch(e) {
                 console.error("Error importing Object: " + e)
@@ -47,18 +42,10 @@ function EditorUIAssetExplorer() {
             try {
                 var loader = new THREE.JSONLoader()
                 loader.load(fname, function(geometry, materials) {
-                    for(var i = 0; i < materials.length; i++) {
-                        var m = materials[i]
-                        m.skinning = true
-                        m.morphTargets = true
-                    }
-
                     var material = new MeshPhongMaterial()
                     material.skinning = true
-                    material.morphTargets = true
 
-                    var obj = new AnimatedModel(geometry, material)// new THREE.MultiMaterial(materials))
-
+                    var obj = new AnimatedModel(geometry, material)
                     Editor.addToActualScene(obj)
                 })
             } catch(e) {
@@ -74,9 +61,6 @@ function EditorUIAssetExplorer() {
                 var loader = new THREE.VRMLLoader()
                 var obj = loader.parse(App.readFile(fname))
 
-                ObjectUtils.setShadowCasting(obj, true)
-                ObjectUtils.setShadowReceiving(obj, true)
-
                 Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
             } catch(e) {
                 console.error("Error importing Object: " + e)
@@ -91,8 +75,6 @@ function EditorUIAssetExplorer() {
                 var loader = new THREE.FBXLoader()
                 var obj = loader.parse(App.readFile(fname))
 
-                ObjectUtils.setShadowCasting(obj, true)
-                ObjectUtils.setShadowReceiving(obj, true)
                 Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
             } catch(e) {
                 console.error("Error importing Object: " + e)

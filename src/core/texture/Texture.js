@@ -39,7 +39,7 @@ class Texture extends THREE.Texture {
 				canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height)
 			}
 
-			if (canvas.width > 2048 || canvas.height > 2048) {
+			if (canvas.width > 1024 || canvas.height > 1024) {
 				return canvas.toDataURL("image/jpeg", 0.6)
 			} else {
 				return canvas.toDataURL("image/jpg")
@@ -48,9 +48,8 @@ class Texture extends THREE.Texture {
 
 		var output = {
 			metadata: {
-				version: 4.4,
-				type: "Texture",
-				generator: "Texture.toJSON"
+				version: 1.0,
+				type: "GorlotTexture"
 			},
 
 			uuid: this.uuid,

@@ -1,11 +1,40 @@
-class ParticleEmitter extends THREE.Scene {
+class ParticleEmitter extends THREE.Object3D {
 	constructor(texture) {
 		super()
 
 		this.type = "ParticleEmitter"
 		this.name = "particle"
 
-		this.nodes = {}
+		this.nodes = {
+			config: {},
+			groups: [],
+			last_link_id: 0,
+			last_node_id: 1,
+			links: [],
+			nodes: [
+				{
+					flags: {},
+					id: 1,
+					mode: 0,
+					order: 0,
+					outputs: [
+						{
+							links: null,
+							name: "Particles",
+							type: "Particles"
+						}
+					],
+					pos: [130, 130],
+					properties: {
+						uuid: this.uuid,
+						uuid_runtime: ""
+					},
+					size: [140, 26],
+					type: "Particles/Particles"
+				}
+			],
+			version: 0.4
+		}
 
 		this.clock = new THREE.Clock()
 
@@ -13,7 +42,8 @@ class ParticleEmitter extends THREE.Scene {
 			texture: {
 				value: (texture !== undefined) ? texture : new Texture("data/particle.png")
 			},
-			blending: THREE.AdditiveBlending
+			blending: THREE.AdditiveBlending,
+			maxParticleCount: 10000
 		})
 
 		// Disable frustum culling
@@ -72,6 +102,13 @@ class ParticleEmitter extends THREE.Scene {
 		this.defaultComponents.push(new Object3DComponent())
 	}
 
+	updateValues() {
+		// Update particle group and emitter runtime values
+		this.group.material.uniforms.texture.value = this.group.texture
+		this.group.material.blending = this.group.blending
+		this.group.material.needsUpdate = true
+	}
+
 	updateNodes(nodes) {
 		this.nodes = nodes
 	}
@@ -109,12 +146,16 @@ class ParticleEmitter extends THREE.Scene {
 	}
 
 	toJSON(meta) {
-		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
+		var self = this
+
+		var data = THREE.Object3D.prototype.toJSON.call(this, meta, (meta, object) => {
+			self.group.texture.toJSON(meta)
+		})
 	
 		data.object.components = this.components
 		data.object.nodes = this.nodes
 
-		// Particle group
+		// Group
 		data.object.group = {}
 		data.object.group.texture = this.group.texture.uuid
 		data.object.group.textureFrames = this.group.textureFrames
@@ -124,6 +165,11 @@ class ParticleEmitter extends THREE.Scene {
 		data.object.group.colorize = this.group.colorize
 		data.object.group.maxParticleCount = this.group.maxParticleCount
 		data.object.group.blending = this.group.blending
+
+		// Emitter
+		data.object.emitter = {}
+		data.object.emitter.direction = this.emitter.direction
+		data.object.emitter.particleCount = this.emitter.particleCount
 
 		return data
 	}

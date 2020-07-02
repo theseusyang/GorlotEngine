@@ -56,7 +56,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Thu 02 Jul 2020 19:34:32"
+Editor.TIMESTAMP = "Thu 02 Jul 2020 19:50:00"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -225,7 +225,7 @@ Editor.update = function()
 		// If editing an scene
 		if(Editor.state === Editor.STATE_EDITING) {
 			//If object select display tools
-			if(Editor.selected_object !== null && Editor.selected_object !== undefined)
+			if(Editor.selected_object !== null && Editor.selected_object !== undefined && Editor.selected_object instanceof Model3D)
 			{
 				Editor.updateObjectHelper()
 	

@@ -21,7 +21,9 @@ function registerBlueprintsNodes() {
 }
 
 function registerParticleNodes() {
-	// TODO: Nodes for handling particles
+	registerParticlesParticlesNodes()
+	registerMaterialNodeColor()
+	registerMaterialNodeConstants()
 }
 
 function registerAllNodes() {

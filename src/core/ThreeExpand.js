@@ -28,7 +28,7 @@ THREE.Object3D.prototype.stop = function() {
 }
 
 // Create JSON for object
-THREE.Object3D.prototype.toJSON = function(meta) {
+THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 
 	var isRootObject = (meta === undefined);
 	var output = {};
@@ -87,6 +87,10 @@ THREE.Object3D.prototype.toJSON = function(meta) {
 		}
 
 		object.material = this.material.uuid;
+	}
+
+	if (resourceAccess !== undefined) {
+		resourceAccess(meta, object)
 	}
 
 	//Collect children data
