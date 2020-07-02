@@ -35,7 +35,6 @@ class SkyComponent extends Component {
 				Editor.selected_object.time = day_time
 			}
 			Editor.selected_object.updateSky()
-			EditorUI.updateInspector()
 
 		} else if (name === "Time(s)") {
 			if (value < 0) {
@@ -47,7 +46,6 @@ class SkyComponent extends Component {
 			Editor.selected_object.time = value
 			Editor.selected_object.updateSky()
 			
-			EditorUI.updateInspector()
 		} else if (name === "Sun distance") {
 			Editor.selected_object.sun_distance = value
 			Editor.selected_object.updateSky()

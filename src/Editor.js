@@ -56,7 +56,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Thu 02 Jul 2020 19:50:00"
+Editor.TIMESTAMP = "Thu 02 Jul 2020 22:52:50"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -225,7 +225,7 @@ Editor.update = function()
 		// If editing an scene
 		if(Editor.state === Editor.STATE_EDITING) {
 			//If object select display tools
-			if(Editor.selected_object !== null && Editor.selected_object !== undefined && Editor.selected_object instanceof Model3D)
+			if(Editor.selected_object !== null && Editor.selected_object !== undefined && !(Editor.selected_object instanceof THREE.Material))
 			{
 				Editor.updateObjectHelper()
 	
@@ -387,6 +387,12 @@ Editor.update = function()
 						Editor.selected_object.quaternion.multiplyQuaternions(delta, Editor.selected_object.quaternion)
 					}
 				}
+
+				if (!Editor.selected_object.matrixAutoUpdate) {
+					// Update object transformation matrix
+					Editor.selected_object.updateMatrix()
+					Editor.selected_object.updateMatrixWorld()
+				}
 			}
 		}
 
@@ -469,8 +475,14 @@ Editor.update = function()
 			//Move Camera on X and Z
 			else if(Mouse.buttonPressed(Mouse.RIGHT))
 			{
+
+				// Move speed
+				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0, 0, 0))/1000
+				if (speed < 0.02) {
+					speed = 0.02
+				}
+
 				//Move Camera Front and Back
-				var speed = 0.1;
 				var angle_cos = Math.cos(Editor.camera_rotation.x);
 				var angle_sin = Math.sin(Editor.camera_rotation.x);
 				Editor.camera.position.z += Mouse.pos_diff.y * speed * angle_cos;
@@ -491,8 +503,14 @@ Editor.update = function()
 			//Move in camera direction using mouse scroll
 			if(Mouse.wheel != 0)
 			{
+				// Move speed
+				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0, 0, 0))/2000
+				if (speed < 0.003) {
+					speed = 0.003
+				}
+				speed *= Mouse.wheel
+
 				var direction = Editor.camera.getWorldDirection();
-				var speed = 0.01 * Mouse.wheel;
 				Editor.camera.position.x -= speed * direction.x;
 				Editor.camera.position.y -= speed * direction.y;
 				Editor.camera.position.z -= speed * direction.z;

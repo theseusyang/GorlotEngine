@@ -35,6 +35,5 @@ class Object3DComponent extends Component {
 			Editor.selected_object.matrixAutoUpdate = str
 		}
 
-		EditorUI.updateInspector()
 	}
 }

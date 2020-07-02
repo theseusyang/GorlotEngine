@@ -9,6 +9,7 @@ class Sprite extends THREE.Sprite {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 	}
 
 	addComponent(component) {

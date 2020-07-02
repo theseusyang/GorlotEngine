@@ -9,6 +9,7 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 		this.defaultComponents.push(new CameraComponent())
 	}
 

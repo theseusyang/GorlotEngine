@@ -33,6 +33,7 @@ class Script extends THREE.Object3D {
 		
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 		this.defaultComponents.push(new ScriptComponent())
 
 	}

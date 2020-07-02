@@ -84,6 +84,7 @@ class Sky extends THREE.Mesh {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 		this.defaultComponents.push(new SkyComponent())
 	}
 

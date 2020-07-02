@@ -16,6 +16,7 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 		this.defaultComponents.push(new CameraComponent())
 
 		this.updateProjectionMatrix()

@@ -12,6 +12,7 @@ class Audio extends THREE.Audio {
 		this.defaultComponents = []
 
 		this.defaultComponents.push(new ElementComponent())
+		this.defaultComponents.push(new Object3DComponent())
 	}
 
 	addComponent(compo) {

@@ -76,6 +76,12 @@ class LeapHand extends THREE.Object3D {
 		}
 	}
 
+	stop() {
+		for(var i = 0; i < this.children.length; i++) {
+			this.children[i].stop()
+		}
+	}
+
 	checkGesture(gesture) {
 		if (this.gesture[gesture] !== undefined) {
 			return this.gesture[gesture]
