@@ -39,20 +39,22 @@ class CameraComponent extends Component {
 			EditorUI.form.addList("Mode", modeStr, {height: 55, /*TODO: Set selected selected: "Resize Horizontal"*/})
 		}
 
-		var scene = ObjectUtils.getScene(Editor.selected_object)
-		var amiInitialcamera = scene.initial_camera === Editor.selected_object.uuid
+		this.scene = ObjectUtils.getScene(Editor.selected_object)
+		this.amiInitialcamera = this.scene.initial_camera === Editor.selected_object.uuid
 
-		EditorUI.form.addCheckbox("Default Camera", amiInitialcamera, {callback: () => {
-			if (amiInitialcamera) {
-				scene.initial_camera = null
+		EditorUI.form.addCheckbox("Default Camera", this.amiInitialcamera, {callback: () => {
+			if (this.amiInitialcamera) {
+				this.scene.initial_camera = null
 			} else {
-				scene.initial_camera = Editor.selected_object.uuid
+				this.scene.initial_camera = Editor.selected_object.uuid
 			}
 			EditorUI.updateInspector()
 		}})
 	}
 
 	updateInfo(name, value, widget) {
+
+		this.amiInitialcamera = this.scene.initial_camera === Editor.selected_object.uuid
 
 		if (name === "FOV") {
 			Editor.selected_object.fov = value

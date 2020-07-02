@@ -197,7 +197,7 @@ EditorUI.openProgram = function() {
                 } catch(e) {
                     console.error("Error loading program: " + e)
                 }
-            })
+            }, ".json")
         }
     }, {title: "Open Project"})
 }

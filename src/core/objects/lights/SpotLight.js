@@ -6,8 +6,15 @@ class SpotLight extends THREE.SpotLight {
 
 		this.castShadow = true
 
-		//this.shadow.mapSize.width = 1024
-		//this.shadow.mapSize.height = 1024
+		this.shadow.camera.near = 0.1
+		this.shadow.camera.far = 500
+		this.shadow.camera.left = -10
+		this.shadow.camera.right = 10
+		this.shadow.camera.top = 10
+		this.shadow.camera.bottom = -10
+
+		this.shadow.mapSize.width = 1024
+		this.shadow.mapSize.height = 1024
 	
 		this.components = []
 

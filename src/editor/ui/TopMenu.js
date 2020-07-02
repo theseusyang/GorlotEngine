@@ -7,44 +7,14 @@ function EditorUITopMenu() {
     // ----- FILE -----
     EditorUI.topmenu.add("File/New", {callback: () => {
         EditorUI.newProgram()
-        //LiteGUI.confirm("All unsaved changes to the project will be lost! Create new project?", (v) => {
-        //    if(v) {
-        //        Editor.createNewProgram()
-        //        Editor.updateTreeView()
-        //        Editor.updateObjectHelper()
-        //        EditorUI.updateable = []
-        //    }
-        //}, {title: "New Project"})
     }})
    
     EditorUI.topmenu.add("File/Open", {callback: () => {
         EditorUI.openProgram()
-        //var confirm = LiteGUI.confirm("All unsaved changes to the project will be lost! Load file?", (v) => {
-        //    if(v) {
-        //        App.chooseFile((event) => {
-        //            var file = event.srcElement.value
-        //            try {
-        //                Editor.loadProgram(file)
-        //                console.log("Project loaded")
-        //            } catch (e) { console.error("Error loading file, exception: " + e) }
-        //        }, ".json")
-        //    }
-        //}, {title: "Open project"})
     }})
     
     EditorUI.topmenu.add("File/Save", {callback: () => {
         EditorUI.saveProgram()
-//        App.chooseFile((event) => {
-//            var file = event.srcElement.value
-//
-//            try {
-//                Editor.saveProgram(file)
-//                console.log("Project saved")
-//            } catch(e) {
-//                console.error("Error saving file: " + e)
-//            }
-//
-//        }, ".json", true)
     }})
 
     EditorUI.topmenu.add("File/Exit", {callback: () => {
@@ -112,6 +82,19 @@ function EditorUITopMenu() {
     EditorUI.topmenu.add("Edit/Project/Project Settings", {callback: () => {
         EditorUI.projectSettings = new SettingsTab()
         EditorUI.projectSettings.updateInterface()
+    }})
+
+    // ----- Execute script -----
+    EditorUI.topmenu.add("Edit/Project/Execute Script", {callback: () => {
+        App.chooseFile((f) => {
+            try {
+                var code = App.readFile(f)
+                var func = Function(code)
+                func()
+            } catch(e) {
+                console.error(e)
+            }
+        })
     }})
     
     // ----- Add -----
