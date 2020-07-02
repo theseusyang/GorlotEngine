@@ -679,6 +679,10 @@ function parseObject(data, geometries, materials, textures)
 		}
 	}
 
+	if (data.nodes !== undefined) {
+		object.nodes = data.nodes
+	}
+
 	if (data.init !== undefined) {
 		object.init = data.init
 	}
