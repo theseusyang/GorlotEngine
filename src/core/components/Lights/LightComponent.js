@@ -37,19 +37,19 @@ class LightComponent extends Component {
 				EditorUI.form.addTitle("Directional Light")
 				EditorUI.form.addTitle("Shadow")
 
-				EditorUI.form.addString("Left", this.object.shadow.camera.left)
-				EditorUI.form.addString("Right", this.object.shadow.camera.right)
-				EditorUI.form.addString("Top", this.object.shadow.camera.top)
-				EditorUI.form.addString("Bottom", this.object.shadow.camera.bottom)
+				EditorUI.form.addNumber("Left", this.object.shadow.camera.left)
+				EditorUI.form.addNumber("Right", this.object.shadow.camera.right)
+				EditorUI.form.addNumber("Top", this.object.shadow.camera.top)
+				EditorUI.form.addNumber("Bottom", this.object.shadow.camera.bottom)
 
-				EditorUI.form.addString("Near", this.object.shadow.camera.near)
-				EditorUI.form.addString("Far", this.object.shadow.camera.far)
+				EditorUI.form.addNumber("Near", this.object.shadow.camera.near)
+				EditorUI.form.addNumber("Far", this.object.shadow.camera.far)
 
-				EditorUI.form.addString("Zoom", this.object.shadow.camera.zoom)
-				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y])
+				EditorUI.form.addNumber("Zoom", this.object.shadow.camera.zoom)
+				EditorUI.form.addNumber("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y])
 
-				EditorUI.form.addString("Bias", this.object.shadow.bias)
-				EditorUI.form.addString("Radius", this.object.shadow.radius)
+				EditorUI.form.addNumber("Bias", this.object.shadow.bias)
+				EditorUI.form.addNumber("Radius", this.object.shadow.radius)
 
 				EditorUI.form.addSeparator()
 			} else if (this.objectType === "Hemisphere") {
@@ -64,34 +64,34 @@ class LightComponent extends Component {
 				EditorUI.form.addTitle("Point Light")
 				EditorUI.form.addTitle("Shadow")
 
-				EditorUI.form.addString("Near", this.object.shadow.camera.near)
-				EditorUI.form.addString("Far", this.object.shadow.camera.far)
+				EditorUI.form.addNumber("Near", this.object.shadow.camera.near)
+				EditorUI.form.addNumber("Far", this.object.shadow.camera.far)
 				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y])
 
-				EditorUI.form.addString("Bias", this.object.shadow.bias)
-				EditorUI.form.addString("Radius", this.object.shadow.radius)
+				EditorUI.form.addNumber("Bias", this.object.shadow.bias)
+				EditorUI.form.addNumber("Radius", this.object.shadow.radius)
 
 				EditorUI.form.addSeparator()
 			} else if (this.objectType === "Spot") {
 				EditorUI.form.addTitle("Spot Light")
 
-				EditorUI.form.addSlider("Distance", this.object.distance, {min: 1, max: 100, step: 1})
-				EditorUI.form.addSlider("Angle", this.object.angle, {min: 0, max: 1.5, step: 0.1})
-				EditorUI.form.addSlider("Penumbra", this.object.penumbra, {min: 0, max: 1.5, step: 0.1})
-				EditorUI.form.addSlider("Decay", this.object.decay, {min: 0, max: 2, step: 0.1})
+				EditorUI.form.addNumber("Distance", this.object.distance)
+				EditorUI.form.addNumber("Angle", this.object.angle)
+				EditorUI.form.addNumber("Penumbra", this.object.penumbra)
+				EditorUI.form.addNumber("Decay", this.object.decay)
 
 				EditorUI.form.addSeparator()
 
 				EditorUI.form.addTitle("Shadow")
-				EditorUI.form.addString("Near", this.object.shadow.camera.near)
-				EditorUI.form.addString("Far", this.object.shadow.camera.far)
+				EditorUI.form.addNumber("Near", this.object.shadow.camera.near)
+				EditorUI.form.addNumber("Far", this.object.shadow.camera.far)
 				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y])
 
 
 				EditorUI.form.addSeparator()
 			}
 
-			EditorUI.form.addSlider("Intensity", this.object.intensity, {min: 0, max: 1, step: 0.01})
+			EditorUI.form.addNumber("Intensity", this.object.intensity)
 
 			EditorUI.form.addColor("Color", [this.object.color.r, this.object.color.g, this.object.color.b])
 

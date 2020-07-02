@@ -21,10 +21,10 @@ class CameraComponent extends Component {
 		EditorUI.form.addSeparator()
 
 		if (this.objectType === "Perspective") {
-			EditorUI.form.addSlider("FOV", Editor.selected_object.fov, {min: 1, max: 100, step: 1})
+			EditorUI.form.addNumber("FOV", Editor.selected_object.fov)
 			// TODO: A view from here and a set from view button
 		} else if (this.objectType === "Orthographic") {
-			EditorUI.form.addSlider("Size", Editor.selected_object.size, {min: 1, max: 10, step: 0.5})
+			EditorUI.form.addNumber("Size", Editor.selected_object.size)
 
 			var modeStr = [
 				{
@@ -35,7 +35,7 @@ class CameraComponent extends Component {
 				}
 			]
 
-			EditorUI.form.addSlider("Turn", Editor.selected_object.rotation.z, {min: -3.14, max: 3.14, step: 1.7})
+			EditorUI.form.addNumber("Turn", Editor.selected_object.rotation.z)
 			EditorUI.form.addList("Mode", modeStr, {height: 55, /*TODO: Set selected selected: "Resize Horizontal"*/})
 		}
 

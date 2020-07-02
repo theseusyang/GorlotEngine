@@ -145,6 +145,7 @@ class CodeEditor {
 		this.font_size = size
 		this.code.display.wrapper.style.fontSize = size + "px"
 		this.code.refresh()
+		Settings.code_font_size = this.font_size
 	}
 
 	updateInterface() {
@@ -152,7 +153,6 @@ class CodeEditor {
 	}
 
 	update() {
-
 		if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
 			if (Mouse.wheel !== 0) {
 				this.font_size -= Mouse.wheel/100

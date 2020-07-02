@@ -7,9 +7,9 @@ class SkyComponent extends Component {
 		super.initUI()
 
 		EditorUI.form.addCheckbox("Auto Update", Editor.selected_object.auto_update)
-		EditorUI.form.addString("Day duration(s)", Editor.selected_object.day_time)
-		EditorUI.form.addString("Time(s)", Editor.selected_object.time)
-		EditorUI.form.addString("Sun distance", Editor.selected_object.sun_distance)
+		EditorUI.form.addNumber("Day duration(s)", Editor.selected_object.day_time)
+		EditorUI.form.addNumber("Time(s)", Editor.selected_object.time)
+		EditorUI.form.addNumber("Sun distance", Editor.selected_object.sun_distance)
 	}
 
 	updateInfo(name, value, widget) {
