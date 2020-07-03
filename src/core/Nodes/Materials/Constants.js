@@ -101,6 +101,14 @@ function AddNode() {
 	return THREE.AddOperation
 }
 
+// Shading
+function SmoothShadingNode() {
+	return THREE.SmoothShading
+}
+function FlatShadingNode() {
+	return THREE.FlatShading
+}
+
 function registerMaterialNodeConstants() {
 	// Blending mode
 	LiteGraph.wrapFunctionAsNode("BlendingModes/NoBlending", NoBlendingNode, null, "number")
@@ -136,5 +144,7 @@ function registerMaterialNodeConstants() {
 	LiteGraph.wrapFunctionAsNode("Constants/Multiply", MultiplyNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("Constants/Mix", MixNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("Constants/Add", AddNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/SmoothShading", SmoothShadingNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/FlatShading", FlatShadingNode, null, "number")
 
 }

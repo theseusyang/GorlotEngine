@@ -29,7 +29,7 @@ class MaterialRenderer {
 		//this.scene.add(this.sprite)
 
 		this.scene.add(new PointLight(0x666666))
-		this.scene.add(new AmbientLight(0x444444))
+		this.scene.add(new AmbientLight(0x666666))
 	}
 
 	setSize(x, y) {

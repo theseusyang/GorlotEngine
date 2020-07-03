@@ -200,17 +200,18 @@ SetAlphaTestNode.prototype.onExecute = function() {
 	}
 }
 
-function FlatShadingNode() {
+function ShadingNode() {
 	this.addInput("Material", "Material")
-	this.addInput("Value", "Boolean")
+	this.addInput("Shading", "number")
 }
-FlatShadingNode.title = "Flat Shading"
-FlatShadingNode.prototype.onExecute = function() {
+ShadingNode.title = "Shading"
+ShadingNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
-	var v = this.getInputData(1)
+	var s = this.getInputData(1)
 
-	if (m !== undefined && v !== undefined) {
-		m.flatShading = v
+	if (m !== undefined && s !== undefined) {
+		m.shading = s
+		m.needsUpdate = true
 	}
 }
 
@@ -297,7 +298,7 @@ function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/SetBlendEquation", SetBlendEquationNode)
 	LiteGraph.registerNodeType("Material/SetBlendEquationAlpha", SetBlendEquationAlphaNode)
 	LiteGraph.registerNodeType("Material/SetAlphaTest", SetAlphaTestNode)
-	LiteGraph.registerNodeType("Material/FlatShading", FlatShadingNode)
+	LiteGraph.registerNodeType("Material/Shading", ShadingNode)
 	LiteGraph.registerNodeType("Material/AffectedByFog", AffectedByFogNode)
 	LiteGraph.registerNodeType("Material/SetPrecision", SetPrecisionNode)
 	LiteGraph.registerNodeType("Material/ShadowSide", ShadowSideNode)

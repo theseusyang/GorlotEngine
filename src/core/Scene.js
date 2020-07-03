@@ -126,6 +126,13 @@ class Scene extends THREE.Scene {
 		data.object.fog_far = this.fog_far
 		data.object.fog_mode = this.fog_mode
 
+		if (this.background !== null) {
+			data.object.background = {}
+			data.object.background.r = this.background.r
+			data.object.background.g = this.background.g
+			data.object.background.b = this.background.b
+		}
+
 		if (this.initial_camera !== null) {
 			data.object.initial_camera = this.initial_camera
 		}

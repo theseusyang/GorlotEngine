@@ -9357,31 +9357,33 @@ Inspector.prototype.addList = function(name, values, options)
 		selected = !!selected;
 
 		var item_style = null;
-		var icon
+		var icon = ""
 		var icon_style = ""
 		var li_element = document.createElement("li");
-		li_element.classList.add( 'item-' + LiteGUI.safeName(item_index) );
+		li_element.classList.add( 'item-' + LiteGUI.safeName(item_index) )
 		if( value != null )
 		{
 			if( value.constructor === String || value.constructor === Number || value.constructor === Boolean )
 			{
-				item_title = String(value);
+				item_title = String(value)
 			}
 			else if( value )
 			{
-				item_title = value.content || value.title || value.name || index;
-				item_style = value.style;
+				item_title = value.content || value.title || value.name || index
+				item_style = value.style
 				if (value.icon_style)
 					icon_style = value.icon_style
 				if(value.icon) {
 					if(typeof value.icon === "string") {
 						icon = "<img src='"+value.icon+"' class='icon' style='"+icon_style+"' /> ";
 					} else {
-						icon = "<img src='"+value.icon.src+"' class='icon' style='"+icon_style+"' />"
+						if(value.icon.src !== undefined) {
+							icon = "<img src='"+value.icon.src+"' class='icon' style='"+icon_style+"' />"
+						}
 					}
 				}
 				if(value.selected)
-					selected = true;
+					selected = true
 			}
 		}
 
