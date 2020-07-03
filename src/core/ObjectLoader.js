@@ -448,19 +448,19 @@ function parseObject(data, geometries, materials, textures)
 
 			object = new ParticleEmitter(texture)
 
-			var update = false
-
 			if (data.group !== undefined) {
+				var update_values = false
+
 				if(data.group.blending !== undefined) {
 					object.group.blending = data.group.blending
-					update = true
+					update_values = true
 				}
 				if (data.emitter.direction !== undefined) {
 					object.emitter.direction = data.emitter.direction
 				}
 			
 				// Update WebGL related attributes	
-				if (update) {
+				if (update_values) {
 					object.updateValues()
 				}
 			}
@@ -654,15 +654,7 @@ function parseObject(data, geometries, materials, textures)
 		}
 	}
 
-	// Set static and update transformation matrix if necessary
-	if (data.matrixAutoUpdate !== undefined) {
-		object.matrixAutoUpdate = data.matrixAutoUpdate
-		if (!object.matrixAutoUpdate) {
-			object.updateMatrix()
-			object.updateMatrixWorld()
-		}
-	}
-
+	// Visibility data
 	if(data.castShadow !== undefined)
 	{
 		object.castShadow = data.castShadow;
@@ -675,11 +667,14 @@ function parseObject(data, geometries, materials, textures)
 	{
 		object.visible = data.visible;
 	}
+
+	// Additional data
 	if(data.userData !== undefined)
 	{
 		object.userData = data.userData;
 	}
 
+	// Add children
 	if(data.children !== undefined)
 	{
 		for(var child in data.children)
@@ -706,6 +701,17 @@ function parseObject(data, geometries, materials, textures)
 		object.loop = data.loop
 	}
 
+	// Set static and update transformation matrix if necessary
+	if (data.matrixAutoUpdate !== undefined) {
+		object.matrixAutoUpdate = data.matrixAutoUpdate
+
+		if (!object.matrixAutoUpdate) {
+			object.updateMatrix()
+			object.updateMatrixWorld(true)
+		}
+	}
+
+	// LOD Objects
 	if(data.type === 'LOD')
 	{
 		var levels = data.levels;

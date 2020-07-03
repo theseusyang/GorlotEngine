@@ -124,6 +124,11 @@ class LeapHand extends THREE.Object3D {
 			var indicator_distance = []
 			var finger_joint = []
 
+			// Clear pose status list
+			for(var i = 0; i < this.pose.length; i++) {
+				this.pose[i] = true
+			}
+
 			// Fingers direction array
 			var finger_direction = []
 
@@ -279,9 +284,9 @@ class LeapHand extends THREE.Object3D {
 	}
 
 	addMesh(meshes) {
-		var mesh = new THREE.Mesh(this.geometry, this.material)
-		mesh.castShadow = true
-		mesh.receiveShadow = true
+		var mesh = new Model3D(this.geometry, this.material)
+		mesh.castShadow = this.castShadow
+		mesh.receiveShadow = this.receiveShadow
 		meshes.push(mesh)
 		return mesh
 	}
@@ -294,6 +299,17 @@ class LeapHand extends THREE.Object3D {
 		mesh.scale.set(bone.width/150, bone.width/150, bone.length/150)
 
 		this.add(mesh)
+	}
+
+	getMovement() {
+		// Get hand movement
+		var actual = this.data.gestures[0].position
+		var previous = this.data.gestures[0].startPosition
+
+		var vel_abs = new THREE.Vector3(actual[0] - previous[0], actual[1] - previous[1], actual[2] - previous[2])
+		vel_abs.divideScalar(this.data.currentFrameRate)
+
+		return vel_abs
 	}
 
 	toJSON(meta) {

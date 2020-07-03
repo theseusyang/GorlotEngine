@@ -56,8 +56,10 @@ class LightComponent extends Component {
 				EditorUI.form.addTitle("Hemisphere")
 
 				// TODO: Include jsColor here
-				EditorUI.form.addString("Ground Color", this.object.groundColor.getStyle())
-				EditorUI.form.addString("Sky Color", this.object.color.getStyle())
+				//EditorUI.form.addString("Ground Color", this.object.groundColor.getStyle())
+				//EditorUI.form.addString("Sky Color", this.object.color.getStyle())
+				EditorUI.form.addColor("Ground Color", [this.object.groundColor.r, this.object.groundColor.g, this.object.groundColor.b])
+				EditorUI.form.addColor("Sky Color", [this.object.color.r, this.object.color.g, this.object.color.b])
 
 				EditorUI.form.addSeparator()
 			} else if (this.objectType === "Point") {
@@ -132,9 +134,11 @@ class LightComponent extends Component {
 		} 
 
 		else if (name === "Ground Color") {
-			this.object.groundColor.setStyle(value)
+			//this.object.groundColor.setStyle(value)
+			this.object.groundColor.setRGB(value[0], value[1], value[2])
 		} else if (name === "Sky Color") {
-			this.object.color.setStyle(value)
+			//this.object.color.setStyle(value)
+			this.object.color.setRGB(value[0], value[1], value[2])
 		}
 
 		else if (name === "Bias") {

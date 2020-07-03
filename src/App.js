@@ -33,6 +33,7 @@ include("src/input/Mouse.js")
 include("src/core/ObjectLoader.js")
 include("src/core/MaterialLoader.js")
 
+include("src/core/MathUtils.js")
 include("src/core/ThreeExpand.js")
 include("src/core/Program.js")
 include("src/core/Scene.js")
