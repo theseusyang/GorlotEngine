@@ -33,7 +33,10 @@ include("src/editor/tabs/BlueprintsEditor.js")
 include("src/editor/UI.js")
 include("src/editor/Settings.js")
 
+include("src/editor/ui/components/File.js")
 include("src/editor/ui/components/AbsButton.js")
+
+include("src/editor/utils/MaterialRenderer.js")
 
 include("src/editor/ui/ObjectInspector.js")
 include("src/editor/ui/TopMenu.js")
@@ -111,6 +114,9 @@ Editor.initialize = function(canvas)
 	// Renderer and canvas
 	Editor.renderer = null
 	Editor.canvas = null
+
+	// Material renderer for material previews
+	Editor.material_renderer = new MaterialRenderer()
 
 	// Default material to be used when creating objects
 	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
@@ -201,6 +207,7 @@ Editor.initialize = function(canvas)
 //Update Editor
 Editor.update = function()
 {
+
 	Editor.block_camera_move = false;
 
 

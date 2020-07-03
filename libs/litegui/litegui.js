@@ -9357,8 +9357,10 @@ Inspector.prototype.addList = function(name, values, options)
 		selected = !!selected;
 
 		var item_style = null;
-		var icon = "";
+		var icon
 		var icon_style = ""
+		var li_element = document.createElement("li");
+		li_element.classList.add( 'item-' + LiteGUI.safeName(item_index) );
 		if( value != null )
 		{
 			if( value.constructor === String || value.constructor === Number || value.constructor === Boolean )
@@ -9371,8 +9373,13 @@ Inspector.prototype.addList = function(name, values, options)
 				item_style = value.style;
 				if (value.icon_style)
 					icon_style = value.icon_style
-				if(value.icon)
-					icon = "<img src='"+value.icon+"' class='icon' style='"+icon_style+"' /> ";
+				if(value.icon) {
+					if(typeof value.icon === "string") {
+						icon = "<img src='"+value.icon+"' class='icon' style='"+icon_style+"' /> ";
+					} else {
+						icon = "<img src='"+value.icon.src+"' class='icon' style='"+icon_style+"' />"
+					}
+				}
 				if(value.selected)
 					selected = true;
 			}
@@ -9381,8 +9388,6 @@ Inspector.prototype.addList = function(name, values, options)
 		var item_name = item_title;
 		item_name = item_name.replace(/<(?:.|\n)*?>/gm, ''); //remove html tags that could break the html
 
-		var li_element = document.createElement("li");
-		li_element.classList.add( 'item-' + LiteGUI.safeName(item_index) );
 		if( selected )
 			li_element.classList.add( 'selected' );
 		li_element.dataset["name"] = item_name;

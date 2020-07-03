@@ -250,13 +250,15 @@ EditorUI.addAsset = function(name, attachedTo) {
         var name = ins.name
     }
 
-    var obj = {
-        name: name,
-        icon: ins.icon,
-        attachedTo: ins,
-        style: "width: 60px; max-width: 60px; display: inline-block; text-align: center; margin-right: 10px",
-        icon_style: "width:50px; height: 50px;"
+    var img = document.createElement("img")
+    
+    if(Editor.material_renderer !== undefined) {    
+        Editor.material_renderer.renderMaterial(ins, img)
     }
+
+    var fil = new File(name)
+    fil.attachAsset(ins)
+    var obj = fil.getObject()
 
     if(EditorUI.asset_explorer_objects !== undefined) {
         EditorUI.asset_explorer_objects.push(obj)
@@ -266,7 +268,6 @@ EditorUI.addAsset = function(name, attachedTo) {
 }
 
 EditorUI.updateAssetExplorer = function() {
-
     if(EditorUI.asset_explorer_objects !== undefined) {
         EditorUI.asset_explorer_list.updateItems(EditorUI.asset_explorer_objects)
     }
