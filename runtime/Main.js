@@ -1,5 +1,6 @@
 function Main() {}
 
+// App to load
 Main.app = "app.json"
 
 // Initialize Main
@@ -28,11 +29,11 @@ Main.initialize = function(canvas) {
 	Main.renderer.shadowMap.type = THREE.PCFSoftShadowMap
 	Main.renderer.setSize(Main.canvas.width, Main.canvas.height)
 
-	// Main Camera
+
+	// Initialize program
 	Main.program.default_camera = new PerspectiveCamera(60, Main.canvas.width/Main.canvas.height, 0.1, 10000000)
 	Main.program.default_camera.position.set(0, 5, -5)
-
-	// Initialize scene
+	Main.program.renderer = Main.renderer
 	Main.program.initialize()
 	Main.program.resize(Main.canvas.width, Main.canvas.height)
 }

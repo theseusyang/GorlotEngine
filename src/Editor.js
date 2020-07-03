@@ -925,6 +925,7 @@ Editor.setState = function(state) {
 
 		// If no camera attached, attach camera
 		Editor.program_running.default_camera = Editor.camera
+		Editor.program_running.renderer = Editor.renderer
 
 		// Initialize scene
 		Editor.program_running.initialize()
