@@ -12,6 +12,7 @@ class MaterialEditor {
 			//console.log(self.material.nodes)
 			self.material = null
 			EditorUI.selectPreviousTab()
+			Editor.updateObjectViews()
 		}, callback: () => {
 			if(self.preview !== undefined) {
 				Mouse.canvas = self.preview
@@ -128,7 +129,7 @@ class MaterialEditor {
 
 			if (Mouse.buttonPressed(Mouse.LEFT)) {
 				var delta = new THREE.Quaternion()
-				delta.setFromEuler(new THREE.Euler(Mouse.pos_diff.y * 0.005, Mouse.pos_diff.x * 0.005, 0, 'XYZ'))
+				delta.setFromEuler(new THREE.Euler(Mouse.delta.y * 0.005, Mouse.delta.x * 0.005, 0, 'XYZ'))
 				this.obj.quaternion.multiplyQuaternions(delta, this.obj.quaternion)
 			}
 

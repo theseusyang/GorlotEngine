@@ -250,12 +250,6 @@ EditorUI.addAsset = function(name, attachedTo) {
         var name = ins.name
     }
 
-    var img = document.createElement("img")
-    
-    if(Editor.material_renderer !== undefined) {    
-        Editor.material_renderer.renderMaterial(ins, img)
-    }
-
     var fil = new File(name)
     fil.attachAsset(ins)
     var obj = fil.getObject()

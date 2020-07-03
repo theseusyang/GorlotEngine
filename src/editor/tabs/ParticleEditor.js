@@ -150,8 +150,8 @@ class ParticleEditor {
 		if (Mouse.insideCanvas()) {
 			// Move camera
 			if (Mouse.buttonPressed(Mouse.LEFT)) {
-				this.camera_rotation.x -= 0.003 * Mouse.pos_diff.x
-				this.camera_rotation.y -= 0.003 * Mouse.pos_diff.y
+				this.camera_rotation.x -= 0.003 * Mouse.delta.x
+				this.camera_rotation.y -= 0.003 * Mouse.delta.y
 
 				// Limit Vertical Rotation to 90 degrees
 				var pid2 = 1.57

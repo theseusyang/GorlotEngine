@@ -26,7 +26,7 @@ Keyboard.initialize = function()
 	}
 }
 
-//Update key pressed sync
+//Update key flags synchronously
 Keyboard.update = function()
 {
 	var end = 0;

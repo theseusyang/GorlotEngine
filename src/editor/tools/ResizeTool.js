@@ -1,4 +1,4 @@
-class ResizeTool extends THREE.Scene {
+class ResizeTool extends THREE.Object3D {
 	constructor() {
 		super()
 

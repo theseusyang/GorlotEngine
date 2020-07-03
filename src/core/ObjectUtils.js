@@ -11,6 +11,8 @@ ObjectUtils.getMaterials = function(obj, materials) {
 	// Add materials from children and call func for them
 	for(var i = 0; i < obj.children.length; i++) {
 		var child = obj.children[i]
+
+		// Check if material is mesh or sprite
 		if (child instanceof THREE.Mesh || child instanceof THREE.Sprite) {
 			var material = child.material
 			if (materials.indexOf(material) === -1) {
@@ -21,6 +23,32 @@ ObjectUtils.getMaterials = function(obj, materials) {
 	}
 
 	return materials
+}
+
+// Get all textures in object
+ObjectUtils.getTextures = function(obj, textures) {
+	// If undefined, create new array to store materials
+	if (textures === undefined) {
+		textures = []
+	}
+
+	// Add textures from children and call func for them
+	for(var i = 0; i < obj.children.length; i++) {
+		var child = obj.children[i]
+		if (child.material !== undefined) {
+			// TODO: This
+		} else if (child instanceof ParticleEmitter) {
+			var texture = child.group.texture
+
+			if (textures.indexOf(texture) === -1) {
+				textures.push(texture)
+			}
+		}
+
+		ObjectUtils.getTextures(child, textures)
+	}
+
+	return textures
 }
 
 // Get object scene

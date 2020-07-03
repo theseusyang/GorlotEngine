@@ -1,4 +1,4 @@
-class MoveTool extends THREE.Scene {
+class MoveTool extends THREE.Object3D {
 	constructor() {
 		super()
 
@@ -16,47 +16,60 @@ class MoveTool extends THREE.Scene {
 		this.material_yellow = new THREE.MeshBasicMaterial({color: 0xffff00});
 
 		//X
-		var geometry = new THREE.CylinderGeometry(0.015, 0.015, 1, 5);
-		var mesh = new THREE.Mesh(geometry, this.material_red);
-		mesh.position.set(0, 0.5, 0);
+		var geometry = new THREE.CylinderGeometry(0.015, 0.015, 1, 5)
+		var mesh = new THREE.Mesh(geometry, this.material_red)
+		mesh.matrixAutoUpdate = false
+		mesh.position.set(0, 0.5, 0)
+		mesh.updateMatrix()
 		this.x.add(mesh);
-		geometry = new THREE.CylinderGeometry(0, 0.05, 0.15, 8);
-		mesh = new THREE.Mesh(geometry, this.material_red);
-		mesh.position.set(0, 1, 0);
-		this.x.add(mesh);
-		this.x.rotateOnAxis(new THREE.Vector3(0,0,1) , -pid2);
-		this.x.updateMatrix();
+		geometry = new THREE.CylinderGeometry(0, 0.05, 0.15, 8)
+		mesh = new THREE.Mesh(geometry, this.material_red)
+		mesh.matrixAutoUpdate = false
+		mesh.position.set(0, 1, 0)
+		mesh.updateMatrix()
+		this.x.add(mesh)
+		this.x.rotateOnAxis(new THREE.Vector3(0,0,1) , -pid2)
+		this.x.updateMatrix()
 
 		//Y
-		geometry = new THREE.CylinderGeometry(0.015, 0.015, 1, 5);
-		mesh = new THREE.Mesh(geometry, this.material_green);
-		mesh.position.set(0, 0.5, 0);
-		this.y.add(mesh);
-		geometry = new THREE.CylinderGeometry(0, 0.05, 0.15, 8);
-		mesh = new THREE.Mesh(geometry, this.material_green);
-		mesh.position.set(0, 1, 0);
-		this.y.add(mesh);
+		geometry = new THREE.CylinderGeometry(0.015, 0.015, 1, 5)
+		mesh = new THREE.Mesh(geometry, this.material_green)
+		mesh.matrixAutoUpdate = false
+		mesh.position.set(0, 0.5, 0)
+		mesh.updateMatrix()
+		this.y.add(mesh)
+		geometry = new THREE.CylinderGeometry(0, 0.05, 0.15, 8)
+		mesh = new THREE.Mesh(geometry, this.material_green)
+		mesh.matrixAutoUpdate = false
+		mesh.position.set(0, 1, 0)
+		mesh.updateMatrix()
+		this.y.add(mesh)
 
 		//Z
-		geometry = new THREE.CylinderGeometry(0.01, 0.01, 1, 5);
-		mesh = new THREE.Mesh(geometry, this.material_blue);
-		mesh.position.set(0, 0.5, 0);
-		this.z.add(mesh);
-		geometry = new THREE.CylinderGeometry(0, 0.05, 0.15, 8);
-		mesh = new THREE.Mesh(geometry, this.material_blue);
-		mesh.position.set(0, 1, 0);
-		this.z.add(mesh);
-		this.z.rotateOnAxis(new THREE.Vector3(1,0,0), pid2);
-		this.z.updateMatrix();
+		geometry = new THREE.CylinderGeometry(0.01, 0.01, 1, 5)
+		mesh = new THREE.Mesh(geometry, this.material_blue)
+		mesh.matrixAutoUpdate = false
+		mesh.position.set(0, 0.5, 0)
+		mesh.updateMatrix()
+		this.z.add(mesh)
+		geometry = new THREE.CylinderGeometry(0, 0.05, 0.15, 8)
+		mesh = new THREE.Mesh(geometry, this.material_blue)
+		mesh.position.set(0, 1, 0)
+		mesh.updateMatrix()
+		this.z.add(mesh)
+		this.z.rotateOnAxis(new THREE.Vector3(1,0,0), pid2)
+		this.z.updateMatrix()
 	
 		//Center
-		geometry = new THREE.BoxGeometry(0.1, 0.1, 0.015);
-		this.block = new THREE.Mesh(geometry, this.material_yellow);
-	
+		geometry = new THREE.BoxGeometry(0.1, 0.1, 0.015)
+		this.block = new THREE.Mesh(geometry, this.material_yellow)
+		this.block.matrixAutoUpdate = false
+
 		//Add to super
-		this.add(this.x);
-		this.add(this.y);
-		this.add(this.z);
+		this.add(this.x)
+		this.add(this.y)
+		this.add(this.z)
+		this.add(this.block)
 
 		this.x.updateMatrix()
 		this.x.matrixAutoUpdate = false
@@ -64,8 +77,6 @@ class MoveTool extends THREE.Scene {
 		this.y.matrixAutoUpdate = false
 		this.z.updateMatrix()
 		this.z.matrixAutoUpdate = false
-
-		this.add(this.block);
 	}
 
 	highlightSelectedComponents(raycaster) {

@@ -3,16 +3,16 @@ function Mouse(){}
 //Mouse Atached to camera
 Mouse.initialize = function()
 {
-	//Mouse Position Relative to camera
-	Mouse.raw_pos = new THREE.Vector2(0,0);
-	Mouse.raw_movement = new THREE.Vector2(0,0);
-	Mouse.raw_updated = false;
+	// Mouse raw data
+	Mouse.raw_pos = new THREE.Vector2(0,0)
+	Mouse.raw_movement = new THREE.Vector2(0,0)
+	Mouse.raw_updated = false
     Mouse.raw_wheel = 0
     Mouse.raw_wheel_updated = false
 
     // Mouse position and scroll speed
-	Mouse.pos = new THREE.Vector2(0,0);
-	Mouse.pos_diff = new THREE.Vector2(0,0);
+	Mouse.pos = new THREE.Vector2(0,0)
+	Mouse.delta = new THREE.Vector2(0,0)
     Mouse.wheel = 0
 
 	//Calculate coordinates relative to canvas
@@ -27,11 +27,20 @@ Mouse.initialize = function()
 		Mouse.keys.push(new Key())
 	}
 
-	//Mouse Wheel (Chrome only)
-	document.onmousewheel = function(event)
-	{
-	    Mouse.raw_wheel = event.deltaY
-        Mouse.raw_wheel_updated = true
+	// Mouse Scroll Wheel
+	if(document.onmousewheel !== undefined) {
+		// Chrome, edge
+		document.onmousewheel = function(event)
+		{
+		    Mouse.raw_wheel = event.deltaY
+    	    Mouse.raw_wheel_updated = true
+    	}
+    } else if (document.addEventListener !== undefined) {
+    	// Firefox
+    	document.addEventListener("DOMMouseScroll", (e) => {
+    		Mouse.raw_wheel = e.detail * 30
+    		Mouse.raw_wheel_updated = true
+    	})
     }
 
 	//Mouse Move Position
@@ -39,25 +48,25 @@ Mouse.initialize = function()
 	{
 		if(Mouse.canvas !== null)
 		{
-			var rect = Mouse.canvas.getBoundingClientRect();
-			Mouse.updatePosition(event.clientX - rect.left, event.clientY - rect.top, event.movementX, event.movementY);
+			var rect = Mouse.canvas.getBoundingClientRect()
+			Mouse.updatePosition(event.clientX - rect.left, event.clientY - rect.top, event.movementX, event.movementY)
 		}
 		else
 		{
-			Mouse.updatePosition(event.clientX, event.clientY, event.movementX, event.movementY);
+			Mouse.updatePosition(event.clientX, event.clientY, event.movementX, event.movementY)
 		}
 	}
 
 	//Mouse Button Down
 	document.onmousedown = function(event)
 	{
-		Mouse.updateKey(event.which-1, Key.KEY_DOWN);
+		Mouse.updateKey(event.which-1, Key.KEY_DOWN)
 	}
 
 	//Mouse Button Up
 	document.onmouseup = function(event)
 	{
-		Mouse.updateKey(event.which-1, Key.KEY_UP);
+		Mouse.updateKey(event.which-1, Key.KEY_UP)
 	}
 }
 
@@ -144,8 +153,8 @@ Mouse.update = function()
 	//Update Mouse Position if needed
 	if(Mouse.raw_pos_updated)
 	{
-		Mouse.pos_diff.x = Mouse.raw_movement.x;
-		Mouse.pos_diff.y = Mouse.raw_movement.y;
+		Mouse.delta.x = Mouse.raw_movement.x;
+		Mouse.delta.y = Mouse.raw_movement.y;
 		Mouse.raw_movement.set(0,0);
 
 		Mouse.pos.x = Mouse.raw_pos.x;
@@ -155,15 +164,14 @@ Mouse.update = function()
 	}
 	else
 	{
-		Mouse.pos_diff.x = 0;
-		Mouse.pos_diff.y = 0;
+		Mouse.delta.x = 0;
+		Mouse.delta.y = 0;
 	}
 }
 
 //Return string with mouse position
 Mouse.toString = function()
 {
-	return "Pos:" + Mouse.pos.x + "," + Mouse.pos.y + " Diff:" + Mouse.pos_diff.toString() + "\n   Left: " + Mouse.keys[0].toString() +
-		"\n   Middle: " + Mouse.keys[1].toString() + "\n   Right: " + Mouse.keys[2].toString();
+	return `Pos: ${Mouse.pos.x},${Mouse.pos.y},${Mouse.pos.z}. Diff: ${Mouse.delta.toString()}.\nLeft: ${Mouse.keys[0].toString()}\nMiddle: ${Mouse.keys[1].toString()}\nRight: ${Mouse.keys[2].toString()}`
 }
 

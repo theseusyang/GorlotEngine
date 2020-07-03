@@ -19,6 +19,8 @@ include("libs/leap/leap-0.6.4.min.js")
 include("libs/cannon/cannon.js")
 include("libs/cannon/CannonDebugRenderer.js")
 
+include("libs/webvr/webvr-polyfill.js")
+
 include("libs/stats.min.js")
 include("libs/opentype.min.js")
 include("libs/jszip.min.js")
@@ -138,17 +140,6 @@ App.initialize = function(main)
 	App.componentManager.addComponent(new Text3DComponent(), true)
 	App.componentManager.addComponent(new LightComponent(), true)
 
-	//Stats tool
-	App.stats = new Stats();
-	App.stats.setMode(0);
-	App.stats.domElement.style.position = "absolute";
-	App.stats.domElement.style.left = "0px";
-	App.stats.domElement.style.top = "0px";
-	App.stats.domElement.style.zIndex = "10000"
-	App.stats.domElement.style.opacity = "0.7"
-	App.stats.domElement.style.pointerEvents = "none"
-	document.body.appendChild(App.stats.domElement);
-
 	//Init Input
 	Keyboard.initialize();
 	Mouse.initialize();
@@ -257,19 +248,6 @@ App.loadMain = function(main)
 	App.main.initialize();
 }
 
-// Show stats
-App.showStats = function(value)
-{
-	if(value === true)
-	{
-		App.stats.domElement.style.visibility = "visible";
-	}
-	else
-	{
-		App.stats.domElement.style.visibility = "hidden";
-	}
-}
-
 // Check if WebVR is available
 App.webvrAvailable = function() {
 	return (navigator.getVRDisplays !== undefined)
@@ -302,8 +280,6 @@ App.loop = function()
 	//Prepare next frame render
 	requestAnimationFrame(App.loop);
 
-	App.stats.begin();
-
 	//Update Input Values
 	Mouse.update();
 	Keyboard.update()
@@ -316,7 +292,6 @@ App.loop = function()
 	App.main.update();
 	App.main.draw();
 
-	App.stats.end();
 }
 
 //Called every time page is resized
