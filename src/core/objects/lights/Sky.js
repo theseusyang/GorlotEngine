@@ -6,7 +6,7 @@ class Sky extends THREE.Mesh {
 		if(hemisphere !== undefined) {
 			this.hemisphere = hemisphere
 		} else {
-			this.hemisphere = new HemisphereLight(0xffffff, 0xffffff, 0.3)
+			this.hemisphere = new HemisphereLight(0xffffff, 0xffffff, 0.4)
 			this.hemisphere.color.setHSL(0.6, 1, 0.6)
 			this.hemisphere.groundColor.setHSL(0.095, 1, 0.75)
 			this.hemisphere.position.set(0, 500, 0)
@@ -17,7 +17,7 @@ class Sky extends THREE.Mesh {
 		if (sun !== undefined) {
 			this.sun = sun
 		} else {
-			this.sun = new DirectionalLight(0xffffaa, 0.3)
+			this.sun = new DirectionalLight(Sky.sun_color, 0.3)
 			this.sun.castShadow = true
 			this.sun.name = "sun"
 		}
@@ -203,11 +203,51 @@ class Sky extends THREE.Mesh {
 			this.material.uniforms.top_color.value.setRGB(Sky.color_top[3].r, Sky.color_top[3].g, Sky.color_top[3].b);
 			this.material.uniforms.bottom_color.value.setRGB(Sky.color_bottom[3].r, Sky.color_bottom[3].g, Sky.color_bottom[3].b);
 		}
+
+		// Sun / Moon colour
+		if (time < 0.20) {
+			this.sun.color.setHex(Sky.moon_color)
+		} else if (time < 0.30) {
+			var t = (time - 0.20) * 10
+			var f = 1 - t
+
+			if (t < 0.5) {
+				var f = 2 - t * 2
+				var f = 1 - t
+				this.sun.intensity = f * 0.3
+				this.sun.color.setHex(Sky.moon_color)
+			} else {
+				t = t * 2
+				this.sun.intensity = t * 0.3
+				this.sun.color.setHex(Sky.sun_color)
+			}
+		} else if (time < 0.70) {
+			this.sun.color.setHex(Sky.sun_color)
+		} else if (time < 0.80) {
+			var t = (time - 0.70) * 10
+
+			if (t < 0.5) {
+				var f = 2 - t * 2
+				this.sun.intensity = f * 0.3
+				this.sun.color.setHex(Sky.sun_color)
+			} else {
+				t = t * 2
+				this.sun.intensity = t * 0.3
+				this.sun.color.setHex(Sky.moon_color)
+			}
+		} else {
+			this.sun.color.setHex(Sky.moon_color)
+		}
 	
 		//Update sun position
-		var rotation = (Sky.pi2 * time) - Sky.pid2;
-		this.sun.position.x = this.sun_distance * Math.cos(rotation);
-		this.sun.position.y = this.sun_distance * Math.sin(rotation);
+		var rotation = (Sky.pi2 * time) - Sky.pid2
+		if (time > 0.25 && time < 0.75) {
+			this.sun.position.x = this.sun_distance * Math.cos(rotation)
+			this.sun.position.y = this.sun_distance * Math.sin(rotation)
+		} else {
+			this.sun.position.x = this.sun_distance * Math.cos(rotation + Math.PI)
+			this.sun.position.y = this.sun_distance * Math.sin(rotation + Math.PI)
+		}
 	}
 
 	toJSON(meta) {
@@ -329,6 +369,8 @@ class Sky extends THREE.Mesh {
 Sky.pi2 = Math.PI * 2
 Sky.pid2 = Math.PI / 2
 
-//Sky color (morning, noon, afternoon, nigh)
+//Sky color (morning, noon, afternoon, night)
 Sky.color_top = [new THREE.Color(0x77b3fb), new THREE.Color(0x0076ff), new THREE.Color(0x035bb6), new THREE.Color(0x002439)];
 Sky.color_bottom = [new THREE.Color(0xebece6), new THREE.Color(0xffffff), new THREE.Color(0xfee7d7), new THREE.Color(0x0065a7)];
+Sky.sun_color = 0xffffaa
+Sky.moon_color = 0x8888ff
