@@ -1,12 +1,14 @@
 function Main() {}
 
+Main.app = "app.json"
+
 // Initialize Main
 Main.initialize = function(canvas) {
 	// Set mouse lock false
 	App.setMouseLock(false)
 
 	// Main program and scene
-	Main.program = Main.loadProgram("app.json")
+	Main.program = Main.loadProgram(Main.app)
 
 	// Renderer and canvas
 	Main.canvas = document.createElement("canvas")

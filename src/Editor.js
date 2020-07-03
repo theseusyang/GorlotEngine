@@ -59,7 +59,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Fri 03 Jul 2020 16:50:10"
+Editor.TIMESTAMP = "Fri 03 Jul 2020 18:38:44"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -118,7 +118,7 @@ Editor.initialize = function(canvas)
 	Editor.material_renderer = new MaterialRenderer()
 
 	// Default material to be used when creating objects
-	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
+	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 3})
 	Editor.default_material.name = "default"
 
 	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff})
@@ -962,12 +962,12 @@ Editor.setRenderCanvas = function(canvas) {
 
 // Initialize the renderer
 Editor.initializeRenderer = function(canvas) {
-	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true})
+	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: Settings.renderer_antialiasing})
 	Editor.renderer.autoClear = false
 
 	// Enable shadow maps
-	Editor.renderer.shadowMap.enabled = true
-	Editor.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+	Editor.renderer.shadowMap.enabled = Settings.renderer_shadows
+	Editor.renderer.shadowMap.type = Settings.renderer_shadows_type
 	Editor.renderer.setSize(canvas.width, canvas.height)
 }
 

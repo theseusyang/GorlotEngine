@@ -75,7 +75,7 @@ class AddMenuWindow {
 			},
 			{
 				"name": "Leap Hand",
-				"icon": ""
+				"icon": "data/icons/hw/leap.png"
 			},
 			{
 				"name": "Script",

@@ -18,7 +18,7 @@ class MaterialRenderer {
 		// Material Renderer Scene
 		this.scene = new Scene()
 
-		this.obj = new Model3D(new THREE.SphereBufferGeometry(1, 64, 64), null)
+		this.obj = new Model3D(new THREE.SphereBufferGeometry(1, 32, 32), null)
 		this.obj.position.set(0, 0, -1.5)
 		this.obj.visible = false
 		this.scene.add(this.obj)

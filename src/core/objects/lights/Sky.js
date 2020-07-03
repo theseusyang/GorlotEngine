@@ -1,27 +1,21 @@
 class Sky extends THREE.Mesh {
-	constructor(auto_update, day_time, sun_distance, time, hemisphere, sun) {
+	constructor(auto_update, day_time, sun_distance, time) {
 		super()
 
 		// Hemisphere Light
-		if(hemisphere !== undefined) {
-			this.hemisphere = hemisphere
-		} else {
-			this.hemisphere = new HemisphereLight(0xffffff, 0xffffff, 0.4)
-			this.hemisphere.color.setHSL(0.6, 1, 0.6)
-			this.hemisphere.groundColor.setHSL(0.095, 1, 0.75)
-			this.hemisphere.position.set(0, 500, 0)
-			this.hemisphere.name = "horizon"
-		}
+		this.hemisphere = new HemisphereLight(0xffffff, 0xffffff, 0.4)
+		this.hemisphere.color.setHSL(0.6, 1, 0.6)
+		this.hemisphere.groundColor.setHSL(0.095, 1, 0.75)
+		this.hemisphere.position.set(0, 500, 0)
+		this.hemisphere.name = "horizon"
+		this.hemisphere.hidden = true
 
 		// Directional sun light
-		if (sun !== undefined) {
-			this.sun = sun
-		} else {
-			this.sun = new DirectionalLight(Sky.sun_color, 0.3)
-			this.sun.castShadow = true
-			this.sun.name = "sun"
-		}
-
+		this.sun = new DirectionalLight(Sky.sun_color, 0.3)
+		this.sun.castShadow = true
+		this.sun.name = "sun"
+		this.sun.hidden = true
+		
 		// Sky geometry and material
 		var vertex = `
 			varying vec3 vWorldPosition;

@@ -79,31 +79,40 @@ EditorUI.updateHierarchy = function() {
         EditorUI.hierarchy.updateTree({id: Editor.program.name, attachedTo: Editor.program, children: []})
     
         Editor.program.children.forEach((item, index) => {
-            var it = EditorUI.hierarchy.insertItem({id: Editor.program.children[index].name, attachedTo: Editor.program.children[index]})
-            
-            it.addEventListener("contextmenu", (e) => {
-                return EditorUI.hierarchyContext(e, {item: it, data: it.data})
-            })
-    
-            if(Editor.program.children[index].children.length > 0){
-                EditorUI.addChildrenToHierarchy(Editor.program.children[index], Editor.program.children[index].name)
+            var obj = Editor.program.children[index]
+            var name = obj.name
+
+            if(!obj.hidden) {
+                var it = EditorUI.hierarchy.insertItem({id: name, attachedTo: obj})
+                
+                it.addEventListener("contextmenu", (e) => {
+                    return EditorUI.hierarchyContext(e, {item: it, data: it.data})
+                })
+        
+                if(Editor.program.children[index].children.length > 0){
+                    EditorUI.addChildrenToHierarchy(obj, name)
+                }
             }
+
         })
     }
 }
 
 EditorUI.addChildrenToHierarchy = function(object, parent) {
-    object.children.forEach((v, i) => {
+
+object.children.forEach((v, i) => {
+    if(!object.children[i].hidden) {
         var it = EditorUI.hierarchy.insertItem({id: object.children[i].name, attachedTo: object.children[i]}, parent)
         
         it.addEventListener("contextmenu", (e) => {
             return EditorUI.hierarchyContext(e, {item: it, data: it.data})
         })
-
         if (object.children[i].children.length > 0) {
             EditorUI.addChildrenToHierarchy(object.children[i], object.children[i].name, parent)
         }
-    })
+    }
+})
+
 }
 
 EditorUI.hierarchyContext = function(e, data) {

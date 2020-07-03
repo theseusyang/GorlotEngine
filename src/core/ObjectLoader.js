@@ -632,6 +632,10 @@ function parseObject(data, geometries, materials, textures)
 		object.name = data.name;
 	}
 
+	if (data.hidden !== undefined) {
+		object.hidden = data.hidden
+	}
+
 	// Get or generate transformation matrix if necessary
 	if(data.matrix !== undefined)
 	{
