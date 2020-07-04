@@ -77,6 +77,26 @@ class Program extends THREE.Object3D {
 		}
 	}
 
+	// Add material to materials list
+	addMaterial(material) {
+		// TODO: This
+	}
+
+	// Remove material from materials list (also receives default, used to replace)
+	removeMaterial(material, default_material) {
+		// TODO: This
+	}
+
+	// Add texture to texture list
+	addTexture(texture) {
+		// TODO: This
+	}
+
+	// Remove texture from textures list
+	removeTexture(texture, default_texture) {
+		// TODO: This
+	}
+
 	setScene(scene) {
 		if (scene instanceof Scene) {
 			this.scene = scene
@@ -88,6 +108,7 @@ class Program extends THREE.Object3D {
 		}
 	}
 
+	// Set as initial scene (from uuid reference)
 	setInitialScene(scene) {
 		this.initial_scene = scene.uuid
 	}
@@ -154,6 +175,7 @@ class Program extends THREE.Object3D {
 		}
 	}
 
+	// Add children to program (Only Scenes allowed)
 	add(scene) {
 		if (scene instanceof Scene) {
 			this.children.push(scene)
@@ -166,8 +188,8 @@ class Program extends THREE.Object3D {
 		}
 	}
 
+	// Clone program, keep uuid and everything else
 	clone() {
-		// Clone program, keep uuid and everything else
 		return new ObjectLoader().parse(this.toJSON())
 	}
 

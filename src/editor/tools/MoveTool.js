@@ -71,6 +71,7 @@ class MoveTool extends THREE.Object3D {
 		this.add(this.z)
 		this.add(this.block)
 
+		// Disable matrix auto update
 		this.x.updateMatrix()
 		this.x.matrixAutoUpdate = false
 		this.y.updateMatrix()

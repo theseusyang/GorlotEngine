@@ -8,6 +8,7 @@ function EditorUIAssetExplorer() {
 
     EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
 
+    /// ----- OBJECTS -----
     EditorUI.asset_explorer_menu.add("Import/Objects/Wavefront", {callback: () => {
         App.chooseFile((fname) => {
             try {
@@ -83,16 +84,15 @@ function EditorUIAssetExplorer() {
         }, ".fbx")
     }})
     
+    /// ----- RESOURCES -----
     EditorUI.asset_explorer_menu.add("Import/Resources/Texture", {callback: () => {
-        App.chooseFile((fname) => {
-
+        App.chooseFile((f) => {
             try {
-                var map = new Texture(fname)
-
-                var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
-                var sprite = new Sprite(material)
-                Editor.addToActualScene(sprite)
-            } catch(e) {console.error("Error importing texture: " + e)}
+                var texture = new Texture(f)
+                // TODO: This
+            } catch(e) {
+                console.error(`Error loading texture\n${e}`)
+            }
         }, "image/*")
     }})
 

@@ -54,6 +54,7 @@ class ResizeTool extends THREE.Object3D {
 		geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
 		this.block = new THREE.Mesh(geometry, this.material_yellow);
 	
+		// Disable auto matrix update
 		this.x.updateMatrix()
 		this.x.matrixAutoUpdate = false
 		this.y.updateMatrix()
