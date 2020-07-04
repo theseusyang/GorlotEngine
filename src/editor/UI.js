@@ -19,7 +19,7 @@ EditorUI.form
 EditorUI.bot_tabs
 EditorUI.asset_explorer_tab
 
-EditorUI.assetEx_height = 226
+EditorUI.assetEx_height = 256
 EditorUI.ins = null
 
 // Areas

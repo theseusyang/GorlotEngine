@@ -5,7 +5,11 @@ class Audio extends THREE.Audio {
 		this.name = "audio"
 		this.type = "Audio"
 
-		this.autoplay = false
+		this.autoplay = true
+		this.playbackRate = 1
+		this.startTime = 0
+		this.source.loop = true
+
 		this.file = "data/test.ogg"
 
 		this.components = []
@@ -13,6 +17,7 @@ class Audio extends THREE.Audio {
 
 		this.defaultComponents.push(new ElementComponent())
 		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new AudioComponent())
 	}
 
 	addComponent(compo) {
@@ -22,14 +27,16 @@ class Audio extends THREE.Audio {
 	}
 
 	initialize() {
-		// Load audio file
 		var self = this
-		var loader = new THREE.AudioLoader()
-		loader.load(this.file, function(buffer) {
-			self.setBuffer(buffer)
-			if (self.autoplay) {
-				self.play()
-			}
+
+		// Load audio file
+		var loader = new THREE.XHRLoader(this.manager)
+		loader.setResponseType("arraybuffer")
+		loader.load(this.file, (b) => {
+			var context = THREE.AudioContext
+			context.decodeAudioData(b, (audioBuffer) => {
+				self.setBuffer(audioBuffer)
+			})
 		})
 
 		// Initialize children
@@ -39,14 +46,22 @@ class Audio extends THREE.Audio {
 	}
 
 	update() {
+		// Update children
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].update()
 		}
 	}
 
-	stop() {
+	// Dispose music
+	dispose() {
+		if (this.isPlaying) {
+			this.stop()
+			this.disconnect()
+		}
+
+		// Dispose children
 		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
+			this.children[i].dispose()
 		}
 	}
 
@@ -54,9 +69,10 @@ class Audio extends THREE.Audio {
 		// Create JSON for object
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
-		data.autoplay = this.autoplay
-		data.startTime = this.startTime
-		data.playbackRate = this.playbackRate
+		data.object.autoplay = this.autoplay
+		data.object.startTime = this.startTime
+		data.object.playbackRate = this.playbackRate
+		data.object.loop = this.source.loop
 
 		return data
 	}

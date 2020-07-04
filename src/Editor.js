@@ -121,8 +121,8 @@ Editor.initialize = function(canvas)
 	// Material renderer for material previews
 	Editor.material_renderer = new MaterialRenderer()
 
-	// Default material to be used when creating objects
-	Editor.default_material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 3})
+	// Default materials to be used when creating objects
+	Editor.default_material = new MeshPhongMaterial()
 	Editor.default_material.name = "default"
 
 	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff})
@@ -132,9 +132,9 @@ Editor.initialize = function(canvas)
 	EditorUI.Initialize();
 
 	//Debug Elements
-	Editor.tool_scene = new THREE.Scene();
-	Editor.tool_scene_top = new THREE.Scene();
-	Editor.cannon_renderer = new THREE.CannonDebugRenderer(Editor.tool_scene, Editor.program.scene.world);
+	Editor.tool_scene = new THREE.Scene()
+	Editor.tool_scene_top = new THREE.Scene()
+	Editor.cannon_renderer = new THREE.CannonDebugRenderer(Editor.tool_scene, Editor.program.scene.world)
 
 	// Raycaster
 	Editor.raycaster = new THREE.Raycaster()
@@ -143,20 +143,25 @@ Editor.initialize = function(canvas)
 	Editor.setRenderCanvas(EditorUI.canvas.element)
 
 	//Editor Camera
-	Editor.default_camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.01, 1000000);
-	Editor.default_camera.position.set(0, 5, -10);
+	Editor.default_camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.01, 1000000)
+	Editor.default_camera.position.set(0, 5, -10)
 	Editor.camera = Editor.default_camera
-	Editor.camera_rotation = new THREE.Vector2(0,0);
-	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
+	Editor.camera_rotation = new THREE.Vector2(0,0)
+	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
 
 	//Update interface
 	EditorUI.updateInterface();
 
 	//Grid and axis helpers
-	Editor.grid_helper = new THREE.GridHelper(200, 5);
-	Editor.tool_scene.add(Editor.grid_helper);
-	Editor.axis_helper = new THREE.AxisHelper(100);
-	Editor.tool_scene.add(Editor.axis_helper);
+	Editor.grid_helper = new THREE.GridHelper(500, 200)
+	Editor.grid_helper.material.depthWrite = false
+	Editor.grid_helper.visible = Settings.grid_enabled
+	Editor.tool_scene.add(Editor.grid_helper)
+
+	Editor.axis_helper = new THREE.AxisHelper(500)
+	Editor.axis_helper.material.depthWrite = false
+	Editor.axis_helper.visible = Settings.axis_enabled
+	Editor.tool_scene.add(Editor.axis_helper)
 
 	//Box helper
 	Editor.box_helper = new THREE.BoxHelper();
@@ -357,37 +362,37 @@ Editor.update = function()
 				//Resize mode
 				else if(Editor.tool_mode === Editor.MODE_RESIZE)
 				{
-					var speed = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/1000
-					var scale = Editor.selected_object.scale
+					var scale = Editor.selected_object.scale.clone()
+					scale.multiplyScalar(0.01)
 
 					if(Editor.editing_object_args.center) {
-						var size = (Mouse.delta.x - Mouse.delta.y) * speed/2
+						var size = (Mouse.delta.x - Mouse.delta.y)
 
 						Editor.selected_object.scale.x += size * scale.x
 						Editor.selected_object.scale.y += size * scale.y
 						Editor.selected_object.scale.z += size * scale.z
 					} else if(Editor.editing_object_args.x)
 					{
-						Editor.selected_object.scale.x -= Mouse.delta.y * speed * Math.sin(Editor.camera_rotation.x) * scale.x
-						Editor.selected_object.scale.x -= Mouse.delta.x * speed * Math.cos(Editor.camera_rotation.x) * scale.x
+						Editor.selected_object.scale.x -= Mouse.delta.y * Math.sin(Editor.camera_rotation.x) * scale.x
+						Editor.selected_object.scale.x -= Mouse.delta.x * Math.cos(Editor.camera_rotation.x) * scale.x
 
 					}
 					else if(Editor.editing_object_args.y)
 					{
-						Editor.selected_object.scale.y -= Mouse.delta.y * speed * scale.y
+						Editor.selected_object.scale.y -= Mouse.delta.y * scale.y
 
 					}
 					else if(Editor.editing_object_args.z)
 					{
-						Editor.selected_object.scale.z -= Mouse.delta.y * speed * Math.sin(Editor.camera_rotation.x + Editor.pid2) * scale.z
-						Editor.selected_object.scale.z -= Mouse.delta.x * speed * Math.cos(Editor.camera_rotation.x + Editor.pid2) * scale.z
+						Editor.selected_object.scale.z -= Mouse.delta.y * Math.sin(Editor.camera_rotation.x + Editor.pid2) * scale.z
+						Editor.selected_object.scale.z -= Mouse.delta.x * Math.cos(Editor.camera_rotation.x + Editor.pid2) * scale.z
 
 					}
 				}
 				//Rotate Mode
 				else if(Editor.tool_mode === Editor.MODE_ROTATE)
 				{
-					var speed = 1/300;
+					var speed = 0.003;
 					if(Editor.editing_object_args.x)
 					{
 						var delta = new THREE.Quaternion()

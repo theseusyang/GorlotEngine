@@ -450,6 +450,20 @@ function parseObject(data, geometries, materials, textures)
 	{
 		case "Audio":
 			object = new Audio()
+
+			if (data.loop !== undefined) {
+				object.source.loop = data.loop
+			}
+			if (data.autoplay !== undefined) {
+				object.autoplay = data.autoplay
+			}
+			if (data.startTime !== undefined) {
+				object.startTime = data.startTime
+			}
+			if (data.playbackRate !== undefined) {
+				object.playbackRate = data.playbackRate
+			}
+
 			break;
 
 		case "ParticleEmitter":

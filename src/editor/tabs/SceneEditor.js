@@ -60,7 +60,21 @@ class SceneEditor {
 								}
 							}
 						} else {
-							// TODO: Non-file drop
+							var uuid = event.dataTransfer.getData("uuid")
+							var material = DragBuffer.popDragElement(uuid)
+
+							if (material !== null) {
+								if (material instanceof THREE.SpriteMaterial) {
+									if (object instanceof THREE.Sprite) {
+										object.material = material
+										Editor.updateObjectViews()
+									}
+								}
+								if (object instanceof THREE.Mesh) {
+									object.material = material
+									Editor.updateObjectViews()
+								}
+							}
 						}
 
 					}

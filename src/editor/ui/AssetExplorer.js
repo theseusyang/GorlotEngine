@@ -120,6 +120,13 @@ function EditorUIAssetExplorer() {
 
     // ----- CREATE -----
 
+    EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {
+        var material = new StandardMaterial()
+        material.name = "standard"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
+    }})
+    
     EditorUI.asset_explorer_menu.add("Create/Material/Phong Material", {callback: () => {
         var material = new MeshPhongMaterial()
         material.name = "phong"
@@ -127,24 +134,46 @@ function EditorUIAssetExplorer() {
         Editor.updateObjectViews()
     }})
 
-    EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {
-        // TODO: Create Sprite Material
+    EditorUI.asset_explorer_menu.add("Create/Material/Basic Material", {callback: () => {
+        var material = new BasicMaterial()
+        material.name = "basic"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Sprite Material", {callback: () => {
-        // TODO: Create an own "SpriteMaterial" and change it here
         var material = new THREE.SpriteMaterial({color: 0xffffff})
         material.name = "sprite"
         Editor.program.addMaterial(material)
         Editor.updateObjectViews()
     }})
 
-    EditorUI.asset_explorer_menu.add("Create/Material/Shader Material", {callback: () => {
-        // TODO: Create Shader Material
+    EditorUI.asset_explorer_menu.add("Create/Material/Others/Lambert Material", {callback: () => {
+        var material = new LambertMaterial()
+        material.name = "lambert"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
     }})
 
-    EditorUI.asset_explorer_menu.add("Create/Material/Lambert Material", {callback: () => {
-        // TODO: Create Lambert Material
+    EditorUI.asset_explorer_menu.add("Create/Material/Others/Shader Material", {callback: () => {
+        var material = new ShaderMaterial()
+        material.name = "shader"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create/Material/Others/Normal Material", {callback: () => {
+        var material = new NormalMaterial()
+        material.name = "normal"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create/Material/Others/Depth Material", {callback: () => {
+        var material = new DepthMaterial()
+        material.name = "depth"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Script", {callback: () => {
@@ -153,12 +182,11 @@ function EditorUIAssetExplorer() {
     
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
-    this.color = new THREE.Color(0, 0, 0)
     var self = this
 
     EditorUI.asset_explorer_inspector = new LiteGUI.Inspector()
     EditorUI.asset_explorer_list = EditorUI.asset_explorer_inspector.addList(null, EditorUI.asset_explorer_objects, {height: EditorUI.mainarea.getSection(0).getSection(1).getHeight()-60, callback_dblclick: (v) => {
-        if (v.attachedTo instanceof THREE.MeshPhongMaterial) {
+        if (v.attachedTo instanceof THREE.Material) {
             EditorUI.matEd = new MaterialEditor(undefined, v.attachedTo)
             EditorUI.matEd.updateInterface()
         } else if (v.attachedTo instanceof THREE.Texture) {
@@ -204,13 +232,21 @@ function EditorUIAssetExplorer() {
         ], {title: v.attachedTo.name, event: e})
     }, callback_ondragstart: (v, e) => {
         if (v.attachedTo instanceof THREE.Material) {
+            // Insert material into drag buffer
             e.dataTransfer.setData("uuid", v.attachedTo.uuid)
             DragBuffer.pushDragElement(v.attachedTo)
+
+            // To avoid camera movement
+            Mouse.updateKey(Mouse.LEFT, Key.KEY_UP)
         }
     }, callback_ondragend: (v, e) => {
-        // Try to remove events from buffer
+        // Try to remove events from drag buffer
         var uuid = e.dataTransfer.getData("uuid")
         var obj = DragBuffer.popDragElement(uuid)
+
+        if (v.attachedTo instanceof THREE.Material) {
+            EditorUI.restoreMaterial(v.attachedTo)
+        }
     }, callback_ondrop: (v, e) => {
         // TODO: This
         e.preventDefault()
@@ -230,14 +266,14 @@ function EditorUIAssetExplorer() {
     }, callback_onmouseenter: (v, e) => {
         if (e.attachedTo instanceof THREE.Material) {
             if (e.attachedTo.color !== undefined) {
-                self.color.copy(e.attachedTo.color)
+                EditorUI.color.copy(e.attachedTo.color)
                 e.attachedTo.color.setRGB(1, 0, 0)
             }
         }
     }, callback_onmouseleave: (v, e) => {
         if (e.attachedTo instanceof THREE.Material) {
             if (e.attachedTo.color !== undefined) {
-                e.attachedTo.color.copy(self.color)
+                e.attachedTo.color.copy(EditorUI.color)
             }
         }
     }})
@@ -250,6 +286,17 @@ function EditorUIAssetExplorer() {
     EditorUI.asset_explorer_objects = []
 
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)
+}
+
+EditorUI.color = new THREE.Color(0,0,0)
+
+EditorUI.restoreMaterial = function(material) {
+
+    if(material.color !== undefined) {
+        material.color.copy(EditorUI.color)
+    }
+    
+    Editor.updateObjectViews()
 }
 
 EditorUI.addAsset = function(name, attachedTo) {

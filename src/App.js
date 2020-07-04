@@ -80,6 +80,7 @@ include("src/core/components/ElementComponent.js")
 
 include("src/core/components/Objects/Object3DComponent.js")
 include("src/core/components/Objects/Text3DComponent.js")
+include("src/core/components/Objects/AudioComponent.js")
 
 include("src/core/components/Lights/LightComponent.js")
 include("src/core/components/Lights/SkyComponent.js")
@@ -117,6 +118,12 @@ include("src/core/Nodes/Register.js")
 
 // Assets
 include("src/core/assets/Materials/MeshPhongMaterial.js")
+include("src/core/assets/Materials/BasicMaterial.js")
+include("src/core/assets/Materials/DepthMaterial.js")
+include("src/core/assets/Materials/LambertMaterial.js")
+include("src/core/assets/Materials/NormalMaterial.js")
+include("src/core/assets/Materials/StandardMaterial.js")
+include("src/core/assets/Materials/ShaderMaterial.js")
 
 //App class
 function App(){}
@@ -170,7 +177,7 @@ App.chooseFile = function(callback, filter, savemode) {
 	// Create onchange event
 	chooser.onchange = function(e) {
 		if (callback !== undefined) {
-			callback(chooser.value)
+			callback(e.path[0].value)
 		}
 	}
 
@@ -197,7 +204,7 @@ App.readFile = function(fname, sync, callback) {
 		}
 	} else {
 		var file = new XMLHttpRequest()
-		var ready = false
+		file.overrideMimeType("text/plain")
 		var data = null
 
 		// Request file to server
@@ -205,16 +212,13 @@ App.readFile = function(fname, sync, callback) {
 
 		// Get file
 		file.onreadystatechange = function() {
-			if (file.readyState === 4) {
-				if (file.status === 200 || file.status === 0) {
-					data = file.responseText
+			if (file.status === 200 || file.status === 0) {
+				data = file.responseText
 
-					// Callback
-					if (callback !== undefined) {
-						callback(file.responseText)
-					}
+				// Callback
+				if (callback !== undefined) {
+					callback(file.responseText)
 				}
-				ready = true
 			}
 		}
 

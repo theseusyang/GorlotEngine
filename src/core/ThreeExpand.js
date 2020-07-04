@@ -20,10 +20,10 @@ THREE.Object3D.prototype.update = function() {
 	}
 }
 
-// Stop object
-THREE.Object3D.prototype.stop = function() {
+// Dispose object
+THREE.Object3D.prototype.dispose = function() {
 	for(var i = 0; i < this.children.length; i++) {
-		this.children[i].stop()
+		this.children[i].dispose()
 	}
 }
 

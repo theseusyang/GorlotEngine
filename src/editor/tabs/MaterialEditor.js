@@ -63,8 +63,8 @@ class MaterialEditor {
 		this.scene = new Scene()
 
 		// Material Preview Lights
-		this.scene.add(new PointLight(0x444444))
-		this.scene.add(new AmbientLight(0x333333))
+		this.scene.add(new PointLight(0x666666))
+		this.scene.add(new AmbientLight(0x555555))
 
 		// Material attached to the editor
 		this.material = material

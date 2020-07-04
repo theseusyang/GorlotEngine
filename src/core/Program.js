@@ -86,8 +86,10 @@ class Program extends THREE.Object3D {
 	}
 
 	// Remove material from materials list (also receives default, used to replace)
-	removeMaterial(material, default_material) {
-		// TODO: This
+	removeMaterial(material, default_material, default_material_sprite) {
+		if (material instanceof THREE.Material) {
+			// TODO: This
+		}
 	}
 
 	// Add texture to texture list
@@ -119,7 +121,7 @@ class Program extends THREE.Object3D {
 	addDefaultScene(material) {
 		
 		if (material === undefined) {
-			material = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
+			material = new MeshPhongMaterial()
 			material.name = "default"
 		}
 
@@ -206,6 +208,11 @@ class Program extends THREE.Object3D {
 		// Dispose Textures
 		for(var i = 0; i < this.textures.length; i++) {
 			this.textures[i].dispose()
+		}
+
+		// Dispose children
+		for(var i = 0; i < this.children.length; i++) {
+			this.children[i].dispose()
 		}
 	}
 

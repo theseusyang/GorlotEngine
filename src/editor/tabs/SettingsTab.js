@@ -42,7 +42,9 @@ class SettingsTab {
 		// TODO: General settings
 		this.inspector.addSeparator()
 
-		this.inspector.addTitle("Renderer")
+		this.inspector.addTitle("Rendering Quality")
+		this.inspector.addCheckbox("Show Grid", Settings.grid_enabled)
+		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled)
 		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing)
 		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"]})
 		this.inspector.addSeparator()
