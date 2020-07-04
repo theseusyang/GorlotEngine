@@ -67,7 +67,8 @@ class MaterialFile extends File {
 
 		// Drag start
 		this.elm.ondragstart = function(e) {
-			self.restoreMaterial()
+            // Restore material color
+            self.restoreMaterial()
 
 			// Insert material into drag buffer
 			if (self.attachedTo !== null) {
@@ -101,7 +102,7 @@ class MaterialFile extends File {
 		if (this.attachedTo !== undefined) {
 			if (this.attachedTo.color !== undefined) {
 				this.material_color.copy(this.attachedTo.color)
-				this.attachedTo.color.setRGB(1, 0, 0)
+				this.attachedTo.color.setRGB(0.5, 0.75, 0)
 				this.material_highlighted = true
 			}
 		}
