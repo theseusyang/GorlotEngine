@@ -1,3 +1,6 @@
+// Enable strict mode
+"use strict"
+
 include("libs/litegui/litegui.js")
 include("libs/jscolor/jscolor.js")
 
@@ -63,7 +66,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.2"
-Editor.TIMESTAMP = "Sat 04 Jul 2020 22:34:58"
+Editor.TIMESTAMP = "Sat 04 Jul 2020 22:06:28"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -126,7 +129,7 @@ Editor.initialize = function(canvas)
 	Editor.default_material.name = "default"
 
 	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff})
-	Editor.default_sprite_material.name = "sprite"
+	Editor.default_sprite_material.name = "default"
 
 	//Initialize User Interface
 	EditorUI.Initialize();
@@ -153,7 +156,7 @@ Editor.initialize = function(canvas)
 	EditorUI.updateInterface();
 
 	//Grid and axis helpers
-	Editor.grid_helper = new THREE.GridHelper(500, 200)
+	Editor.grid_helper = new THREE.GridHelper(500, 500)
 	Editor.grid_helper.material.depthWrite = false
 	Editor.grid_helper.visible = Settings.grid_enabled
 	Editor.tool_scene.add(Editor.grid_helper)

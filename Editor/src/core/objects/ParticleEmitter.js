@@ -54,39 +54,53 @@ class ParticleEmitter extends THREE.Object3D {
 			particleCount: 2000,
 			direction: 1,
 			duration: null,
+            type: SPE.distributions.BOX,
 
 			maxAge: {
 				value: 2,
 				spread: 0
 			},
+
+            drag: {
+                value: 0,
+                spread: 0
+            },
+
 			position: {
 				value: new THREE.Vector3(0, 0, 0),
 				spread: new THREE.Vector3(0, 0, 0)
 			},
+
 			velocity: {
 				value: new THREE.Vector3(0, 25, 0),
 				spread: new THREE.Vector3(10, 7.5, 10)
 			},
+
 			acceleration: {
 				value: new THREE.Vector3(0, -10, 0),
 				spread: new THREE.Vector3(10, 0, 10)
 			},
+
 			wiggle: {
 				value: 0,
 				spread: 0
 			},
+
 			color: {
 				value: [new THREE.Color(1, 1, 1), new THREE.Color(1, 0, 0)],
 				spread: [new THREE.Color(0, 0, 0), new THREE.Color(0.1, 0.1, 0.1)]
 			},
+
 			opacity: {
 				value: 1,
 				spread: 0
 			},
+
 			size: {
 				value: 1,
 				spread: 0
 			},
+
 			angle: {
 				value: 0,
 				spread: 0
@@ -155,7 +169,7 @@ class ParticleEmitter extends THREE.Object3D {
 		data.object.components = this.components
 		data.object.nodes = this.nodes
 
-		// Group
+		// Group attributes
 		data.object.group = {}
 		data.object.group.texture = this.group.texture.uuid
 		data.object.group.textureFrames = this.group.textureFrames
@@ -166,10 +180,57 @@ class ParticleEmitter extends THREE.Object3D {
 		data.object.group.maxParticleCount = this.group.maxParticleCount
 		data.object.group.blending = this.group.blending
 
-		// Emitter
+		// Emitter attributes
 		data.object.emitter = {}
 		data.object.emitter.direction = this.emitter.direction
 		data.object.emitter.particleCount = this.emitter.particleCount
+        data.object.emitter.duration = this.emitter.duration
+        data.object.emitter.type = this.emitter.type
+
+        // Max age
+        data.object.emitter.maxAge = {}
+        data.object.emitter.maxAge.value = this.emitter.maxAge.value
+        data.object.emitter.maxAge.spread = this.emitter.maxAge.spread
+
+        // Position
+        data.object.emitter.position = {}
+        data.object.emitter.position.value = this.emitter.position.value
+        data.object.emitter.position.spread = this.emitter.position.spread
+
+        // Velocity
+        data.object.emitter.velocity = {}
+        data.object.emitter.velocity.value = this.emitter.velocity.value
+        data.object.emitter.velocity.spread = this.emitter.velocity.spread
+
+        // Acceleration
+        data.object.emitter.acceleration = {}
+        data.object.emitter.acceleration.value = this.emitter.acceleration.value
+        data.object.emitter.acceleration.spread = this.emitter.acceleration.spread
+
+        // Wiggle
+        data.object.emitter.wiggle = {}
+        data.object.emitter.wiggle.value = this.emitter.wiggle.value
+        data.object.emitter.wiggle.spread = this.emitter.wiggle.spread
+
+        // Opacity
+        data.object.emitter.opacity = {}
+        data.object.emitter.opacity.value = this.emitter.opacity.value
+        data.object.emitter.opacity.spread = this.emitter.opacity.spread
+
+        // Size
+        data.object.emitter.size = {}
+        data.object.emitter.size.value = this.emitter.size.value
+        data.object.emitter.size.spread = this.emitter.size.spread
+
+        // Angle
+        data.object.emitter.angle = {}
+        data.object.emitter.angle.value = this.emitter.angle.value
+        data.object.emitter.angle.spread = this.emitter.angle.spread
+
+        // Color
+        data.object.emitter.color = {}
+        data.object.emitter.color.value = this.emitter.color.value
+        data.object.emitter.color.spread = this.emitter.color.spread
 
 		return data
 	}

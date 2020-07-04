@@ -2,8 +2,8 @@ class TextTexture extends THREE.CanvasTexture {
 	constructor() {
 
 		var canvas = document.createElement("canvas")
-		canvas.width = 128
-		canvas.height = 128
+		canvas.width = 256
+		canvas.height = 256
 		
 		super(canvas)
 		

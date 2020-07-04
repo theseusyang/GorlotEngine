@@ -1,3 +1,6 @@
+// Enable strict mode
+"use strict"
+
 // First, Libraries are added
 include("libs/three/three.js")
 

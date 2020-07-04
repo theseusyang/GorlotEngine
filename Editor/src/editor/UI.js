@@ -1,23 +1,7 @@
+// Enable strict mode
+"use strict"
+
 function EditorUI() {}
-
-// Due to scope, I declare some variables here
-//var mainarea, canvas
-EditorUI.mainarea
-EditorUI.canvas
-
-// Elements
-//var hierarchy, asset_explorer, folder_explorer, explorer, tabs_widget
-EditorUI.hierarchy
-EditorUI.hierarchy_panel
-EditorUI.asset_explorer
-EditorUI.asset_explorer_menu
-EditorUI.explorer
-EditorUI.tabs_widget
-EditorUI.topmenu
-EditorUI.form
-
-EditorUI.bot_tabs
-EditorUI.asset_explorer_tab
 
 EditorUI.assetEx_height = 256
 EditorUI.ins = null
