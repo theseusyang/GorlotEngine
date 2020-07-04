@@ -51,7 +51,7 @@ class MaterialEditor {
 		Mouse.canvas = this.preview
 
 		// Material preview renderer
-		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: true, antialias: true})
+		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: true, antialias: Settings.antialiasing})
 		this.renderer.setSize(200, 200)
 		this.renderer.shadowMap.ebaled = true
 		this.renderer.shadowMap.type = THREE.PCFShadowMap
@@ -91,7 +91,7 @@ class MaterialEditor {
 		this.graph.start(1000/60)
 
 		this.interval = setInterval(() => {
-			self.updateMaterial()
+			//self.updateMaterial()
 			self.update()
 		}, 1000/60)
 
@@ -124,7 +124,7 @@ class MaterialEditor {
 
 	update() {
 		this.renderer.render(this.scene, this.camera)
-	
+
 		if (Mouse.insideCanvas()) {
 
 			if (Mouse.buttonPressed(Mouse.LEFT)) {

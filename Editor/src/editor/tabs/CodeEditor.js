@@ -24,7 +24,7 @@ class CodeEditor {
 		this.element.style.position = "absolute"
 
 		// CodeMirror Editor
-		this.code = new CodeMirror(this.element, {value: "", lineNumbers: true, indentWithTabs: true, indentUnit: 4, tabSize: 4, mode: "javascript"})
+		this.code = new CodeMirror(this.element, {value: "", lineNumbers: Settings.code_line_numbers, indentWithTabs: true, indentUnit: 4, tabSize: 4, mode: "javascript"})
 		this.code.setOption("theme", Settings.code_theme)
 		this.code.setOption("mode", "javascript")
 
@@ -141,10 +141,15 @@ class CodeEditor {
 	}
 
 	setFontSize(size) {
-		// Set code editor font size
+
+		if (size < 5) {
+			size = 5
+		}
+
 		this.font_size = size
 		this.code.display.wrapper.style.fontSize = size + "px"
 		this.code.refresh()
+
 		Settings.code_font_size = this.font_size
 	}
 
@@ -156,9 +161,7 @@ class CodeEditor {
 		if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
 			if (Mouse.wheel !== 0) {
 				this.font_size -= Mouse.wheel/100
-				if (this.font_size < 5) {
-					this.font_size = 5
-				}
+
 				this.setFontSize(this.font_size)
 			}
 		}

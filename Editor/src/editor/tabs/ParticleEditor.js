@@ -54,7 +54,7 @@ class ParticleEditor {
 		// Particle Preview Lights and Helpers
 		this.scene.add(new PointLight(0x666666))
 		this.scene.add(new AmbientLight(0x444444))
-		this.scene.add(new THREE.GridHelper(50, 1))
+		this.scene.add(new THREE.GridHelper(50, 50, 1))
 		this.scene.add(new THREE.AxisHelper(50))
 
 		// Particle
@@ -99,7 +99,7 @@ class ParticleEditor {
 		}
 
 		// Particle Preview renderer
-		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: false, antialias: true})
+		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: false, antialias: Settings.antialiasing})
 		this.renderer.setSize((EditorUI.mainarea.getSection(0).getWidth()/2)-5, EditorUI.mainarea.getSection(0).getHeight() - EditorUI.assetEx_height)
 		this.renderer.shadowMap.enabled = false
 

@@ -158,7 +158,7 @@ class AddMenuWindow {
 		}
 		else if (o === "Pyramid") {
 
-			var geometry = new THREE.CylinderBufferGeometry(0, 1, 2, 32)
+			var geometry = new THREE.ConeBufferGeometry(1, 2, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true

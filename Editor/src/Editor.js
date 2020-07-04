@@ -536,14 +536,10 @@ Editor.update = function()
 				if (speed < 0) {
 					if (speed > -0.03) {
 						speed = -0.03
-					} else if (speed < -5) {
-						speed = -5
 					}
 				} else if (speed > 0) {
 					if (speed < 0.03) {
 						speed = 0.03
-					} else if (speed > 5) {
-						speed = 5
 					}
 				}
 
