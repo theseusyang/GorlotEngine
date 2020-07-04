@@ -59,20 +59,27 @@ class SceneEditor {
 									Editor.updateObjectViews()
 								}
 							}
-						} else {
+						}
+						// If it's a dragged object
+						else {
 							var uuid = event.dataTransfer.getData("uuid")
-							var material = DragBuffer.popDragElement(uuid)
+							var dragged_object = DragBuffer.popDragElement(uuid)
 
-							if (material !== null) {
-								if (material instanceof THREE.SpriteMaterial) {
+							// Check if object exists
+							if (dragged_object !== null) {
+								// Sprite Material
+								if (dragged_object instanceof THREE.SpriteMaterial) {
 									if (object instanceof THREE.Sprite) {
-										object.material = material
+										object.material = dragged_object
 										Editor.updateObjectViews()
 									}
 								}
-								if (object instanceof THREE.Mesh) {
-									object.material = material
-									Editor.updateObjectViews()
+								// Material
+								else if (dragged_object instanceof THREE.Material) {
+									if(object instanceof THREE.Mesh) {
+										object.material = dragged_object
+										Editor.updateObjectViews()
+									}
 								}
 							}
 						}

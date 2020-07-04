@@ -12,7 +12,7 @@ class File {
 
 		this.elm = document.createElement("li")
 		this.elm.className = "item"
-		this.elm.style = "width: 60px; max-width: 60px; display: inline-block; text-align: center; margin-right: 10px;"
+		this.elm.style = "width: 60px; max-width: 60px; display: inline-block; text-align: center; margin-right: 10px; cursor: pointer;"
 
 		this.img = document.createElement("img")
 		this.img.style.width = "60px"
