@@ -4,13 +4,13 @@ class File {
 		this.attachedTo = null
 
 		this.img = document.createElement("img")
+		this.img.style.width = "60px"
+		this.img.style.height = "60px"
 	}
 
 	attachAsset(asset) {
-		if (asset instanceof THREE.Material) {
-			if(Editor.material_renderer !== undefined) {
-				Editor.material_renderer.renderMaterial(asset, this.img)
-			}
+		if (asset.icon !== undefined) {
+			this.img.src = asset.icon
 		}
 
 		this.attachedTo = asset

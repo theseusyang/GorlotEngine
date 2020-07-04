@@ -33,7 +33,10 @@ include("src/editor/tabs/BlueprintsEditor.js")
 include("src/editor/UI.js")
 include("src/editor/Settings.js")
 
-include("src/editor/ui/components/File.js")
+include("src/editor/ui/files/File.js")
+include("src/editor/ui/files/MaterialFile.js")
+include("src/editor/ui/files/TextureFile.js")
+
 include("src/editor/ui/components/AbsButton.js")
 
 include("src/editor/utils/MaterialRenderer.js")
@@ -139,7 +142,7 @@ Editor.initialize = function(canvas)
 	Editor.setRenderCanvas(EditorUI.canvas.element)
 
 	//Editor Camera
-	Editor.default_camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.01, 10000000);
+	Editor.default_camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.01, 1000000);
 	Editor.default_camera.position.set(0, 5, -10);
 	Editor.camera = Editor.default_camera
 	Editor.camera_rotation = new THREE.Vector2(0,0);

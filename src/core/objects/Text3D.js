@@ -11,7 +11,7 @@ class Text3D extends THREE.Mesh {
 		
 		this.font = font
 
-		this.name = "text"
+		this.name = "TEXT"
 		this.type = "Text3D"
 
 		this.scale.set(0.01, 0.01, 0.01)

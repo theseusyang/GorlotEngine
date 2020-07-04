@@ -35,6 +35,10 @@ class Program extends THREE.Object3D {
 			this.vr = vr
 		}
 
+		// Assets
+		this.materials = []
+		this.textures = []
+
 		// Initial values
 		this.initial_scene = null
 		this.default_camera = null
@@ -167,9 +171,17 @@ class Program extends THREE.Object3D {
 		return new ObjectLoader().parse(this.toJSON())
 	}
 
+	// Dispose program data (to avoid memory leaks)
 	dispose() {
-		// Dispose program data (to avoid memory leaks)
-		// TODO: This
+		// Dispose Materials
+		for(var i = 0; i < this.materials.length; i++) {
+			this.materials[i].dispose()
+		}
+
+		// Dispose Textures
+		for(var i = 0; i < this.textures.length; i++) {
+			this.textures[i].dispose()
+		}
 	}
 
 	toJSON(meta) {

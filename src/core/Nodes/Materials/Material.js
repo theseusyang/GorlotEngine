@@ -200,6 +200,20 @@ SetAlphaTestNode.prototype.onExecute = function() {
 	}
 }
 
+function TestDepthNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Test", "Boolean")
+}
+TestDepthNode.title = "Test Depth"
+TestDepthNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var t = this.getInputData(1)
+
+	if (m !== undefined && t !== undefined) {
+		m.depthTest = t
+	}
+}
+
 function ShadingNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Shading", "number")
@@ -312,6 +326,7 @@ function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/SetBlendEquation", SetBlendEquationNode)
 	LiteGraph.registerNodeType("Material/SetBlendEquationAlpha", SetBlendEquationAlphaNode)
 	LiteGraph.registerNodeType("Material/SetAlphaTest", SetAlphaTestNode)
+	LiteGraph.registerNodeType("Material/TestDepth", TestDepthNode)
 	LiteGraph.registerNodeType("Material/Shading", ShadingNode)
 	LiteGraph.registerNodeType("Material/AffectedByFog", AffectedByFogNode)
 	LiteGraph.registerNodeType("Material/SetPrecision", SetPrecisionNode)

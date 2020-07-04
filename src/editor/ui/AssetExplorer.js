@@ -240,15 +240,23 @@ EditorUI.addAsset = function(name, attachedTo) {
     
     var ins = attachedTo
     if (ins.name === undefined || ins.name === "" || ins.name === null) {
-        if (attachedTo instanceof THREE.Material) {
-            var name = "Material"
-        }
+        var name = "unnamed"
     } else {
         var name = ins.name
     }
 
-    var fil = new File(name)
-    fil.attachAsset(ins)
+    if(ins instanceof THREE.Material) {
+        var fil = new MaterialFile(name)
+        fil.attachMaterial(ins)
+    } else if (ins instanceof THREE.Texture) {
+        var fil = new TextureFile(name)
+        fil.attachTexture(ins)
+    } else {
+        // Default
+        var fil = new File(name)
+        fil.attachAsset(ins)
+    }
+
     var obj = fil.getObject()
 
     if(EditorUI.asset_explorer_objects !== undefined) {
