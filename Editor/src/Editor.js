@@ -866,6 +866,17 @@ Editor.getAssetByUUID = function(uuid) {
 	}
 }
 
+// New Program
+Editor.createNewProgram = function() {
+	Editor.nameId = 1
+
+	Editor.program = new Program()
+	Editor.program.addDefaultScene()
+	Editor.resetEditingFlags()
+
+	Editor.updateObjectViews()
+}
+
 // Save program to file
 Editor.saveProgram = function(fname) {
 	var output = Editor.program.toJSON()
@@ -911,17 +922,6 @@ Editor.exportWebProject = function(fname) {
 	zip.generateAsync({type: "nodebuffer"}).then((data) => {
 		App.writeFile(fname, data)
 	})
-}
-
-// New Program
-Editor.createNewProgram = function() {
-	Editor.nameId = 1
-
-	Editor.program = new Program()
-	Editor.program.addDefaultScene()
-	Editor.resetEditingFlags()
-
-	Editor.updateObjectViews()
 }
 
 // Set editor state

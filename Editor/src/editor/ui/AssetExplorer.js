@@ -182,156 +182,37 @@ function EditorUIAssetExplorer() {
     
     EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
 
-    var self = this
+    EditorUI.asset_explorer_panel = new LiteGUI.Panel({scroll: true})
+    EditorUI.asset_explorer.add(EditorUI.asset_explorer_panel)
 
-    EditorUI.asset_explorer_inspector = new LiteGUI.Inspector()
-    EditorUI.asset_explorer_list = EditorUI.asset_explorer_inspector.addList(null, EditorUI.asset_explorer_objects, {height: EditorUI.mainarea.getSection(0).getSection(1).getHeight()-60, callback_dblclick: (v) => {
-        if (v.attachedTo instanceof THREE.Material) {
-            EditorUI.matEd = new MaterialEditor(undefined, v.attachedTo)
-            EditorUI.matEd.updateInterface()
-        } else if (v.attachedTo instanceof THREE.Texture) {
-            // TODO: Texture viewer/editor?
-        }
-    }, callback_contextmenu: (v, e) => {
-        var context = new LiteGUI.ContextMenu([
-            {
-                title: "Rename",
-                callback: () => {
-                    if (v.attachedTo !== undefined || v.attachedTo !== null) {
-                        var p = LiteGUI.prompt("Rename: " + v.attachedTo.name, (value) => {
-                            if (value !== null) {
-                                Editor.renameObject(v.attachedTo, value)
-                            }
-                        }, {title: "Rename", value: v.attachedTo.name})
-                    }
-                }
-            },
-            {
-                title: "Delete",
-                callback: () => {
-                    if (v.attachedTo !== undefined || v.attachedTo !== null) {
-                        // TODO: Delete
-                    }
-                }
-            },
-            {
-                title: "Copy",
-                callback: () => {
-                    if (v.attachedTo !== undefined || v.attachedTo !== null) {
-                        if (v.attachedTo instanceof MeshPhongMaterial) {
-                            // TODO: Every material can be copied
-                            try {
-                                App.clipboard.set(JSON.stringify(v.attachedTo.toJSON()), "text")
-                            } catch(e) {
-                                console.log(e)
-                            }
-                        }
-                    }
-                }
-            }
-        ], {title: v.attachedTo.name, event: e})
-    }, callback_ondragstart: (v, e) => {
-        if (v.attachedTo instanceof THREE.Material) {
-            // Insert material into drag buffer
-            e.dataTransfer.setData("uuid", v.attachedTo.uuid)
-            DragBuffer.pushDragElement(v.attachedTo)
-
-            // To avoid camera movement
-            Mouse.updateKey(Mouse.LEFT, Key.KEY_UP)
-        }
-    }, callback_ondragend: (v, e) => {
-        if (v.attachedTo instanceof THREE.Material) {
-            EditorUI.restoreMaterial(v.attachedTo)
-        }
-        
-        // Try to remove events from drag buffer
-        var uuid = e.dataTransfer.getData("uuid")
-        var obj = DragBuffer.popDragElement(uuid)
-
-    }, callback_ondrop: (v, e) => {
-        // TODO: This
-        e.preventDefault()
-    }, callback_ondragover: (v, e) => {
-        // TODO: This
-        e.preventDefault()
-    }, ondragstart: (v, e) => {
-        // TODO: This
-    }, ondragend: (v, e) => {
-        // TODO: This
-    }, ondrop: (e) => {
-        // TODO This
-        e.preventDefault()
-    }, ondragover: (e) => {
-        // TODO: This
-        e.preventDefault()
-    }, callback_onmouseenter: (v, e) => {
-        if (e.attachedTo instanceof THREE.Material) {
-            if (e.attachedTo.color !== undefined) {
-                EditorUI.color.copy(e.attachedTo.color)
-                e.attachedTo.color.setRGB(1, 0, 0)
-            }
-        }
-    }, callback_onmouseleave: (v, e) => {
-        if (e.attachedTo instanceof THREE.Material) {
-            if (e.attachedTo.color !== undefined) {
-                e.attachedTo.color.copy(EditorUI.color)
-            }
-        }
-    }})
-
-    EditorUI.asset_explorer_inspector.onchange = function(element, value, name) {  
-        if (value.attachedTo !== undefined || value.attachedTo !== null) {
-            Editor.selectObject(value.attachedTo)
-        }
-    }
     EditorUI.asset_explorer_objects = []
 
-    EditorUI.asset_explorer.add(EditorUI.asset_explorer_inspector)
-}
-
-EditorUI.color = new THREE.Color(0,0,0)
-
-EditorUI.restoreMaterial = function(material) {
-
-    if(material.color !== undefined) {
-        material.color.copy(EditorUI.color)
-    }
-    
-    Editor.updateObjectViews()
 }
 
 EditorUI.addAsset = function(name, attachedTo) {
-    
-    var ins = attachedTo
-    if (ins.name === undefined || ins.name === "" || ins.name === null) {
-        var name = "unnamed"
-    } else {
-        var name = ins.name
-    }
 
-    if(ins instanceof THREE.Material) {
-        var fil = new MaterialFile(name)
-        fil.attachMaterial(ins)
-    } else if (ins instanceof THREE.Texture) {
-        var fil = new TextureFile(name)
-        fil.attachTexture(ins)
-    } else {
-        // Default
-        var fil = new File(name)
-        fil.attachAsset(ins)
-    }
+    if (EditorUI.asset_explorer_objects !== undefined) {
 
-    var obj = fil.getObject()
+        if (attachedTo instanceof THREE.Material) {
+            var fil = new MaterialFile(attachedTo.name, EditorUI.asset_explorer_panel.content)
+            fil.attachAsset(attachedTo)
+        }
 
-    if(EditorUI.asset_explorer_objects !== undefined) {
-        EditorUI.asset_explorer_objects.push(obj)
+        EditorUI.asset_explorer_objects.push(fil)
+        EditorUI.updateAssetExplorer()
     }
-    
-    EditorUI.updateAssetExplorer()
 }
 
 EditorUI.updateAssetExplorer = function() {
-    if(EditorUI.asset_explorer_objects !== undefined) {
-        EditorUI.asset_explorer_list.updateItems(EditorUI.asset_explorer_objects)
+    if(EditorUI.asset_explorer_panel !== undefined) {
+        EditorUI.asset_explorer_panel.content.innerHTML = ""
+
+        if (EditorUI.asset_explorer_objects !== undefined) {
+            for(var i = 0; i < EditorUI.asset_explorer_objects.length; i++) {
+                var file = EditorUI.asset_explorer_objects[i]
+                file.show()
+            }
+        }
+
     }
 }

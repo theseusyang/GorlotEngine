@@ -1,11 +1,37 @@
 class File {
-	constructor(name) {
+	constructor(name, parent) {
+
+		if (parent === undefined) {
+			this.parent = document.body
+		} else {
+			this.parent = parent
+		}
+
 		this.name = name
 		this.attachedTo = null
+
+		this.elm = document.createElement("li")
+		this.elm.className = "item"
+		this.elm.style = "width: 60px; max-width: 60px; display: inline-block; text-align: center; margin-right: 10px;"
 
 		this.img = document.createElement("img")
 		this.img.style.width = "60px"
 		this.img.style.height = "60px"
+		this.elm.appendChild(this.img)
+
+		this.nameText = document.createElement("p")
+		this.nameText.innerHTML = this.name
+		this.nameText.style.position = "relative"
+		this.nameText.style.bottom = "12"
+		this.elm.appendChild(this.nameText)
+
+		this.elm.ondrop = function(e) {
+			e.preventDefault()
+		}
+
+		this.elm.ondragover = function(e) {
+			e.preventDefault()
+		}
 	}
 
 	attachAsset(asset) {
@@ -14,16 +40,10 @@ class File {
 		}
 
 		this.attachedTo = asset
+		this.elm.innerHTML = this.elm.innerHTML
 	}
 
-	getObject() {
-		var obj = {
-			title: this.name,
-			icon: this.img,
-			attachedTo: this.attachedTo,
-			style: "width: 60px; max-width: 60px; display: inline-block; text-align: center; margin-right: 10px",
-			icon_style: "width:50px; height: 50px;"
-		}
-		return obj
+	show() {
+		this.parent.appendChild(this.elm)
 	}
 }

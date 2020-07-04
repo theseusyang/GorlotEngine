@@ -57,7 +57,6 @@ class MaterialRenderer {
 			self.canvas.toBlob((blob) => {
 				var url = URL.createObjectURL(blob)
 				img.src = url
-				EditorUI.updateAssetExplorer()
 			})
 		}
 	}

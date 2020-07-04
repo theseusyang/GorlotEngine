@@ -1,15 +1,130 @@
 class MaterialFile extends File {
-	constructor(name) {
-		super(name)
-	}
+	constructor(name, parent) {
+		super(name, parent)
 
-	attachMaterial(material) {
-		if (material instanceof THREE.Material) {
-			if (Editor.material_renderer !== undefined) {
-				Editor.material_renderer.renderMaterial(material, this.img)
+		// Self pointer
+		var self = this
+
+		// Used to store original material colour on highlight
+		this.material_color = new THREE.Color(0, 0, 0)
+		this.material_highlighted = false
+
+		// Mouse over event
+		this.elm.onmouseenter = function() {
+			self.highlightMaterial()
+		}
+
+		// Mouse leave event
+		this.elm.onmouseleave = function() {
+			self.restoreMaterial()
+		}
+
+		// Open Material Editor
+		this.elm.ondblclick = function() {
+			if (self.attachedTo !== undefined) {
+				EditorUI.matEd = new MaterialEditor(undefined, self.attachedTo)
+	            EditorUI.matEd.updateInterface()
+			}
+		}
+
+		// Context menu event
+		this.elm.oncontextmenu = function(e) {
+			var context = new LiteGUI.ContextMenu([
+        	    {
+        	        title: "Rename",
+        	        callback: () => {
+        	            if (self.attachedTo !== undefined || self.attachedTo !== null) {
+        	                var p = LiteGUI.prompt("Rename: " + self.attachedTo.name, (value) => {
+        	                    if (value !== null) {
+        	                        Editor.renameObject(self.attachedTo, value)
+        	                    }
+        	                }, {title: "Rename", value: self.attachedTo.name})
+        	            }
+        	        }
+        	    },
+        	    {
+        	        title: "Delete",
+        	        callback: () => {
+        	            if (self.attachedTo !== undefined || self.attachedTo !== null) {
+        	                // TODO: Delete
+        	            }
+        	        }
+        	    },
+        	    {
+        	        title: "Copy",
+        	        callback: () => {
+        	            if (self.attachedTo !== undefined || self.attachedTo !== null) {
+        	                try {
+        	                    App.clipboard.set(JSON.stringify(self.attachedTo.toJSON()), "text")
+        	                } catch(e) {
+        	                    console.log(e)
+        	                }
+        	            }
+        	        }
+        	    }
+        	], {title: self.attachedTo.name, event: e})
+		}
+
+		// Drag start
+		this.elm.ondragstart = function(e) {
+			self.restoreMaterial()
+
+			// Insert material into drag buffer
+			if (self.attachedTo !== null) {
+				e.dataTransfer.setData("uuid", self.attachedTo.uuid)
+				DragBuffer.pushDragElement(self.attachedTo)
 			}
 
-			this.attachedTo = material
+			// To avoid camera movement
+			Mouse.updateKey(Mouse.LEFT, Key.KEY_UP)
+		}
+
+		// Drag end (Called after of ondrop)
+		this.elm.ondragend = function(e) {
+			// Try to remove material from drag buffer
+			var uuid = e.dataTransfer.getData("uuid")
+			var obj = DragBuffer.popDragElement(uuid)
+		}
+
+		// Drop event
+		this.elm.ondrop = function(e) {
+			e.preventDefault()
+		}
+
+		// Prevent default when dragged over
+		this.elm.ondragover = function(e) {
+			e.preventDefault()
+		}
+	}
+
+	highlightMaterial() {
+		if (this.attachedTo !== undefined) {
+			if (this.attachedTo.color !== undefined) {
+				this.material_color.copy(this.attachedTo.color)
+				this.attachedTo.color.setRGB(1, 0, 0)
+				this.material_highlighted = true
+			}
+		}
+	}
+
+	restoreMaterial() {
+		if (this.material_highlighted) {
+			if (this.attachedTo instanceof THREE.Material) {
+				if (this.attachedTo.color !== undefined) {
+					this.attachedTo.color.copy(this.material_color)
+					this.material_highlighted = false
+				}
+			}
+		}
+	}
+
+	attachAsset(asset) {
+		if (asset instanceof THREE.Material) {
+			if (Editor.material_renderer !== undefined) {
+				Editor.material_renderer.renderMaterial(asset, this.img)
+			}
+
+			this.attachedTo = asset
 		}
 	}
 
