@@ -240,13 +240,14 @@ function EditorUIAssetExplorer() {
             Mouse.updateKey(Mouse.LEFT, Key.KEY_UP)
         }
     }, callback_ondragend: (v, e) => {
+        if (v.attachedTo instanceof THREE.Material) {
+            EditorUI.restoreMaterial(v.attachedTo)
+        }
+        
         // Try to remove events from drag buffer
         var uuid = e.dataTransfer.getData("uuid")
         var obj = DragBuffer.popDragElement(uuid)
 
-        if (v.attachedTo instanceof THREE.Material) {
-            EditorUI.restoreMaterial(v.attachedTo)
-        }
     }, callback_ondrop: (v, e) => {
         // TODO: This
         e.preventDefault()
