@@ -60,6 +60,8 @@ include("src/core/objects/lights/Sky.js")
 include("src/core/objects/cameras/PerspectiveCamera.js")
 include("src/core/objects/cameras/OrthographicCamera.js")
 
+include("src/core/objects/audio/Audio.js")
+
 include("src/core/objects/Bone.js")
 include("src/core/objects/Empty.js")
 include("src/core/objects/Script.js")
@@ -69,7 +71,6 @@ include("src/core/objects/AnimatedModel.js")
 include("src/core/objects/Text3D.js")
 include("src/core/objects/Sprite.js")
 include("src/core/objects/ParticleEmitter.js")
-include("src/core/objects/Audio.js")
 
 include("src/core/Component.js")
 include("src/core/ComponentManager.js")
