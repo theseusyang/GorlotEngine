@@ -59,7 +59,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Fri 03 Jul 2020 21:44:00"
+Editor.TIMESTAMP = "Sat 04 Jul 2020 12:35:30"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -270,8 +270,11 @@ Editor.update = function()
 	
 					var distance = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/5
 					Editor.rotate_tool.scale.set(distance, distance, distance)
-					Editor.rotate_tool.rotation.copy(Editor.selected_object.rotation)
-					Editor.selected_object.getWorldPosition(Editor.rotate_tool.position);
+					Editor.selected_object.getWorldPosition(Editor.rotate_tool.position)
+
+					if (Editor.selected_object.parent !== null) {
+						Editor.selected_object.parent.getWorldQuaternion(Editor.rotate_tool.quaternion)
+					}
 				}
 				else
 				{
@@ -886,18 +889,19 @@ Editor.loadProgram = function(fname) {
 Editor.exportWebProject = function(fname) {
 	var zip = new JSZip()
 	var output = Editor.program.toJSON()
-	var json = JSON.stringify()
+	var json = JSON.stringify(output)
 
 	zip.file("app.json", json)
 	zip.file("index.html", App.readFile("runtime/index.html"))
 	zip.file("Main.js", App.readFile("runtime/Main.js"))
 
-	var zfile = zip.generate({type: "blob"})
-	console.log(zfile)
+	zip.file("App.js", App.readFile("src/App.js"))
 
 	// TODO: This
-
-	// App.writeFile(fname, zfile)
+	
+	zip.generateAsync({type: "nodebuffer"}).then((data) => {
+		App.writeFile(fname, data)
+	})
 }
 
 // New Program

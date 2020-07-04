@@ -205,7 +205,7 @@ function EditorUIAssetExplorer() {
         // TODO: This
     }, ondragend: (v, e) => {
         // TODO: This
-    }, ondrop: (v, e) => {
+    }, ondrop: (e) => {
         // TODO This
         e.preventDefault()
     }, ondragover: (e) => {
