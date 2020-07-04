@@ -2,3 +2,6 @@ nwjs
 nwjs/*
 build
 build/*
+node_modules
+node_modules/*
+.eslintrc.json

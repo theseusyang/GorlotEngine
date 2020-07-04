@@ -1,4 +1,4 @@
-class Touch() {
+class Touch {
 	// TODO: This
 	constructor() {
 		
