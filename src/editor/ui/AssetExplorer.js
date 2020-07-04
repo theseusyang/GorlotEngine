@@ -110,14 +110,21 @@ function EditorUIAssetExplorer() {
 
     EditorUI.asset_explorer_menu.add("Import/Resources/Audio", {callback: () => {
         App.chooseFile((event) => {
-            // TODO: This
+            try {
+
+            } catch (e) {
+                console.error("Error loading file\n"+e)
+            }
         }, "audio/*")
     }})
 
     // ----- CREATE -----
 
     EditorUI.asset_explorer_menu.add("Create/Material/Phong Material", {callback: () => {
-        // TODO: Create Standard Material
+        var material = new MeshPhongMaterial()
+        material.name = "phong"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {
@@ -125,7 +132,11 @@ function EditorUIAssetExplorer() {
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Sprite Material", {callback: () => {
-        // TODO: Create Phong Material
+        // TODO: Create an own "SpriteMaterial" and change it here
+        var material = new THREE.SpriteMaterial({color: 0xffffff})
+        material.name = "sprite"
+        Editor.program.addMaterial(material)
+        Editor.updateObjectViews()
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Shader Material", {callback: () => {
@@ -192,9 +203,14 @@ function EditorUIAssetExplorer() {
             }
         ], {title: v.attachedTo.name, event: e})
     }, callback_ondragstart: (v, e) => {
-        // TODO: This
+        if (v.attachedTo instanceof THREE.Material) {
+            e.dataTransfer.setData("uuid", v.attachedTo.uuid)
+            DragBuffer.pushDragElement(v.attachedTo)
+        }
     }, callback_ondragend: (v, e) => {
-        // TODO: This
+        // Try to remove events from buffer
+        var uuid = e.dataTransfer.getData("uuid")
+        var obj = DragBuffer.popDragElement(uuid)
     }, callback_ondrop: (v, e) => {
         // TODO: This
         e.preventDefault()

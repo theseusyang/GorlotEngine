@@ -80,7 +80,9 @@ class Program extends THREE.Object3D {
 
 	// Add material to materials list
 	addMaterial(material) {
-		// TODO: This
+		if (material instanceof THREE.Material) {
+			this.materials[material.uuid] = material
+		}
 	}
 
 	// Remove material from materials list (also receives default, used to replace)
@@ -90,7 +92,7 @@ class Program extends THREE.Object3D {
 
 	// Add texture to texture list
 	addTexture(texture) {
-		// TODO: This
+		this.textures[texture.uuid] = texture
 	}
 
 	// Remove texture from textures list

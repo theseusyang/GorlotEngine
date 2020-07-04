@@ -40,6 +40,7 @@ include("src/editor/ui/files/TextureFile.js")
 include("src/editor/ui/components/AbsButton.js")
 
 include("src/editor/utils/MaterialRenderer.js")
+include("src/editor/utils/DragBuffer.js")
 
 include("src/editor/ui/ObjectInspector.js")
 include("src/editor/ui/TopMenu.js")
@@ -970,12 +971,12 @@ Editor.setRenderCanvas = function(canvas) {
 
 // Initialize the renderer
 Editor.initializeRenderer = function(canvas) {
-	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: Settings.renderer_antialiasing})
+	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: Settings.antialiasing})
 	Editor.renderer.autoClear = false
 
 	// Enable shadow maps
-	Editor.renderer.shadowMap.enabled = Settings.renderer_shadows
-	Editor.renderer.shadowMap.type = Settings.renderer_shadows_type
+	Editor.renderer.shadowMap.enabled = Settings.shadows
+	Editor.renderer.shadowMap.type = Settings.shadows_type
 	Editor.renderer.setSize(canvas.width, canvas.height)
 }
 

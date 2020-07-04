@@ -12,4 +12,11 @@ class MaterialFile extends File {
 			this.attachedTo = material
 		}
 	}
+
+	// Update Material preview
+	updatePreview() {
+		if (this.material !== null) {
+			Editor.material_renderer.renderMaterial(this.material, this.img)
+		}
+	}
 }

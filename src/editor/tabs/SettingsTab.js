@@ -42,6 +42,11 @@ class SettingsTab {
 		// TODO: General settings
 		this.inspector.addSeparator()
 
+		this.inspector.addTitle("Renderer")
+		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing)
+		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"]})
+		this.inspector.addSeparator()
+
 		this.inspector.addTitle("Code Editor")
 		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: ["monokai"]})
 		this.inspector.addNumber("Font Size", Settings.code_font_size)
@@ -59,7 +64,24 @@ class SettingsTab {
 	}
 
 	applyChanges(name, value) {
-		if (name === "Font Size") {
+
+		if (value === "true") {
+			value = true
+		} else if (value === "false") {
+			value = false
+		}
+
+		if (name === "Antialiasing") {
+			Settings.antialiasing = value
+		} else if (name === "Shadows Type") {
+			if (value === "Basic") {
+				Settings.shadows_type = THREE.BasicShadowMap
+			} else if (value === "PCF") {
+				Settings.shadows_type = THREE.PCFShadowMap
+			} else if (value === "PCF Soft") {
+				Settings.shadows_type = THREE.PCFSoftShadowMap
+			}
+		} else if (name === "Font Size") {
 			Settings.code_font_size = value
 		}
 	}
