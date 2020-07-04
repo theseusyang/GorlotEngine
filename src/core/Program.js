@@ -38,6 +38,7 @@ class Program extends THREE.Object3D {
 		// Assets
 		this.materials = []
 		this.textures = []
+		this.geometries = []
 
 		// Initial values
 		this.initial_scene = null
@@ -54,16 +55,16 @@ class Program extends THREE.Object3D {
 		this.defaultComponents.push(new ProgramComponent())
 	}
 
+	// Screen resize
 	resize(x, y) {
-		// Screen resize
 		if (this.scene !== null) {
 			this.scene.camera.aspect = x/y
 			this.scene.camera.updateProjectionMatrix()
 		}
 	}
 
+	// Select starting scene and initialize that scene
 	initialize() {
-		// Select starting scene and initialize that scene
 		if (this.initial_scene !== null) {
 			console.log("not null uwu")
 			for(var i = 0; i < this.children.length; i++) {
@@ -161,8 +162,8 @@ class Program extends THREE.Object3D {
 		return scene
 	}
 
+	// Remove Scene from program
 	remove(scene) {
-		// Remove Scene
 		var index = this.children.indexOf(scene)
 		if (index > -1) {
 			this.children.splice(index, 1)
@@ -207,7 +208,30 @@ class Program extends THREE.Object3D {
 	}
 
 	toJSON(meta) {
-		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
+		var self = this
+
+		var data = THREE.Object3D.prototype.toJSON.call(this, meta, (meta, object) => {
+			var textures = self.textures
+			var materials = self.materials
+
+			// Store textures
+			for(var i in textures) {
+				var texture = textures[i]
+
+				if (meta.textures[texture.uuid] === undefined) {
+					meta.textures[texture.uuid] = texture.toJSON(meta)
+				}
+			}
+
+			// Store materials
+			for(var i in materials) {
+				var material = materials[i]
+
+				if (meta.materials[material.uuid] === undefined) {
+					meta.materials[material.uuid] = material.toJSON(meta)
+				}
+			}
+		})
 
 		data.object.author = this.author
 		data.object.description = this.description

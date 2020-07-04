@@ -275,9 +275,8 @@ class Sky extends THREE.Mesh {
 		object.time = this.time
 		object.components = this.components
 
-		if (this.name !== '') {
-			object.name = this.name
-		}
+		object.name = this.name
+
 		if (JSON.stringify(this.userData) !== '{}') {
 			object.userData = this.userData
 		}
@@ -287,22 +286,6 @@ class Sky extends THREE.Mesh {
 		object.visible = !(this.visible === false)
 
 		object.matrix = this.matrix.toArray()
-
-		if (this.geometry !== undefined) {
-			if (meta.geometries[this.geometry.uuid] === undefined) {
-				meta.geometries[this.geometry.uuid] = this.geometry.toJSON(meta)
-			}
-
-			object.geometry = this.geometry.uuid
-		}
-
-		if (this.material !== undefined) {
-			if (meta.materials[this.material.uuid] === undefined) {
-				meta.materials[this.material.uuid] = this.material.toJSON(meta)
-			}
-
-			object.material = this.material.uuid
-		}
 
 		// Collect children data
 		if (this.children.length > 2) {

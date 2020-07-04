@@ -4,6 +4,7 @@ function ObjectLoader(manager)
 	this.texturePath = '';
 }
 
+// Object loader methods
 ObjectLoader.prototype.load = load;
 ObjectLoader.prototype.parse = parse;
 ObjectLoader.prototype.setTexturePath = setTexturePath;
@@ -15,6 +16,7 @@ ObjectLoader.prototype.parseImages = parseImages;
 ObjectLoader.prototype.parseTextures = parseTextures;
 ObjectLoader.prototype.parseObject = parseObject;
 
+// Load object from url
 function load(url, onLoad, onProgress, onError)
 {
 	if(this.texturePath === '')
@@ -31,6 +33,7 @@ function load(url, onLoad, onProgress, onError)
 	}, onProgress, onError );
 }
 
+// Parse an object file
 function parse(json, onLoad)
 {
 	var geometries = this.parseGeometries(json.geometries);
@@ -63,19 +66,22 @@ function parse(json, onLoad)
 	return object;
 }
 
+// Set base texture path
 function setTexturePath(value)
 {
 	this.texturePath = value;
 }
 
+// Set cross origin
 function setCrossOrigin(value)
 {
 	this.crossOrigin = value;
 }
 
+// Parse geometries
 function parseGeometries(json)
 {
-	var geometries = {};
+	var geometries = [];
 
 	if(json !== undefined)
 	{
@@ -252,9 +258,10 @@ function parseGeometries(json)
 	return geometries;
 }
 
+// Parse all materials
 function parseMaterials(json, textures)
 {
-	var materials = {};
+	var materials = [];
 
 	if(json !== undefined)
 	{
@@ -272,6 +279,7 @@ function parseMaterials(json, textures)
 	return materials;
 }
 
+// Parse animations
 function parseAnimations(json)
 {
 	var animations = [];
@@ -285,10 +293,11 @@ function parseAnimations(json)
 	return animations;
 }
 
+// Parse images
 function parseImages(json, onLoad)
 {
 	var scope = this;
-	var images = {};
+	var images = [];
 
 	function loadImage(url)
 	{
@@ -317,6 +326,7 @@ function parseImages(json, onLoad)
 	return images;
 }
 
+// Parse texture
 function parseTextures(json, images)
 {
 	function parseConstant( value )
@@ -329,7 +339,7 @@ function parseTextures(json, images)
 		return THREE[ value ];
 	}
 
-	var textures = {};
+	var textures = [];
 
 	if ( json !== undefined )
 	{
@@ -398,6 +408,7 @@ function parseTextures(json, images)
 	return textures;
 }
 
+// Parse objects
 function parseObject(data, geometries, materials, textures)
 {
 	var matrix = new THREE.Matrix4();
@@ -474,9 +485,6 @@ function parseObject(data, geometries, materials, textures)
 
 		case 'Program':
 			object = new Program(data.name, data.description, data.author, data.version, data.vr, data.time)
-			
-			object.materials = materials
-			object.textures = textures
 
 			if (data.initial_scene !== undefined) {
 				object.initial_scene = data.initial_scene
@@ -730,7 +738,11 @@ function parseObject(data, geometries, materials, textures)
 	}
 
 	// LOD Objects
-	if(data.type === 'LOD')
+	if (data.type === "Program") {
+		object.materials = materials
+		object.textures = textures
+		object.geometries = geometries
+	} else if(data.type === 'LOD')
 	{
 		var levels = data.levels;
 

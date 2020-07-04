@@ -61,8 +61,8 @@ Editor.MODE_ROTATE = 3;
 
 // Editor version
 Editor.NAME = "Gorlot"
-Editor.VERSION = "V0.0.1"
-Editor.TIMESTAMP = "Sat 04 Jul 2020 13:02:30"
+Editor.VERSION = "V0.0.2"
+Editor.TIMESTAMP = "Sat 04 Jul 2020 13:26:30"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -680,15 +680,15 @@ Editor.updateTreeView = function() {
 // Update asset explorer
 Editor.updateAssetExplorer = function() {
 
-	// Get material list
-	var materials = ObjectUtils.getMaterials(Editor.program)
-	
-	if(EditorUI.asset_explorer_objects !== undefined) {
+	if (EditorUI.asset_explorer_objects !== undefined) {
 		EditorUI.asset_explorer_objects = []
 	}
 
+	// Get material list
+	var materials = ObjectUtils.getMaterials(Editor.program, Editor.program.materials)
+
 	// Add materials to asset explorer
-	for(var i = 0; i < materials.length; i++) {
+	for(var i in materials) {
 		EditorUI.addAsset(materials[i].name, materials[i])
 	}
 }
