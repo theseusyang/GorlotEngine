@@ -190,12 +190,11 @@ function EditorUIAssetExplorer() {
                     }
                 }
             }
-        ], {title: v.name, event: e})
+        ], {title: v.attachedTo.name, event: e})
     }, callback_ondragstart: (v, e) => {
         // TODO: This
     }, callback_ondragend: (v, e) => {
         // TODO: This
-        console.log("You ended dragging")
     }, callback_ondrop: (v, e) => {
         // TODO: This
         e.preventDefault()
@@ -209,11 +208,10 @@ function EditorUIAssetExplorer() {
     }, ondrop: (v, e) => {
         // TODO This
         e.preventDefault()
-    }, ondragover: (v, e) => {
+    }, ondragover: (e) => {
         // TODO: This
         e.preventDefault()
     }, callback_onmouseenter: (v, e) => {
-        // When the mouse enters, the material is highlighted
         if (e.attachedTo instanceof THREE.Material) {
             if (e.attachedTo.color !== undefined) {
                 self.color.copy(e.attachedTo.color)
@@ -221,7 +219,6 @@ function EditorUIAssetExplorer() {
             }
         }
     }, callback_onmouseleave: (v, e) => {
-        // When the mouse leaves, then the material returns to its original colour
         if (e.attachedTo instanceof THREE.Material) {
             if (e.attachedTo.color !== undefined) {
                 e.attachedTo.color.copy(self.color)
