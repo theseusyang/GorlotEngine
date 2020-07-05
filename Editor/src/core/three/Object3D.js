@@ -29,7 +29,6 @@ THREE.Object3D.prototype.destroy = function() {
 	if (this.parent !== null) {
 		this.parent.remove(this)
 	}
-	this.dispose()
 }
 
 // Create JSON for object

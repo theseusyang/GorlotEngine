@@ -45,6 +45,12 @@ class Key {
 		this.justReleased = just_released;
 	}
 
+	reset() {
+		this.justPressed = false
+		this.isPressed = false
+		this.justReleased = false
+	}
+
 	toString() {
 		return "Pressed:" + this.isPressed + " JustPressed:" + this.justPressed + " JustReleased:" + this.justReleased;
 	}
