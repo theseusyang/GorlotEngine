@@ -471,27 +471,10 @@ function parseObject(data, geometries, materials, textures)
 
 		case "ParticleEmitter":
 			if (data.group !== undefined) {
-				var texture = getTexture(data.group.texture)
+				data.group.texture.value = getTexture(data.group.texture.value)
 			}
 
-			object = new ParticleEmitter(texture)
-
-			if (data.group !== undefined) {
-				var update_values = false
-
-				if(data.group.blending !== undefined) {
-					object.group.blending = data.group.blending
-					update_values = true
-				}
-				if (data.emitter.direction !== undefined) {
-					object.emitter.direction = data.emitter.direction
-				}
-			
-				// Update WebGL related attributes	
-				if (update_values) {
-					object.updateValues()
-				}
-			}
+			object = new ParticleEmitter(data.group, data.emitter)
 
 			break;
 

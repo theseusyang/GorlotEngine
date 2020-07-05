@@ -35,4 +35,15 @@ class Sprite extends THREE.Sprite {
 			this.children[i].stop()
 		}
 	}
+
+	// Dispose sprite
+	dispose() {
+		// Dispose material
+		this.material.dispose()
+
+		// Dispose children
+		for(var i = 0;  i < this.children.length; i++) {
+			this.children[i].dispose()
+		}
+	}
 }

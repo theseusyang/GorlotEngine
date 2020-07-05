@@ -29,22 +29,17 @@ ParticlesSetBlendingNode.prototype.onExecute = function() {
 	if (p !== undefined && b !== undefined) {
 		p.group.blending = b
 		p.updateValues()
-
-		if (EditorUI.partEd !== undefined && EditorUI.partEd !== null) {
-			EditorUI.partEd.particle_runtime.group.blending = p.group.blending
-			EditorUI.partEd.particle_runtime.updateValues()
-		}
 	}
 }
 
 function ParticlesSetDirectionNode() {
 	this.addInput("Particles", "Particles")
-	this.properties = {direction: "Forward"}
+	this.addInput("Direction", "Text")
 }
 ParticlesSetDirectionNode.title = "Direction"
 ParticlesSetDirectionNode.prototype.onExecute = function() {
 	var p = this.getInputData(0)
-	var d = this.properties.direction
+	var d = this.getInputData(1)
 
 	if (p !== undefined && d !== undefined) {
 		if (d !== "") {
@@ -52,10 +47,6 @@ ParticlesSetDirectionNode.prototype.onExecute = function() {
 				p.emitter.direction = 1
 			} else if (d === "Backward") {
 				p.emitter.direction = -1
-			}
-
-			if (EditorUI.partEd !== undefined && EditorUI.partEd !== null) {
-				EditorUI.partEd.particle_runtime.emitter.direction = p.emitter.direction
 			}
 		}
 	}
@@ -72,10 +63,6 @@ ParticlesSetCountNode.prototype.onExecute = function() {
 
 	if (p !== undefined && c !== undefined) {
 		p.emitter.particleCount = c
-
-		if (EditorUI.partEd !== undefined && EditorUI.partEd !== null) {
-			EditorUI.partEd.particle_runtime.emitter.particleCount = c
-		}
 	}
 }
 
@@ -93,10 +80,6 @@ ParticlesSetDurationNode.prototype.onExecute = function() {
 			d = null
 		}
 		p.emitter.duration = d
-
-		if (EditorUI.partEd !== undefined && EditorUI.partEd !== null) {
-			EditorUI.partEd.particle_runtime.emitter.duration = d
-		}
 	}
 }
 
@@ -111,10 +94,6 @@ ParticlesSetEmitterTypeNode.prototype.onExecute = function() {
 
 	if (p !== undefined && t !== undefined) {
 		p.emitter.type = t
-
-		if (EditorUI.partEd !== undefined && EditorUI.partEd !== null) {
-			EditorUI.partEd.particle_runtime.emitter.type = t
-		}
 	}
 }
 
@@ -135,15 +114,6 @@ ParticlesSetMaxAgeNode.prototype.onExecute = function() {
 		}
 		if (s !== undefined) {
 			p.emitter.maxAge.spread = s
-		}
-
-		if (EditorUI.partEd !== undefined && EditorUI.partEd !== null) {
-			if (a !== undefined) {
-				EditorUI.partEd.maxAge.value = a
-			}
-			if (s !== undefined) {
-				EditorUI.partEd.maxAge.spread = s
-			}
 		}
 	}
 }

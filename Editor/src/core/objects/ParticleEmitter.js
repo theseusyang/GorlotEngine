@@ -2,7 +2,7 @@
 
 // Particle Emitter class
 class ParticleEmitter extends THREE.Object3D {
-	constructor(texture, group, emitter) {
+	constructor(group, emitter) {
 		super()
 
 		this.type = "ParticleEmitter"
@@ -43,11 +43,11 @@ class ParticleEmitter extends THREE.Object3D {
 
 		// Create group
 		if (group !== undefined) {
-			// TODO: This
+			this.group = new SPE.Group(group)
 		} else {
 			this.group = new SPE.Group({
 				texture: {
-					value: (texture !== undefined) ? texture : new Texture("data/particle.png")
+					value: new Texture("data/particle.png")
 				},
 				blending: THREE.AdditiveBlending,
 				maxParticleCount: 10000
@@ -59,7 +59,7 @@ class ParticleEmitter extends THREE.Object3D {
 		this.group.mesh.frustumCulled = false
 
 		if(emitter !== undefined) {
-			// TODO: This
+			this.emitter = new SPE.Emitter(emitter)
 		} else {
 			this.emitter = new SPE.Emitter({
 				
@@ -196,7 +196,8 @@ class ParticleEmitter extends THREE.Object3D {
 
 		//Group attributes
 		data.object.group = {}
-		data.object.group.texture = this.group.texture.uuid
+		data.object.group.texture = {}
+		data.object.group.texture.value = this.group.texture.uuid
 		data.object.group.textureFrames = this.group.textureFrames
 		data.object.group.textureFrameCount = this.group.textureFrameCoun
 		data.object.group.textureLoop = this.group.textureLoop

@@ -36,10 +36,12 @@ include("src/core/ObjectLoader.js")
 include("src/core/MaterialLoader.js")
 
 include("src/core/MathUtils.js")
-include("src/core/ThreeExpand.js")
 include("src/core/Program.js")
 include("src/core/Scene.js")
 include("src/core/ObjectUtils.js")
+
+include("src/core/three/Object3D.js")
+include("src/core/three/Material.js")
 
 include("src/core/webvr/VRControls.js")
 

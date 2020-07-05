@@ -48,13 +48,10 @@ class ParticleEditor {
 
 		// Particle Preview Scene
 		this.scene = new Scene()
-		this.container = new Empty()
-		this.scene.add(this.container)
 
 		// Particle Preview Lights and Helpers
-		this.scene.add(new PointLight(0x666666))
-		this.scene.add(new AmbientLight(0x444444))
-        var grid = new THREE.GridHelper(50, 50, 1)
+		this.scene.add(new PointLight(0xffffff))
+        var grid = new THREE.GridHelper(50, 50, 0x888888)
         grid.material.depthWrite = false
         this.scene.add(grid)
         var axis = new THREE.AxisHelper(50)
@@ -63,9 +60,7 @@ class ParticleEditor {
 
 		// Particle
 		this.particle = particleEmitter
-		this.particle_runtime = new ObjectLoader().parse(this.particle.toJSON())
-		this.particle_runtime.initialize()
-		this.container.add(this.particle_runtime)
+		this.updateRuntimeParticle()
 
 		if(this.particle.nodes === {}) {
 			// When an editor is opened, the particle.nodes is overwritten by this one
@@ -111,6 +106,19 @@ class ParticleEditor {
 		this.graph = new LGraph(this.nodes)
 		this.graphcanvas = new LGraphCanvas("#ParticleEditor"+ParticleEditor.id, this.graph)
 
+		this.graph.onNodeConnectionChange = function(type) {
+			//if (type === LiteGraph.INPUT) {
+			//	self.updateRuntimeParticle()
+			//}
+			//if (type === LiteGraph.OUTPUT) {
+			//	self.updateRuntimeParticle()
+			//}
+
+			setTimeout(() => {
+				self.updateRuntimeParticle()
+			}, 100)
+		}
+
 		EditorUI.mainarea.onresize = function(e) {
 			self.updateInterface()
 		}
@@ -125,6 +133,20 @@ class ParticleEditor {
 		Mouse.canvas = this.preview
 
 		ParticleEditor.id++
+	}
+
+	// Updates runtime particle to math attached particle
+	updateRuntimeParticle() {
+		if (this.particle !== null && this.particle !== undefined) {
+			if (this.particle_runtime !== undefined) {
+				this.particle_runtime.dispose()
+				this.scene.remove(this.particle_runtime)
+			}
+
+			this.particle_runtime = new ObjectLoader().parse(this.particle.toJSON())
+			this.particle_runtime.initialize()
+			this.scene.add(this.particle_runtime)
+		}
 	}
 
 	updateParticle() {
@@ -177,8 +199,10 @@ class ParticleEditor {
 			this.updateCamera()
 		}
 
-		// Update particle
-		this.particle_runtime.update()
+		if(this.particle_runtime !== undefined) {
+			// Update particle
+			this.particle_runtime.update()
+		}
 
 		// Render editor scene
 		this.renderer.render(this.scene, this.camera)
