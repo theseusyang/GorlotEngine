@@ -66,10 +66,11 @@ include("src/core/objects/cameras/OrthographicCamera.js")
 
 include("src/core/objects/audio/Audio.js")
 
+include("src/core/objects/script/Script.js")
+include("src/core/objects/script/Blueprints.js")
+
 include("src/core/objects/Bone.js")
 include("src/core/objects/Empty.js")
-include("src/core/objects/Script.js")
-include("src/core/objects/Blueprints.js")
 include("src/core/objects/Model3D.js")
 include("src/core/objects/AnimatedModel.js")
 include("src/core/objects/Text3D.js")

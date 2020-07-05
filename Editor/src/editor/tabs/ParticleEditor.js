@@ -107,13 +107,6 @@ class ParticleEditor {
 		this.graphcanvas = new LGraphCanvas("#ParticleEditor"+ParticleEditor.id, this.graph)
 
 		this.graph.onNodeConnectionChange = function(type) {
-			//if (type === LiteGraph.INPUT) {
-			//	self.updateRuntimeParticle()
-			//}
-			//if (type === LiteGraph.OUTPUT) {
-			//	self.updateRuntimeParticle()
-			//}
-
 			setTimeout(() => {
 				self.updateRuntimeParticle()
 			}, 100)
