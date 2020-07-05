@@ -1,3 +1,5 @@
+"use strict"
+
 class VRControls {
 	constructor(object, onError) {
 		this.vr_input = null

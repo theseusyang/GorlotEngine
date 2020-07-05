@@ -1,3 +1,6 @@
+"use strict"
+
+// Text texture class
 class TextTexture extends THREE.CanvasTexture {
 	constructor() {
 

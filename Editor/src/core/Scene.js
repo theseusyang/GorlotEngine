@@ -1,3 +1,6 @@
+"use strict"
+
+// Scene class
 class Scene extends THREE.Scene {
 	constructor() {
 		super()

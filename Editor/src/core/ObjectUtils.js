@@ -1,4 +1,6 @@
-//Object tools contains some object managing helpers
+"use strict"
+
+// Object loader constructor
 function ObjectUtils(){}
 
 // Get all materials in object and children

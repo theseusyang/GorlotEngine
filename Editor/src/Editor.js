@@ -1,4 +1,3 @@
-// Enable strict mode
 "use strict"
 
 include("libs/litegui/litegui.js")

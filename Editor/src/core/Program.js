@@ -1,3 +1,6 @@
+"use strict"
+
+// Program class
 class Program extends THREE.Object3D {
 	constructor(name, description, author, version, vr) {
 		super()
@@ -88,18 +91,25 @@ class Program extends THREE.Object3D {
 	// Remove material from materials list (also receives default, used to replace)
 	removeMaterial(material, default_material, default_material_sprite) {
 		if (material instanceof THREE.Material) {
-			// TODO: This
-		}
+		    delete this.materials[material.uuid]
+
+            this.traverse((child) => {
+                if(child.material !== undefined) {
+                	if (child.material.uuid === material.uuid) {
+                		if (child instanceof THREE.Sprite) {
+                			child.material = default_material_sprite
+                		} else {
+                			child.material = default_material
+                		}
+                	}
+                }
+            })
+        }
 	}
 
 	// Add texture to texture list
 	addTexture(texture) {
 		this.textures[texture.uuid] = texture
-	}
-
-	// Remove texture from textures list
-	removeTexture(texture, default_texture) {
-		// TODO: This
 	}
 
 	setScene(scene) {
@@ -220,13 +230,13 @@ class Program extends THREE.Object3D {
 		var self = this
 
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta, (meta, object) => {
-			var textures = self.textures
-			var materials = self.materials
+    		var textures = self.textures
+	    	var materials = self.materials
+            var geometries = self.geometries
 
 			// Store textures
 			for(var i in textures) {
 				var texture = textures[i]
-
 				if (meta.textures[texture.uuid] === undefined) {
 					meta.textures[texture.uuid] = texture.toJSON(meta)
 				}
@@ -235,11 +245,18 @@ class Program extends THREE.Object3D {
 			// Store materials
 			for(var i in materials) {
 				var material = materials[i]
-
 				if (meta.materials[material.uuid] === undefined) {
 					meta.materials[material.uuid] = material.toJSON(meta)
 				}
 			}
+
+            // Store geometries
+            for(var i in geometries) {
+                var geometry = geometries[i]
+                if(meta.geometries[geometry.uuid] === undefined) {
+                    meta.geometries[geometry.uuid] = geometry.toJSON(meta)
+                }
+            }
 		})
 
 		data.object.author = this.author

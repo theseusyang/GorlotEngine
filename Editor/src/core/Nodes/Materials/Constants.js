@@ -109,6 +109,17 @@ function FlatShadingNode() {
 	return THREE.FlatShading
 }
 
+// Emitter types
+function BoxTypeNode() {
+	return SPE.distributions.BOX
+}
+function SphereTypeNode() {
+	return SPE.distributions.SPHERE
+}
+function DiscTypeNode() {
+	return SPE.distributions.DISC
+}
+
 function registerMaterialNodeConstants() {
 	// Blending mode
 	LiteGraph.wrapFunctionAsNode("BlendingModes/NoBlending", NoBlendingNode, null, "number")
@@ -146,5 +157,8 @@ function registerMaterialNodeConstants() {
 	LiteGraph.wrapFunctionAsNode("Constants/Add", AddNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("Constants/SmoothShading", SmoothShadingNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("Constants/FlatShading", FlatShadingNode, null, "number")
-
+	// Emitter Type
+	LiteGraph.wrapFunctionAsNode("Constants/BoxType", BoxTypeNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/SphereType", SphereTypeNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/DiscType", DiscTypeNode, null, "number")
 }

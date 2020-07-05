@@ -1,3 +1,6 @@
+"use strict"
+
+// Empty class
 class Empty extends THREE.Object3D {
 	constructor() {
 		super()

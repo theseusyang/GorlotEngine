@@ -1,3 +1,6 @@
+"use strict"
+
+// Video Texture class
 class VideoTexture extends THREE.Texture {
 	constructor(url) {
 		// Creates video element

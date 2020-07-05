@@ -1,3 +1,6 @@
+"use strict"
+
+// Bone class
 class Bone extends THREE.Bone {
 	constructor() {
 		super()

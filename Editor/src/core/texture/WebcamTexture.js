@@ -1,4 +1,7 @@
- class WebcamTexture extends THREE.Texture {
+"use strict"
+
+// Webcam texture constructor
+class WebcamTexture extends THREE.Texture {
 	constructor() {
 		// Check if webcam available
 		if (navigator.webkitGetUserMedia || navigator.mozGetUserMedia ? true : false) {

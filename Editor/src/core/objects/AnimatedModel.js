@@ -1,8 +1,14 @@
+"use strict"
+
+// Animated model class
 class AnimatedModel extends THREE.SkinnedMesh {
 	constructor(geometry, material, useVertexTexture) {
 		super(geometry, material, useVertexTexture)
 
 		this.name = "model"
+
+        this.receiveShadow = true
+            this.castShadow = true
 
 		this.components = []
 		this.defaultComponents = []
@@ -28,6 +34,18 @@ class AnimatedModel extends THREE.SkinnedMesh {
 			this.children[i].stop()
 		}
 	}
+
+    // Dispose model
+    dispose() {
+        // Dispose material and geometry
+        this.material.dispose()
+        this.geometry.dispose()
+
+        // Dispose children
+        for(var i = 0; i < this.children.length; i++) {
+            this.children[i].dispose()
+        }
+    }
 
 	addComponent(compo) {
 		if (compo instanceof Component) {

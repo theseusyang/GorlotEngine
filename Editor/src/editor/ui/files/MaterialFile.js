@@ -46,7 +46,8 @@ class MaterialFile extends File {
         	        title: "Delete",
         	        callback: () => {
         	            if (self.attachedTo !== undefined || self.attachedTo !== null) {
-        	                // TODO: Delete
+        	            	Editor.program.removeMaterial(self.attachedTo, Editor.default_material, Editor.default_sprite_material)
+        	            	Editor.updateObjectViews()
         	            }
         	        }
         	    },

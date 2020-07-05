@@ -1,3 +1,6 @@
+"use strict"
+
+// Model 3D Class
 class Model3D extends THREE.Mesh {
 	constructor(geometry, material) {
 		super(geometry, material)
@@ -35,6 +38,18 @@ class Model3D extends THREE.Mesh {
 	stop() {
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].stop()
+		}
+	}
+
+	// Dispose model
+	dispose() {
+		// Dispose material and geometry
+		this.material.dispose()
+		this.geometry.dispose()
+
+		// Dispose children
+		for(var i = 0; i < this.children.length; i++) {
+			this.children[i].dispose()
 		}
 	}
 }

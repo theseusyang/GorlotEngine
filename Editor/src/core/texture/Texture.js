@@ -1,3 +1,6 @@
+"use strict"
+
+// Texture constructor
 class Texture extends THREE.Texture {
 	constructor(url) {
 		// Create image element
