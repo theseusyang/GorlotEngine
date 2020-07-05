@@ -39,7 +39,7 @@ class SettingsTab {
 
 	initUI() {
 		this.inspector.addTitle("General")
-		// TODO: General settings
+		this.inspector.addCheckbox("Show stats", Settings.show_stats)
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Rendering Quality")
@@ -74,7 +74,9 @@ class SettingsTab {
 			value = false
 		}
 
-		if (name === "Antialiasing") {
+		if (name === "Show stats") {
+			Settings.show_stats = value
+		} else if (name === "Antialiasing") {
 			Settings.antialiasing = value
 		} else if (name === "Shadows Type") {
 			if (value === "Basic") {
@@ -84,6 +86,10 @@ class SettingsTab {
 			} else if (value === "PCF Soft") {
 				Settings.shadows_type = THREE.PCFSoftShadowMap
 			}
+		} else if (name === "Show Grid") {
+			Settings.grid_enabled = value
+		} else if (name === "Show Axis") {
+			Settings.axis_enabled = value
 		} else if (name === "Font Size") {
 			Settings.code_font_size = value
 		} else if (name === "Line Numbers") {

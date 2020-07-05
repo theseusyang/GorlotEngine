@@ -1,8 +1,11 @@
+"use strict"
+
+// Perspective Camera class
 class PerspectiveCamera extends THREE.PerspectiveCamera {
 	constructor(fov, aspect, near, far) {
 		super(fov, aspect, near, far)
 
-		this.name = "perspective_camera"
+		this.name = "camera"
 		this.rotationAutoUpdate = true
 
 		this.components = []

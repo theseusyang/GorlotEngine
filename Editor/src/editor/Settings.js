@@ -1,5 +1,8 @@
 function Settings() {}
 
+// Debug Settings
+Settings.show_stats = true
+
 // Scene Editor settings
 Settings.grid_size = 500
 Settings.grid_spacing =  5

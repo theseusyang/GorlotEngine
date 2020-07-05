@@ -62,6 +62,20 @@ ParticlesSetCountNode.prototype.onExecute = function() {
 	var c = this.getInputData(1)
 
 	if (p !== undefined && c !== undefined) {
+		p.group.maxParticleCount = c
+	}
+}
+
+function ParticlesSetRateNode() {
+	this.addInput("Particles", "Particles")
+	this.addInput("Rate", "number")
+}
+ParticlesSetRateNode.title = "Rate"
+ParticlesSetRateNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var c = this.getInputData(1)
+
+	if (p !== undefined && c !== undefined) {
 		p.emitter.particleCount = c
 	}
 }
@@ -123,6 +137,7 @@ function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/ParticlesSetBlending", ParticlesSetBlendingNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetDirection", ParticlesSetDirectionNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetCount", ParticlesSetCountNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetRate", ParticlesSetRateNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetDuration", ParticlesSetDurationNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetEmitterType", ParticlesSetEmitterTypeNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetMaxAge", ParticlesSetMaxAgeNode)

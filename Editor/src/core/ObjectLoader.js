@@ -24,49 +24,49 @@ function load(url, onLoad, onProgress, onError)
 {
 	if(this.texturePath === '')
 	{
-		this.texturePath = url.substring(0, url.lastIndexOf( '/' ) + 1);
+		this.texturePath = url.substring(0, url.lastIndexOf( '/' ) + 1)
 	}
 
-	var scope = this;
-	var loader = new THREE.XHRLoader(scope.manager);
+	var self = this
+	var loader = new THREE.XHRLoader(this.manager)
 
 	loader.load(url, function(text)
 	{
-		scope.parse(JSON.parse(text), onLoad);
-	}, onProgress, onError );
+		self.parse(JSON.parse(text), onLoad)
+	}, onProgress, onError )
 }
 
 // Parse an object file
 function parse(json, onLoad)
 {
-	var geometries = this.parseGeometries(json.geometries);
+	var geometries = this.parseGeometries(json.geometries)
 	var images = this.parseImages(json.images, function()
 	{
 		if(onLoad !== undefined)
 		{
-			onLoad(object);
+			onLoad(object)
 		}
 	});
 
-	var textures  = this.parseTextures(json.textures, images);
-	var materials = this.parseMaterials(json.materials, textures);
+	var textures  = this.parseTextures(json.textures, images)
+	var materials = this.parseMaterials(json.materials, textures)
 
-	var object = this.parseObject(json.object, geometries, materials, textures);
+	var object = this.parseObject(json.object, geometries, materials, textures)
 
 	if(json.animations)
 	{
-		object.animations = this.parseAnimations(json.animations);
+		object.animations = this.parseAnimations(json.animations)
 	}
 
 	if(json.images === undefined || json.images.length === 0)
 	{
 		if(onLoad !== undefined)
 		{
-			onLoad(object);
+			onLoad(object)
 		}
 	}
 
-	return object;
+	return object
 }
 
 // Set base texture path
@@ -145,6 +145,19 @@ function parseGeometries(json)
 					);
 					break;
 
+				case 'ConeGeometry':
+				case 'ConeBufferGeometry':
+					geometry = new THREE[data.type](
+						data.radius,
+						data.height,
+						data.radialSegments,
+						data.heightSegments,
+						data.openEnded,
+						data.thetaStart,
+						data.thetaLength
+					)
+				break;
+
 				case 'SphereGeometry':
 				case 'SphereBufferGeometry':
 					geometry = new THREE[ data.type ](
@@ -159,32 +172,14 @@ function parseGeometries(json)
 					break;
 
 				case 'DodecahedronGeometry':
-					geometry = new THREE.DodecahedronGeometry(
-						data.radius,
-						data.detail
-					);
-					break;
-
 				case 'IcosahedronGeometry':
-					geometry = new THREE.IcosahedronGeometry(
-						data.radius,
-						data.detail
-					);
-					break;
-
 				case 'OctahedronGeometry':
-					geometry = new THREE.OctahedronGeometry(
-						data.radius,
-						data.detail
-					);
-					break;
-
 				case 'TetrahedronGeometry':
 					geometry = new THREE.TetrahedronGeometry(
 						data.radius,
 						data.detail
 					);
-					break;
+					break
 
 				case 'RingGeometry':
 				case 'RingBufferGeometry':
@@ -221,8 +216,8 @@ function parseGeometries(json)
 					);
 					break;
 
-				case 'LatheGeometry':
-					geometry = new THREE.LatheGeometry(
+				case 'LatheBufferGeometry':
+					geometry = new THREE[data.type](
 						data.points,
 						data.segments,
 						data.phiStart,
@@ -314,6 +309,7 @@ function parseImages(json, onLoad)
 	if(json !== undefined && json.length > 0)
 	{
 		var manager = new THREE.LoadingManager( onLoad );
+
 		var loader = new THREE.ImageLoader( manager );
 		loader.setCrossOrigin( this.crossOrigin );
 
@@ -397,6 +393,10 @@ function parseTextures(json, images)
 			if(data.anisotropy !== undefined)
 			{
 				texture.anisotropy = data.anisotropy;
+			}
+
+			if (data.flipY !== undefined) {
+				texture.flipY = data.flipY
 			}
 
 			if (Array.isArray( data.wrap ))

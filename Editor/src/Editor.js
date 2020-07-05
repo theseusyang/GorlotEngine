@@ -95,22 +95,24 @@ Editor.initialize = function(canvas)
 	App.setMouseLock(false)
 
 	//Editor initial state
-	Editor.tool_mode = Editor.MODE_SELECT;
-	Editor.state = Editor.STATE_EDITING;
+	Editor.tool_mode = Editor.MODE_SELECT
+	Editor.state = Editor.STATE_EDITING
 
 	// Auxiliar values
 	Editor.pid2 = Math.PI/2
 
 	//Editor Selected object
-	Editor.selected_object = null;
-	Editor.block_camera_move = false;
-	Editor.is_editing_object = false;
-	Editor.editing_object_args = null;
+	Editor.selected_object = null
+	Editor.block_camera_move = false
+	Editor.is_editing_object = false
+	Editor.editing_object_args = null
+
+	// Performance meter
+	Editor.stats = null
 
 	// Editor program and scene
 	Editor.program = null
 	Editor.program_running = null
-	Editor.createNewProgram()
 
 	// VR effect and controls
 	Editor.vr_controls = new VRControls()
@@ -130,29 +132,20 @@ Editor.initialize = function(canvas)
 	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff})
 	Editor.default_sprite_material.name = "default"
 
-	//Initialize User Interface
-	EditorUI.Initialize();
-
 	//Debug Elements
 	Editor.tool_scene = new THREE.Scene()
 	Editor.tool_scene_top = new THREE.Scene()
-	Editor.cannon_renderer = new THREE.CannonDebugRenderer(Editor.tool_scene, Editor.program.scene.world)
+	//Editor.cannon_renderer = new THREE.CannonDebugRenderer(Editor.tool_scene, Editor.program.scene.world)
 
 	// Raycaster
 	Editor.raycaster = new THREE.Raycaster()
 
-	// Set render canvas
-	Editor.setRenderCanvas(EditorUI.canvas.element)
-
 	//Editor Camera
-	Editor.default_camera = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.01, 1000000)
+	Editor.default_camera = new PerspectiveCamera(60, 1, 0.01, 1000000)
 	Editor.default_camera.position.set(0, 5, -10)
 	Editor.camera = Editor.default_camera
 	Editor.camera_rotation = new THREE.Vector2(0,0)
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
-
-	//Update interface
-	EditorUI.updateInterface();
 
 	//Grid and axis helpers
 	Editor.grid_helper = new THREE.GridHelper(Settings.grid_size, Math.round(Settings.grid_size/Settings.grid_spacing)*2, 0x888888, 0x888888)
@@ -214,7 +207,19 @@ Editor.initialize = function(canvas)
 	Editor.rotate_tool.visible = false;
 	Editor.tool_scene_top.add(Editor.rotate_tool);
 
-	// TODO: Delete
+	// Create new program
+	Editor.createNewProgram()
+
+	//Initialize User Interface
+	EditorUI.Initialize()
+
+	// Set render canvas
+	Editor.setRenderCanvas(EditorUI.canvas.element)
+
+	//Update interface
+	EditorUI.updateInterface()
+	
+	// Update interface explorer tree view
 	Editor.updateObjectViews()
 }
 
@@ -222,8 +227,12 @@ Editor.initialize = function(canvas)
 Editor.update = function()
 {
 
-	Editor.block_camera_move = false;
+	// End performance measure
+	if (Editor.stats !== null) {
+		Editor.stats.begin()
+	}
 
+	Editor.block_camera_move = false;
 
 	// If not on test mode
 	if(Editor.state !== Editor.STATE_TESTING && Editor.state !== Editor.STATE_IDLE)
@@ -711,7 +720,7 @@ Editor.draw = function()
 		Editor.renderer.render(Editor.program.scene, Editor.camera)
 
 		// Render debug scene
-		Editor.cannon_renderer.update()
+		//Editor.cannon_renderer.update()
 		Editor.renderer.render(Editor.tool_scene, Editor.camera)
 		Editor.renderer.clearDepth()
 
@@ -741,6 +750,11 @@ Editor.draw = function()
 		} else {
 			Editor.renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera)
 		}
+	}
+
+	// End performance measure
+	if (Editor.stats !== null) {
+		Editor.stats.end()
 	}
 }
 
@@ -967,6 +981,11 @@ Editor.disposeRunningProgram = function() {
 		Editor.program_running = null
 		Editor.vr_effect = null
 	}
+}
+
+// Set performance meter to be used
+Editor.setPerformanceMeter = function(stats) {
+	Editor.stats = stats
 }
 
 // Set render canvas

@@ -1,8 +1,11 @@
+"use strict"
+
+// Orthographic Camera class
 class OrthographicCamera extends THREE.OrthographicCamera {
 	constructor(size, aspect, mode, near, far) {
 		super(-1, 1, 1, -1, near, far)
 
-		this.name = "orthographic_camera"
+		this.name = "camera"
 
 		this.size = size
 		this.aspect = aspect

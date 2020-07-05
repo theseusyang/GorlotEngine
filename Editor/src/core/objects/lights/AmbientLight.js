@@ -3,6 +3,8 @@ class AmbientLight extends THREE.AmbientLight {
 		super(hex)
 		this.name = "ambient_light"
 
+		this.matrixAutoUpdate = false
+
 		this.components = []
 
 		this.defaultComponents = []

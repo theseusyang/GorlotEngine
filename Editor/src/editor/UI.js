@@ -170,7 +170,7 @@ EditorUI.saveProgram = function() {
         } catch(e) {
             console.error("Error saving program: " + e)
         }
-    }, ".json", true)
+    }, ".gsp", true)
 }
 
 // Open load program window
@@ -185,7 +185,7 @@ EditorUI.openProgram = function() {
                 } catch(e) {
                     console.error("Error loading program: " + e)
                 }
-            }, ".json")
+            }, ".gsp")
         }
     }, {title: "Open Project"})
 }
