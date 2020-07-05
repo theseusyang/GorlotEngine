@@ -1,3 +1,6 @@
+"use strict"
+
+// Text3D class
 class Text3D extends THREE.Mesh {
 	constructor(text, material, font) {
 		
@@ -37,6 +40,18 @@ class Text3D extends THREE.Mesh {
 		}
 	}
 
+	// Dispose text
+	dispose() {
+		// Dispose material and geometry
+		this.material.dispose()
+		this.geometry.dispose()
+
+		// Dispose children
+		for(var i = 0; i < this.children.length; i++) {
+			this.children[i].dispose()
+		}
+	}
+
 	setText(text) {
 		this.text = text
 		this.geometry.dispose()
@@ -64,7 +79,7 @@ class Text3D extends THREE.Mesh {
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
 		data.object.text = this.text
-		data.object.font = JSON.stringify(this.font)
+		data.object.font = this.font
 		data.object.components = this.components
 
 		// Restore Geometry

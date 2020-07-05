@@ -64,25 +64,13 @@ class ParticleEmitter extends THREE.Object3D {
 			this.emitter = new SPE.Emitter({
 				
 				particleCount: 2000,
-				direction: 1,
-				duration: null,
 	            type: SPE.distributions.BOX,
 	
 				maxAge: {
 					value: 2,
 					spread: 0
 				},
-	
-	            drag: {
-	                value: 0,
-	                spread: 0
-	            },
-	
-				position: {
-					value: new THREE.Vector3(0, 0, 0),
-					spread: new THREE.Vector3(0, 0, 0)
-				},
-	
+		
 				velocity: {
 					value: new THREE.Vector3(0, 25, 0),
 					spread: new THREE.Vector3(10, 7.5, 10)
@@ -93,29 +81,9 @@ class ParticleEmitter extends THREE.Object3D {
 					spread: new THREE.Vector3(10, 0, 10)
 				},
 	
-				wiggle: {
-					value: 0,
-					spread: 0
-				},
-	
 				color: {
 					value: [new THREE.Color(1, 1, 1), new THREE.Color(1, 0, 0)],
-					spread: [new THREE.Color(0, 0, 0), new THREE.Color(0.1, 0.1, 0.1)]
-				},
-	
-				opacity: {
-					value: 1,
-					spread: 0
-				},
-	
-				size: {
-					value: 1,
-					spread: 0
-				},
-	
-				angle: {
-					value: 0,
-					spread: 0
+					spread: [new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 1, 1)]
 				}
 			})
 		}
@@ -128,13 +96,6 @@ class ParticleEmitter extends THREE.Object3D {
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
 		this.defaultComponents.push(new Object3DComponent())
-	}
-
-	updateValues() {
-		// Update particle group and emitter runtime values
-		this.group.material.uniforms.texture.value = this.group.texture
-		this.group.material.blending = this.group.blending
-		this.group.material.needsUpdate = true
 	}
 
 	updateNodes(nodes) {

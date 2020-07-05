@@ -120,6 +120,12 @@ class Program extends THREE.Object3D {
 			if (this.scene.camera === null) {
 				this.scene.camera = this.default_camera
 			}
+		} else if (typeof scene === "string") {
+			this.scene = this.getObjectByName(scene)
+			this.scene.initialize()
+			if (this.scene.camera === null) {
+				this.scene.camera = this.default_camera
+			}
 		}
 	}
 

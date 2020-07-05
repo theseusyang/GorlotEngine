@@ -1,3 +1,6 @@
+"use strict"
+
+// Sprite class
 class Sprite extends THREE.Sprite {
 	constructor(material) {
 		super(material)
