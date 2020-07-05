@@ -1,3 +1,6 @@
+"use strict"
+
+// Key class
 class Key {
 	constructor() {
 		this.isPressed = false
@@ -11,14 +14,14 @@ class Key {
 
 		if(action === Key.KEY_DOWN) //Key Down
 		{
-			if(!this.isPressed)
+			if(!this.isPressed === false)
 			{
 				this.justPressed = true;
 			}
 			this.isPressed = true;
 		}
 		//Key Up
-		else {
+		else if(action === Key.KEY_UP) {
 			if(this.isPressed === true)
 			{
 				this.justReleased = true;
@@ -27,7 +30,7 @@ class Key {
 		}
 	}
 
-	isPressed() {
+	/*isPressed() {
 		return this.isPressed
 	}
 
@@ -37,7 +40,7 @@ class Key {
 
 	justReleased() {
 		return this.justReleased
-	}
+	}*/
 
 	set(just_pressed, is_pressed, just_released) {
 		this.justPressed = just_pressed;

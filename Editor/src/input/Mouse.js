@@ -1,3 +1,6 @@
+"use strict"
+
+// Mouse constructor
 function Mouse(){}
 
 //Mouse Atached to camera
@@ -16,12 +19,13 @@ Mouse.initialize = function()
     Mouse.wheel = 0
 
 	//Calculate coordinates relative to canvas
-	Mouse.canvas = null;
+	Mouse.canvas = null
 
-	//Mouse Buttons
-	Mouse.keys = [];
-	Mouse.raw_keys = [];
+	//Mouse Keys
+	Mouse.keys = []
+	Mouse.raw_keys = []
 
+	// Create key instances
 	for(var i = 0; i < 3; i++) {
 		Mouse.raw_keys.push(new Key())
 		Mouse.keys.push(new Key())
@@ -71,16 +75,16 @@ Mouse.initialize = function()
 }
 
 //Mouse Buttons
-Mouse.LEFT = 0;
-Mouse.MIDDLE = 1;
-Mouse.RIGHT = 2;
+Mouse.LEFT = 0
+Mouse.MIDDLE = 1
+Mouse.RIGHT = 2
 
 //Check if mouse is inside attached canvas
 Mouse.insideCanvas = function()
 {
 	if(Mouse.canvas === null)
 	{
-		return false;
+		return false
 	}
 
 	if (Editor.clickable !== undefined) {
@@ -89,42 +93,42 @@ Mouse.insideCanvas = function()
 		}
 	}
 	
-	var rect = Mouse.canvas.getBoundingClientRect();
-	return (Mouse.pos.x > 0 && Mouse.pos.y > 0 && Mouse.pos.x < rect.width && Mouse.pos.y < rect.height); 
+	var rect = Mouse.canvas.getBoundingClientRect()
+	return (Mouse.pos.x > 0 && Mouse.pos.y > 0 && Mouse.pos.x < rect.width && Mouse.pos.y < rect.height)
 }
 
 //Check if Mouse button is pressed
 Mouse.buttonPressed = function(button)
 {
-	return Mouse.keys[button].isPressed;
+	return Mouse.keys[button].isPressed
 }
 
 //Check if a mouse button was just pressed
 Mouse.buttonJustPressed = function(button)
 {
-	return Mouse.keys[button].justPressed;
+	return Mouse.keys[button].justPressed
 }
 
 //Check if a mouse button was just released
 Mouse.buttonJustReleased = function(button)
 {
-	return Mouse.keys[button].justReleased;
+	return Mouse.keys[button].justReleased
 }
 
 //Update Mouse Position
 Mouse.updatePosition = function(x, y, x_diff, y_diff)
 {
-	Mouse.raw_pos.set(x, y);
-	Mouse.raw_movement.x += x_diff;
-	Mouse.raw_movement.y += y_diff;
-	Mouse.raw_pos_updated = true;
+	Mouse.raw_pos.set(x, y)
+	Mouse.raw_movement.x += x_diff
+	Mouse.raw_movement.y += y_diff
+	Mouse.raw_pos_updated = true
 }
 
 //Update Mouse Key
 Mouse.updateKey = function(button, action)
 {
 	if(button > -1) {
-		Mouse.raw_keys[button].update(action);
+		Mouse.raw_keys[button].update(action)
 	}
 }
 
@@ -136,13 +140,13 @@ Mouse.update = function()
 	{
 		if(Mouse.raw_keys[i].justPressed && Mouse.keys[i].justPressed)
 		{
-			Mouse.raw_keys[i].justPressed = false;
+			Mouse.raw_keys[i].justPressed = false
 		}
 		if(Mouse.raw_keys[i].justReleased && Mouse.keys[i].justReleased)
 		{
-			Mouse.raw_keys[i].justReleased = false;
+			Mouse.raw_keys[i].justReleased = false
 		}
-		Mouse.keys[i].set(Mouse.raw_keys[i].justPressed, Mouse.raw_keys[i].isPressed, Mouse.raw_keys[i].justReleased);
+		Mouse.keys[i].set(Mouse.raw_keys[i].justPressed, Mouse.raw_keys[i].isPressed, Mouse.raw_keys[i].justReleased)
 	}
 
     if(Mouse.raw_wheel_updated) {
@@ -155,19 +159,19 @@ Mouse.update = function()
 	//Update Mouse Position if needed
 	if(Mouse.raw_pos_updated)
 	{
-		Mouse.delta.x = Mouse.raw_movement.x;
-		Mouse.delta.y = Mouse.raw_movement.y;
-		Mouse.raw_movement.set(0,0);
+		Mouse.delta.x = Mouse.raw_movement.x
+		Mouse.delta.y = Mouse.raw_movement.y
+		Mouse.raw_movement.set(0,0)
 
-		Mouse.pos.x = Mouse.raw_pos.x;
-		Mouse.pos.y = Mouse.raw_pos.y;
+		Mouse.pos.x = Mouse.raw_pos.x
+		Mouse.pos.y = Mouse.raw_pos.y
 
-		Mouse.raw_pos_updated = false;
+		Mouse.raw_pos_updated = false
 	}
 	else
 	{
-		Mouse.delta.x = 0;
-		Mouse.delta.y = 0;
+		Mouse.delta.x = 0
+		Mouse.delta.y = 0
 	}
 }
 
