@@ -14,7 +14,7 @@ class Key {
 
 		if(action === Key.KEY_DOWN) //Key Down
 		{
-			if(!this.isPressed === false)
+			if(this.isPressed === false)
 			{
 				this.justPressed = true
 			}

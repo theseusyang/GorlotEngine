@@ -312,6 +312,20 @@ MaterialSetRefractionRatioNode.prototype.onExecute = function() {
 	}
 }
 
+function MaterialSetTextureMapNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Texture", "Texture")
+}
+MaterialSetTextureMapNode.title = "Texture Map"
+MaterialSetTextureMapNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var t = this.getInputData(1)
+
+	if (m !== undefined && t !== undefined) {
+		m.map = t
+	}
+}
+
 function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/MeshPhongMaterial", MeshPhongMaterialNode)
 	LiteGraph.registerNodeType("Material/SetMaterialColor", SetMaterialColorNode)
@@ -333,4 +347,5 @@ function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/Combine", CombineNode)
 	LiteGraph.registerNodeType("Material/MaterialSetSkinning", MaterialSetSkinningNode)
 	LiteGraph.registerNodeType("Material/MaterialSetRefractionRatio", MaterialSetRefractionRatioNode)
+	LiteGraph.registerNodeType("Material/MaterialSetTextureMap", MaterialSetTextureMapNode)
 }

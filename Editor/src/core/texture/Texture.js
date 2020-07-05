@@ -18,7 +18,6 @@ class Texture extends THREE.Texture {
 	}
 
 	update() {
-
 	}
 
 	toJSON(meta) {

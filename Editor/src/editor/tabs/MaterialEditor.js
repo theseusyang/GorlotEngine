@@ -74,6 +74,10 @@ class MaterialEditor {
 
 		this.graph = new LGraph(this.nodes)
 
+		this.graph.onNodeConnectionChange = function() {
+			self.updateMaterial()
+		}
+
 		// Material preview object
 		this.obj = new Model3D(new THREE.SphereBufferGeometry(1, 64, 64), this.material)
 		this.obj.position.set(0, 0, -2.5)
@@ -141,6 +145,8 @@ class MaterialEditor {
 			}
 
 			if (Mouse.buttonJustPressed(Mouse.RIGHT)) {
+
+				console.log(this.prevIn)
 
 				if (this.prevIn < 3) {
 					this.prevIn++

@@ -5,6 +5,7 @@ function unregisterNodes() {
 
 function registerMaterialNodes() {
 	registerMaterialNodeNodes()
+	registerMaterialNodeTexture()
 	registerMaterialNodeColor()
 	registerMaterialNodeConstants()
 }

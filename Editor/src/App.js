@@ -186,7 +186,7 @@ App.chooseFile = function(callback, filter, savemode) {
 	// Create onchange event
 	chooser.onchange = function(e) {
 		if (callback !== undefined) {
-			callback(e.path[0].value)
+			callback(e.srcElement.value)
 		}
 	}
 
