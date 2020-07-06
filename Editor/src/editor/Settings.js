@@ -10,6 +10,7 @@ Settings.grid_size = 500
 Settings.grid_spacing =  5
 Settings.grid_enabled = true
 Settings.axis_enabled = true
+Settings.show_camera_preview = true
 
 // Renderer settings
 Settings.shadows = true
@@ -30,6 +31,7 @@ Settings.store = function() {
 		grid_spacing: Settings.grid_spacing,
 		grid_enabled: Settings.grid_enabled,
 		axis_enabled: Settings.axis_enabled,
+		show_camera_preview: Settings.show_camera_preview,
 
 		shadows: Settings.shadows,
 		shadows_type: Settings.shadows_type,
@@ -56,6 +58,7 @@ Settings.load = function() {
 		Settings.grid_spacing = data.grid_spacing
 		Settings.grid_enabled = data.grid_enabled
 		Settings.axis_enabled = data.axis_enabled
+		Settings.show_camera_preview = data.show_camera_preview
 
 		Settings.shadows = data.shadows
 		Settings.shadows_type = data.shadows_type

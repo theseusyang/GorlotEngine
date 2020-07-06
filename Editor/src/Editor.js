@@ -222,11 +222,6 @@ Editor.update = function()
 
 	// If editing an scene
 	if(Editor.state === Editor.STATE_EDITING) {
-		
-		// Update object helper
-		if (Editor.selected_object !== null) {
-			Editor.object_helper.update()
-		}
 
 		// Keyboard shortcuts
 		if (Keyboard.isKeyJustPressed(Keyboard.DEL)) {
@@ -257,22 +252,24 @@ Editor.update = function()
 			}
 
 			Editor.is_editing_object = false
-		} else {
+		} else if(Editor.selected_object !== null) {
 			// Update active tool status
 			if (Editor.tool !== null) {
 				Editor.is_editing_object = Editor.tool.update()
+
+				if (Editor.is_editing_object) {
+					// Update object transformation matrix
+					if (!Editor.selected_object.matrixAutoUpdate) {
+						Editor.selected_object.updateMatrix()
+					}
+				}
 			} else {
 				Editor.is_editing_object = false
 			}
 		}
 
-		// Check if editing object
-		if (Editor.is_editing_object) {
-			// Update object transformation matrix
-			if (Editor.selected_object.matrixAutoUpdate) {
-				Editor.selected_object.updateMatrix()
-			}
-		}
+		// Update object helper
+		Editor.object_helper.update()
 
 		// Check if mouse is inside canvas
 		if (Mouse.insideCanvas()) {
@@ -368,9 +365,8 @@ Editor.isObjectSelected = function(obj) {
 
 // Delete selected Object
 Editor.deleteSelectedObject = function() {
-	// TODO: Use destroy function
-	if (Editor.selected_object !== null && Editor.selected_object.parent !== null) {
-		Editor.selected_object.parent.remove(Editor.selected_object)
+	if (Editor.selected_object !== null) {
+		Editor.selected_object.destroy()
 		Editor.updateObjectViews()
 		Editor.resetEditingFlags()
 	}
@@ -517,14 +513,25 @@ Editor.draw = function()
 	Editor.renderer.clear()
 
 	if (Editor.state === Editor.STATE_EDITING) {
-		// Render scene
+
+		Editor.renderer.setViewport(0, 0, Editor.canvas.width, Editor.canvas.height)
+		Editor.renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height)
 		Editor.renderer.render(Editor.program.scene, Editor.camera)
 
-		// Render debug scene
 		Editor.renderer.render(Editor.tool_scene, Editor.camera)
 		Editor.renderer.clearDepth()
-
 		Editor.renderer.render(Editor.tool_scene_top, Editor.camera)
+
+		if (Settings.show_camera_preview && Editor.selected_object instanceof THREE.Camera) {
+			var width = 120 * Editor.canvas.width / Editor.canvas.height
+			var height = 120
+			var offset = Editor.canvas.width - 200
+
+			Editor.renderer.clearDepth()
+			Editor.renderer.setViewport(offset, 20, width, height)
+			Editor.renderer.setScissor(offset, 20, width, height)
+			Editor.renderer.render(Editor.program.scene, Editor.selected_object)
+		}
 	} else if (Editor.state === Editor.STATE_TESTING) {
 		// If VR is enabled
 		if (Editor.vr_effect !== null) {
@@ -655,8 +662,9 @@ Editor.resetEditingFlags = function() {
 	Editor.selected_object = null
 	Editor.block_camera_move = false
 	Editor.is_editing_object = false
-	Editor.is_editing_object = false
-	Editor.selectObjectHelper()
+
+	Editor.selectTool(Editor.tool_mode)
+	Editor.updateObjectViews()
 
 	if(EditorUI.form !== undefined) {
 		EditorUI.form.clear()
@@ -736,6 +744,10 @@ Editor.setState = function(state) {
 	} else if (state === Editor.STATE_TESTING) {
 		// Copy program and initialize scene
 		Editor.program_running = Editor.program.clone()
+
+		// Set renderer size
+		Editor.renderer.setViewport(0, 0, Editor.canvas.width, Editor.canvas.height)
+		Editor.renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height)
 
 		// If no camera attached, attach camera
 		Editor.program_running.default_camera = Editor.camera

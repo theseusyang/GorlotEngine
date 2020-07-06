@@ -1,0 +1,14 @@
+{
+	"show_stats": true,
+	"grid_size": 500,
+	"grid_spacing": 5,
+	"grid_enabled": true,
+	"axis_enabled": true,
+	"show_camera_preview": true,
+	"shadows": true,
+	"shadows_type": 2,
+	"antialiasing": true,
+	"code_theme": "monokai",
+	"code_font_size": 14,
+	"code_line_numbers": true
+}
