@@ -1,6 +1,6 @@
 {
 	"show_stats": true,
-	"grid_size": "500",
+	"grid_size": 500,
 	"grid_spacing": "5",
 	"grid_enabled": true,
 	"axis_enabled": true,
