@@ -1,3 +1,6 @@
+"use strict"
+
+// Directional light class
 class DirectionalLight extends THREE.DirectionalLight {
 	constructor(hex, intensity) {
 		super(hex, intensity)

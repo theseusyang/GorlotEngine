@@ -1,7 +1,10 @@
+"use strict"
+
+// Main constructor
 function Main() {}
 
 // App to load
-Main.app = "app.json"
+Main.app = "app.gsp"
 
 // Initialize Main
 Main.initialize = function(canvas) {

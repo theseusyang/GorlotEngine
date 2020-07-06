@@ -170,7 +170,7 @@ App.initialize = function(main)
 	App.loop();
 }
 
-// File chooser callback receives event object
+// Open file chooser dialog, receives: callback function, file filter, savemode and its directory onlt
 App.chooseFile = function(callback, filter, savemode) {
 	// Create file chooser element
 	var chooser = document.createElement("input")
@@ -186,12 +186,75 @@ App.chooseFile = function(callback, filter, savemode) {
 	// Create onchange event
 	chooser.onchange = function(e) {
 		if (callback !== undefined) {
-			callback(e.srcElement.value)
+			callback(chooser.value)
 		}
 	}
 
 	// Force trigger onchange event
 	chooser.click()
+}
+
+// Write File
+App.writeFile = function(fname, data) {
+	if (App.fs !== undefined) {
+		var stream = App.fs.createWriteStream(fname, "utf8")
+		stream.write(data)
+		stream.end()
+	}
+}
+
+// Copy file (Can'y be used to copy folders)
+App.copyFile = function(src, dest) {
+	if (App.fs !== undefined) {
+		App.fs.createReadStream(src).pipe(App.fs.createWriteStream(dest))
+	}
+}
+
+// Make a directory
+App.makeDirectory = function(dir) {
+	if (App.fs !== undefined) {
+		try {
+			App.fs.mkdirSync(dir)
+		} catch (e) {}
+	}
+}
+
+// Returns files in directory (An empty array is returned in case of error)
+App.getFilesDirectory = function(dir) {
+	if (App.fs !== undefined) {
+		try {
+			return App.fs.readdirSync(dir)
+		} catch (e) {
+			return []
+		}
+	}
+}
+
+// Copy folder and all its files (includes symbolic links)
+App.copyFolder = function(src, dest) {
+	if (App.fs !== undefined) {
+		App.makeDirectory(dest)
+		var files = App.fs.readdirSync(src)
+
+		for(var i = 0; i < files.length; i++) {
+			var source = src + "/" + files[i]
+			var destiny = dest + "/" + files[i]
+			var current = App.fs.statSync(source)
+
+			// Directory
+			if (current.isDirectory()) {
+				App.copyFolder(source, destiny)
+			}
+			// Symbolic Link
+			else if (current.isSymbolicLink()) {
+				App.fs.symlinkSync(App.fs.readlinkSync(source), destiny)
+			}
+			// File
+			else {
+				App.copyFile(source, destiny)
+			}
+		}
+	}
 }
 
 // Read File
@@ -237,18 +300,6 @@ App.readFile = function(fname, sync, callback) {
 		}
 
 		return data
-	}
-}
-
-// Write File
-App.writeFile = function(fname, data) {
-	if (App.fs !== undefined) {
-		/*App.fs.writeFile(fname, data, (err) => {
-			if (err) {throw err}
-		})*/
-		var stream = App.fs.createWriteStream(fname, "utf8")
-		stream.write(data)
-		stream.end()
 	}
 }
 

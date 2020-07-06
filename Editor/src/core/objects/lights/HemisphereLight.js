@@ -1,3 +1,6 @@
+"use strict"
+
+// Hemisphere light class
 class HemisphereLight extends THREE.HemisphereLight {
 	constructor(skyColorHex, groundColorHex, intensity) {
 		super(skyColorHex, groundColorHex, intensity)

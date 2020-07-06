@@ -1,3 +1,6 @@
+"use strict"
+
+// Sky class
 class Sky extends THREE.Mesh {
 	constructor(auto_update, day_time, sun_distance, time) {
 		super()

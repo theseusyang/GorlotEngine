@@ -1,3 +1,6 @@
+"use strict"
+
+// Ambient light class
 class AmbientLight extends THREE.AmbientLight {
 	constructor(hex) {
 		super(hex)

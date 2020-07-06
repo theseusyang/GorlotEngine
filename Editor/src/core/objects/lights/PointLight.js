@@ -1,3 +1,6 @@
+"use strict"
+
+// Point Light class
 class PointLight extends THREE.PointLight {
 	constructor(hex, intensity, distance, decay) {
 		super(hex, intensity, distance, decay)

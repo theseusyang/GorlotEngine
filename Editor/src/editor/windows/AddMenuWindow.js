@@ -120,8 +120,6 @@ class AddMenuWindow {
 
 			var geometry = new THREE.BoxBufferGeometry(1, 1, 1)
 			var obj = new Model3D(geometry, Editor.default_material)
-			obj.receiveShadow = true
-			obj.castShadow = true
 			obj.name = "cube"
 			Editor.addToActualScene(obj)
 
@@ -130,8 +128,6 @@ class AddMenuWindow {
 
 			var geometry = new THREE.CylinderBufferGeometry(1, 1, 2, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
-        	obj.receiveShadow = true
-        	obj.castShadow = true
         	obj.name = "cylinder"
         	Editor.addToActualScene(obj)
 
@@ -140,8 +136,6 @@ class AddMenuWindow {
 
 			var geometry = new THREE.SphereBufferGeometry(0.6, 32, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
-        	obj.receiveShadow = true
-        	obj.castShadow = true
         	obj.name = "sphere"
         	Editor.addToActualScene(obj)
 
@@ -150,8 +144,6 @@ class AddMenuWindow {
 
 			var geometry = new THREE.TorusBufferGeometry(1, 0.5, 16, 96)
         	var obj = new Model3D(geometry, Editor.default_material)
-        	obj.receiveShadow = true
-        	obj.castShadow = true
         	obj.name = "torus"
         	Editor.addToActualScene(obj)
 
@@ -160,8 +152,6 @@ class AddMenuWindow {
 
 			var geometry = new THREE.ConeBufferGeometry(1, 2, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
-        	obj.receiveShadow = true
-        	obj.castShadow = true
         	obj.name = "cone"
         	Editor.addToActualScene(obj)
 
@@ -170,8 +160,6 @@ class AddMenuWindow {
 
 			var geometry = new THREE.PlaneBufferGeometry(1, 1)
 			var obj = new Model3D(geometry, Editor.default_material)
-			obj.receiveShadow = true
-			obj.castShadow = true
 			obj.name = "plane"
 			Editor.addToActualScene(obj)
 
@@ -184,8 +172,6 @@ class AddMenuWindow {
 		else if (o === "Text") {
 
 			var obj = new Text3D("text", Editor.default_material)
-			obj.receiveShadow = true
-			obj.castShadow = true
 			Editor.addToActualScene(obj)
 
 		}

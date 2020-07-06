@@ -1,3 +1,6 @@
+"use strict"
+
+// Material Renderer class
 class MaterialRenderer {
 	constructor() {
 		// Canvas

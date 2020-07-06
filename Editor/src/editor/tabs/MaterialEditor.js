@@ -146,8 +146,6 @@ class MaterialEditor {
 
 			if (Mouse.buttonJustPressed(Mouse.RIGHT)) {
 
-				console.log(this.prevIn)
-
 				if (this.prevIn < 3) {
 					this.prevIn++
 				} else {

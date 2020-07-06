@@ -27,11 +27,11 @@ function EditorUITopMenu() {
 
     // ----- File/Export -----
     EditorUI.topmenu.add("File/Export/Web", {callback: () => {
-        App.chooseFile((fname) => {
+        App.chooseFile((dir) => {
             try {
-                Editor.exportWebProject(fname)
+                Editor.exportWebProject(dir)
             } catch(e) {
-                console.error("Error saving file: " + e)
+                console.error("Error exporting project: " + e)
             }
         }, ".zip", true)
     }})

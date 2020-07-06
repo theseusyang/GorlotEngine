@@ -71,7 +71,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Mon 06 Jul 2020 12:10:10"
+Editor.TIMESTAMP = "Mon 06 Jul 2020 12:55:10"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -926,23 +926,16 @@ Editor.loadProgram = function(fname) {
 	Editor.updateObjectViews()
 }
 
-// Export web project to a file
-Editor.exportWebProject = function(fname) {
-	var zip = new JSZip()
-	var output = Editor.program.toJSON()
-	var json = JSON.stringify(output)
-
-	zip.file("app.json", json)
-	zip.file("index.html", App.readFile("runtime/index.html"))
-	zip.file("Main.js", App.readFile("runtime/Main.js"))
-
-	zip.file("App.js", App.readFile("src/App.js"))
-
-	// TODO: This
-	
-	zip.generateAsync({type: "nodebuffer"}).then((data) => {
-		App.writeFile(fname, data)
-	})
+// Export web project
+Editor.exportWebProject = function(dir) {
+	// For using this in windows, replace "/" for "\\"
+	App.copyFolder("runtime", dir)
+	App.copyFolder("src/core", dir + "/src/core")
+	App.copyFolder("src/input", dir + "/src/input")
+	App.copyFolder("libs", dir + "/libs")
+	App.copyFolder("data", dir + "/data")
+	App.copyFile("src/App.js", dir + "/App.js")
+	Editor.saveProgram(dir + "/app.gsp")
 }
 
 // Set editor state
