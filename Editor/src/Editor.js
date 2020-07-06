@@ -68,7 +68,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Mon 06 Jul 2020 19:16:04"
+Editor.TIMESTAMP = "Mon 06 Jul 2020 20:15:54"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -113,9 +113,7 @@ Editor.initialize = function(canvas)
 
 	//Editor Selected object
 	Editor.selected_object = null
-	Editor.block_camera_move = false
 	Editor.is_editing_object = false
-	Editor.editing_object_args = null
 
 	// Performance meter
 	Editor.stats = null
@@ -175,20 +173,10 @@ Editor.initialize = function(canvas)
 	Editor.object_helper = new Empty()
 	Editor.tool_scene.add(Editor.object_helper)
 
-	// Move Tool
-	Editor.move_tool = new MoveTool();
-	Editor.move_tool.visible = false;
-	Editor.tool_scene_top.add(Editor.move_tool);
-
-	// Resize Tool
-	Editor.resize_tool = new ResizeTool();
-	Editor.resize_tool.visible = false;
-	Editor.tool_scene_top.add(Editor.resize_tool);
-
-	// Rotate Tool
-	Editor.rotate_tool = new RotateTool();
-	Editor.rotate_tool.visible = false;
-	Editor.tool_scene_top.add(Editor.rotate_tool);
+	// Tool Container
+	Editor.tool_container = new THREE.Scene()
+	Editor.tool_scene_top.add(Editor.tool_container)
+	Editor.tool = null
 
 	// Create new program
 	Editor.createNewProgram()
@@ -215,9 +203,10 @@ Editor.update = function()
 		Editor.stats.begin()
 	}
 
-	Editor.block_camera_move = false;
+	// Set editing object false
+	Editor.is_editing_object = false
 
-	// Save or load files
+	// Close tab, Save and Load project
 	if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
 		if (Keyboard.isKeyJustPressed(Keyboard.S)) {
 			EditorUI.saveProgram()
@@ -231,304 +220,109 @@ Editor.update = function()
 		}
 	}
 
-	// If not on test mode
-	if(Editor.state !== Editor.STATE_TESTING && Editor.state !== Editor.STATE_IDLE)
-	{
-		// If editing an scene
-		if(Editor.state === Editor.STATE_EDITING) {
-			// Update object helper
-			Editor.updateObjectHelper()
-
-			// Keyboard Shortcuts
-			if (Keyboard.isKeyJustPressed(Keyboard.DEL)) {
-				Editor.deleteSelectedObject()
-			} else if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
-				if (Keyboard.isKeyJustPressed(Keyboard.C)) {
-					Editor.copySelectedObject()
-				} else if (Keyboard.isKeyJustPressed(Keyboard.V)) {
-					Editor.pasteIntoSelectedObject()
-				} else if (Keyboard.isKeyJustPressed(Keyboard.X)) {
-					Editor.cutSelectedObject()
-				} else if (Keyboard.isKeyJustPressed(Keyboard.Y)) {
-					// TODO: Redo
-				} else if (Keyboard.isKeyJustPressed(Keyboard.Z)) {
-					// TODO: Undo
-				}
-			}
-
-			//If object select display tools
-			if(Editor.selected_object !== null && Editor.selected_object !== undefined && !(Editor.selected_object instanceof THREE.Material))
-			{
-				if(Editor.tool_mode === Editor.MODE_MOVE)
-				{
-					Editor.move_tool.visible = true;
-					Editor.rotate_tool.visible = false;
-					Editor.resize_tool.visible = false;
-	
-					var distance = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/5
-					Editor.move_tool.scale.set(distance, distance, distance)
-
-					Editor.selected_object.getWorldPosition(Editor.move_tool.position)
-					if (Editor.selected_object.parent !== null) {
-						Editor.selected_object.parent.getWorldQuaternion(Editor.move_tool.quaternion)
-					}
-				}
-				else if(Editor.tool_mode === Editor.MODE_RESIZE)
-				{
-					Editor.resize_tool.visible = true;
-					Editor.move_tool.visible = false;
-					Editor.rotate_tool.visible = false;
-	
-					var distance = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/5
-					Editor.resize_tool.scale.set(distance, distance, distance)
-
-					Editor.selected_object.getWorldPosition(Editor.resize_tool.position)
-					Editor.selected_object.getWorldQuaternion(Editor.resize_tool.quaternion)
-					
-				}
-				else if(Editor.tool_mode === Editor.MODE_ROTATE)
-				{
-					Editor.rotate_tool.visible = true;
-					Editor.move_tool.visible = false;
-					Editor.resize_tool.visible = false;
-	
-					var distance = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/5
-					Editor.rotate_tool.scale.set(distance, distance, distance)
-					Editor.selected_object.getWorldPosition(Editor.rotate_tool.position)
-
-					if (Editor.selected_object.parent !== null) {
-						Editor.selected_object.parent.getWorldQuaternion(Editor.rotate_tool.quaternion)
-					}
-				}
-				else
-				{
-					Editor.move_tool.visible = false;
-					Editor.rotate_tool.visible = false;
-					Editor.resize_tool.visible = false;
-				}
-			}
-		}
-		else
-		{
-			Editor.move_tool.visible = false;
-			Editor.rotate_tool.visible = false;
-			Editor.resize_tool.visible = false;
+	// If editing an scene
+	if(Editor.state === Editor.STATE_EDITING) {
+		
+		// Update object helper
+		if (Editor.selected_object !== null) {
+			Editor.object_helper.update()
 		}
 
-		//Check if editing object
-		if(Editor.is_editing_object)
-		{	
-			//If mouse button released exit edit mode
-			if(Mouse.buttonJustReleased(Mouse.LEFT))
-			{
-				Editor.is_editing_object = false;
-				EditorUI.updateInspector()
-			}
-			else
-			{
-				Editor.block_camera_move = true;
-
-				//Moving object
-				if(Editor.tool_mode === Editor.MODE_MOVE)
-				{
-					var scale = Editor.selected_object.parent.getWorldScale()
-					var speed = Editor.camera.position.distanceTo(Editor.selected_object.getWorldPosition())/500
-
-					if(Editor.editing_object_args.x)
-					{
-						Editor.selected_object.position.x -= Mouse.delta.y * speed * Math.sin(Editor.camera_rotation.x) / scale.x
-						Editor.selected_object.position.x -= Mouse.delta.x * speed * Math.cos(Editor.camera_rotation.x) / scale.x
-
-					}
-					else if(Editor.editing_object_args.y)
-					{
-						Editor.selected_object.position.y -= Mouse.delta.y * speed / scale.y
-
-					}
-					else if(Editor.editing_object_args.z)
-					{
-						Editor.selected_object.position.z -= Mouse.delta.y * speed * Math.sin(Editor.camera_rotation.x + Editor.pid2) / scale.z
-						Editor.selected_object.position.z -= Mouse.delta.x * speed * Math.cos(Editor.camera_rotation.x + Editor.pid2) / scale.z
-
-					}
-				}
-				//Resize mode
-				else if(Editor.tool_mode === Editor.MODE_RESIZE)
-				{
-					var scale = Editor.selected_object.scale.clone()
-					scale.multiplyScalar(0.01)
-
-					if(Editor.editing_object_args.center) {
-						var size = (Mouse.delta.x - Mouse.delta.y)
-
-						Editor.selected_object.scale.x += size * scale.x
-						Editor.selected_object.scale.y += size * scale.y
-						Editor.selected_object.scale.z += size * scale.z
-					} else if(Editor.editing_object_args.x)
-					{
-						Editor.selected_object.scale.x -= Mouse.delta.y * Math.sin(Editor.camera_rotation.x) * scale.x
-						Editor.selected_object.scale.x -= Mouse.delta.x * Math.cos(Editor.camera_rotation.x) * scale.x
-
-					}
-					else if(Editor.editing_object_args.y)
-					{
-						Editor.selected_object.scale.y -= Mouse.delta.y * scale.y
-
-					}
-					else if(Editor.editing_object_args.z)
-					{
-						Editor.selected_object.scale.z -= Mouse.delta.y * Math.sin(Editor.camera_rotation.x + Editor.pid2) * scale.z
-						Editor.selected_object.scale.z -= Mouse.delta.x * Math.cos(Editor.camera_rotation.x + Editor.pid2) * scale.z
-
-					}
-				}
-				//Rotate Mode
-				else if(Editor.tool_mode === Editor.MODE_ROTATE)
-				{
-					var speed = 0.003;
-					if(Editor.editing_object_args.x)
-					{
-						var delta = new THREE.Quaternion()
-						delta.setFromEuler(new THREE.Euler(-(Mouse.delta.y + Mouse.delta.x) * speed, 0, 0, 'XYZ'))
-						Editor.selected_object.quaternion.multiplyQuaternions(delta, Editor.selected_object.quaternion)
-					}
-					else if(Editor.editing_object_args.y)
-					{
-						var delta = new THREE.Quaternion()
-						delta.setFromEuler(new THREE.Euler(0, -(Mouse.delta.y + Mouse.delta.x) * speed, 0, 'XYZ'))
-						Editor.selected_object.quaternion.multiplyQuaternions(delta, Editor.selected_object.quaternion)
-					}
-					else if(Editor.editing_object_args.z)
-					{
-						var delta = new THREE.Quaternion()
-						delta.setFromEuler(new THREE.Euler(0, 0, (Mouse.delta.y + Mouse.delta.x) * speed, 'XYZ'))
-						Editor.selected_object.quaternion.multiplyQuaternions(delta, Editor.selected_object.quaternion)
-					}
-				}
-
-				if (!Editor.selected_object.matrixAutoUpdate) {
-					// Update object transformation matrix
-					Editor.selected_object.updateMatrix()
-					Editor.selected_object.updateMatrixWorld()
-				}
+		// Keyboard shortcuts
+		if (Keyboard.isKeyJustPressed(Keyboard.DEL)) {
+			Editor.deleteSelectedObject()
+		}
+		else if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
+			if (Keyboard.isKeyJustPressed(Keyboard.C)) {
+				Editor.copySelectedObject()
+			} else if (Keyboard.isKeyJustPressed(Keyboard.V)) {
+				Editor.pasteIntoSelectedObject()
+			} else if (Keyboard.isKeyJustPressed(Keyboard.X)) {
+				Editor.cutSelectedObject()
+			} else if (Keyboard.isKeyJustPressed(Keyboard.Y)) {
+				// TODO: Redo
+			} else if (Keyboard.isKeyJustPressed(Keyboard.Z)) {
+				// TODO: Undo
 			}
 		}
 
-		//Check if mouse inside canvas
-		if(Mouse.insideCanvas())
-		{
-			//Select objects
-			if(Editor.tool_mode === Editor.MODE_SELECT)
-			{
-				if(Mouse.buttonJustPressed(Mouse.LEFT))
-				{
-					Editor.updateRaycasterFromMouse();
-					var intersects =  Editor.raycaster.intersectObjects(Editor.program.scene.children, true)
-					if(intersects.length > 0)
-					{
-						Editor.selectObject(intersects[0].object)
-					}
+		// Select objects
+		if (Editor.tool_mode === Editor.MODE_SELECT) {
+			if (Mouse.buttonJustPressed(Mouse.LEFT) && Mouse.insideCanvas()) {
+				Editor.updateRaycasterFromMouse()
+				var intersects = Editor.raycaster.intersectObjects(Editor.program.scene.children, true)
+				if (intersects.length > 0) {
+					Editor.selectObject(intersects[0].object)
 				}
 			}
 
-			//Move objects
-			else if(Editor.tool_mode === Editor.MODE_MOVE)
-			{
-				Editor.updateRaycasterFromMouse();
-				var move = Editor.move_tool.highlightSelectedComponents(Editor.raycaster);
-				if(move.selected && Mouse.buttonJustPressed(Mouse.LEFT))
-				{	
-					Editor.editing_object_args = move;
-					Editor.is_editing_object = true;
-					Editor.block_camera_move = true;
-				}
+			Editor.is_editing_object = false
+		} else {
+			// Update active tool status
+			if (Editor.tool !== null) {
+				Editor.is_editing_object = Editor.tool.update()
+			} else {
+				Editor.is_editing_object = false
 			}
+		}
 
-			//Resize
-			else if(Editor.tool_mode === Editor.MODE_RESIZE)
-			{
-				Editor.updateRaycasterFromMouse();
-				var resize = Editor.resize_tool.highlightSelectedComponents(Editor.raycaster);
-				if(resize.selected && Mouse.buttonJustPressed(Mouse.LEFT))
-				{	
-					Editor.editing_object_args = resize;
-					Editor.is_editing_object = true;
-					Editor.block_camera_move = true;
-				}
+		// Check if editing object
+		if (Editor.is_editing_object) {
+			// Update object transformation matrix
+			if (Editor.selected_object.matrixAutoUpdate) {
+				Editor.selected_object.updateMatrix()
 			}
+		}
 
-			//Rotate
-			else if(Editor.tool_mode === Editor.MODE_ROTATE)
-			{
-				Editor.updateRaycasterFromMouse();
-				var rotate = Editor.rotate_tool.highlightSelectedComponents(Editor.raycaster);
-				if(rotate.selected && Mouse.buttonJustPressed(Mouse.LEFT))
-				{	
-					Editor.editing_object_args = rotate;
-					Editor.is_editing_object = true;
-					Editor.block_camera_move = true;
-				}
-			}
+		// Check if mouse is inside canvas
+		if (Mouse.insideCanvas()) {
+			// Look camera
+			if (Mouse.buttonPressed(Mouse.LEFT) && !Editor.is_editing_object) {
+				Editor.camera_rotation.x -= 0.002 * Mouse.delta.x
+				Editor.camera_rotation.y -= 0.002 * Mouse.delta.y
 
-			//Rotate camera
-			if(Mouse.buttonPressed(Mouse.LEFT) && !Editor.block_camera_move)
-			{
-				Editor.camera_rotation.x -= 0.002 * Mouse.delta.x;
-				Editor.camera_rotation.y -= 0.002 * Mouse.delta.y;
-
-				//Limit Vertical Rotation to 90 degrees
-				var pid2 = 1.57;
-				if(Editor.camera_rotation.y < -pid2)
-				{
-					Editor.camera_rotation.y = -pid2;
-				}
-				else if(Editor.camera_rotation.y > pid2)
-				{
-					Editor.camera_rotation.y = pid2;
+				// Limit Vertical Rotation to 90 degrees
+				var pid2 = 1.57
+				if (Editor.camera_rotation.y < -pid2) {
+					Editor.camera_rotation.y = -pid2
+				} else if (Editor.camera_rotation.y > pid2) {
+					Editor.camera_rotation.y = pid2
 				}
 
-				Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
-			}
-
-			//Move Camera on X and Z
-			else if(Mouse.buttonPressed(Mouse.RIGHT))
-			{
-
+				Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
+			} else if (Mouse.buttonPressed(Mouse.RIGHT)) {
 				// Move speed
 				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0, 0, 0))/1000
 				if (speed < 0.02) {
 					speed = 0.02
 				}
 
-				//Move Camera Front and Back
-				var angle_cos = Math.cos(Editor.camera_rotation.x);
-				var angle_sin = Math.sin(Editor.camera_rotation.x);
-				Editor.camera.position.z += Mouse.delta.y * speed * angle_cos;
-				Editor.camera.position.x += Mouse.delta.y * speed * angle_sin;
+				// Move camera front and back
+				var angle_cos = Math.cos(Editor.camera_rotation.x)
+				var angle_sin = Math.sin(Editor.camera_rotation.x)
+				Editor.camera.position.z += Mouse.delta.y * speed * angle_cos
+				Editor.camera.position.x += Mouse.delta.y * speed * angle_sin
 
-				//Move Camera Lateral
-				var angle_cos = Math.cos(Editor.camera_rotation.x + Editor.pid2);
-				var angle_sin = Math.sin(Editor.camera_rotation.x + Editor.pid2);
-				Editor.camera.position.z += Mouse.delta.x * speed * angle_cos;
-				Editor.camera.position.x += Mouse.delta.x * speed * angle_sin;
-			}
-			
-			// Move Camera on Y
-			else if (Mouse.buttonPressed(Mouse.MIDDLE)) {
+				// Move camera lateral
+				var angle_cos = Math.cos(Editor.camera_rotation.x + Editor.pid2)
+				var angle_sin = Math.sin(Editor.camera_rotation.x + Editor.pid2)
+				Editor.camera.position.z += Mouse.delta.x * speed * angle_cos
+				Editor.camera.position.x += Mouse.delta.x * speed * angle_sin
+			} else if (Mouse.buttonPressed(Mouse.MIDDLE)) {
+				// Move Camera on Y
 				Editor.camera.position.y += Mouse.delta.y * 0.1
 			}
 
-			//Move in camera direction using mouse scroll
-			if(Mouse.wheel != 0)
-			{
+			// Move in camera direction using mouse scroll
+			if (Mouse.wheel !== 0) {
 				// Move speed
-				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0, 0, 0))/2000
+				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0,0,0))/2000
 				speed *= Mouse.wheel
 
 				// Limit zoom speed
 				if (speed < 0) {
 					if (speed > -0.03) {
-						speed = -0.03
+						speed = 0.03
 					}
 				} else if (speed > 0) {
 					if (speed < 0.03) {
@@ -536,10 +330,11 @@ Editor.update = function()
 					}
 				}
 
-				var direction = Editor.camera.getWorldDirection();
-				Editor.camera.position.x -= speed * direction.x;
-				Editor.camera.position.y -= speed * direction.y;
-				Editor.camera.position.z -= speed * direction.z;
+				// Move camera
+				var direction = Editor.camera.getWorldDirection()
+				Editor.camera.position.x -= speed * direction.x
+				Editor.camera.position.y -= speed * direction.y
+				Editor.camera.position.z -= speed * direction.z
 			}
 		}
 	}
@@ -555,6 +350,11 @@ Editor.selectObject = function(obj) {
 	EditorUI.hierarchy.setSelectedItem(Editor.selected_object.name)
 	EditorUI.updateInspector()
 	Editor.selectObjectHelper()
+
+	if (Editor.tool !== null && Editor.selected_object !== null) {
+		Editor.tool_container.add(Editor.tool)
+		Editor.tool.attachObject(Editor.selected_object)
+	}
 }
 
 // Check if object is selected
@@ -568,6 +368,7 @@ Editor.isObjectSelected = function(obj) {
 
 // Delete selected Object
 Editor.deleteSelectedObject = function() {
+	// TODO: Use destroy function
 	if (Editor.selected_object !== null && Editor.selected_object.parent !== null) {
 		Editor.selected_object.parent.remove(Editor.selected_object)
 		Editor.updateObjectViews()
@@ -637,6 +438,27 @@ Editor.addToActualScene = function(obj) {
 	Editor.selectObject(obj)
 }
 
+// Select tool to manipulate tools
+Editor.selectTool = function(tool) {
+	Editor.tool_mode = tool
+	Editor.tool_container.removeAll()
+
+	if (tool === Editor.MODE_MOVE) {
+		Editor.tool = new MoveTool()
+	} else if (tool === Editor.MODE_ROTATE) {
+		Editor.tool = new RotateTool()
+	} else if (tool === Editor.MODE_RESIZE) {
+		Editor.tool = new ResizeTool()
+	} else {
+		Editor.tool = null
+	}
+
+	if (Editor.tool !== null && Editor.selected_object !== null) {
+		Editor.tool_container.add(Editor.tool)
+		Editor.tool.attachObject(Editor.selected_object)
+	}
+}
+
 // Checks if an object's name is unique, if not, renames it
 Editor.renameObject = function(obj, name) {
 	if(EditorUI.hierarchy !== undefined) {
@@ -671,9 +493,7 @@ Editor.updateObjectViews = function() {
 
 // Update Tree View to Match Actual Scene
 Editor.updateTreeView = function() {
-	// Update tree view from program
 	EditorUI.updateHierarchy()
-	//EditorUI.updateInspector()
 }
 
 // Update asset explorer
@@ -790,13 +610,6 @@ Editor.selectObjectHelper = function() {
 	}
 }
 
-// Update object helper to match actual object data
-Editor.updateObjectHelper = function() {
-	if (Editor.selected_object !== null) {
-		Editor.object_helper.update()
-	}
-}
-
 //Resize Camera
 Editor.resizeCamera = function()
 {
@@ -842,7 +655,7 @@ Editor.resetEditingFlags = function() {
 	Editor.selected_object = null
 	Editor.block_camera_move = false
 	Editor.is_editing_object = false
-	Editor.editing_object_args = null
+	Editor.is_editing_object = false
 	Editor.selectObjectHelper()
 
 	if(EditorUI.form !== undefined) {

@@ -48,27 +48,19 @@ function EditorUITopMenu() {
     // ----- TOOLS -----
 
     EditorUI.topmenu.add("Edit/Tools/Select", {callback: () => {
-        //TODO: Select Tool
-        Editor.tool_mode = Editor.MODE_SELECT
-        // TODO: Highlight this tool (Only this one)
+        Editor.selectTool(Editor.MODE_SELECT)
     }})
 
     EditorUI.topmenu.add("Edit/Tools/Move", {callback: () => {
-        //TODO: Move Tool
-        Editor.tool_mode = Editor.MODE_MOVE
-        //TODO: Highlight this tool (Only this one)
+        Editor.selectTool(Editor.MODE_MOVE)
     }})
 
     EditorUI.topmenu.add("Edit/Tools/Resize", {callback: () => {
-        //TODO: Resize Tool
-        Editor.tool_mode = Editor.MODE_RESIZE
-        //TODO: Highlight this tool (Only this one)
+        Editor.selectTool(Editor.MODE_RESIZE)
     }})
 
     EditorUI.topmenu.add("Edit/Tools/Rotate", {callback: () => {
-        //TODO: Rotate Tool
-        Editor.tool_mode = Editor.MODE_ROTATE
-        //TODO: Highlight this tool (Only this one)
+        Editor.selectTool(Editor.MODE_ROTATE)
     }})
 
     // ----- Add Scene -----

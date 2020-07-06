@@ -1,15 +1,26 @@
+"use strict"
+
+// Resize Tool Class
 class ResizeTool extends THREE.Object3D {
 	constructor() {
 		super()
 
-		var pid2 = Math.PI / 2;
-	
+		var pid2 = Math.PI / 2
+
+		this.obj = null
+
+		this.selected = false
+		this.selected_x = false
+		this.selected_y = false
+		this.selected_z = false
+		this.selected_center = false
+
 		//Materials
-		this.material_red = new THREE.MeshBasicMaterial({color: 0xff0000});
-		this.material_green = new THREE.MeshBasicMaterial({color: 0x00ff00});
-		this.material_blue = new THREE.MeshBasicMaterial({color: 0x0000ff});
-		this.material_yellow = new THREE.MeshBasicMaterial({color: 0xffff00});
-		this.material_white = new THREE.MeshBasicMaterial({color: 0xffffff});
+		this.material_red = new THREE.MeshBasicMaterial({color: 0xff0000})
+		this.material_green = new THREE.MeshBasicMaterial({color: 0x00ff00})
+		this.material_blue = new THREE.MeshBasicMaterial({color: 0x0000ff})
+		this.material_yellow = new THREE.MeshBasicMaterial({color: 0xffff00})
+		this.material_white = new THREE.MeshBasicMaterial({color: 0xffffff})
 	    var material_invisible = new THREE.MeshBasicMaterial()
         material_invisible.opacity = 0
         material_invisible.transparent = true
@@ -22,32 +33,34 @@ class ResizeTool extends THREE.Object3D {
 
 		//X
         this.x = new THREE.Scene()
-		var mesh = new THREE.Mesh(cylinder_geometry, this.material_red);
-		mesh.position.set(0, 0.5, 0);
-		this.x.add(mesh);
-		mesh = new THREE.Mesh(box_geometry, this.material_red);
-		mesh.position.set(0, 1, 0);
-		this.x.add(mesh);
+		var mesh = new THREE.Mesh(cylinder_geometry, this.material_red)
+		mesh.position.set(0, 0.5, 0)
+		this.x.add(mesh)
+		mesh = new THREE.Mesh(box_geometry, this.material_red)
+		mesh.position.set(0, 1, 0)
+		this.x.add(mesh)
         mesh = new THREE.Mesh(cylinder_geometry_big, material_invisible)
         mesh.position.set(0, 0.5, 0)
         this.x.add(mesh)
-		this.x.rotateOnAxis(new THREE.Vector3(0,0,1) , -pid2);
+		this.x.rotateOnAxis(new THREE.Vector3(0,0,1) , -pid2)
         this.x.matrixAutoUpdate = false
         this.x.updateMatrix()
+        this.add(this.x)
 	
 		//Y
         this.y = new THREE.Scene()
 		mesh = new THREE.Mesh(cylinder_geometry, this.material_green)
 		mesh.position.set(0, 0.5, 0)
 		this.y.add(mesh)
-		mesh = new THREE.Mesh(box_geometry, this.material_green);
+		mesh = new THREE.Mesh(box_geometry, this.material_green)
 		mesh.position.set(0, 1, 0)
 		this.y.add(mesh)
         mesh = new THREE.Mesh(cylinder_geometry_big, material_invisible)
         mesh.position.set(0, 0.5, 0)
         this.y.add(mesh)
         this.y.matrixAutoUpdate = false
-	
+		this.add(this.y)
+
 		//Z
         this.z = new THREE.Scene()
         mesh = new THREE.Mesh(cylinder_geometry, this.material_blue)
@@ -61,77 +74,138 @@ class ResizeTool extends THREE.Object3D {
 		this.z.rotateOnAxis(new THREE.Vector3(1,0,0), pid2)
         this.z.matrixAutoUpdate = false
         this.z.updateMatrix()
-		
+		this.add(this.z)
+
         // Center
         this.block = new THREE.Mesh(box_geometry, this.material_yellow)
         this.block.matrixAutoUpdate = false
         this.block.updateMatrix()
-
-		//Add to super
-		this.add(this.x);
-		this.add(this.y);
-		this.add(this.z);
-		this.add(this.block);
+		this.add(this.block)
 	}
 
-	highlightSelectedComponents(raycaster) {
-		var x = false, y = false, z = false, center = false;
-		var selected = false;
-		
-		//X Component
-		if(raycaster.intersectObject(this.x, true).length > 0)
+	// Attach object to resize tool
+	attachObject(obj) {
+		this.obj = obj
+	}
+
+	// Update attached object, returns if it's being edited
+	update() {
+		if(this.obj !== null)
 		{
-			x = true;
-			selected = true;
-			this.x.children[0].material = this.material_yellow;
-			this.x.children[1].material = this.material_yellow;
-		}
-		else
-		{
-			this.x.children[0].material = this.material_red;
-			this.x.children[1].material = this.material_red;
+			var distance = Editor.camera.position.distanceTo(this.obj.getWorldPosition())/5
+			this.scale.set(distance, distance, distance)
+			this.obj.getWorldPosition(this.position)
+			this.obj.getWorldQuaternion(this.quaternion)
+	
+			if(Mouse.buttonJustReleased(Mouse.LEFT))
+			{
+				this.selected = false
+				this.selected_x = false
+				this.selected_y = false
+				this.selected_z = false
+				this.selected_center = false
+
+				EditorUI.updateInspector()
+			}
+	
+			if(this.selected)
+			{
+				var scale = this.obj.scale.clone()
+				scale.multiplyScalar(0.01)
+	
+				if(this.selected_center)
+				{
+					var size = (Mouse.delta.x - Mouse.delta.y)
+					this.obj.scale.x += size * scale.x
+					this.obj.scale.y += size * scale.y
+					this.obj.scale.z += size * scale.z
+				}
+				else if(this.selected_x)
+				{
+					this.obj.scale.x -= Mouse.delta.y * Math.sin(Editor.camera_rotation.x) * scale.x
+					this.obj.scale.x -= Mouse.delta.x * Math.cos(Editor.camera_rotation.x) * scale.x
+				}
+				else if(this.selected_y)
+				{
+					this.obj.scale.y -= Mouse.delta.y * scale.y
+				}
+				else if(this.selected_z)
+				{
+					this.obj.scale.z -= Mouse.delta.y * Math.sin(Editor.camera_rotation.x + Editor.pid2) * scale.z
+					this.obj.scale.z -= Mouse.delta.x * Math.cos(Editor.camera_rotation.x + Editor.pid2) * scale.z
+				}
+	
+				return true;
+			}
+			else
+			{
+				Editor.updateRaycasterFromMouse()
+	
+				//X Component
+				if(Editor.raycaster.intersectObject(this.x, true).length > 0)
+				{
+					this.selected_x = true
+					this.selected = true
+					this.x.children[0].material = this.material_yellow
+					this.x.children[1].material = this.material_yellow
+				}
+				else
+				{
+					this.x.children[0].material = this.material_red
+					this.x.children[1].material = this.material_red
+				}
+	
+				//Y Component
+				if(Editor.raycaster.intersectObject(this.y, true).length > 0)
+				{
+					this.selected_y = true
+					this.selected = true
+					this.y.children[0].material = this.material_yellow
+					this.y.children[1].material = this.material_yellow
+				}
+				else
+				{
+					this.y.children[0].material = this.material_green
+					this.y.children[1].material = this.material_green
+				}
+	
+				//Z Component
+				if(Editor.raycaster.intersectObject(this.z, true).length > 0)
+				{
+					this.selected_z = true
+					this.selected = true
+					this.z.children[0].material = this.material_yellow
+					this.z.children[1].material = this.material_yellow
+				}
+				else
+				{
+					this.z.children[0].material = this.material_blue
+					this.z.children[1].material = this.material_blue
+				}
+	
+				//Center Block Component
+				if(Editor.raycaster.intersectObject(this.block, true).length > 0)
+				{
+					this.selected_center = true
+					this.selected = true
+					this.block.material = this.material_yellow
+				}
+				else
+				{
+					this.block.material = this.material_white
+				}
+			}
+	
+			if(!Mouse.buttonJustPressed(Mouse.LEFT))
+			{
+				this.selected = false
+				this.selected_x = false
+				this.selected_y = false
+				this.selected_z = false
+				this.selected_center = false
+			}
 		}
 	
-		//Y Component
-		if(raycaster.intersectObject(this.y, true).length > 0)
-		{
-			y = true;
-			selected = true;
-			this.y.children[0].material = this.material_yellow;
-			this.y.children[1].material = this.material_yellow;
-		}
-		else
-		{
-			this.y.children[0].material = this.material_green;
-			this.y.children[1].material = this.material_green;
-		}
-	
-		//Z Component
-		if(raycaster.intersectObject(this.z, true).length > 0)
-		{
-			z = true;
-			selected = true;
-			this.z.children[0].material = this.material_yellow;
-			this.z.children[1].material = this.material_yellow;
-		}
-		else
-		{
-			this.z.children[0].material = this.material_blue;
-			this.z.children[1].material = this.material_blue;
-		}
-	
-		//Center Block Component
-		if(raycaster.intersectObject(this.block, true).length > 0)
-		{
-			center = true;
-			selected = true;
-			this.block.material = this.material_yellow;
-		}
-		else
-		{
-			this.block.material = this.material_white;
-		}
-	
-		return {selected, x, y, z, center};
+		return false
 	}
 }
