@@ -28,7 +28,6 @@ ParticlesSetBlendingNode.prototype.onExecute = function() {
 
 	if (p !== undefined && b !== undefined) {
 		p.group.blending = b
-		p.updateValues()
 	}
 }
 
@@ -132,6 +131,66 @@ ParticlesSetMaxAgeNode.prototype.onExecute = function() {
 	}
 }
 
+function ParticlesSetPositionNode() {
+	this.addInput("Particles", "Particles")
+	this.addInput("Position", "Vector")
+	this.addInput("Spread", "Vector")
+}
+ParticlesSetPositionNode.title = "Position"
+ParticlesSetPositionNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var v = this.getInputData(1)
+	var s = this.getInputData(2)
+
+	if (p !== undefined && v !== undefined) {
+		p.emitter.position.value.copy(v)
+
+		if(s !== undefined) {
+			p.emitter.position.spread.copy(s)
+		}
+	}
+}
+
+function ParticlesSetVelocityNode() {
+	this.addInput("Particles", "Particles")
+	this.addInput("Velocity", "Vector")
+	this.addInput("Spread", "Vector")
+}
+ParticlesSetVelocityNode.title = "Velocity"
+ParticlesSetVelocityNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var v = this.getInputData(1)
+	var s = this.getInputData(2)
+
+	if (p !== undefined && v !== undefined) {
+		p.emitter.velocity.value.copy(v)
+
+		if (s !== undefined) {
+			p.emitter.velocity.spread.copy(v)
+		}
+	}
+}
+
+function ParticlesSetAccelerationNode() {
+	this.addInput("Particles", "Particles")
+	this.addInput("Acceleration", "Vector")
+	this.addInput("Spread", "Vector")
+}
+ParticlesSetAccelerationNode.title = "Acceleration"
+ParticlesSetAccelerationNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var a = this.getInputData(1)
+	var s = this.getInputData(2)
+
+	if (p !== undefined && a !== undefined) {
+		p.emitter.acceleration.value.copy(a)
+
+		if (s !== undefined) {
+			p.emitter.acceleration.spread.copy(s)
+		}
+	}
+}
+
 function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/Particles", ParticlesNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetBlending", ParticlesSetBlendingNode)
@@ -141,4 +200,7 @@ function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/ParticlesSetDuration", ParticlesSetDurationNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetEmitterType", ParticlesSetEmitterTypeNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetMaxAge", ParticlesSetMaxAgeNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetPosition", ParticlesSetPositionNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetVelocity", ParticlesSetVelocityNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetAcceleration", ParticlesSetAccelerationNode)
 }

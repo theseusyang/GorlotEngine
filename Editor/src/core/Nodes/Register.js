@@ -24,6 +24,7 @@ function registerBlueprintsNodes() {
 function registerParticleNodes() {
 	registerParticlesParticlesNodes()
 	registerMaterialNodeColor()
+	registerVectorNodes()
 	registerMaterialNodeConstants()
 }
 
