@@ -191,6 +191,26 @@ ParticlesSetAccelerationNode.prototype.onExecute = function() {
 	}
 }
 
+function ParticlesSetWiggleNode() {
+	this.addInput("Particles", "Particles")
+	this.addInput("Wiggle", "number")
+	this.addInput("Spread", "number")
+}
+ParticlesSetWiggleNode.title = "Wiggle"
+ParticlesSetWiggleNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var w = this.getInputData(1)
+	var s = this.getInputData(2)
+
+	if (p !== undefined && w !== undefined) {
+		p.emitter.wiggle.value = w
+
+		if (s !== undefined) {
+			p.emitter.wiggle.spread = s
+		}
+	}
+}
+
 function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/Particles", ParticlesNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetBlending", ParticlesSetBlendingNode)
@@ -203,4 +223,5 @@ function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/ParticlesSetPosition", ParticlesSetPositionNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetVelocity", ParticlesSetVelocityNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetAcceleration", ParticlesSetAccelerationNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetWiggle", ParticlesSetWiggleNode)
 }

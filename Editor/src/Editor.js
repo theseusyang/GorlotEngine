@@ -771,9 +771,9 @@ Editor.selectObjectHelper = function() {
 			Editor.object_helper.add(new THREE.HemisphereLightHelper(Editor.selected_object, 1))
 		}
 		// Particle Emitter
-		else if (Editor.selected_object instanceof ParticleEmitter) {
-			Editor.object_helper.add(new ParticleEmitterHelper(Editor.selected_object))
-		}
+		//else if (Editor.selected_object instanceof ParticleEmitter) {
+		//	Editor.object_helper.add(new ParticleEmitterHelper(Editor.selected_object))
+		//}
 		// Script
 		else if (Editor.selected_object instanceof Script) {
 			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Editor.selected_object.icon))
