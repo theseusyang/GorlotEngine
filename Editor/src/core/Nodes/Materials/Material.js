@@ -225,6 +225,7 @@ ShadingNode.prototype.onExecute = function() {
 
 	if (m !== undefined && s !== undefined) {
 		m.shading = s
+		m.needsUpdate = true
 	}
 }
 

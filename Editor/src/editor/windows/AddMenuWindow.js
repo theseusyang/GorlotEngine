@@ -132,7 +132,7 @@ class AddMenuWindow {
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
-        	obj.name = "Cylinder"
+        	obj.name = "cylinder"
         	Editor.addToActualScene(obj)
 
 		}
@@ -142,7 +142,7 @@ class AddMenuWindow {
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
-        	obj.name = "Sphere"
+        	obj.name = "sphere"
         	Editor.addToActualScene(obj)
 
 		}
@@ -152,7 +152,7 @@ class AddMenuWindow {
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
-        	obj.name = "Torus"
+        	obj.name = "torus"
         	Editor.addToActualScene(obj)
 
 		}
@@ -162,7 +162,7 @@ class AddMenuWindow {
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.receiveShadow = true
         	obj.castShadow = true
-        	obj.name = "Cone"
+        	obj.name = "cone"
         	Editor.addToActualScene(obj)
 
 		}
