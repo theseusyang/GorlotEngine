@@ -120,6 +120,17 @@ function DiscTypeNode() {
 	return SPE.distributions.DISC
 }
 
+// Texture
+function ClampToEdgeWrappingNode() {
+	return THREE.ClampToEdgeWrapping
+}
+function RepeatWrappingNode() {
+	return THREE.RepeatWrapping
+}
+function RepeatMirroredWrappingNode() {
+	return THREE.MirroredRepeatWrapping
+}
+
 function registerMaterialNodeConstants() {
 	// Blending mode
 	LiteGraph.wrapFunctionAsNode("BlendingModes/NoBlending", NoBlendingNode, null, "number")
@@ -161,4 +172,8 @@ function registerMaterialNodeConstants() {
 	LiteGraph.wrapFunctionAsNode("Constants/BoxType", BoxTypeNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("Constants/SphereType", SphereTypeNode, null, "number")
 	LiteGraph.wrapFunctionAsNode("Constants/DiscType", DiscTypeNode, null, "number")
+	// Texture
+	LiteGraph.wrapFunctionAsNode("Constants/ClampToEdgeWrapping", ClampToEdgeWrappingNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/RepeatWrapping", RepeatWrappingNode, null, "number")
+	LiteGraph.wrapFunctionAsNode("Constants/RepeatMirroredWrapping", RepeatMirroredWrappingNode, null, "number")
 }

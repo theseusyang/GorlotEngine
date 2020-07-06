@@ -1,14 +1,16 @@
 class CodeEditor {
 	constructor(parent) {
 
+		var self = this
 		this.id = "Code Editor " + CodeEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			clearInterval(self.interval)
 			CodeEditor.id--
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
-			Editor.setState(Editor.STATE_IDLE)
-			Editor.resetEditingFlags()
+			if(this.script !== undefined) {
+				self.activate()
+			}
 		}})
 
 		if (parent !== undefined) {
@@ -33,7 +35,6 @@ class CodeEditor {
 		this.setFontSize(this.font_size)
 
 		// Code changed event
-		var self = this
 		this.code.on("change", function() {
 			self.updateScript()
 		})
@@ -114,6 +115,7 @@ class CodeEditor {
 		}, 1000/60)
 
 		this.parent.appendChild(this.element)
+		this.activate()
 		CodeEditor.id++
 	}
 
@@ -138,6 +140,14 @@ class CodeEditor {
 		if (this.script != null) {
 			this.script.setCode(this.code.getValue())
 		}
+	}
+
+	activate() {
+		this.updateScript()
+		this.setFontSize(Settings.code_font_size)
+		this.code.setOption("theme", Settings.code_theme)
+		Editor.setState(Editor.STATE_IDLE)
+		Editor.resetEditingFlags()
 	}
 
 	setFontSize(size) {

@@ -14,6 +14,12 @@ include("libs/litegraph/litegraph.css")
 
 include("libs/codemirror/codemirror.css")
 include("libs/codemirror/theme/monokai.css")
+include("libs/codemirror/theme/abcdef.css")
+include("libs/codemirror/theme/ambiance.css")
+include("libs/codemirror/theme/bespin.css")
+include("libs/codemirror/theme/blackboard.css")
+include("libs/codemirror/theme/cobalt.css")
+include("libs/codemirror/theme/colorforth.css")
 
 include("src/editor/utils/editor.css")
 
@@ -234,24 +240,23 @@ Editor.update = function()
 
 	Editor.block_camera_move = false;
 
+	// Save or load files
+	if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
+		if (Keyboard.isKeyJustPressed(Keyboard.S)) {
+			EditorUI.saveProgram()
+		}
+		else if (Keyboard.isKeyJustPressed(Keyboard.O)) {
+			EditorUI.openProgram()
+		}
+		else if (Keyboard.isKeyJustPressed(Keyboard.W)) {
+			EditorUI.tabs_widget.getCurrentTab().destroy()
+			EditorUI.selectPreviousTab()
+		}
+	}
+
 	// If not on test mode
 	if(Editor.state !== Editor.STATE_TESTING && Editor.state !== Editor.STATE_IDLE)
 	{
-
-		// Save or load files
-		if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
-			if (Keyboard.isKeyJustPressed(Keyboard.S)) {
-				EditorUI.saveProgram()
-			}
-			else if (Keyboard.isKeyJustPressed(Keyboard.O)) {
-				EditorUI.loadProgram()
-			}
-			else if (Keyboard.isKeyJustPressed(Keyboard.W)) {
-				EditorUI.selectPreviousTab()
-				EditorUI.tabs_widget.getCurrentTab().destroy()
-			}
-		}
-
 		// If editing an scene
 		if(Editor.state === Editor.STATE_EDITING) {
 			//If object select display tools

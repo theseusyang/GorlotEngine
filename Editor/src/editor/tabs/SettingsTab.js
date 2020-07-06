@@ -50,7 +50,7 @@ class SettingsTab {
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Code Editor")
-		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: ["monokai"]})
+		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: ["monokai", "abcdef", "ambiance"]})
 		this.inspector.addNumber("Font Size", Settings.code_font_size)
 		this.inspector.addCheckbox("Line Numbers", Settings.code_line_numbers)
 		this.inspector.addSeparator()
@@ -92,6 +92,8 @@ class SettingsTab {
 			Settings.axis_enabled = value
 		} else if (name === "Font Size") {
 			Settings.code_font_size = value
+		} else if (name === "Code Theme") {
+			Settings.code_theme = value
 		} else if (name === "Line Numbers") {
 			Settings.code_line_numbers = value
 		}
