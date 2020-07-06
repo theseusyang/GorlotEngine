@@ -3,7 +3,7 @@
 include("libs/litegui/litegui.js")
 include("libs/jscolor/jscolor.js")
 
-include("libs/codemirror/codemirror.js")
+include("libs/codemirror/codemirror.min.js")
 include("libs/codemirror/mode/javascript/javascript.js")
 
 // Css Files to the editor
@@ -13,13 +13,7 @@ include("libs/litegui/litegui.css")
 include("libs/litegraph/litegraph.css")
 
 include("libs/codemirror/codemirror.css")
-include("libs/codemirror/theme/monokai.css")
-include("libs/codemirror/theme/abcdef.css")
-include("libs/codemirror/theme/ambiance.css")
-include("libs/codemirror/theme/bespin.css")
-include("libs/codemirror/theme/blackboard.css")
-include("libs/codemirror/theme/cobalt.css")
-include("libs/codemirror/theme/colorforth.css")
+include("libs/codemirror/theme/*")
 
 include("src/editor/utils/editor.css")
 
@@ -71,7 +65,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Mon 06 Jul 2020 12:55:10"
+Editor.TIMESTAMP = "Mon 06 Jul 2020 16:00:20"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -81,6 +75,8 @@ Editor.clickable = true
 //Initialize Main
 Editor.initialize = function(canvas)
 {
+	// Load settings
+	Settings.load()
 
 	// Set windows close event
 	if (App.gui !== undefined) {
@@ -189,7 +185,7 @@ Editor.initialize = function(canvas)
 	Editor.tool_scene.add(Editor.point_light_helper)
 
 	// SpotLight Helper
-	Editor.spot_light_helper = new THREE.SpotLightHelper(new THREE.SpotLight(), 1)
+	Editor.spot_light_helper = new THREE.SpotLightHelper(new THREE.SpotLight())
 	Editor.activateHelper(Editor.spot_light_helper, false)
 	Editor.tool_scene.add(Editor.spot_light_helper)
 
@@ -1006,6 +1002,9 @@ Editor.initializeRenderer = function(canvas) {
 
 // Exit Editor
 Editor.exit = function() {
+	// Save settings
+	Settings.store()
+
 	if (App.gui !== undefined) {
 		App.gui.App.closeAllWindows()
 		App.gui.App.quit()

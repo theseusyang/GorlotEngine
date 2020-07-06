@@ -137,7 +137,7 @@ class ParticleEmitter extends THREE.Object3D {
 	// Dispose particle emitter
 	dispose() {
 		// Dispose particle group
-		this.group.dispose()
+		//this.group.dispose()
 
 		// Dispose children
 		for(var i = 0; i < this.children.length; i++) {

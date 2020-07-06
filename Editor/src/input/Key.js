@@ -28,6 +28,11 @@ class Key {
 			}
 			this.isPressed = false
 		}
+		// Reset
+		else if (action === Key.KEY_RESET) {
+			this.justReleased = false
+			this.justPressed = false
+		}
 	}
 
 	set(just_pressed, is_pressed, just_released) {
@@ -49,3 +54,4 @@ class Key {
 
 Key.KEY_DOWN = 0
 Key.KEY_UP = 1
+Key.KEY_RESET = 2

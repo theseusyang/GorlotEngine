@@ -5,6 +5,7 @@ class SettingsTab {
 		this.id = "Settings Tab " + SettingsTab.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			SettingsTab.id--
+			Settings.store()
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
 			self.updateInspector()
@@ -44,13 +45,23 @@ class SettingsTab {
 
 		this.inspector.addTitle("Rendering Quality")
 		this.inspector.addCheckbox("Show Grid", Settings.grid_enabled)
+		this.inspector.addNumber("Grid Size", Settings.grid_size)
+		this.inspector.addNumber("Grid Spacing", Settings.grid_spacing)
 		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled)
 		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing)
 		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"]})
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Code Editor")
-		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: ["monokai", "abcdef", "ambiance"]})
+
+		var themes = []
+		var files = App.getFilesDirectory("libs/codemirror/theme/")
+		for(var i = 0; i < files.length; i++) {
+			var theme = files[i].replace(".css", "")
+			themes.push(theme)
+		}
+
+		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: themes})
 		this.inspector.addNumber("Font Size", Settings.code_font_size)
 		this.inspector.addCheckbox("Line Numbers", Settings.code_line_numbers)
 		this.inspector.addSeparator()
@@ -88,6 +99,10 @@ class SettingsTab {
 			}
 		} else if (name === "Show Grid") {
 			Settings.grid_enabled = value
+		} else if (name === "Grid Size") {
+			Settings.grid_size = value
+		} else if (name === "Grid Spacing") {
+			Settings.grid_spacing = value
 		} else if (name === "Show Axis") {
 			Settings.axis_enabled = value
 		} else if (name === "Font Size") {

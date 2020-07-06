@@ -137,16 +137,16 @@ include("src/core/assets/Materials/ShaderMaterial.js")
 //App class
 function App(){}
 
+// Require NodeJS modules
+try {
+	App.fs = require("fs")
+	App.gui = nw
+	App.clipboard = App.gui.Clipboard.get()
+} catch(e) {console.error("Error: " + e)}
+
 //App initialization (entry point)
 App.initialize = function(main)
 {
-	// Node modules
-	try {
-		App.fs = require("fs")
-		App.gui = nw
-		App.clipboard = App.gui.Clipboard.get()
-	} catch(e) {console.error("Error: " + e)}
-
 	App.components = []
 	App.componentManager = new ComponentManager()
 	
@@ -228,6 +228,7 @@ App.getFilesDirectory = function(dir) {
 			return []
 		}
 	}
+	return []
 }
 
 // Copy folder and all its files (includes symbolic links)
@@ -379,5 +380,11 @@ function include(file)
 		css.href = file
 		css.rel = "stylesheet"
 		document.body.appendChild(css)
-	}	
+	} else if (file.endsWith("*")) {
+		var directory = file.replace("*", "")
+		var files = App.getFilesDirectory(directory)
+		for(var i = 0; i < files.length; i++) {
+			include(directory + files[i])
+		}
+	}
 }

@@ -1,0 +1,13 @@
+{
+	"show_stats": true,
+	"grid_size": "500",
+	"grid_spacing": "5",
+	"grid_enabled": true,
+	"axis_enabled": true,
+	"shadows": true,
+	"shadows_type": 2,
+	"antialiasing": false,
+	"code_theme": "pastel-on-dark",
+	"code_font_size": 14,
+	"code_line_numbers": true
+}
