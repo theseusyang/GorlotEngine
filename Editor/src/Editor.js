@@ -656,6 +656,7 @@ Editor.renameObject = function(obj, name) {
 		}
 
 		Editor.updateObjectViews()
+		return toName
 	}
 }
 

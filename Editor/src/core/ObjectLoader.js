@@ -665,8 +665,10 @@ function parseObject(data, geometries, materials, textures)
 
 	object.uuid = data.uuid;
 
-	if(data.name !== undefined)
+	if(data.name === undefined || data.name === "")
 	{
+		object.name = Editor.renameObject(object, "unnamed")
+	} else {
 		object.name = data.name;
 	}
 
