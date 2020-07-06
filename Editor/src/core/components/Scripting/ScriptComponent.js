@@ -25,8 +25,6 @@ class ScriptComponent extends Component {
 	}
 
 	updateInfo(name, value, widget) {
-		console.log(name + " " + value)
-
 		if (name === "Mode") {
 			if (value === "Initialization") {
 				Editor.selected_object.mode = Script.INIT

@@ -18,6 +18,8 @@ class Script extends THREE.Object3D {
 		this.code = "//ADD CODE HERE"
 		this.mode = Script.INIT
 
+		this.icon = "data/icons/script/script.png"
+
 		// Get arguments
 		if (code !== undefined) {
 			this.code = code

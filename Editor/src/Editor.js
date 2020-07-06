@@ -23,6 +23,9 @@ include("src/editor/tools/MoveTool.js")
 include("src/editor/tools/ResizeTool.js")
 include("src/editor/tools/RotateTool.js")
 
+include("src/editor/helpers/ParticleEmitterHelper.js")
+include("src/editor/helpers/ObjectIconHelper.js")
+
 include("src/editor/windows/AddMenuWindow.js")
 
 include("src/editor/tabs/CodeEditor.js")
@@ -65,7 +68,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Mon 06 Jul 2020 16:00:20"
+Editor.TIMESTAMP = "Mon 06 Jul 2020 16:45:10"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -76,9 +79,9 @@ Editor.clickable = true
 Editor.initialize = function(canvas)
 {
 	// Copy static elements pointer to global object
-	global.Editor = Editor
-	global.EditorUI = EditorUI
-	global.Settings = Settings
+	//global.Editor = Editor
+	//global.EditorUI = EditorUI
+	//global.Settings = Settings
 
 	// Load settings
 	Settings.load()
@@ -765,6 +768,18 @@ Editor.selectObjectHelper = function() {
 		// Hemisphere Light
 		else if (Editor.selected_object instanceof THREE.HemisphereLight) {
 			Editor.object_helper.add(new THREE.HemisphereLightHelper(Editor.selected_object, 1))
+		}
+		// Particle Emitter
+		else if (Editor.selected_object instanceof ParticleEmitter) {
+			Editor.object_helper.add(new ParticleEmitterHelper(Editor.selected_object))
+		}
+		// Script
+		else if (Editor.selected_object instanceof Script) {
+			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Editor.selected_object.icon))
+		}
+		// Blueprints
+		else if (Editor.selected_object instanceof Blueprints) {
+			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Editor.selected_object.icon))
 		}
 		//Object 3D
 		else if (Editor.selected_object instanceof THREE.Object3D) {

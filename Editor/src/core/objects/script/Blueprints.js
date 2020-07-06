@@ -57,6 +57,8 @@ class Blueprints extends THREE.Object3D {
 			this.loop = blueprintsLoop
 		}
 
+		this.icon = "data/icons/script/blueprints.png"
+
 		// Components
 		this.components = []
 

@@ -2,20 +2,26 @@
 
 // Particle Emitter Helper class
 class ParticleEmitterHelper extends THREE.Object3D {
-	constructor() {
+	constructor(particle) {
 		super()
 
-		// TODO: This
+		this.particle = particle
+		this.runtime = null
 
-		this.particle = null
-		this.particle_runtime = null
+		if (particle instanceof ParticleEmitter) {
+			this.runtime = new ObjectLoader().parse(particle.toJSON())
+			this.add(this.runtime)
+			this.runtime.initialize()
+		}
 	}
 
 	update() {
 		// Update attached particle
-
-		if (this.particle_runtime !== null) {
-			this.particle_runtime.update()
+		if (this.runtime !== null) {
+			this.runtime.position.copy(this.particle.position)
+			this.runtime.scale.copy(this.particle.scale)
+			this.runtime.rotation.copy(this.particle.rotation)
+			this.runtime.update()
 		}
 	}
 }
