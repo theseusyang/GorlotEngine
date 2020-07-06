@@ -5,6 +5,14 @@ function ObjectUtils(){}
 
 // Get all materials in object and children
 ObjectUtils.getMaterials = function(obj, materials) {
+
+	// Auxiliar function to add materials
+	function add(material) {
+		if (materials[material.uuid] === undefined) {
+			materials[material.uuid] = material
+		}
+	}
+
 	// If undefined, create new array to store materials
 	if (materials === undefined) {
 		materials = []
@@ -16,9 +24,14 @@ ObjectUtils.getMaterials = function(obj, materials) {
 
 		// Check if material is mesh or sprite
 		if (child.material !== undefined && !(child instanceof Sky)) {
-			var material = child.material
-			if (materials.indexOf(material) === -1) {
-				materials[child.material.uuid] = child.material
+			if (child.material instanceof THREE.Material) {
+				add(child.material)
+			} else if (child.material instanceof THREE.MultiMaterial) {
+				var material_array = child.material.materials
+
+				for(var i = 0; i < material_array.length; i++) {
+					add(material_array[i])
+				}
 			}
 		}
 
@@ -31,6 +44,13 @@ ObjectUtils.getMaterials = function(obj, materials) {
 
 // Get all textures in object and children
 ObjectUtils.getTextures = function(obj, textures) {
+	// Auxiliar function to add textures
+	function add(texture) {
+		if (textures[texture.uuid] === undefined) {
+			textures[texture.uuid] = texture
+		}
+	}
+
 	// If undefined, create new array to store materials
 	if (textures === undefined) {
 		textures = []
@@ -41,13 +61,11 @@ ObjectUtils.getTextures = function(obj, textures) {
 		var child = obj.children[i]
 
 		if (child.material !== undefined) {
-			// TODO: This
-		} else if (child instanceof ParticleEmitter) {
-			var texture = child.group.texture
+			var material = child.material
 
-			if (textures[texture.uuid] === undefined) {
-				textures[texture.uuid] = texture
-			}
+			// TODO: THis
+		} else if (child instanceof ParticleEmitter) {
+			add(child.group.texture)
 		}
 
 		ObjectUtils.getTextures(child, textures)

@@ -24,6 +24,13 @@ THREE.Object3D.prototype.dispose = function() {
 	}
 }
 
+// Remove all children from object
+THREE.Object3D.prototype.removeAll = function() {
+	for(var i = this.children.length - 1; i > -1; i--) {
+		this.remove(this.children[i])
+	}
+}
+
 // Destroy object
 THREE.Object3D.prototype.destroy = function() {
 	if (this.parent !== null) {

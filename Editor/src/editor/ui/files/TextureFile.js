@@ -8,4 +8,10 @@ class TextureFile extends File {
 			this.attachedTo = texture
 		}
 	}
+
+	updatePreview() {
+		if (this.asset !== null) {
+			// TODO: this
+		}
+	}
 }

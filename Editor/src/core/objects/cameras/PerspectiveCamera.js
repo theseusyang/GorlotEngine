@@ -23,6 +23,8 @@ class PerspectiveCamera extends THREE.PerspectiveCamera {
 	}
 
 	initialize() {
+		this.scale.set(1, 1, 1)
+
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].initialize()
 		}
