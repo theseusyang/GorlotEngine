@@ -11,91 +11,113 @@ class AddMenuWindow {
 		this.objects = [
 			{
 				"name": "Cube",
-				"icon": "data/icons/models/cube.png"
+				"icon": "data/icons/models/cube.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Cylinder",
-				"icon": "data/icons/models/cylinder.png"
+				"icon": "data/icons/models/cylinder.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Sphere",
-				"icon": "data/icons/models/sphere.png"
+				"icon": "data/icons/models/sphere.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Torus",
-				"icon": "data/icons/models/torus.png"
+				"icon": "data/icons/models/torus.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Pyramid",
-				"icon": "data/icons/models/pyramid.png"
+				"icon": "data/icons/models/pyramid.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Plane",
-				"icon": "data/icons/models/plane.png"
+				"icon": "data/icons/models/plane.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Empty",
-				"icon": "data/icons/models/squares.png"
+				"icon": "data/icons/models/squares.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Text",
-				"icon": "data/icons/models/text.png"
+				"icon": "data/icons/models/text.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Point Light",
-				"icon": "data/icons/lights/point.png"
+				"icon": "data/icons/lights/point.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Ambient Light",
-				"icon": "data/icons/lights/ambient.png"
+				"icon": "data/icons/lights/ambient.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Spot Light",
-				"icon": "data/icons/lights/spot.png"
+				"icon": "data/icons/lights/spot.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Directional Light",
-				"icon": "data/icons/lights/directional.png"
+				"icon": "data/icons/lights/directional.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Hemisphere Light",
-				"icon": "data/icons/lights/hemisphere.png"
+				"icon": "data/icons/lights/hemisphere.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Sky",
-				"icon": "data/icons/lights/sky.png"
+				"icon": "data/icons/lights/sky.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Perspective Camera",
-				"icon": "data/icons/camera/perspective.png"
+				"icon": "data/icons/camera/perspective.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Orthographic Camera",
-				"icon": "data/icons/camera/orthographic.png"
+				"icon": "data/icons/camera/orthographic.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Leap Hand",
-				"icon": "data/icons/hw/leap.png"
+				"icon": "data/icons/hw/leap.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Script",
-				"icon": "data/icons/script/script.png"
+				"icon": "data/icons/script/script.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Blueprints",
-				"icon": "data/icons/script/blueprints.png"
+				"icon": "data/icons/script/blueprints.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Sprite",
-				"icon": "data/icons/effects/sprite.png"
+				"icon": "data/icons/effects/sprite.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Particles",
-				"icon": "data/icons/effects/particles.png"
+				"icon": "data/icons/effects/particles.png",
+				"icon_style": "width: 12px"
 			},
 			{
 				"name": "Audio",
-				"icon": "data/icons/assets/audio_12x12.png"
+				"icon": "data/icons/assets/audio.png",
+				"icon_style": "width: 12px"
 			}
 		]
 
