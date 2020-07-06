@@ -11,8 +11,6 @@ class SceneEditor {
 
 				if (self.element !== undefined) {
 					Mouse.canvas = self.element
-					self.activate()
-					self.updateInterface()
 				}
 
 				Editor.setState(Editor.STATE_EDITING)
@@ -73,20 +71,23 @@ class SceneEditor {
 					else if(dragged_object !== null && intersections.length > 0) {
 						var object = intersections[0].object
 
-							if (dragged_object instanceof THREE.SpriteMaterial) {
-								if (object instanceof THREE.Sprite) {
-									object.material = dragged_object
-									Editor.updateObjectViews()
-								}
+						if (dragged_object instanceof THREE.SpriteMaterial) {
+							if (object instanceof THREE.Sprite) {
+								object.material = dragged_object
+								Editor.updateObjectViews()
 							}
-							// Material
-							else if (dragged_object instanceof THREE.Material) {
-								if(object instanceof THREE.Mesh) {
-									object.material = dragged_object
-									Editor.updateObjectViews()
-								}
+						}
+						// Material
+						else if (dragged_object instanceof THREE.Material) {
+							if(object instanceof THREE.Mesh) {
+								object.material = dragged_object
+								Editor.updateObjectViews()
 							}
+						}
 					}
+
+					self.activate()
+					self.updateInterface()
 				}
 
 			}, ondragover: (e) => {
@@ -120,13 +121,14 @@ class SceneEditor {
 		this.parent.appendChild(this.stats.dom)
 
 		this.scene = null
+		Editor.setPerformanceMeter(this.stats)
 		
 		SceneEditor.id++	
 	}
 
 	activate() {
 		Editor.program.scene = this.scene
-		Editor.setPerformanceMeter(this.stats)
+		//Editor.setPerformanceMeter(this.stats)
 		Editor.setRenderCanvas(this.element)
 		Editor.setState(Editor.STATE_EDITING)
 		Editor.resetEditingFlags()
