@@ -27,7 +27,7 @@ class LightComponent extends Component {
 			}
 
 			// TODO: Selecting another kind of light from the Combo, will change the selected light's kind of
-			EditorUI.form.addCombo("Type", this.objectType, {values: ["Ambient", "Directional", "Hemisphere", "Point", "Spot"], disabled: true})
+			EditorUI.form.addCombo("Type", this.objectType, {values: ["Ambient", "Directional", "Hemisphere", "Point", "Spot"], disabled: true, name_width: 150})
 			EditorUI.form.addSeparator()
 
 			if(this.objectType === "Ambient") {
@@ -37,19 +37,19 @@ class LightComponent extends Component {
 				EditorUI.form.addTitle("Directional Light")
 				EditorUI.form.addTitle("Shadow")
 
-				EditorUI.form.addNumber("Left", this.object.shadow.camera.left)
-				EditorUI.form.addNumber("Right", this.object.shadow.camera.right)
-				EditorUI.form.addNumber("Top", this.object.shadow.camera.top)
-				EditorUI.form.addNumber("Bottom", this.object.shadow.camera.bottom)
+				EditorUI.form.addNumber("Left", this.object.shadow.camera.left, {name_width: 150})
+				EditorUI.form.addNumber("Right", this.object.shadow.camera.right, {name_width: 150})
+				EditorUI.form.addNumber("Top", this.object.shadow.camera.top, {name_width: 150})
+				EditorUI.form.addNumber("Bottom", this.object.shadow.camera.bottom, {name_width: 150})
 
-				EditorUI.form.addNumber("Near", this.object.shadow.camera.near)
-				EditorUI.form.addNumber("Far", this.object.shadow.camera.far)
+				EditorUI.form.addNumber("Near", this.object.shadow.camera.near, {name_width: 150})
+				EditorUI.form.addNumber("Far", this.object.shadow.camera.far, {name_width: 150})
 
-				EditorUI.form.addNumber("Zoom", this.object.shadow.camera.zoom)
-				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y])
+				EditorUI.form.addNumber("Zoom", this.object.shadow.camera.zoom, {name_width: 150})
+				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y], {name_width: 150})
 
-				EditorUI.form.addNumber("Bias", this.object.shadow.bias)
-				EditorUI.form.addNumber("Radius", this.object.shadow.radius)
+				EditorUI.form.addNumber("Bias", this.object.shadow.bias, {name_width: 150})
+				EditorUI.form.addNumber("Radius", this.object.shadow.radius, {name_width: 150})
 
 				EditorUI.form.addSeparator()
 			} else if (this.objectType === "Hemisphere") {
@@ -58,48 +58,48 @@ class LightComponent extends Component {
 				// TODO: Include jsColor here
 				//EditorUI.form.addString("Ground Color", this.object.groundColor.getStyle())
 				//EditorUI.form.addString("Sky Color", this.object.color.getStyle())
-				EditorUI.form.addColor("Ground Color", [this.object.groundColor.r, this.object.groundColor.g, this.object.groundColor.b])
-				EditorUI.form.addColor("Sky Color", [this.object.color.r, this.object.color.g, this.object.color.b])
+				EditorUI.form.addColor("Ground Color", [this.object.groundColor.r, this.object.groundColor.g, this.object.groundColor.b], {name_width: 150})
+				EditorUI.form.addColor("Sky Color", [this.object.color.r, this.object.color.g, this.object.color.b], {name_width: 150})
 
 				EditorUI.form.addSeparator()
 			} else if (this.objectType === "Point") {
 				EditorUI.form.addTitle("Point Light")
 				EditorUI.form.addTitle("Shadow")
 
-				EditorUI.form.addNumber("Near", this.object.shadow.camera.near)
-				EditorUI.form.addNumber("Far", this.object.shadow.camera.far)
-				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y])
+				EditorUI.form.addNumber("Near", this.object.shadow.camera.near, {name_width: 150})
+				EditorUI.form.addNumber("Far", this.object.shadow.camera.far, {name_width: 150})
+				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y], {name_width: 150})
 
-				EditorUI.form.addNumber("Bias", this.object.shadow.bias)
-				EditorUI.form.addNumber("Radius", this.object.shadow.radius)
+				EditorUI.form.addNumber("Bias", this.object.shadow.bias, {name_width: 150})
+				EditorUI.form.addNumber("Radius", this.object.shadow.radius, {name_width: 150})
 
 				EditorUI.form.addSeparator()
 			} else if (this.objectType === "Spot") {
 				EditorUI.form.addTitle("Spot Light")
 
-				EditorUI.form.addSlider("Distance", this.object.distance, {min: 1, max: 100, step: 1})
-				EditorUI.form.addSlider("Angle", this.object.angle, {min: 0, max: 1.5, step: 0.1})
-				EditorUI.form.addSlider("Penumbra", this.object.penumbra, {min: 0, max: 1.5, step: 0.1})
-				EditorUI.form.addSlider("Decay", this.object.decay, {min: 0, max: 2, step: 0.1})
+				EditorUI.form.addSlider("Distance", this.object.distance, {min: 1, max: 100, step: 1, name_width: 150})
+				EditorUI.form.addSlider("Angle", this.object.angle, {min: 0, max: 1.5, step: 0.1, name_width: 150})
+				EditorUI.form.addSlider("Penumbra", this.object.penumbra, {min: 0, max: 1.5, step: 0.1, name_width: 150})
+				EditorUI.form.addSlider("Decay", this.object.decay, {min: 0, max: 2, step: 0.1, name_width: 150})
 
 				EditorUI.form.addSeparator()
 
 				EditorUI.form.addTitle("Shadow")
-				EditorUI.form.addNumber("Near", this.object.shadow.camera.near)
-				EditorUI.form.addNumber("Far", this.object.shadow.camera.far)
-				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y])
+				EditorUI.form.addNumber("Near", this.object.shadow.camera.near, {name_width: 150})
+				EditorUI.form.addNumber("Far", this.object.shadow.camera.far, {name_width: 150})
+				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y], {name_width: 150})
 
 
 				EditorUI.form.addSeparator()
 			}
 
-			EditorUI.form.addSlider("Intensity", this.object.intensity, {min: 0, max: 1, step: 0.01})
+			EditorUI.form.addSlider("Intensity", this.object.intensity, {min: 0, max: 1, step: 0.01, name_width: 150})
 
-			EditorUI.form.addColor("Color", [this.object.color.r, this.object.color.g, this.object.color.b])
+			EditorUI.form.addColor("Color", [this.object.color.r, this.object.color.g, this.object.color.b], {name_width: 150})
 
-			EditorUI.form.addString("Color Hex", "0x" + this.object.color.getHexString())
-			EditorUI.form.addString("Color RGB", this.object.color.getStyle())
-			EditorUI.form.addCheckbox("Cast Shadow", this.object.castShadow)
+			EditorUI.form.addString("Color Hex", "0x" + this.object.color.getHexString(), {name_width: 150})
+			EditorUI.form.addString("Color RGB", this.object.color.getStyle(), {name_width: 150})
+			EditorUI.form.addCheckbox("Cast Shadow", this.object.castShadow, {name_width: 150})
 		} else {
 			// TODO: Create a child which is a light source
 			EditorUI.form.addInfo(null, "This selected object ain't a light. This component won't work :'(")

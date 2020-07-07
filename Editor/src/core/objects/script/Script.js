@@ -100,8 +100,6 @@ class Script extends THREE.Object3D {
 				}
 
 				console.error(error)
-			} else {
-				console.error(e)
 			}
 		}
 	}

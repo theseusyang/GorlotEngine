@@ -40,18 +40,18 @@ class SettingsTab {
 
 	initUI() {
 		this.inspector.addTitle("General")
-		this.inspector.addCheckbox("Show stats", Settings.show_stats)
+		this.inspector.addCheckbox("Show stats", Settings.show_stats, {name_width: 150})
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Rendering Quality")
-		this.inspector.addCheckbox("Show Grid", Settings.grid_enabled)
-		this.inspector.addNumber("Grid Size", Settings.grid_size)
-		this.inspector.addNumber("Grid Spacing", Settings.grid_spacing)
-		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled)
-		this.inspector.addCheckbox("Camera Preview", Settings.camera_preview_enabled)
-		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0.05, max: 0.7, step: 0.05})
-		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing)
-		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"]})
+		this.inspector.addCheckbox("Show Grid", Settings.grid_enabled, {name_width: 150})
+		this.inspector.addNumber("Grid Size", Settings.grid_size, {name_width: 150})
+		this.inspector.addNumber("Grid Spacing", Settings.grid_spacing, {name_width: 150})
+		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled, {name_width: 150})
+		this.inspector.addCheckbox("Camera Preview", Settings.camera_preview_enabled, {name_width: 150})
+		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0.05, max: 0.7, step: 0.05,name_width: 150})
+		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing, {name_width: 150, name_width: 150})
+		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"], name_width: 150})
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Code Editor")
@@ -63,9 +63,9 @@ class SettingsTab {
 			themes.push(theme)
 		}
 
-		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: themes})
-		this.inspector.addNumber("Font Size", Settings.code_font_size)
-		this.inspector.addCheckbox("Line Numbers", Settings.code_line_numbers)
+		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: themes, name_width: 150})
+		this.inspector.addNumber("Font Size", Settings.code_font_size, {name_width: 150})
+		this.inspector.addCheckbox("Line Numbers", Settings.code_line_numbers, {name_width: 150})
 		this.inspector.addSeparator()
 
 	}

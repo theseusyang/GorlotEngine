@@ -6,9 +6,9 @@ class AudioComponent extends Component {
 	initUI() {
 		super.initUI()
 
-		EditorUI.form.addCheckbox("Autoplay", Editor.selected_object.autoplay)
-		EditorUI.form.addCheckbox("Loop", Editor.selected_object.source.loop)
-		EditorUI.form.addNumber("Playback Speed", Editor.selected_object.playbackRate)
+		EditorUI.form.addCheckbox("Autoplay", Editor.selected_object.autoplay, {name_width: 150})
+		EditorUI.form.addCheckbox("Loop", Editor.selected_object.source.loop, {name_width: 150})
+		EditorUI.form.addNumber("Playback Speed", Editor.selected_object.playbackRate, {name_width: 150})
 	}
 
 	updateInfo(name, value, widget) {

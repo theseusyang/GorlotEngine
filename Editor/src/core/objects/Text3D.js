@@ -20,6 +20,9 @@ class Text3D extends THREE.Mesh {
 		this.scale.set(0.01, 0.01, 0.01)
 		this.text = text
 
+		this.receiveShadow = true
+		this.castShadow = true
+
 		this.components = []
 
 		this.defaultComponents = []

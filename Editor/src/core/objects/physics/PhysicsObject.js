@@ -11,7 +11,8 @@ class PhysicsObject extends THREE.Object3D {
 		this.body = new CANNON.Body({mass: 0.5})
 		this.body.type = CANNON.Body.DYNAMIC
 		this.body.mass = 0.5
-		this.body.addShape(new CANNON.Sphere(1.0))
+		//this.body.addShape(new CANNON.Sphere(1.0))
+		this.body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)))
 
 		this.world = null
 	
@@ -71,12 +72,12 @@ class PhysicsObject extends THREE.Object3D {
 		data.object.body.mass = this.body.mass
 		data.object.body.linearDamping = this.body.linearDamping
 		data.object.body.angularDamping = this.body.angularDamping
+		data.object.body.allowSleep = this.body.allowSleep
 		data.object.body.sleepSpeedLimit = this.body.sleepSpeedLimit
 		data.object.body.sleepTimeLimit = this.body.sleepTimeLimit
 		data.object.body.collisionFilterGroup = this.body.collisionFilterGroup
 		data.object.body.collisionFilterMask = this.body.collisionFilterMask
 		data.object.body.fixedRotation = this.body.fixedRotation
-		data.object.body.collisionResponse = this.body.collisionResponse
 
 		// Shapes
 		data.object.shapes = {}

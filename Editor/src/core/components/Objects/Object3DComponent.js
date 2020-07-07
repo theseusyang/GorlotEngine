@@ -6,11 +6,11 @@ class Object3DComponent extends Component {
 	initUI() {
 		super.initUI()
 	
-		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible)
-		EditorUI.form.addCheckbox("Dynamic", Editor.selected_object.matrixAutoUpdate)
-		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow)
-		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow)
-		EditorUI.form.addCheckbox("Rotation Auto Update", Editor.selected_object.rotationAutoUpdate)
+		EditorUI.form.addCheckbox("Visible", Editor.selected_object.visible, {name_width: 150})
+		EditorUI.form.addCheckbox("Dynamic", Editor.selected_object.matrixAutoUpdate, {name_width: 150})
+		EditorUI.form.addCheckbox("Cast Shadow", Editor.selected_object.castShadow, {name_width: 150})
+		EditorUI.form.addCheckbox("Receive Shadow", Editor.selected_object.receiveShadow, {name_width: 150})
+		EditorUI.form.addCheckbox("Rotation Auto Update", Editor.selected_object.rotationAutoUpdate, {name_width: 150})
 
 		var self = this
 		this.addRemoveButton(this)

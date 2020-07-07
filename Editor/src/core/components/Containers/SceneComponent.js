@@ -9,10 +9,10 @@ class SceneComponent extends Component {
 		var program = Editor.selected_object.parent
 		var obj = Editor.selected_object
 		this.ami = obj.uuid === program.initial_scene
-		EditorUI.form.addCheckbox("Default Scene", this.ami)
+		EditorUI.form.addCheckbox("Default Scene", this.ami, {name_width: 150})
 		EditorUI.form.addSeparator()
 
-		EditorUI.form.addList("Fog", ["Off", "Linear", "Exponential"], {height: 70})
+		EditorUI.form.addList("Fog", ["Off", "Linear", "Exponential"], {height: 70, name_width: 150})
 
 		if(Editor.selected_object.fog !== null) {
 			EditorUI.form.addTitle("Fog")
@@ -24,10 +24,10 @@ class SceneComponent extends Component {
 
 			var col = hexToRgb(Editor.selected_object.fog_color)
 
-			EditorUI.form.addColor("Color", col)
-			EditorUI.form.addNumber("Near", Editor.selected_object.fog_near)
-			EditorUI.form.addNumber("Density", Editor.selected_object.fog_density)
-			EditorUI.form.addNumber("Far", Editor.selected_object.fog_far)
+			EditorUI.form.addColor("Color", col, {name_width: 150})
+			EditorUI.form.addNumber("Near", Editor.selected_object.fog_near, {name_width: 150})
+			EditorUI.form.addNumber("Density", Editor.selected_object.fog_density, {name_width: 150})
+			EditorUI.form.addNumber("Far", Editor.selected_object.fog_far, {name_width: 150})
 		}
 	}
 
