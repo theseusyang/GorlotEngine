@@ -48,7 +48,8 @@ class SettingsTab {
 		this.inspector.addNumber("Grid Size", Settings.grid_size)
 		this.inspector.addNumber("Grid Spacing", Settings.grid_spacing)
 		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled)
-		this.inspector.addCheckbox("Camera Preview", Settings.show_camera_preview)
+		this.inspector.addCheckbox("Camera Preview", Settings.camera_preview_enabled)
+		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0, max: 0.7, step: 0.05})
 		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing)
 		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"]})
 		this.inspector.addSeparator()
@@ -105,7 +106,9 @@ class SettingsTab {
 		} else if (name === "Grid Spacing") {
 			Settings.grid_spacing = value
 		} else if (name === "Camera Preview") {
-			Settings.show_camera_preview = value
+			Settings.camera_preview_enabled = value
+		} else if (name === "Preview Size") {
+			Settings.camera_preview_percentage = value
 		} else if (name === "Show Axis") {
 			Settings.axis_enabled = value
 		} else if (name === "Font Size") {

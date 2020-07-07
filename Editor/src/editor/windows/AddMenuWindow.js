@@ -90,6 +90,11 @@ class AddMenuWindow {
 				"icon_style": "width: 12px"
 			},
 			{
+				"name": "Physics",
+				"icon": "data/icons/physics/physics.png",
+				"icon_style": "width: 12px"
+			},
+			{
 				"name": "Leap Hand",
 				"icon": "data/icons/hw/leap.png",
 				"icon_style": "width: 12px"
@@ -238,7 +243,13 @@ class AddMenuWindow {
 			var obj = new OrthographicCamera(3, 2, undefined, 1, 1000000)
 			Editor.addToActualScene(obj)
 
-		} else if (o === "Leap Hand") {
+		}
+		else if (o === "Physics") {
+
+			Editor.addToActualScene(new PhysicsObject())
+
+		}
+		else if (o === "Leap Hand") {
 			Editor.addToActualScene(new LeapHand())
 		}
 		else if (o === "Script") {

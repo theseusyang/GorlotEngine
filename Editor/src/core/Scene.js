@@ -21,8 +21,8 @@ class Scene extends THREE.Scene {
 		//Create CANNON world
 		this.world = new CANNON.World()
 		this.world.broadphase = new CANNON.NaiveBroadphase()
-		this.world.gravity.set(0, -9.8, 0)
-		this.world.solver.iterations = 10
+		this.world.gravity.set(0, -10, 0)
+		this.world.solver.tolerance = 10
 
 		// Initialization variables
 		this.initial_camera = null
@@ -53,7 +53,7 @@ class Scene extends THREE.Scene {
 
 	update() {
 		// Update physics
-		this.world.step(1/60);
+		this.world.step(0.016667);
 	
 		for(var i = 0; i < this.children.length; i++)
 		{

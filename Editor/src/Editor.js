@@ -25,6 +25,7 @@ include("src/editor/tools/RotateTool.js")
 
 include("src/editor/helpers/ParticleEmitterHelper.js")
 include("src/editor/helpers/ObjectIconHelper.js")
+include("src/editor/helpers/PhysicsObjectHelper.js")
 
 include("src/editor/windows/AddMenuWindow.js")
 
@@ -68,7 +69,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Mon 06 Jul 2020 20:15:54"
+Editor.TIMESTAMP = "Mon 06 Jul 2020 00:02:28"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -522,15 +523,19 @@ Editor.draw = function()
 		Editor.renderer.clearDepth()
 		Editor.renderer.render(Editor.tool_scene_top, Editor.camera)
 
-		if (Settings.show_camera_preview && Editor.selected_object instanceof THREE.Camera) {
-			var width = 120 * Editor.canvas.width / Editor.canvas.height
-			var height = 120
-			var offset = Editor.canvas.width - 200
+		if (Settings.camera_preview_enabled && Editor.selected_object instanceof THREE.Camera) {
+			var width = Settings.camera_preview_percentage * Editor.canvas.width
+			var height = Settings.camera_preview_percentage * Editor.canvas.height
+			var offset = Editor.canvas.width - width - 10
+			var camera = Editor.selected_object
+
+			camera.aspect = width / height
+			camera.updateProjectionMatrix()
 
 			Editor.renderer.clearDepth()
-			Editor.renderer.setViewport(offset, 20, width, height)
-			Editor.renderer.setScissor(offset, 20, width, height)
-			Editor.renderer.render(Editor.program.scene, Editor.selected_object)
+			Editor.renderer.setViewport(offset, 10, width, height)
+			Editor.renderer.setScissor(offset, 10, width, height)
+			Editor.renderer.render(Editor.program.scene, camera)
 		}
 	} else if (Editor.state === Editor.STATE_TESTING) {
 		// If VR is enabled
@@ -608,6 +613,10 @@ Editor.selectObjectHelper = function() {
 		// Blueprints
 		else if (Editor.selected_object instanceof Blueprints) {
 			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Editor.selected_object.icon))
+		}
+		// Physics
+		else if (Editor.selected_object instanceof PhysicsObject) {
+			Editor.object_helper.add(new PhysicsObjectHelper(Editor.selected_object))
 		}
 		//Object 3D
 		else if (Editor.selected_object instanceof THREE.Object3D) {
