@@ -4,12 +4,16 @@ class MaterialEditor {
 		var self = this
 		this.id = "Material Editor " + MaterialEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
+			if (file !== undefined) {
+				// TODO: Fix this, restore material
+				file.restoreMaterial()
+			}
+
 			self.graph.stop()
 			clearInterval(self.interval)
 
 			MaterialEditor.id--
 			self.updateMaterial()
-			//console.log(self.material.nodes)
 			self.material = null
 			EditorUI.selectPreviousTab()
 			Editor.updateObjectViews()
@@ -72,6 +76,7 @@ class MaterialEditor {
 
 		// Material attached to the editor
 		this.material = material
+		this.file = file
 		this.nodes = this.material.nodes
 		var mat = this.material
 		mat.nodes = {}
@@ -110,7 +115,7 @@ class MaterialEditor {
 	updateMaterial() {
 
 		var genesis = null
-
+		
 		if(this.nodes.nodes !== undefined) {
 			for(var i = 0; i < this.nodes.nodes.length; i++) {
 				if (this.nodes.nodes[i].type === "Material/MeshPhongMaterial") {

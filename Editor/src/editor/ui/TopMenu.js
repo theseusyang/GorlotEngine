@@ -33,7 +33,7 @@ function EditorUITopMenu() {
             } catch(e) {
                 console.error("Error exporting project: " + e)
             }
-        }, ".zip", true)
+        }, "", true)
     }})
     EditorUI.topmenu.add("File/Export/Linux", {callback: () => {
         // TODO: Export to Linux

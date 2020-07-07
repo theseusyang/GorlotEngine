@@ -36,7 +36,9 @@ class MaterialFile extends File {
         	            if (self.attachedTo !== undefined || self.attachedTo !== null) {
         	                var p = LiteGUI.prompt("Rename: " + self.attachedTo.name, (value) => {
         	                    if (value !== null) {
-        	                        Editor.renameObject(self.attachedTo, value)
+        	                        //Editor.renameObject(self.attachedTo, value)
+        	                        self.attachedTo.name = value
+        	                        Editor.updateObjectViews()
         	                    }
         	                }, {title: "Rename", value: self.attachedTo.name})
         	            }

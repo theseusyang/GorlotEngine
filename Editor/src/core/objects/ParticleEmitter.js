@@ -49,8 +49,9 @@ class ParticleEmitter extends THREE.Object3D {
 				texture: {
 					value: new Texture("data/particle.png")
 				},
+				maxParticleCount: 10000,
 				blending: THREE.AdditiveBlending,
-				maxParticleCount: 10000
+				hasPerspective: true
 			})
 		}
 
@@ -162,6 +163,10 @@ class ParticleEmitter extends THREE.Object3D {
 		data.object.group.colorize = this.group.colorize
 		data.object.group.maxParticleCount = this.group.maxParticleCount
 		data.object.group.blending = this.group.blending
+		data.object.group.scale = this.group.scale
+		data.object.group.depthWrite = this.group.depthWrite
+		data.object.group.depthTest = this.group.depthTest
+		data.object.group.fog = this.group.fog
 	
 		//Emitter attributes
 		data.object.emitter = {}

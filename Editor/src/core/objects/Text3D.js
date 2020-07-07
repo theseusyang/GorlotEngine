@@ -5,16 +5,16 @@ class Text3D extends THREE.Mesh {
 	constructor(text, material, font) {
 		
 		if (font === undefined) {
-			var font = new FontLoader().parse(App.readFile("data/fonts/helvetiker_bold.typeface.js"))
+			var font = new FontLoader().parse(App.readFile("data/fonts/montserrat.json"))
 		} else {
-			var font = new FontLoader().parse(font)
+			var font = new THREE.FontLoader().parse(font)
 		}
 
 		super(new THREE.TextGeometry(text, {font: font}), material)
 		
 		this.font = font
 
-		this.name = "TEXT"
+		this.name = "text"
 		this.type = "Text3D"
 
 		this.scale.set(0.01, 0.01, 0.01)
