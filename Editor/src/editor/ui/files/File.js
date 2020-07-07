@@ -1,3 +1,6 @@
+"use strict"
+
+// File class
 class File {
 	constructor(name, parent) {
 

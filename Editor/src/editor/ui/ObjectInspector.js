@@ -1,3 +1,6 @@
+"use strict"
+
+// Object Inspector class
 class ObjectInspector {
 	
 	constructor() {

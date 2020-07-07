@@ -8,7 +8,7 @@ class Sky extends THREE.Mesh {
 		// Hemisphere Light
 		this.hemisphere = new HemisphereLight(0xffffff, 0xffffff, 0.3)
 		this.hemisphere.color.setHSL(0.6, 1, 0.6)
-		this.hemisphere.groundColor.setHSL(0.095, 1, 0.75)
+		this.hemisphere.groundColor.setHSL(0.1, 1, 0.75)
 		this.hemisphere.position.set(0, 500, 0)
 		this.hemisphere.name = "horizon"
 		this.hemisphere.hidden = true

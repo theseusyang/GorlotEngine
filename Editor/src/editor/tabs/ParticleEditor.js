@@ -1,3 +1,6 @@
+"use strict"
+
+// Particle Editor class
 class ParticleEditor {
 	constructor(particleEmitter) {
 		var self = this

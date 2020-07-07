@@ -1,3 +1,6 @@
+"use strict"
+
+// Material File class
 class MaterialFile extends File {
 	constructor(name, parent) {
 		super(name, parent)

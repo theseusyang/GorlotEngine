@@ -1,3 +1,6 @@
+"use strict"
+
+// Blueprints Editor class
 class BlueprintsEditor {
 	constructor(parent, blueprints, type) {
 

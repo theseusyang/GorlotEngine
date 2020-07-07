@@ -1,3 +1,6 @@
+"use strict"
+
+// Settings Tab Class
 class SettingsTab {
 	constructor(parent) {
 

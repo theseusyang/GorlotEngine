@@ -1,3 +1,6 @@
+"use strict"
+
+// Material Editor class
 class MaterialEditor {
 	constructor(parent, material, file) {
 

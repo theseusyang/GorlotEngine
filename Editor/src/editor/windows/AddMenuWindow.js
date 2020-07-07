@@ -1,3 +1,6 @@
+"use strict"
+
+// Add Menu Window class
 class AddMenuWindow {
 	constructor() {
 		// TODO: Add Icons

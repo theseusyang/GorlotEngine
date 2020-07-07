@@ -1,3 +1,6 @@
+"use strict"
+
+// Texture file Class
 class TextureFile extends File {
 	constructor(name) {
 		super(name)

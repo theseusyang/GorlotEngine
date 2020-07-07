@@ -1,3 +1,6 @@
+"use strict"
+
+// Code Editor class
 class CodeEditor {
 	constructor(parent) {
 

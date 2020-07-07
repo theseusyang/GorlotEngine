@@ -1,3 +1,5 @@
+"use strict"
+
 function EditorUIHierarchy() {
 
 	EditorUI.right_area.split("vertical", [null, EditorUI.assetEx_height + 200], true)

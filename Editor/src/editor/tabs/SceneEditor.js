@@ -1,3 +1,6 @@
+"use strict"
+
+// Scene Editor class
 class SceneEditor {
 	constructor(parent) {
 

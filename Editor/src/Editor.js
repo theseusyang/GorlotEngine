@@ -10,8 +10,6 @@ include("libs/codemirror/mode/javascript/javascript.js")
 include("libs/codemirror/codemirror.css")
 include("libs/codemirror/theme/*")
 
-include("src/editor/utils/editor.css")
-
 include("libs/litegui/litegui.css")
 include("libs/litegraph/litegraph.css")
 
@@ -67,7 +65,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Tue 07 Jul 2020 18:58:34"
+Editor.TIMESTAMP = "Tue 07 Jul 2020 21:14:24"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
