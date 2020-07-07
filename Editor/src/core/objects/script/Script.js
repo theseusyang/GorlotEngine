@@ -94,10 +94,15 @@ class Script extends THREE.Object3D {
 			this.func = Function(this.code)
 		} catch(e) {
 			if (e instanceof SyntaxError) {
-				return e.message
-			}
+				var error = {
+					line: 0,
+					message: e.message
+				}
 
-			return null
+				console.error(error)
+			} else {
+				console.error(e)
+			}
 		}
 	}
 

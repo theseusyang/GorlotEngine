@@ -127,36 +127,31 @@ EditorUI.hierarchyContext = function(e, data) {
         }},
         {title: "Paste", callback: () => {
             Editor.pasteIntoSelectedObject()
+        }},
+        {title: "New Material", callback: () => {
+            var mat = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
+            mat.name = object.name
+            object.material = mat
+            EditorUI.addAsset(undefined, mat)
+        }},
+        {title: "Cut", callback: () => {
+            Editor.cutSelectedObject()
+        }},
+        {title: "Duplicate", callback: () => {
+            // TODO: This
+        }},
+        {title: "Set Static", callback: () => {
+            ObjectUtils.setMatrixAutoUpdate(object, false)
+            EditorUI.updateInspector()
+        }},
+        {title: "Set Dynamic", callback: () => {
+            ObjectUtils.setMatrixAutoUpdate(object, true)
+            EditorUI.updateInspector()
+        }},
+        {title: "Delete", callback: () => {
+            EditorUI.deleteObject(object)
         }}
     )
-
-    if (!(object instanceof Program) && !(object instanceof Scene)) {
-        content.push(
-            {title: "New Material", callback: () => {
-                var mat = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
-                mat.name = object.name
-                object.material = mat
-                EditorUI.addAsset(undefined, mat)
-            }},
-            {title: "Cut", callback: () => {
-                Editor.cutSelectedObject()
-            }},
-            {title: "Duplicate", callback: () => {
-                // TODO: This
-            }},
-            {title: "Set Static", callback: () => {
-                ObjectUtils.setMatrixAutoUpdate(object, false)
-                EditorUI.updateInspector()
-            }},
-            {title: "Set Dynamic", callback: () => {
-                ObjectUtils.setMatrixAutoUpdate(object, true)
-                EditorUI.updateInspector()
-            }},
-            {title: "Delete", callback: () => {
-                EditorUI.deleteObject(object)
-            }}
-        )
-    }
 
     var context = new LiteGUI.ContextMenu(content, {title: "Edit item", event: e})
 }

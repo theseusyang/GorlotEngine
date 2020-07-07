@@ -49,7 +49,7 @@ class SettingsTab {
 		this.inspector.addNumber("Grid Spacing", Settings.grid_spacing)
 		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled)
 		this.inspector.addCheckbox("Camera Preview", Settings.camera_preview_enabled)
-		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0, max: 0.7, step: 0.05})
+		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0.05, max: 0.7, step: 0.05})
 		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing)
 		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"]})
 		this.inspector.addSeparator()

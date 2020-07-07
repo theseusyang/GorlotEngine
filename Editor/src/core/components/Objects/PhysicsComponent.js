@@ -18,6 +18,7 @@ class PhysicsComponent extends Component {
 		}
 
 		EditorUI.form.addCombo("Type", type_str, {values: ["Static", "Dynamic", "Kinematic"]})
+		EditorUI.form.addNumber("Mass", Editor.selected_object.body.mass)
 	}
 
 	updateInfo(name, value, widget) {
@@ -30,6 +31,8 @@ class PhysicsComponent extends Component {
 			} else if (value === "Kinematic") {
 				Editor.selected_object.body.type = CANNON.Body.KINEMATIC
 			}
+		} else if (name === "Mass") {
+			Editor.selected_object.body.mass = value
 		}
 
 	}
