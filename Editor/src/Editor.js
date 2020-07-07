@@ -740,8 +740,6 @@ Editor.exportWebProject = function(dir) {
 	App.copyFolder("src/core", dir + "/src/core")
 	App.copyFolder("src/input", dir + "/src/input")
 	App.copyFolder("libs", dir + "/libs")
-	App.makeDirectory(dir + "/data")
-	App.copyFolder("data/fonts", dir + "/data/fonts")
 	App.copyFile("src/App.js", dir + "/App.js")
 	Editor.saveProgram(dir + "/app.gsp")
 }

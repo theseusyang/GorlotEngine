@@ -7,7 +7,7 @@ class Text3D extends THREE.Mesh {
 		if (font === undefined) {
 			var font = new FontLoader().parse(App.readFile("data/fonts/montserrat.json"))
 		} else {
-			var font = new THREE.FontLoader().parse(font)
+			var font = new THREE.Font(font)
 		}
 
 		super(new THREE.TextGeometry(text, {font: font}), material)
@@ -82,7 +82,7 @@ class Text3D extends THREE.Mesh {
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
 		data.object.text = this.text
-		data.object.font = this.font
+		data.object.font = this.font.data
 		data.object.components = this.components
 
 		// Restore Geometry

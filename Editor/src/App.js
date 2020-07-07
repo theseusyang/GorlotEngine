@@ -22,8 +22,6 @@ include("libs/cannon/cannon.js")
 include("libs/cannon/CannonDebugRenderer.js")
 
 include("libs/stats.min.js")
-include("libs/opentype.min.js")
-include("libs/jszip.min.js")
 include("libs/SPE.min.js")
 
 // Then the code itself
@@ -35,7 +33,6 @@ include("src/input/Mouse.js")
 include("src/core/ObjectLoader.js")
 include("src/core/MaterialLoader.js")
 
-include("src/core/MathUtils.js")
 include("src/core/Program.js")
 include("src/core/Scene.js")
 include("src/core/ObjectUtils.js")

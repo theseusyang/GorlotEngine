@@ -19,6 +19,8 @@ Main.initialize = function(canvas) {
 	Main.canvas.style.position = "absolute"
 	Main.canvas.style.top = "0px"
 	Main.canvas.style.left = "0px"
+	Main.canvas.stlye.width = window.innerWidth + "px"
+	Main.canvas.stlye.height = window.innerHeight + "px"
 	Main.canvas.width = window.innerWidth
 	Main.canvas.height= window.innerHeight
 	document.body.appendChild(Main.canvas)
@@ -63,11 +65,13 @@ Main.draw = function() {
 	Main.renderer.render(Main.program.scene, Main.program.scene.camera)
 }
 
-// Resize to fit window
+// Update canvas and renderer size
 Main.resize = function() {
 	if (Main.canvas !== null && Main.renderer !== null) {
 		Main.canvas.width = window.innerWidth
 		Main.canvas.height = window.innerHeight
+		Main.canvas.stlye.width = window.innerWidth + "px"
+		Main.canvas.stlye.height = window.innerHeight + "px"
 
 		Main.renderer.setSize(Main.canvas.width, Main.canvas.height)
 		Main.camera.aspect = Main.canvas.width/Main.canvas.height

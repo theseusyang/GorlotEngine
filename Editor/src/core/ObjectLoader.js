@@ -501,8 +501,7 @@ function parseObject(data, geometries, materials, textures)
 			break;
 
 		case "Text3D":
-			var material = getMaterial(data.material)
-			object = new Text3D(data.text, material)
+			object = new Text3D(data.text, getMaterial(data.material), data.font)
 			break;
 
 		case 'Program':
