@@ -52,6 +52,6 @@ class Key {
 	}
 }
 
-Key.KEY_DOWN = 0
+Key.KEY_DOWN = -1
+Key.KEY_RESET = 0
 Key.KEY_UP = 1
-Key.KEY_RESET = 2

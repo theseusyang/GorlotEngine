@@ -92,6 +92,7 @@ include("src/core/components/ElementComponent.js")
 include("src/core/components/Objects/Object3DComponent.js")
 include("src/core/components/Objects/Text3DComponent.js")
 include("src/core/components/Objects/AudioComponent.js")
+include("src/core/components/Objects/PhysicsComponent.js")
 
 include("src/core/components/Lights/LightComponent.js")
 include("src/core/components/Lights/SkyComponent.js")

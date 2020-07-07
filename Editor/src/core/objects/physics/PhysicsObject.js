@@ -8,10 +8,10 @@ class PhysicsObject extends THREE.Object3D {
 		this.name = "physics"
 		this.type = "Physics"
 
-		this.shape = new CANNON.Sphere(1.0)
 		this.body = new CANNON.Body({mass: 0.5})
 		this.body.type = CANNON.Body.DYNAMIC
-		this.body.addShape(this.shape)
+		this.body.mass = 0.5
+		this.body.addShape(new CANNON.Sphere(1.0))
 
 		this.world = null
 	
@@ -19,6 +19,7 @@ class PhysicsObject extends THREE.Object3D {
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
 		this.defaultComponents.push(new Object3DComponent())
+		this.defaultComponents.push(new PhysicsComponent())
 	}
 
 	addComponent(compo) {
@@ -62,6 +63,23 @@ class PhysicsObject extends THREE.Object3D {
 	// Create JSON for object
 	toJSON(meta) {
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
+
+		// Body
+		data.object.body = {}
+
+		data.object.body.type = this.body.type
+		data.object.body.mass = this.body.mass
+		data.object.body.linearDamping = this.body.linearDamping
+		data.object.body.angularDamping = this.body.angularDamping
+		data.object.body.sleepSpeedLimit = this.body.sleepSpeedLimit
+		data.object.body.sleepTimeLimit = this.body.sleepTimeLimit
+		data.object.body.collisionFilterGroup = this.body.collisionFilterGroup
+		data.object.body.collisionFilterMask = this.body.collisionFilterMask
+		data.object.body.fixedRotation = this.body.fixedRotation
+		data.object.body.collisionResponse = this.body.collisionResponse
+
+		// Shapes
+		data.object.shapes = {}
 
 		return data
 	}

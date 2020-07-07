@@ -120,6 +120,15 @@ EditorUI.hierarchyContext = function(e, data) {
     Editor.selectObject(object)
 
     var content = []
+    
+    content.push(
+        {title: "Copy", callback: () => {
+            Editor.copySelectedObject()
+        }},
+        {title: "Paste", callback: () => {
+            Editor.pasteIntoSelectedObject()
+        }}
+    )
 
     if (!(object instanceof Program) && !(object instanceof Scene)) {
         content.push(
@@ -129,14 +138,8 @@ EditorUI.hierarchyContext = function(e, data) {
                 object.material = mat
                 EditorUI.addAsset(undefined, mat)
             }},
-            {title: "Copy", callback: () => {
-                Editor.copySelectedObject()
-            }},
             {title: "Cut", callback: () => {
                 Editor.cutSelectedObject()
-            }},
-            {title: "Paste", callback: () => {
-                Editor.pasteIntoSelectedObject()
             }},
             {title: "Duplicate", callback: () => {
                 // TODO: This
