@@ -121,37 +121,47 @@ EditorUI.hierarchyContext = function(e, data) {
 
     var content = []
     
-    content.push(
-        {title: "Copy", callback: () => {
+    var context = new LiteGUI.ContextMenu([], {title: "Edit item", event: e})
+    
+    context.addItem("Delete", {callback: () => {
+        if ((object instanceof Scene && object.parent.children.length > 1) || !(object instanceof Scene)) {
+            Editor.deleteObject(object)
+            Editor.selected_object = null
+        }
+        Editor.updateObjectViews()
+    }})
+
+    if (!(object instanceof Scene) && !(object instanceof Program)) {
+        context.addItem("Copy", {callback: () => {
             Editor.copySelectedObject()
-        }},
-        {title: "Paste", callback: () => {
+        }})
+    
+        context.addItem("Paste", {callback: () => {
             Editor.pasteIntoSelectedObject()
-        }},
-        {title: "New Material", callback: () => {
-            var mat = new MeshPhongMaterial({color: 0xffffff, specular: 0x333333, shininess: 30})
-            mat.name = object.name
-            object.material = mat
-            EditorUI.addAsset(undefined, mat)
-        }},
-        {title: "Cut", callback: () => {
+        }})
+    
+        context.addItem("Cut", {callback: () => {
             Editor.cutSelectedObject()
-        }},
-        {title: "Duplicate", callback: () => {
-            // TODO: This
-        }},
-        {title: "Set Static", callback: () => {
+        }})
+    
+        context.addItem("Duplicate", {callback: () => {
+            var obj = new ObjectLoader().parse(object.toJSON())
+            obj.uuid = THREE.Math.generateUUID()
+            object.parent.add(obj)
+            Editor.renameObject(obj, obj.name)
+            Editor.selectObject(obj)
+            Editor.updateObjectViews()
+        }})
+
+        context.addItem("Set Static", {callback: () => {
             ObjectUtils.setMatrixAutoUpdate(object, false)
             EditorUI.updateInspector()
-        }},
-        {title: "Set Dynamic", callback: () => {
+        }})
+
+        context.addItem("Set Dynamic", {callback: () => {
             ObjectUtils.setMatrixAutoUpdate(object, true)
             EditorUI.updateInspector()
-        }},
-        {title: "Delete", callback: () => {
-            EditorUI.deleteObject(object)
-        }}
-    )
+        }})
+    }
 
-    var context = new LiteGUI.ContextMenu(content, {title: "Edit item", event: e})
 }

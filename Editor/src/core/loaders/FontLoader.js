@@ -1,3 +1,6 @@
+"use strict"
+
+// Font Loader class
 class FontLoader {
 	constructor(manager) {
 		this.manager = (manager !== undefined) ? manager : THREE.DefaultLoaderManager

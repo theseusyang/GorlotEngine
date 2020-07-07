@@ -362,12 +362,19 @@ Editor.isObjectSelected = function(obj) {
 	return null
 }
 
+// Delete an object
+Editor.deleteObject = function(obj) {
+	if(obj !== undefined) {
+		obj.destroy()
+		Editor.updateObjectViews()
+		Editor.resetEditingFlags()
+	}
+}
+
 // Delete selected Object
 Editor.deleteSelectedObject = function() {
 	if (Editor.selected_object !== null) {
-		Editor.selected_object.destroy()
-		Editor.updateObjectViews()
-		Editor.resetEditingFlags()
+		Editor.deleteObject(Editor.selected_object)
 	}
 }
 

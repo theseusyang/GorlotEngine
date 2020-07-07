@@ -13,7 +13,7 @@ class ObjectIconHelper extends THREE.Sprite {
 
 	update() {
 		if (this.obj !== null) {
-			this.position.copy(this.obj.position)
+			this.obj.getWorldPosition(this.position)
 		}
 	}
 }

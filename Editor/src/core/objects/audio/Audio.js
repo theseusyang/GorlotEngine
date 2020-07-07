@@ -1,3 +1,6 @@
+"use strict"
+
+// Audio class
 class Audio extends THREE.Audio {
 	constructor() {
 		super(Audio.listener)
@@ -32,10 +35,10 @@ class Audio extends THREE.Audio {
 		// Load audio file
 		var loader = new THREE.XHRLoader(this.manager)
 		loader.setResponseType("arraybuffer")
-		loader.load(this.file, (b) => {
-			var context = THREE.AudioContext
-			context.decodeAudioData(b, (audioBuffer) => {
-				self.setBuffer(audioBuffer)
+		loader.load(this.file, (d) => {
+			// Code audio data
+			THREE.AudioContext.decodeAudioData(d, function(b) {
+				self.setBuffer(b)
 			})
 		})
 
@@ -72,7 +75,9 @@ class Audio extends THREE.Audio {
 		data.object.autoplay = this.autoplay
 		data.object.startTime = this.startTime
 		data.object.playbackRate = this.playbackRate
-		data.object.loop = this.source.loop
+
+		data.object.source = {}
+		data.object.source.loop = this.source.loop
 
 		return data
 	}
