@@ -22,7 +22,7 @@ class MaterialFile extends File {
 		// Open Material Editor
 		this.elm.ondblclick = function() {
 			if (self.attachedTo !== undefined) {
-				EditorUI.matEd = new MaterialEditor(undefined, self.attachedTo)
+				EditorUI.matEd = new MaterialEditor(undefined, self.attachedTo, self)
 	            EditorUI.matEd.updateInterface()
 			}
 		}

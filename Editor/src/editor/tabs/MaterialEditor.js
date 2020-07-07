@@ -1,5 +1,5 @@
 class MaterialEditor {
-	constructor(parent, material) {
+	constructor(parent, material, file) {
 
 		var self = this
 		this.id = "Material Editor " + MaterialEditor.id
@@ -18,6 +18,10 @@ class MaterialEditor {
 				Mouse.canvas = self.preview
 			}
 
+			if (file !== undefined) {
+				file.restoreMaterial()
+			}
+			
 			// This is useful when handling different types of editors and one single Graph library <3
 			unregisterNodes()
 			registerBaseNodes()
