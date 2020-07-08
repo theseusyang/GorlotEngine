@@ -474,13 +474,14 @@ function parseObject(data, geometries, materials, textures)
 			object.body.collisionFilterMask = data.body.collisionFilterMask
 			object.body.fixedRotation = data.body.fixedRotation
 
-			var shapes = object.body.shapes
+			var shapes = data.body.shapes
 			for(var i = 0; i < shapes.length; i++) {
 				var shape = shapes[i]
+
 				if (shape.type === CANNON.Shape.types.SPHERE) {
-					// TODO: This
+					object.body.addShape(new CANNON.Shpere(shape.radius))
 				} else if (shape.type === CANNON.Shape.types.BOX) {
-					// TODO: This
+					object.body.addShape(new CANNON.Box(new CANNON.Vec3(shape.halfExtents.x, shape.halfExtents.y, shape.halfExtents.z)))
 				} else if (shape.type === CANNON.Shape.types.PARTICLE) {
 					object.body.addShape(new CANNON.Particle())
 				}

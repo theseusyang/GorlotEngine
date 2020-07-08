@@ -93,8 +93,18 @@ class AddMenuWindow {
 				"icon_style": "width: 12px"
 			},
 			{
-				"name": "Physics",
-				"icon": "data/icons/physics/physics.png",
+				"name": "Physics - Cube",
+				"icon": "data/icons/models/cube.png",
+				"icon_style": "width: 12px"
+			},
+			{
+				"name": "Physics - Sphere",
+				"icon": "data/icons/models/sphere.png",
+				"icon_style": "width: 12px"
+			},
+			{
+				"name": "Physics - Cylinder",
+				"icon": "data/icons/models/cylinder.png",
 				"icon_style": "width: 12px"
 			},
 			{
@@ -247,9 +257,24 @@ class AddMenuWindow {
 			Editor.addToActualScene(obj)
 
 		}
-		else if (o === "Physics") {
+		else if (o === "Physics - Cube") {
 
-			Editor.addToActualScene(new PhysicsObject())
+			var obj = new PhysicsObject()
+			obj.body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)))
+			Editor.addToActualScene(obj)
+
+		}
+		else if (o === "Physics - Sphere") {
+
+			var obj = new PhysicsObject()
+			obj.body.addShape(new CANNON.Sphere(1.0))
+			Editor.addToActualScene(obj)
+
+		} else if (o === "Physics - Cylinder") {
+
+			var obj = new PhysicsObject()
+			obj.body.addShape(new CANNON.Cylinder(1.0, 1.0, 2.0, 8))
+			Editor.addToActualScene(obj)
 
 		}
 		else if (o === "Leap Hand") {

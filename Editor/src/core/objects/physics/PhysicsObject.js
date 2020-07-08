@@ -8,18 +8,22 @@ class PhysicsObject extends THREE.Object3D {
 		this.name = "physics"
 		this.type = "Physics"
 
+		// Body
 		this.body = new CANNON.Body({mass: 0.5})
 		this.body.type = CANNON.Body.DYNAMIC
-		this.body.mass = 0.5
-		this.body.addShape(new CANNON.Sphere(1.0))
-		this.body.addShape(new CANNON.Particle())
-		this.body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)))
-		this.body.addShape(new CANNON.Cylinder(1.0, 1.0, 2.0, 8))
+		this.body.mass = 1
+		// Shape
+		//this.body.addShape(new CANNON.Sphere(1.0))
+		//this.body.addShape(new CANNON.Particle())
+		//this.body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)))
+		//this.body.addShape(new CANNON.Cylinder(1.0, 1.0, 2.0, 8))
 		//this.body.addShape(new CANNON.ConvexPolyhedron(points, faces))
 		//this.body.addShape(new CANNON.Plane())
 
+		// World pointer
 		this.world = null
 	
+		// Components system
 		this.components = []
 		this.defaultComponents = []
 		this.defaultComponents.push(new ElementComponent())
@@ -88,19 +92,25 @@ class PhysicsObject extends THREE.Object3D {
 		var shapes = this.body.shapes
 		for(var i = 0; i < shapes.length; i++) {
 			var shape = shapes[i]
-			data.object.body.shapes.push({})
+			var shape_data = {}
+
+			shape_data.type = shape.type
 
 			if (shape.type === CANNON.Shape.types.SPHERE) {
-				// TODO: This
+				shape_data.radius = shape.radius
 			} else if (shape.type === CANNON.Shape.types.PLANE) {
 				// TODO: This
 			} else if (shape.type === CANNON.Shape.types.BOX) {
-				// TODO: This
-			} else if (shape.type === CANNON.Shape.types.PARTICLE) {
-				// TODO: This
+				shape_data.halfExtents = {}
+				shape_data.halfExtents.x = shape.halfExtents.x
+				shape_data.halfExtents.y = shape.halfExtents.y
+				shape_data.halfExtents.z = shape.halfExtents.z
 			} else if (shape.type === CANNON.Shape.types.CYLINDER) {
 				// TODO: This
 			}
+
+			// Add shape
+			data.object.body.shapes[i] = shape_data
 		}
 
 		return data
