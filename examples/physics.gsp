@@ -7,6 +7,7 @@
 		{
 			"uuid": "75851200-6271-4B90-A784-DF7EF4560AF7",
 			"type": "BoxBufferGeometry",
+			"name": "geometry",
 			"width": 2,
 			"height": 2,
 			"depth": 2
@@ -14,6 +15,7 @@
 		{
 			"uuid": "3D7E8607-AE24-4998-9CB4-E4A95DC56C39",
 			"type": "BoxBufferGeometry",
+			"name": "geometry",
 			"width": 1,
 			"height": 1,
 			"depth": 1
@@ -27,6 +29,9 @@
 			"emissive": 0,
 			"specular": 1118481,
 			"shininess": 30,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
 			"nodes": {
 				"config": {},
 				"groups": [],
@@ -93,6 +98,9 @@
 			"emissive": 0,
 			"specular": 1118481,
 			"shininess": 30,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
 			"nodes": {
 				"config": {},
 				"groups": [],
@@ -238,24 +246,9 @@
 							"sleepTimeLimit": 1,
 							"collisionFilterGroup": 1,
 							"collisionFilterMask": 1,
-							"fixedRotation": false,
-							"collisionResponse": true
+							"fixedRotation": false
 						},
 						"shapes": {}
-					},
-					{
-						"uuid": "DDD4E242-57B9-4121-BB0B-B7559239A24C",
-						"type": "Script",
-						"name": "script_7",
-						"components": [],
-						"hidden": false,
-						"castShadow": false,
-						"receiveShadow": false,
-						"visible": true,
-						"matrixAutoUpdate": true,
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,5.9120001792907715,0,1],
-						"mode": 1,
-						"code": "var scene = ObjectUtils.getScene(this)\n\nconsole.log(scene)"
 					},
 					{
 						"uuid": "C43372E7-1F75-46B3-8147-DC44E8E8591D",
@@ -292,16 +285,36 @@
 							"sleepTimeLimit": 1,
 							"collisionFilterGroup": 1,
 							"collisionFilterMask": 1,
-							"fixedRotation": false,
-							"collisionResponse": true
+							"fixedRotation": false
 						},
 						"shapes": {}
+					},
+					{
+						"uuid": "53561534-1D8E-454A-B3DC-77E6EFCD4B71",
+						"type": "PerspectiveCamera",
+						"name": "camera_1",
+						"components": [],
+						"hidden": false,
+						"castShadow": false,
+						"receiveShadow": false,
+						"visible": true,
+						"matrixAutoUpdate": true,
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,8.831999778747559,20.60700035095215,1],
+						"fov": 60,
+						"zoom": 1,
+						"near": 0.1,
+						"far": 1000000,
+						"focus": 10,
+						"aspect": 1.9410801963993454,
+						"filmGauge": 35,
+						"filmOffset": 0
 					}],
 				"fog_color": "#ffffff",
 				"fog_density": 0.001,
 				"fog_near": 2,
 				"fog_far": 30,
-				"fog_mode": 0
+				"fog_mode": 0,
+				"initial_camera": "53561534-1D8E-454A-B3DC-77E6EFCD4B71"
 			}],
 		"author": "",
 		"description": "",

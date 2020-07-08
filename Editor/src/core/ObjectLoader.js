@@ -473,6 +473,18 @@ function parseObject(data, geometries, materials, textures)
 			object.body.collisionFilterGroup = data.body.collisionFilterGroup
 			object.body.collisionFilterMask = data.body.collisionFilterMask
 			object.body.fixedRotation = data.body.fixedRotation
+
+			var shapes = object.body.shapes
+			for(var i = 0; i < shapes.length; i++) {
+				var shape = shapes[i]
+				if (shape.type === CANNON.Shape.types.SPHERE) {
+					// TODO: This
+				} else if (shape.type === CANNON.Shape.types.BOX) {
+					// TODO: This
+				} else if (shape.type === CANNON.Shape.types.PARTICLE) {
+					object.body.addShape(new CANNON.Particle())
+				}
+			}
 			break;
 
 		case "ParticleEmitter":
