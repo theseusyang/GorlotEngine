@@ -479,7 +479,7 @@ function parseObject(data, geometries, materials, textures)
 				var shape = shapes[i]
 
 				if (shape.type === CANNON.Shape.types.SPHERE) {
-					object.body.addShape(new CANNON.Shpere(shape.radius))
+					object.body.addShape(new CANNON.Sphere(shape.radius))
 				} else if (shape.type === CANNON.Shape.types.BOX) {
 					object.body.addShape(new CANNON.Box(new CANNON.Vec3(shape.halfExtents.x, shape.halfExtents.y, shape.halfExtents.z)))
 				} else if (shape.type === CANNON.Shape.types.PARTICLE) {
