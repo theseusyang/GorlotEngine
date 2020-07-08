@@ -2,7 +2,7 @@
 
 // Program class
 class Program extends THREE.Object3D {
-	constructor(name, description, author, version, vr) {
+	constructor(name) {
 		super()
 
 		// Program type
@@ -24,18 +24,6 @@ class Program extends THREE.Object3D {
 		// Collect arguments
 		if (name !== undefined) {
 			this.name = name
-		}
-		if (description !== undefined) {
-			this.description = description
-		}
-		if (author !== undefined) {
-			this.author = author
-		}
-		if (version !== undefined) {
-			this.version = version
-		}
-		if (vr !== undefined) {
-			this.vr = vr
 		}
 
 		// Assets

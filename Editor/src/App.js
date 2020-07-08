@@ -1,7 +1,7 @@
 "use strict"
 
 // First, Libraries are added
-include("libs/three/three.js")
+include("libs/three/three.min.js")
 
 include("libs/three/loaders/OBJLoader.js")
 include("libs/three/loaders/MTLLoader.js")
@@ -14,7 +14,8 @@ include("libs/three/loaders/collada/KeyFrameAnimation.js")
 
 //include("three/cameras/CinematicCamera.js")
 
-include("libs/three/webvr/VREffect.js")
+include("libs/three/effects/CardboardEffect.js")
+include("libs/three/effects/VREffect.js")
 
 include("libs/leap/leap-0.6.4.min.js")
 

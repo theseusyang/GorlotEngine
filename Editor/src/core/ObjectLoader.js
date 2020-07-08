@@ -501,11 +501,16 @@ function parseObject(data, geometries, materials, textures)
 			break;
 
 		case "Text3D":
-			object = new Text3D(data.text, getMaterial(data.material), data.font)
+			object = new Text3D(data.text, getMaterial(data.material), new THREE.Font(data.font))
 			break;
 
 		case 'Program':
-			object = new Program(data.name, data.description, data.author, data.version, data.vr, data.time)
+			object = new Program(data.name)
+
+			object.description = data.description
+			object.author = data.author
+			object.version = data.version
+			object.vr = data.vr
 
 			if (data.initial_scene !== undefined) {
 				object.initial_scene = data.initial_scene

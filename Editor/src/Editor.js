@@ -65,7 +65,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Tue 07 Jul 2020 21:14:24"
+Editor.TIMESTAMP = "Wed 08 Jul 2020 13:05:46"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -768,9 +768,11 @@ Editor.setState = function(state) {
 		Editor.program_running.initialize()
 		Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height)
 
-		if (Editor.program_running.vr && App.webvrAvailable()) {
-			// Create VREffect instance
-			Editor.vr_effect = new THREE.VREffect(Editor.renderer)
+		if (Editor.program_running.vr) {
+			if(App.webvrAvailable()) {
+				// Create VREffect instance
+				Editor.vr_effect = new THREE.VREffect(Editor.renderer)
+			}
 		}
 	} else if (state === Editor.STATE_IDLE) {
 		// Dispose running program
