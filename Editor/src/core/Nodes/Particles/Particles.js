@@ -211,6 +211,22 @@ ParticlesSetWiggleNode.prototype.onExecute = function() {
 	}
 }
 
+function ParticlesSetOpacityNode() {
+	// TODO: This
+}
+
+function ParticlesSetScaleNode() {
+	// TODO: This
+}
+
+function ParticlesSetRotationNode() {
+	// TODO: This
+}
+
+function ParticlesSetColourNode() {
+	// TODO: This
+}
+
 function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/Particles", ParticlesNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetBlending", ParticlesSetBlendingNode)

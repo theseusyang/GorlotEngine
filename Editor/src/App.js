@@ -14,7 +14,6 @@ include("libs/three/loaders/collada/KeyFrameAnimation.js")
 
 //include("three/cameras/CinematicCamera.js")
 
-include("libs/three/effects/CardboardEffect.js")
 include("libs/three/effects/VREffect.js")
 
 include("libs/leap/leap-0.6.4.min.js")
@@ -156,19 +155,19 @@ App.initialize = function(main)
 	App.componentManager.addComponent(new LightComponent(), true)
 
 	//Init Input
-	Keyboard.initialize();
-	Mouse.initialize();
+	Keyboard.initialize()
+	Mouse.initialize()
 
 	//Create main program
-	App.main = main;
-	App.main.initialize(App.canvas);
+	App.main = main
+	App.main.initialize(App.canvas)
 
 	//Time control
-	App.delta_time = 0;
-	App.time = Date.now();
+	App.delta_time = 0
+	App.time = Date.now()
 
 	//Start Loop
-	App.loop();
+	App.loop()
 }
 
 // Open file chooser dialog, receives: callback function, file filter, savemode and its directory onlt
@@ -308,8 +307,8 @@ App.readFile = function(fname, sync, callback) {
 //Load Main program
 App.loadMain = function(main)
 {
-	App.main = main;
-	App.main.initialize();
+	App.main = main
+	App.main.initialize()
 }
 
 // Check if WebVR is available
@@ -326,8 +325,8 @@ App.setMouseLock = function(value)
 		{
 			try
 			{
-				document.body.requestPointerLock = canvas.mozRequestPointerLock || canvas.requestPointerLock || canvas.webkitRequestPointerLock;
-				document.body.requestPointerLock();
+				document.body.requestPointerLock = canvas.mozRequestPointerLock || canvas.requestPointerLock || canvas.webkitRequestPointerLock
+				document.body.requestPointerLock()
 			}
 			catch(e){}
 		}
@@ -342,26 +341,26 @@ App.setMouseLock = function(value)
 App.loop = function()
 {
 	//Prepare next frame render
-	requestAnimationFrame(App.loop);
+	requestAnimationFrame(App.loop)
 
 	//Update Input Values
-	Mouse.update();
+	Mouse.update()
 	Keyboard.update()
 
 	//Update time values
-	App.delta_time = Date.now() - App.time;
-	App.time += App.delta_time;
+	App.delta_time = Date.now() - App.time
+	App.time += App.delta_time
 
 	//Update and draw
-	App.main.update();
-	App.main.draw();
+	App.main.update()
+	App.main.draw()
 
 }
 
 //Called every time page is resized
 App.resize = function()
 {
-	App.main.resize();
+	App.main.resize()
 }
 
 //Auxiliar include
