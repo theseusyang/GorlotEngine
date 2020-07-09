@@ -484,6 +484,10 @@ function parseObject(data, geometries, materials, textures)
 					object.body.addShape(new CANNON.Box(new CANNON.Vec3(shape.halfExtents.x, shape.halfExtents.y, shape.halfExtents.z)))
 				} else if (shape.type === CANNON.Shape.types.PARTICLE) {
 					object.body.addShape(new CANNON.Particle())
+				} else if (shape.type === CANNON.Shape.types.PLANE) {
+					object.body.addShape(new CANNON.Plane())
+				} else if (shape.type === CANNON.Shape.types.CONVEXPOLYHEDRON) {
+					object.body.addShape(new CANNON.ConvexPolyhedron(shape.vertices, shape.faces))
 				}
 			}
 			break;

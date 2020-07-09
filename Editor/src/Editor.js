@@ -65,7 +65,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Wed 08 Jul 2020 13:16:48"
+Editor.TIMESTAMP = "Thu 09 Jul 2020 19:29:16"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1

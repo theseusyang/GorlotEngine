@@ -148,7 +148,11 @@ EditorUI.hierarchyContext = function(e, data) {
     
         context.addItem("Duplicate", {callback: () => {
             var obj = new ObjectLoader().parse(object.toJSON())
-            obj.uuid = THREE.Math.generateUUID()
+
+            obj.traverse((child) => {
+                child.uuid = THREE.Math.generateUUID()
+            })
+
             object.parent.add(obj)
             Editor.renameObject(obj, obj.name)
             Editor.selectObject(obj)

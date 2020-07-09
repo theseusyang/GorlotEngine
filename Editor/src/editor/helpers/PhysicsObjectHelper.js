@@ -34,7 +34,7 @@ class PhysicsObjectHelper extends THREE.Object3D {
 		body.position.copy(this.obj.position)
 		body.quaternion.copy(this.obj.quaternion)
 	
-		for(var j = 0; j !== body.shapes.length; j++)
+		for(var j = 0; j < body.shapes.length; j++)
 		{
 			var shape = body.shapes[j]
 			this.updateMesh(meshIndex, body, shape)
@@ -113,6 +113,10 @@ class PhysicsObjectHelper extends THREE.Object3D {
 				mesh = new THREE.Mesh(this.sphereGeometry, material)
 				break;
 
+			case CANNON.Shape.types.PARTICLE:
+				mesh = new THREE.Mesh(this.sphereGeometry, material)
+				break;
+
 			case CANNON.Shape.types.BOX:
 				mesh = new THREE.Mesh(this.boxGeometry, material)
 				break;
@@ -124,13 +128,16 @@ class PhysicsObjectHelper extends THREE.Object3D {
 			case CANNON.Shape.types.CONVEXPOLYHEDRON:
 				//Create mesh
 				var geo = new THREE.Geometry()
+
 				//Add vertices
 				for(var i = 0; i < shape.vertices.length; i++)
 				{
 					var v = shape.vertices[i]
 					geo.vertices.push(new THREE.Vector3(v.x, v.y, v.z))
 				}
-				for(var i=0; i < shape.faces.length; i++)
+
+				// Add faces
+				for(var i = 0; i < shape.faces.length; i++)
 				{
 					var face = shape.faces[i]
 
@@ -178,7 +185,7 @@ class PhysicsObjectHelper extends THREE.Object3D {
 					{
 						for (var k = 0; k < 2; k++)
 						{
-							shape.getConvexTrianglePillar(xi, yi, k===0)
+							shape.getConvexTrianglePillar(xi, yi, k === 0)
 							v0.copy(shape.pillarConvex.vertices[0])
 							v1.copy(shape.pillarConvex.vertices[1])
 							v2.copy(shape.pillarConvex.vertices[2])
@@ -187,7 +194,7 @@ class PhysicsObjectHelper extends THREE.Object3D {
 							v2.vadd(shape.pillarOffset, v2)
 							geometry.vertices.push(new THREE.Vector3(v0.x, v0.y, v0.z), new THREE.Vector3(v1.x, v1.y, v1.z), new THREE.Vector3(v2.x, v2.y, v2.z))
 							var i = geometry.vertices.length - 3
-							geometry.faces.push(new THREE.Face3(i, i+1, i+2))
+							geometry.faces.push(new THREE.Face3(i, i + 1, i + 2))
 						}
 					}
 				}
@@ -217,6 +224,10 @@ class PhysicsObjectHelper extends THREE.Object3D {
 			case CANNON.Shape.types.BOX:
 				mesh.scale.copy(shape.halfExtents)
 				mesh.scale.multiplyScalar(2)
+				break;
+
+			case CANNON.Shape.types.PARTICLE:
+				mesh.scale.set(0.1, 0.1, 0.1)
 				break;
 
 			case CANNON.Shape.types.CONVEXPOLYHEDRON:

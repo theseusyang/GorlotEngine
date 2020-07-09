@@ -20,7 +20,7 @@ class ParticleEmitterHelper extends THREE.Object3D {
 		if (this.runtime !== null) {
 			this.particle.getWorldPosition(this.runtime.position)
 			this.particle.getWorldScale(this.runtime.scale)
-			this.runtime.rotation.copy(this.particle.rotation)
+			this.particle.getWorldRotation(this.runtime.rotation)
 			this.runtime.update()
 		}
 	}

@@ -12,13 +12,6 @@ class PhysicsObject extends THREE.Object3D {
 		this.body = new CANNON.Body({mass: 0.5})
 		this.body.type = CANNON.Body.DYNAMIC
 		this.body.mass = 1
-		// Shape
-		//this.body.addShape(new CANNON.Sphere(1.0))
-		//this.body.addShape(new CANNON.Particle())
-		//this.body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)))
-		//this.body.addShape(new CANNON.Cylinder(1.0, 1.0, 2.0, 8))
-		//this.body.addShape(new CANNON.ConvexPolyhedron(points, faces))
-		//this.body.addShape(new CANNON.Plane())
 
 		// World pointer
 		this.world = null
@@ -88,29 +81,29 @@ class PhysicsObject extends THREE.Object3D {
 		data.object.body.fixedRotation = this.body.fixedRotation
 		data.object.body.shapes = []
 
-		// shapes
+		// Shapes array
 		var shapes = this.body.shapes
 		for(var i = 0; i < shapes.length; i++) {
 			var shape = shapes[i]
-			var shape_data = {}
+			var values = {}
 
-			shape_data.type = shape.type
+			// Shape type
+			values.type = shape.type
 
 			if (shape.type === CANNON.Shape.types.SPHERE) {
-				shape_data.radius = shape.radius
-			} else if (shape.type === CANNON.Shape.types.PLANE) {
-				// TODO: This
+				values.radius = shape.radius
 			} else if (shape.type === CANNON.Shape.types.BOX) {
-				shape_data.halfExtents = {}
-				shape_data.halfExtents.x = shape.halfExtents.x
-				shape_data.halfExtents.y = shape.halfExtents.y
-				shape_data.halfExtents.z = shape.halfExtents.z
-			} else if (shape.type === CANNON.Shape.types.CYLINDER) {
-				// TODO: This
+				values.halfExtents = {}
+				values.halfExtents.x = shape.halfExtents.x
+				values.halfExtents.y = shape.halfExtents.y
+				values.halfExtents.z = shape.halfExtents.z
+			} else if (shape.type === CANNON.Shape.types.CONVEXPOLYHEDRON) {
+				values.vertices = shape.vertices
+				values.faces = shape.faces
 			}
 
 			// Add shape
-			data.object.body.shapes[i] = shape_data
+			data.object.body.shapes[i] = values
 		}
 
 		return data

@@ -108,6 +108,16 @@ class AddMenuWindow {
 				"icon_style": "width: 12px"
 			},
 			{
+				"name": "Physics - Plane",
+				"icon": "data/icons/models/plane.png",
+				"icon_style": "width: 12px"
+			},
+			{
+				"name": "Physics - Point",
+				"icon": "data/icons/models/point.png",
+				"icon_style": "width: 12px"
+			},
+			{
 				"name": "Leap Hand",
 				"icon": "data/icons/hw/leap.png",
 				"icon_style": "width: 12px"
@@ -274,6 +284,20 @@ class AddMenuWindow {
 
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Cylinder(1.0, 1.0, 2.0, 8))
+			Editor.addToActualScene(obj)
+
+		}
+		else if (o === "Physics - Plane") {
+
+			var obj = new PhysicsObject()
+			obj.body.addShape(new CANNON.Plane())
+			Editor.addToActualScene(obj)
+
+		}
+		else if (o === "Physics - Point") {
+
+			var obj = new PhysicsObject()
+			obj.body.addShape(new CANNON.Particle())
 			Editor.addToActualScene(obj)
 
 		}
