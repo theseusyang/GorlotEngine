@@ -12,11 +12,11 @@ class Scene extends THREE.Scene {
 		this.matrixAutoUpdate = false
 
 		// Fog
+		this.fog_mode = Scene.FOG_NONE
 		this.fog_color = "#ffffff"
 		this.fog_near = 2
 		this.fog_far = 30
 		this.fog_density = 0.01
-		this.fog_mode = Scene.FOG_NONE
 		
 		//Create CANNON world
 		this.world = new CANNON.World()

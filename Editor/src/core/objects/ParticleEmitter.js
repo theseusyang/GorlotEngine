@@ -114,7 +114,7 @@ class ParticleEmitter extends THREE.Object3D {
 	}
 
 	update() {
-		// Update state
+		// Update
 		this.group.tick(this.clock.getDelta())
 
 		// Update children

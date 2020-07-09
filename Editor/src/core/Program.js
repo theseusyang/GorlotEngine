@@ -14,10 +14,12 @@ class Program extends THREE.Object3D {
 		this.matrixAutoUpdate = false
 
 		//Program Info
-		this.name = "program";
-		this.description = "";
-		this.author = "";
-		this.version = "0";
+		this.name = "program"
+		this.description = ""
+		this.author = ""
+		this.version = "0"
+
+		// VR Flags
 		this.vr = false
 		this.vr_scale = 1
 	
@@ -37,7 +39,7 @@ class Program extends THREE.Object3D {
 
 		//Runtime variables
 		this.renderer = null
-		this.scene = null;
+		this.scene = null
 
 		this.components = []
 		

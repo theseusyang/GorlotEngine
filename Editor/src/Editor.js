@@ -378,7 +378,7 @@ Editor.deleteSelectedObject = function() {
 
 // Copy selected object
 Editor.copySelectedObject = function() {
-	if (Editor.selected_object !== null) {
+	if (Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene)) {
 		try {
 			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
 		} catch(e) {
@@ -389,7 +389,7 @@ Editor.copySelectedObject = function() {
 
 // Cut selected object
 Editor.cutSelectedObject = function() {
-	if (Editor.selected_object !== null) {
+	if (Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene)) {
 		try {
 			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
 			if (Editor.selected_object.parent !== null) {

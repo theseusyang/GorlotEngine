@@ -17,7 +17,7 @@ function EditorUIAssetExplorer() {
                 var loader = new THREE.OBJLoader()
                 var obj = loader.parse(App.readFile(fname))
 
-                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
+                Editor.addToActualScene(obj)
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -29,10 +29,10 @@ function EditorUIAssetExplorer() {
 
             try {
                 var loader = new THREE.ColladaLoader()
+                var collada = loader.parse(App.readFile(fname))
+                var scene = collada.scene
 
-                var obj = loader.parse(App.readFile(fname))
-
-                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj.scene))
+                Editor.addToActualScene(scene)
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -45,9 +45,7 @@ function EditorUIAssetExplorer() {
             try {
                 var loader = new THREE.JSONLoader()
                 loader.load(fname, function(geometry, materials) {
-                    var material = new MeshPhongMaterial()
-                    material.skinning = true
-
+                    var material = new MeshStandardMaterial()
                     var obj = new AnimatedModel(geometry, material)
                     Editor.addToActualScene(obj)
                 })
@@ -62,9 +60,11 @@ function EditorUIAssetExplorer() {
 
             try {
                 var loader = new THREE.VRMLLoader()
-                var obj = loader.parse(App.readFile(fname))
+                var scene = loader.parse(App.readFile(fname))
 
-                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
+                for(var i = 0; i < scene.children.length; i++) {
+                    Editor.addToActualScene(scene.children[i])
+                }
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -78,7 +78,7 @@ function EditorUIAssetExplorer() {
                 var loader = new THREE.FBXLoader()
                 var obj = loader.parse(App.readFile(fname))
 
-                Editor.addToActualScene(ObjectUtils.convertFromThreeType(obj))
+                Editor.addToActualScene(obj)
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
