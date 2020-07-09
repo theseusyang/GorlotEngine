@@ -567,25 +567,11 @@ function parseObject(data, geometries, materials, textures)
 		case 'Scene':
 			object = new Scene()
 
-			if (data.fog_color !== undefined) {
-				object.fog_color = data.fog_color
-			}
-
-			if (data.fog_density !== undefined) {
-				object.fog_density = data.fog_density
-			}
-
-			if (data.fog_near !== undefined) {
-				object.fog_near = data.fog_near
-			}
-
-			if (data.fog_far !== undefined) {
-				object.fog_far = data.fog_far
-			}
-
-			if (data.fog_mode !== undefined) {
-				object.setFogMode(data.fog_mode)
-			}
+			object.fog_color = data.fog_color
+			object.fog_density = data.fog_density
+			object.fog_near = data.fog_near
+			object.fog_far = data.fog_far
+			object.setFogMode(data.fog_mode)
 
 			if (data.background !== undefined) {
 				object.background = new THREE.Color(data.background.r, data.background.g, data.background.b)
@@ -594,6 +580,9 @@ function parseObject(data, geometries, materials, textures)
 			if (data.initial_camera !== undefined) {
 				object.initial_camera = data.initial_camera
 			}
+
+			object.world.gravity.set(data.world.gravity.x, data.world.gravity.y, data.world.gravity.z)
+
 			break;
 
 		case 'PerspectiveCamera':

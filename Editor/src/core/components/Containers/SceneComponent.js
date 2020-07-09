@@ -28,7 +28,12 @@ class SceneComponent extends Component {
 			EditorUI.form.addNumber("Near", Editor.selected_object.fog_near, {name_width: 150})
 			EditorUI.form.addNumber("Density", Editor.selected_object.fog_density, {name_width: 150})
 			EditorUI.form.addNumber("Far", Editor.selected_object.fog_far, {name_width: 150})
+			EditorUI.form.addSeparator()
 		}
+
+		EditorUI.form.addTitle("Physics World")
+		var world = Editor.selected_object.world
+		EditorUI.form.addVector3("Gravity", [world.gravity.x, world.gravity.y, world.gravity.z])
 	}
 
 	updateInfo(name, value, widget) {
@@ -73,6 +78,10 @@ class SceneComponent extends Component {
 		} else if (name === "Far") {
 			Editor.selected_object.fog_far = value
 			Editor.selected_object.updateFog()
+		}
+
+		else if (name === "Gravity") {
+			Editor.selected_object.world.gravity.set(value[0], value[1], value[2])
 		}
 	}
 }

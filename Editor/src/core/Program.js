@@ -38,7 +38,6 @@ class Program extends THREE.Object3D {
 		//Runtime variables
 		this.renderer = null
 		this.scene = null;
-		this.data = function(){}
 
 		this.components = []
 		
@@ -253,6 +252,7 @@ class Program extends THREE.Object3D {
             }
 		})
 
+		// Attributes
 		data.object.author = this.author
 		data.object.description = this.description
 		data.object.version = this.version
@@ -260,6 +260,7 @@ class Program extends THREE.Object3D {
 		data.object.vr_scale = this.vr_scale
 		data.object.components = this.components
 
+		// Initial scene
 		if (this.initial_scene !== null) {
 			data.object.initial_scene = this.initial_scene
 		}
