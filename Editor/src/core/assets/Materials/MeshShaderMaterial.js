@@ -1,7 +1,8 @@
-class LambertMaterial extends THREE.MeshLambertMaterial {
+class MeshShaderMaterial extends THREE.ShaderMaterial {
 	constructor(options) {
 		super(options)
 
+		// TODO: Shader nodes
 		this.nodes = {
 			config: {},
 			groups: [],

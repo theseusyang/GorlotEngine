@@ -1,4 +1,4 @@
-class BasicMaterial extends THREE.MeshBasicMaterial {
+class MeshDepthMaterial extends THREE.MeshDepthMaterial {
 	constructor(options) {
 		super(options)
 

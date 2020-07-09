@@ -21,3 +21,12 @@ var Vector4 = THREE.Vector4
 // Object
 var Object3D = THREE.Object3D
 var LOD = THREE.LOD
+
+// Materials
+var LineBasicMaterial = THREE.LineBasicMaterial
+var LineDashedMaterial = THREE.LineDashedMaterial
+var MeshPhysicalMaterial = THREE.MeshPhysicalMaterial
+var MultiMaterial = THREE.MultiMaterial
+var PointsMaterial = THREE.PointsMaterial
+var RawShaderMaterial = THREE.RawShaderMaterial
+var SpriteMaterial = THREE.SpriteMaterial

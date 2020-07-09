@@ -1,8 +1,7 @@
-class ShaderMaterial extends THREE.ShaderMaterial {
+class MeshBasicMaterial extends THREE.MeshBasicMaterial {
 	constructor(options) {
 		super(options)
 
-		// TODO: Shader nodes
 		this.nodes = {
 			config: {},
 			groups: [],

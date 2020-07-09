@@ -371,7 +371,7 @@ Editor.deleteObject = function(obj) {
 
 // Delete selected Object
 Editor.deleteSelectedObject = function() {
-	if (Editor.selected_object !== null) {
+	if (Editor.selected_object !== null && !(Editor.selected_object instanceof Scene)) {
 		Editor.deleteObject(Editor.selected_object)
 	}
 }
@@ -660,7 +660,7 @@ Editor.setCameraRotation = function(camera_rotation, camera)
 //Update editor raycaster
 Editor.updateRaycasterFromMouse = function()
 {
-	var mouse = new THREE.Vector2((Mouse.pos.x/Editor.canvas.width )*2 - 1, -(Mouse.pos.y/Editor.canvas.height)*2 + 1);
+	var mouse = new THREE.Vector2((Mouse.position.x/Editor.canvas.width )*2 - 1, -(Mouse.position.y/Editor.canvas.height)*2 + 1);
 	Editor.raycaster.setFromCamera(mouse, Editor.camera);
 }
 

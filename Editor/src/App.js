@@ -110,6 +110,7 @@ include("src/core/Nodes/Blueprints/Base.js")
 include("src/core/Nodes/Blueprints/Math/Math.js")
 include("src/core/Nodes/Blueprints/Math/Vector.js")
 include("src/core/Nodes/Blueprints/Math/Quaternion.js")
+include("src/core/Nodes/Blueprints/Math/Euler.js")
 include("src/core/Nodes/Blueprints/Logic.js")
 include("src/core/Nodes/Blueprints/Arrays.js")
 include("src/core/Nodes/Blueprints/Objects.js")
@@ -128,12 +129,12 @@ include("src/core/Nodes/Register.js")
 
 // Assets
 include("src/core/assets/Materials/MeshPhongMaterial.js")
-include("src/core/assets/Materials/BasicMaterial.js")
-include("src/core/assets/Materials/DepthMaterial.js")
-include("src/core/assets/Materials/LambertMaterial.js")
-include("src/core/assets/Materials/NormalMaterial.js")
-include("src/core/assets/Materials/StandardMaterial.js")
-include("src/core/assets/Materials/ShaderMaterial.js")
+include("src/core/assets/Materials/MeshBasicMaterial.js")
+include("src/core/assets/Materials/MeshDepthMaterial.js")
+include("src/core/assets/Materials/MeshLambertMaterial.js")
+include("src/core/assets/Materials/MeshNormalMaterial.js")
+include("src/core/assets/Materials/MeshStandardMaterial.js")
+include("src/core/assets/Materials/MeshShaderMaterial.js")
 
 //App class
 function App(){}

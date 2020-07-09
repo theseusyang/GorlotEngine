@@ -54,7 +54,7 @@ function EditorUIAssetExplorer() {
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
-        }, ".json, .js")
+        }, ".json")
     }})
 
     EditorUI.asset_explorer_menu.add("Import/Objects/VRML", {callback: () => {
@@ -130,7 +130,7 @@ function EditorUIAssetExplorer() {
     // ----- CREATE -----
 
     EditorUI.asset_explorer_menu.add("Create/Material/Standard Material", {callback: () => {
-        var material = new StandardMaterial()
+        var material = new MeshStandardMaterial()
         material.name = "standard"
         Editor.program.addMaterial(material)
         Editor.updateObjectViews()
@@ -144,7 +144,7 @@ function EditorUIAssetExplorer() {
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Basic Material", {callback: () => {
-        var material = new BasicMaterial()
+        var material = new MeshBasicMaterial()
         material.name = "basic"
         Editor.program.addMaterial(material)
         Editor.updateObjectViews()
@@ -158,28 +158,28 @@ function EditorUIAssetExplorer() {
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Others/Lambert Material", {callback: () => {
-        var material = new LambertMaterial()
+        var material = new MeshLambertMaterial()
         material.name = "lambert"
         Editor.program.addMaterial(material)
         Editor.updateObjectViews()
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Others/Shader Material", {callback: () => {
-        var material = new ShaderMaterial()
+        var material = new MeshShaderMaterial()
         material.name = "shader"
         Editor.program.addMaterial(material)
         Editor.updateObjectViews()
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Others/Normal Material", {callback: () => {
-        var material = new NormalMaterial()
+        var material = new MeshNormalMaterial()
         material.name = "normal"
         Editor.program.addMaterial(material)
         Editor.updateObjectViews()
     }})
 
     EditorUI.asset_explorer_menu.add("Create/Material/Others/Depth Material", {callback: () => {
-        var material = new DepthMaterial()
+        var material = new MeshDepthMaterial()
         material.name = "depth"
         Editor.program.addMaterial(material)
         Editor.updateObjectViews()
