@@ -85,7 +85,16 @@ class ResizeTool extends THREE.Object3D {
 
 	// Attach object to resize tool
 	attachObject(obj) {
-		this.obj = obj
+		if (obj instanceof THREE.Camera) {
+			this.obj = null
+			this.visible = false
+		} else if (obj instanceof THREE.Object3D) {
+			this.obj = obj
+			this.visible = true
+		} else {
+			this.obj = null
+			this.visible = false
+		}
 	}
 
 	// Update attached object, returns if it's being edited

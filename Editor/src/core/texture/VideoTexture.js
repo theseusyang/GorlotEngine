@@ -1,7 +1,7 @@
 "use strict"
 
 // Video Texture class
-class VideoTexture extends THREE.Texture {
+class VideoTexture extends THREE.VideoTexture {
 	constructor(url) {
 		// Creates video element
 		var video = document.createElement("video")
@@ -9,29 +9,25 @@ class VideoTexture extends THREE.Texture {
 		video.height = 256
 		video.autoplay = true
 		video.loop = true
-		video.src = url
 
 		// Create Texture part of the object
 		super(video)
 		this.video = video
 
-		// Source URL
-		this.url = url
+		// Set filtering
+		this.minFilter = THREE.LinearFilter
+		this.magFilter = THREE.LinearFilter
+		this.format = THREE.RGBFormat
 
-		// Don't generate mipmaps
-		this.generateMipmaps = false
-	}
-
-	update() {
-		// Update texture state
-		if (this.video.readyState >= this.video.HAVE_CURRENT_DATA) {
-			this.texture.needsUpdate = true
-		}
+		// Name
+		this.name = "video"
 	}
 
 	dispose() {
 		// Dispose texture
-		this.video.pause()
+		if (!this.video.paused) {
+			this.video.pause()
+		}
 		THREE.Texture.prototype.toJSON.call(this)
 	}
 }

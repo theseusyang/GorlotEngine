@@ -271,6 +271,7 @@ class AddMenuWindow {
 
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)))
+			obj.name = "cube"
 			Editor.addToActualScene(obj)
 
 		}
@@ -278,19 +279,24 @@ class AddMenuWindow {
 
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Sphere(1.0))
+			obj.name = "sphere"
 			Editor.addToActualScene(obj)
 
 		} else if (o === "Physics - Cylinder") {
 
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Cylinder(1.0, 1.0, 2.0, 8))
+			obj.name = "cylinder"
 			Editor.addToActualScene(obj)
 
 		}
 		else if (o === "Physics - Plane") {
 
 			var obj = new PhysicsObject()
+			obj.rotation.x = -Math.PI/2
 			obj.body.addShape(new CANNON.Plane())
+			obj.body.type = CANNON.Body.KINEMATIC
+			obj.name = "plane"
 			Editor.addToActualScene(obj)
 
 		}
@@ -298,6 +304,7 @@ class AddMenuWindow {
 
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Particle())
+			obj.name = "particle"
 			Editor.addToActualScene(obj)
 
 		}

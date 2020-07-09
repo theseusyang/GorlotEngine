@@ -102,21 +102,28 @@ function EditorUIAssetExplorer() {
         App.chooseFile((fname) => {
 
             try {
-                var map = new VideoTexture(fname)
-                var material = new THREE.SpriteMaterial({map: map, color: 0xffffff})
-                var sprite = new Sprite(material)
-                Editor.addToActualScene(sprite)
+                var material = new THREE.SpriteMaterial({map: new VideoTexture(fname), color: 0xffffff})
+                material.name = "video"
+                Editor.addToActualScene(new Sprite(material))
             } catch(e) {console.error("Error loading file: " + e)}
         }, "video/*")
     }})
 
+    EditorUI.asset_explorer_menu.add("Import/Resources/Font", {callback: () => {
+        App.chooseFile((fname) => {
+
+            try {
+                // TODO: This
+            } catch(e) {
+                console.error("Error loading file: " + e)
+            }
+
+        }, ".json, .ttf, .otf")
+    }})
+
     EditorUI.asset_explorer_menu.add("Import/Resources/Audio", {callback: () => {
         App.chooseFile((event) => {
-            try {
-
-            } catch (e) {
-                console.error("Error loading file\n"+e)
-            }
+            // TODO: This
         }, "audio/*")
     }})
 

@@ -10,10 +10,11 @@ class PhysicsObjectHelper extends THREE.Object3D {
 		this.meshes = []
 
 		this.material = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true})
-		this.sphereGeometry = new THREE.SphereBufferGeometry(1, 16, 16)
-		this.boxGeometry = new THREE.BoxBufferGeometry(1, 1, 1)
-		this.planeGeometry = new THREE.PlaneBufferGeometry(10, 10, 10, 10)
-		this.cylinderGeometry = new THREE.CylinderBufferGeometry(1, 1, 10, 10)
+
+		this.sphere_geometry = new THREE.SphereBufferGeometry(1, 16, 16)
+		this.box_geometry = new THREE.BoxBufferGeometry(1, 1, 1)
+		this.plane_geometry = new THREE.PlaneBufferGeometry(10, 10, 10, 10)
+		this.cylinder_geometry = new THREE.CylinderBufferGeometry(1, 1, 10, 10)
 
 
 		this.tmpVec0 = new CANNON.Vec3()
@@ -110,19 +111,19 @@ class PhysicsObjectHelper extends THREE.Object3D {
 		switch(shape.type)
 		{
 			case CANNON.Shape.types.SPHERE:
-				mesh = new THREE.Mesh(this.sphereGeometry, material)
+				mesh = new THREE.Mesh(this.sphere_geometry, material)
 				break;
 
 			case CANNON.Shape.types.PARTICLE:
-				mesh = new THREE.Mesh(this.sphereGeometry, material)
+				mesh = new THREE.Mesh(this.sphere_geometry, material)
 				break;
 
 			case CANNON.Shape.types.BOX:
-				mesh = new THREE.Mesh(this.boxGeometry, material)
+				mesh = new THREE.Mesh(this.box_geometry, material)
 				break;
 
 			case CANNON.Shape.types.PLANE:
-				mesh = new THREE.Mesh(this.planeGeometry, material)
+				mesh = new THREE.Mesh(this.plane_geometry, material)
 				break;
 
 			case CANNON.Shape.types.CONVEXPOLYHEDRON:
@@ -214,33 +215,34 @@ class PhysicsObjectHelper extends THREE.Object3D {
 	}
 
 	scaleMesh(mesh, shape) {
-		switch(shape.type)
+	
+		var type = shape.type
+
+		if(type === CANNON.Shape.types.SPHERE)
 		{
-			case CANNON.Shape.types.SPHERE:
-				var radius = shape.radius
-				mesh.scale.set(radius, radius, radius)
-				break;
-
-			case CANNON.Shape.types.BOX:
-				mesh.scale.copy(shape.halfExtents)
-				mesh.scale.multiplyScalar(2)
-				break;
-
-			case CANNON.Shape.types.PARTICLE:
-				mesh.scale.set(0.1, 0.1, 0.1)
-				break;
-
-			case CANNON.Shape.types.CONVEXPOLYHEDRON:
-				mesh.scale.set(1,1,1)
-				break;
-
-			case CANNON.Shape.types.TRIMESH:
-				mesh.scale.copy(shape.scale)
-				break;
-
-			case CANNON.Shape.types.HEIGHTFIELD:
-				mesh.scale.set(1,1,1)
-				break;
+			var radius = shape.radius
+			mesh.scale.set(radius, radius, radius)
+		}
+		else if(type === CANNON.Shape.types.PARTICLE)
+		{
+			mesh.scale.set(0.1, 0.1, 0.1)
+		}
+		else if(type === CANNON.Shape.types.BOX)
+		{
+			mesh.scale.copy(shape.halfExtents)
+			mesh.scale.multiplyScalar(2)
+		}
+		else if(type === CANNON.Shape.types.CONVEXPOLYHEDRON)
+		{
+			mesh.scale.set(1, 1, 1)
+		}
+		else if(type === CANNON.Shape.types.TRIMESH)
+		{
+			mesh.scale.copy(shape.scale)
+		}
+		else if(type === CANNON.Shape.types.HEIGHTFIELD)
+		{
+			mesh.scale.set(1, 1, 1)
 		}
 	}
 }
