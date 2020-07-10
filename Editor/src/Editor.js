@@ -92,7 +92,7 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
 
 // TIMESTAMP is equals to Date()
-Editor.TIMESTAMP = "Fri Jul 10 2020 22:30:00 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 10 2020 23:15:10 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -249,15 +249,15 @@ Editor.update = function()
 
 		// Keyboard shortcuts
 		if (Keyboard.isKeyJustPressed(Keyboard.DEL)) {
-			Editor.deleteSelectedObject()
+			Editor.deleteObject()
 		}
 		else if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
 			if (Keyboard.isKeyJustPressed(Keyboard.C)) {
-				Editor.copySelectedObject()
+				Editor.copyObject()
 			} else if (Keyboard.isKeyJustPressed(Keyboard.V)) {
-				Editor.pasteIntoSelectedObject()
+				Editor.pasteObject()
 			} else if (Keyboard.isKeyJustPressed(Keyboard.X)) {
-				Editor.cutSelectedObject()
+				Editor.cutObject()
 			} else if (Keyboard.isKeyJustPressed(Keyboard.Y)) {
 				// TODO: Redo
 			} else if (Keyboard.isKeyJustPressed(Keyboard.Z)) {
@@ -341,14 +341,10 @@ Editor.update = function()
 				speed *= Mouse.wheel
 
 				// Limit zoom speed
-				if (speed < 0) {
-					if (speed > -0.03) {
-						speed = 0.03
-					}
-				} else if (speed > 0) {
-					if (speed < 0.03) {
-						speed = 0.03
-					}
+				if (speed < 0 && speed > -0.03) {
+					speed = 0.03
+				} else if (speed > 0 && speed < 0.03) {
+					speed = 0.03
 				}
 
 				// Move camera
@@ -388,65 +384,74 @@ Editor.isObjectSelected = function(obj) {
 }
 
 // Delete an object
+//Editor.deleteObject = function(obj) {
+//	if(obj !== undefined) {
+//		obj.destroy()
+//		Editor.updateObjectViews()
+//		Editor.resetEditingFlags()
+//	}
+//}
+
+// Delete selected Object
 Editor.deleteObject = function(obj) {
-	if(obj !== undefined) {
+	if (obj !== undefined) {
 		obj.destroy()
+		Editor.updateObjectViews()
+		if (Editor.isObjectSelected(obj)) {
+			Editor.resetEditingFlags()
+		}
+	} else if (Editor.selected_object !== null) {
+		Editor.selected_object.destroy()
 		Editor.updateObjectViews()
 		Editor.resetEditingFlags()
 	}
 }
 
-// Delete selected Object
-Editor.deleteSelectedObject = function() {
-	if (Editor.selected_object !== null && !(Editor.selected_object instanceof Scene)) {
-		Editor.deleteObject(Editor.selected_object)
-	}
-}
-
 // Copy selected object
-Editor.copySelectedObject = function() {
-	if (Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene)) {
-		try {
+Editor.copyObject = function(obj) {
+	if (obj !== undefined) {
+		if (App.clipboard !== undefined) {
+			App.clipboard.set(JSON.stringify(obj.toJSON()), "text")
+		}
+	} else if (Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene)) {
+		if (App.clipboard !== undefined) {
 			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
-		} catch(e) {
-			console.error("Error copying the object: " + e)
 		}
 	}
 }
 
 // Cut selected object
-Editor.cutSelectedObject = function() {
-	if (Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene)) {
-		try {
-			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
-			if (Editor.selected_object.parent !== null) {
-				Editor.selected_object.parent.remove(Editor.selected_object)
-				Editor.updateObjectViews()
-				Editor.resetEditingFlags()
-			}
-		} catch(e) {
-			console.error("Error cutting object: " + e)
+Editor.cutObject = function(obj) {
+
+	if (obj !== undefined) {
+		if (App.clipboard !== undefined) {
+			App.clipboard.set(JSON.stringify(obj.toJSON()), "text")
 		}
+		Editor.deleteObject(obj)
+	} else if (Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene)) {
+		if (App.clipboard !== undefined) {
+			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
+		}
+		Editor.deleteObject(obj)
 	}
 }
 
-// Paste as children of the selected object
-Editor.pasteIntoSelectedObject = function() {
+// Paste object as children of target object
+Editor.pasteObject = function(target) {
 	try {
 		var content = App.clipboard.get("text")
-		var loader = new ObjectLoader()
 		var data = JSON.parse(content)
 
 		// Create object
-		var obj = loader.parse(data)
+		var obj = new ObjectLoader().parse(data)
 		obj.traverse((child) => {
 			child.uuid = THREE.Math.generateUUID()
 		})
 		Editor.renameObject(obj, obj.name)
 
-		// Add object
-		if (Editor.selected_object !== null) {
-			Editor.selected_object.add(obj)
+		// Add object to target
+		if (target !== undefined) {
+			target.add(obj)
 		} else {
 			Editor.program.scene.add(obj)
 		}
@@ -458,11 +463,13 @@ Editor.pasteIntoSelectedObject = function() {
 }
 
 // Add object to actual scene
-Editor.addToActualScene = function(obj) {
-	Editor.program.scene.add(obj)
-	Editor.updateObjectViews()
-	Editor.renameObject(obj, obj.name)
-	Editor.selectObject(obj)
+Editor.addToScene = function(obj) {
+	if(Editor.program.scene !== null) {
+		Editor.program.scene.add(obj)
+		Editor.updateObjectViews()
+		Editor.renameObject(obj, obj.name)
+		Editor.selectObject(obj)
+	}
 }
 
 // Select tool to manipulate tools

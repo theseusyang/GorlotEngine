@@ -29,8 +29,8 @@ ObjectUtils.getMaterials = function(obj, materials) {
 			} else if (child.material instanceof THREE.MultiMaterial) {
 				var material_array = child.material.materials
 
-				for(var i = 0; i < material_array.length; i++) {
-					add(material_array[i])
+				for(var j = 0; j < material_array.length; i++) {
+					add(material_array[j])
 				}
 			}
 		}

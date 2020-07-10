@@ -132,30 +132,6 @@ EditorUI.updateInspector = function() {
     }
 }
 
-EditorUI.deleteObject = function(object) {
-    // Delete object
-    if ((object !== null) && (object.parent !== null)) {
-
-        if(!(object instanceof Scene)) {
-            object.parent.remove(object)
-        } else {
-            // If the object to select is an scene
-            var tab = EditorUI.tabs_widget.getCurrentTab()
-            if (tab.id !== EditorUI.canvas.id) {
-                // This avoids the user to delete the scene he is currently editing
-                object.parent.remove(object)
-            }
-        }
-
-        Editor.updateObjectViews()
-    }
-
-    // If this object is selected, reset editing flags
-    if (Editor.isObjectSelected(object)) {
-        Editor.resetEditingFlags()
-    }
-}
-
 EditorUI.Resize = function() {
     EditorUI.updateInterface()
 }

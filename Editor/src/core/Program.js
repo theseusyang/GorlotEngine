@@ -29,6 +29,9 @@ class Program extends THREE.Object3D {
 		}
 
 		// Assets
+		this.images = []
+		this.videos = []
+		this.fonts = []
 		this.materials = []
 		this.textures = []
 		this.geometries = []

@@ -171,7 +171,7 @@ class AddMenuWindow {
 			var geometry = new THREE.BoxBufferGeometry(1, 1, 1)
 			var obj = new Model3D(geometry, Editor.default_material)
 			obj.name = "cube"
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Cylinder") {
@@ -179,7 +179,7 @@ class AddMenuWindow {
 			var geometry = new THREE.CylinderBufferGeometry(1, 1, 2, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.name = "cylinder"
-        	Editor.addToActualScene(obj)
+        	Editor.addToScene(obj)
 
 		}
 		else if (o === "Sphere") {
@@ -187,7 +187,7 @@ class AddMenuWindow {
 			var geometry = new THREE.SphereBufferGeometry(0.6, 32, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.name = "sphere"
-        	Editor.addToActualScene(obj)
+        	Editor.addToScene(obj)
 
 		}
 		else if (o === "Torus") {
@@ -195,7 +195,7 @@ class AddMenuWindow {
 			var geometry = new THREE.TorusBufferGeometry(1, 0.5, 16, 96)
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.name = "torus"
-        	Editor.addToActualScene(obj)
+        	Editor.addToScene(obj)
 
 		}
 		else if (o === "Pyramid") {
@@ -203,7 +203,7 @@ class AddMenuWindow {
 			var geometry = new THREE.ConeBufferGeometry(1, 2, 32)
         	var obj = new Model3D(geometry, Editor.default_material)
         	obj.name = "cone"
-        	Editor.addToActualScene(obj)
+        	Editor.addToScene(obj)
 
 		}
 		else if (o === "Plane") {
@@ -211,60 +211,60 @@ class AddMenuWindow {
 			var geometry = new THREE.PlaneBufferGeometry(1, 1)
 			var obj = new Model3D(geometry, Editor.default_material)
 			obj.name = "plane"
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Empty") {
 
-			Editor.addToActualScene(new Empty())
+			Editor.addToScene(new Empty())
 
 		}
 		else if (o === "Text") {
 
 			var obj = new Text3D("text", Editor.default_material)
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Point Light") {
 
-        	Editor.addToActualScene(new PointLight())
+        	Editor.addToScene(new PointLight())
 
 		}
 		else if (o === "Ambient Light") {
 
-        	Editor.addToActualScene(new AmbientLight())
+        	Editor.addToScene(new AmbientLight())
 
 		}
 		else if (o === "Spot Light") {
 
-        	Editor.addToActualScene(new SpotLight())
+        	Editor.addToScene(new SpotLight())
 
 		}
 		else if (o === "Directional Light") {
 
-        	Editor.addToActualScene(new DirectionalLight())
+        	Editor.addToScene(new DirectionalLight())
 
 		}
 		else if (o === "Hemisphere Light") {
 
-        	Editor.addToActualScene(new HemisphereLight())
+        	Editor.addToScene(new HemisphereLight())
 
 		}
 		else if (o === "Sky") {
 
-       		Editor.addToActualScene(new Sky())
+       		Editor.addToScene(new Sky())
 
 		}
 		else if (o === "Perspective Camera") {
 
 			var obj = new PerspectiveCamera(60, Editor.canvas.width/Editor.canvas.height, 0.1, 1000000)
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Orthographic Camera") {
 
 			var obj = new OrthographicCamera(3, 2, undefined, 1, 1000000)
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Physics - Cube") {
@@ -272,7 +272,7 @@ class AddMenuWindow {
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Box(new CANNON.Vec3(0.5, 0.5, 0.5)))
 			obj.name = "cube"
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Physics - Sphere") {
@@ -280,14 +280,14 @@ class AddMenuWindow {
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Sphere(1.0))
 			obj.name = "sphere"
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		} else if (o === "Physics - Cylinder") {
 
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Cylinder(1.0, 1.0, 2.0, 8))
 			obj.name = "cylinder"
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Physics - Plane") {
@@ -297,7 +297,7 @@ class AddMenuWindow {
 			obj.body.addShape(new CANNON.Plane())
 			obj.body.type = CANNON.Body.KINEMATIC
 			obj.name = "plane"
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Physics - Point") {
@@ -305,36 +305,36 @@ class AddMenuWindow {
 			var obj = new PhysicsObject()
 			obj.body.addShape(new CANNON.Particle())
 			obj.name = "particle"
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Leap Hand") {
-			Editor.addToActualScene(new LeapHand())
+			Editor.addToScene(new LeapHand())
 		}
 		else if (o === "Script") {
 
 			var obj = new Script()
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Blueprints") {
 
 			var obj = new Blueprints()
-			Editor.addToActualScene(obj)
+			Editor.addToScene(obj)
 
 		}
 		else if (o === "Sprite") {
 
-			Editor.addToActualScene(new Sprite(Editor.default_sprite_material))
+			Editor.addToScene(new Sprite(Editor.default_sprite_material))
 
 		}
 		else if (o === "Particles") {
 
-			Editor.addToActualScene(new ParticleEmitter())
+			Editor.addToScene(new ParticleEmitter())
 
 		} else if (o === "Audio") {
 
-			Editor.addToActualScene(new Audio())
+			Editor.addToScene(new Audio())
 
 		}
 

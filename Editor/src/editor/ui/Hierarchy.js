@@ -135,15 +135,15 @@ EditorUI.hierarchyContext = function(e, data) {
 
     if (!(object instanceof Scene) && !(object instanceof Program)) {
         context.addItem("Copy", {callback: () => {
-            Editor.copySelectedObject()
+            Editor.copyObject(object)
         }})
     
         context.addItem("Paste", {callback: () => {
-            Editor.pasteIntoSelectedObject()
+            Editor.pasteObject(object)
         }})
     
         context.addItem("Cut", {callback: () => {
-            Editor.cutSelectedObject()
+            Editor.cutObject(object)
         }})
     
         context.addItem("Duplicate", {callback: () => {

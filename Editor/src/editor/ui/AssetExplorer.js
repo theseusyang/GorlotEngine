@@ -17,7 +17,7 @@ function EditorUIAssetExplorer() {
                 var loader = new THREE.OBJLoader()
                 var obj = loader.parse(App.readFile(fname))
 
-                Editor.addToActualScene(obj)
+                Editor.addToScene(obj)
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -33,7 +33,7 @@ function EditorUIAssetExplorer() {
                 var collada = loader.parse(App.readFile(fname))
                 var scene = collada.scene
 
-                Editor.addToActualScene(scene)
+                Editor.addToScene(scene)
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -49,7 +49,7 @@ function EditorUIAssetExplorer() {
                 loader.load(fname, function(geometry, materials) {
                     var material = new MeshStandardMaterial()
                     var obj = new AnimatedModel(geometry, material)
-                    Editor.addToActualScene(obj)
+                    Editor.addToScene(obj)
                 })
             } catch(e) {
                 console.error("Error importing Object: " + e)
@@ -65,7 +65,7 @@ function EditorUIAssetExplorer() {
                 var gltf = loader.parse(App.readFile(f))
                 console.log(gltf)
                 if (gltf.scene !== undefined) {
-                    Editor.addToActualScene(gltf.scene)
+                    Editor.addToScene(gltf.scene)
                 }
             } catch(e) {
                 console.error("Error importing Object: " + e)
@@ -82,7 +82,7 @@ function EditorUIAssetExplorer() {
                 var scene = loader.parse(App.readFile(fname))
 
                 for(var i = 0; i < scene.children.length; i++) {
-                    Editor.addToActualScene(scene.children[i])
+                    Editor.addToScene(scene.children[i])
                 }
             } catch(e) {
                 console.error("Error importing Object: " + e)
@@ -98,7 +98,7 @@ function EditorUIAssetExplorer() {
                 var loader = new THREE.FBXLoader()
                 var obj = loader.parse(App.readFile(fname))
 
-                Editor.addToActualScene(obj)
+                Editor.addToScene(obj)
             } catch(e) {
                 console.error("Error importing Object: " + e)
             }
@@ -124,7 +124,7 @@ function EditorUIAssetExplorer() {
             try {
                 var material = new THREE.SpriteMaterial({map: new VideoTexture(fname), color: 0xffffff})
                 material.name = "video"
-                Editor.addToActualScene(new Sprite(material))
+                Editor.addToScene(new Sprite(material))
             } catch(e) {console.error("Error loading file: " + e)}
         }, "video/*")
     }})
