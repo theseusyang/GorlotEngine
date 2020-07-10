@@ -37,14 +37,14 @@ class CodeEditor {
 				matchBrackets: true,
 				indentWithTabs: true,
 				indentUnit: 4,
-				tabSize: 4,
-				hintOptions: {
-					completeSingle: true
-				}
+				tabSize: 4
 			}
 		)
 		this.code.setOption("theme", Settings.code.theme)
 		this.code.setOption("mode", "javascript")
+
+		// TODO: Remove
+		console.log(this.code)
 
 		// Set editor font size
 		this.font_size = Settings.code.font_size

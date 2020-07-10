@@ -24,6 +24,7 @@ function EditorUIAssetExplorer() {
         }, ".obj")
     }})
 
+    // DAE
     EditorUI.asset_explorer_menu.add("Import/Objects/DAE", {callback: () => {
         App.chooseFile((fname) => {
 
@@ -39,6 +40,7 @@ function EditorUIAssetExplorer() {
         }, ".dae")
     }})
 
+    // JSON
     EditorUI.asset_explorer_menu.add("Import/Objects/JSON", {callback: () => {
         App.chooseFile((fname) => {
 
@@ -55,6 +57,23 @@ function EditorUIAssetExplorer() {
         }, ".json")
     }})
 
+    // GLTF
+    /*EditorUI.asset_explorer_menu.add("Import/Objects/GLTF", {callback: () => {
+        App.chooseFile((f) => {
+            try {
+                var loader = new THREE.GLTFLoader()
+                var gltf = loader.parse(App.readFile(f))
+                console.log(gltf)
+                if (gltf.scene !== undefined) {
+                    Editor.addToActualScene(gltf.scene)
+                }
+            } catch(e) {
+                console.error("Error importing Object: " + e)
+            }
+        })
+    }})*/
+
+    // VRML
     EditorUI.asset_explorer_menu.add("Import/Objects/VRML", {callback: () => {
         App.chooseFile((fname) => {
 
@@ -71,6 +90,7 @@ function EditorUIAssetExplorer() {
         }, ".wrl, .vrml")
     }})
 
+    // FBX
     EditorUI.asset_explorer_menu.add("Import/Objects/FBX", {callback: () => {
         App.chooseFile((fname) => {
 

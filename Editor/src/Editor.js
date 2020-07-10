@@ -10,8 +10,8 @@ include("libs/codemirror/addon/search/search.js")
 include("libs/codemirror/addon/search/searchcursor.js")
 include("libs/codemirror/addon/hint/show-hint.js")
 include("libs/codemirror/addon/hint/show-hint.css")
-include("libs/codemirror/addon/tern/tern.js")
-include("libs/codemirror/addon/tern/tern.css")
+include("libs/codemirror/addon/dialog/dialog.js")
+include("libs/codemirror/addon/dialog/dialog.css")
 include("libs/codemirror/mode/javascript.js")
 include("libs/codemirror/mode/glsl.js")
 include("libs/codemirror/codemirror.css")
@@ -72,7 +72,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
-Editor.TIMESTAMP = "Fri 10 Jul 2020 13:30:32"
+Editor.TIMESTAMP = "Fri 10 Jul 2020 13:38:38"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
