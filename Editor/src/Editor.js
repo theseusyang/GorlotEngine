@@ -65,7 +65,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Thu 09 Jul 2020 22:04:10"
+Editor.TIMESTAMP = "Fri 10 Jul 2020 13:00:50"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -496,7 +496,7 @@ Editor.updateTreeView = function() {
 	EditorUI.updateHierarchy()
 }
 
-// Update asset explorer
+// Update asset explorer content
 Editor.updateAssetExplorer = function() {
 	if (EditorUI.asset_explorer_objects !== undefined) {
 		EditorUI.asset_explorer_objects = []

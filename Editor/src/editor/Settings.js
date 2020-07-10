@@ -10,6 +10,7 @@ Settings.grid_size = 500
 Settings.grid_spacing =  5
 Settings.grid_enabled = true
 Settings.axis_enabled = true
+Settings.file_preview_size = 60
 Settings.camera_preview_enabled = true
 Settings.camera_preview_percentage = 0.2
 
@@ -32,6 +33,8 @@ Settings.store = function() {
 		grid_spacing: Settings.grid_spacing,
 		grid_enabled: Settings.grid_enabled,
 		axis_enabled: Settings.axis_enabled,
+
+		file_preview_size: Settings.file_preview_size,
 
 		camera_preview_enabled: Settings.camera_preview_enabled,
 		camera_preview_percentage: Settings.camera_preview_percentage,
@@ -61,6 +64,8 @@ Settings.load = function() {
 		Settings.grid_spacing = data.grid_spacing
 		Settings.grid_enabled = data.grid_enabled
 		Settings.axis_enabled = data.axis_enabled
+
+		Settings.file_preview_size = data.file_preview_size
 
 		Settings.camera_preview_enabled = data.camera_preview_enabled
 		Settings.camera_preview_percentage = data.camera_preview_percentage

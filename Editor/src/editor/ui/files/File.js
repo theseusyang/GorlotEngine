@@ -15,11 +15,12 @@ class File {
 
 		this.elm = document.createElement("li")
 		this.elm.className = "item"
-		this.elm.style = "width: 60px; max-width: 60px; display: inline-block; text-align: center; margin-right: 10px; cursor: pointer;"
+		var s = Settings.file_preview_size
+		this.elm.style = "width: " + s + "px; max-width: " + s + "px; display: inline-block; text-align: center; margin-right: 10px; cursor: pointer;"
 
 		this.img = document.createElement("img")
-		this.img.style.width = "60px"
-		this.img.style.height = "60px"
+		this.img.style.width = s + "px"
+		this.img.style.height = s + "px"
 		this.elm.appendChild(this.img)
 
 		this.nameText = document.createElement("p")

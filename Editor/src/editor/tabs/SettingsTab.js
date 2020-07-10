@@ -52,9 +52,13 @@ class SettingsTab {
 		this.inspector.addNumber("Grid Spacing", Settings.grid_spacing, {name_width: 150})
 		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled, {name_width: 150})
 		this.inspector.addCheckbox("Camera Preview", Settings.camera_preview_enabled, {name_width: 150})
-		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0.05, max: 0.7, step: 0.05,name_width: 150})
+		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0.05, max: 0.7, step: 0.05, name_width: 150})
 		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing, {name_width: 150, name_width: 150})
 		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"], name_width: 150})
+		this.inspector.addSeparator()
+
+		this.inspector.addTitle("Asset Explorer")
+		this.inspector.addSlider("File Preview Size", Settings.file_preview_size, {min: 50, max: 100, step: 1, name_width: 150})
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Code Editor")
@@ -114,6 +118,9 @@ class SettingsTab {
 			Settings.camera_preview_percentage = value
 		} else if (name === "Show Axis") {
 			Settings.axis_enabled = value
+		} else if (name === "File Preview Size") {
+			Settings.file_preview_size = value
+			Editor.updateAssetExplorer()
 		} else if (name === "Font Size") {
 			Settings.code_font_size = value
 		} else if (name === "Code Theme") {
