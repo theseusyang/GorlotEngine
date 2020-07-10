@@ -10,6 +10,9 @@ class CodeEditor {
 			clearInterval(self.interval)
 			CodeEditor.id--
 			EditorUI.selectPreviousTab()
+
+			// TODO: Delete this
+			self.updateScript()
 		}, callback: () => {
 			if(this.script !== undefined) {
 				self.activate()
@@ -33,30 +36,31 @@ class CodeEditor {
 			{
 				value: "",
 				lineNumbers: Settings.code.line_numbers,
-				autoCloseBrackets: Settings.code.auto_code_brackets,
+				lineWrapping: Settings.code.line_wrapping,
+				keyMap: Settings.code.keymap,
+				autoCloseBrackets: Settings.code.auto_close_brackets,
+				styleActiveLine: Settings.code.highlight_active_line,
 				matchBrackets: true,
+				dragDrop: true,
 				indentWithTabs: true,
 				indentUnit: 4,
-				tabSize: 4
+				tabSize: 4,
+				hint: CodeMirror.hint.javascript
 			}
 		)
 		this.code.setOption("theme", Settings.code.theme)
 		this.code.setOption("mode", "javascript")
 
-		// TODO: Remove
-		console.log(this.code)
-
 		// Set editor font size
-		this.font_size = Settings.code.font_size
-		this.setFontSize(this.font_size)
+		this.setFontSize(Settings.code.font_size)
 
 		// Self pointer
 		var self = this
 
 		// Codemirror onchange event
-		this.code.on("change", function() {
+		/*this.code.on("change", function() {
 			self.updateScript()
-		})
+		})*/
 
 		// Script attached to the editor
 		this.script = null
@@ -161,11 +165,21 @@ class CodeEditor {
 	}
 
 	activate() {
-		this.updateScript()
-		this.setFontSize(Settings.code.font_size)
-		this.code.setOption("theme", Settings.code.theme)
+		// Set editor state
 		Editor.setState(Editor.STATE_IDLE)
 		Editor.resetEditingFlags()
+
+		// Update code and set font size
+		this.updateScript()
+		this.setFontSize(Settings.code.font_size)
+
+		// Update editor settings
+		this.code.setOption("theme", Settings.code.theme)
+		this.code.setOption("lineNumbers", Settings.code.line_numbers)
+		this.code.setOption("lineWrapping", Settings.code.line_wrapping)
+		this.code.setOption("keyMap", Settings.code.keymap)
+		this.code.setOption("autoCloseBrackets", Settings.code.auto_close_brackets)
+		this.code.setOption("styleActiveLine")
 	}
 
 	setFontSize(size) {
@@ -174,11 +188,10 @@ class CodeEditor {
 			size = 5
 		}
 
-		this.font_size = size
+		Settings.code.font_size = size
+
 		this.code.display.wrapper.style.fontSize = size + "px"
 		this.code.refresh()
-
-		Settings.code.font_size = this.font_size
 	}
 
 	updateInterface() {
@@ -188,9 +201,7 @@ class CodeEditor {
 	update() {
 		if (Keyboard.isKeyPressed(Keyboard.CTRL)) {
 			if (Mouse.wheel !== 0) {
-				this.font_size -= Mouse.wheel/100
-
-				this.setFontSize(this.font_size)
+				this.setFontSize(Settings.code.font_size - Mouse.wheel/1000)
 			}
 		}
 

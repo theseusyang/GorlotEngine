@@ -20,7 +20,6 @@ include("libs/three/effects/VREffect.js")
 include("libs/leap/leap-0.6.4.min.js")
 
 include("libs/cannon/cannon.js")
-include("libs/cannon/CannonDebugRenderer.js")
 
 include("libs/stats.min.js")
 include("libs/SPE.min.js")

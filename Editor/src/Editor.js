@@ -4,17 +4,27 @@ include("libs/litegui/litegui.js")
 include("libs/jscolor/jscolor.js")
 
 include("libs/codemirror/codemirror.js")
+include("libs/codemirror/codemirror.css")
+include("libs/codemirror/keymap/sublime.js")
+include("libs/codemirror/keymap/emacs.js")
+include("libs/codemirror/keymap/vim.js")
 include("libs/codemirror/addon/edit/closebrackets.js")
 include("libs/codemirror/addon/edit/matchbrackets.js")
 include("libs/codemirror/addon/search/search.js")
 include("libs/codemirror/addon/search/searchcursor.js")
+include("libs/codemirror/addon/search/jump-to-line.js")
 include("libs/codemirror/addon/hint/show-hint.js")
 include("libs/codemirror/addon/hint/show-hint.css")
+include("libs/codemirror/addon/hint/javascript-hint.js")
+include("libs/codemirror/addon/hint/anyword-hint.js")
 include("libs/codemirror/addon/dialog/dialog.js")
 include("libs/codemirror/addon/dialog/dialog.css")
+include("libs/codemirror/addon/selection/active-line.js")
+//include("lib/codemirror/addon/lint/lint.js")
+//include("lib/codemirror/addon/lint/lint.css")
+//include("lib/codemirror/addon/lint/javascript-lint.js")
 include("libs/codemirror/mode/javascript.js")
 include("libs/codemirror/mode/glsl.js")
-include("libs/codemirror/codemirror.css")
 include("libs/codemirror/theme/*")
 
 include("libs/litegui/litegui.css")
@@ -72,7 +82,7 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
-Editor.TIMESTAMP = "Fri 10 Jul 2020 13:38:38"
+Editor.TIMESTAMP = "Fri 10 Jul 2020 14:02:40"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1

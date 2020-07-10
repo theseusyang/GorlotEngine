@@ -81,9 +81,12 @@ class SettingsTab {
 		}
 
 		this.inspector.addCombo("Code Theme", Settings.code.theme,{values: themes, name_width: 150})
+		this.inspector.addCombo("Key Bindings", Settings.code.keymap, {values: ["default", "sublime", "vim", "emacs"], name_width: 150})
 		this.inspector.addNumber("Font Size", Settings.code.font_size, {name_width: 150})
 		this.inspector.addCheckbox("Line Numbers", Settings.code.line_numbers, {name_width: 150})
-		this.inspector.addCheckbox("Close Brackets Automatically", Settings.code.auto_close_brackets, {name_width: 150})
+		this.inspector.addCheckbox("Line Wrap", Settings.code.line_wrapping, {name_width: 150})
+		this.inspector.addCheckbox("Auto close brackets", Settings.code.auto_close_brackets, {name_width: 150})
+		this.inspector.addCheckbox("Highlight Line", Settings.code.highlight_active_line, {name_width: 150})
 		this.inspector.addSeparator()
 
 	}
@@ -148,6 +151,9 @@ class SettingsTab {
 			Settings.general.file_preview_size = value
 			Editor.updateAssetExplorer()
 		}
+		else if (name === "Key Bindings") {
+			Settings.code.keymap = value
+		}
 		else if (name === "Font Size") {
 			Settings.code.font_size = value
 		}
@@ -156,6 +162,15 @@ class SettingsTab {
 		}
 		else if (name === "Line Numbers") {
 			Settings.code.line_numbers = value
+		}
+		else if (name === "Line Wrap") {
+			Settings.code.line_wrapping = value
+		}
+		else if (name === "Auto close brackets") {
+			Settings.code.auto_close_brackets = value
+		}
+		else if (name === "Highlight Line") {
+			Settings.code.highlight_active_line = value
 		}
 	}
 

@@ -18,8 +18,11 @@
 	},
 	"code": {
 		"theme": "monokai",
+		"keymap": "vim",
 		"font_size": 16,
 		"line_numbers": true,
-		"auto_close_brackets": true
+		"line_wrapping": true,
+		"auto_close_brackets": true,
+		"highlight_active_line": true
 	}
 }
