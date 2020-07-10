@@ -43,22 +43,32 @@ class SettingsTab {
 
 	initUI() {
 		this.inspector.addTitle("General")
-		this.inspector.addCheckbox("Show stats", Settings.show_stats, {name_width: 150})
+		this.inspector.addCheckbox("Show stats", Settings.general.show_stats, {name_width: 150})
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Rendering Quality")
-		this.inspector.addCheckbox("Show Grid", Settings.grid_enabled, {name_width: 150})
-		this.inspector.addNumber("Grid Size", Settings.grid_size, {name_width: 150})
-		this.inspector.addNumber("Grid Spacing", Settings.grid_spacing, {name_width: 150})
-		this.inspector.addCheckbox("Show Axis", Settings.axis_enabled, {name_width: 150})
-		this.inspector.addCheckbox("Camera Preview", Settings.camera_preview_enabled, {name_width: 150})
-		this.inspector.addSlider("Preview Size", Settings.camera_preview_percentage, {min: 0.05, max: 0.7, step: 0.05, name_width: 150})
-		this.inspector.addCheckbox("Antialiasing", Settings.antialiasing, {name_width: 150, name_width: 150})
-		this.inspector.addCombo("Shadows Type", undefined, {values: ["Basic", "PCF", "PCF Soft"], name_width: 150})
+		this.inspector.addCheckbox("Show Grid", Settings.editor.grid_enabled, {name_width: 150})
+		this.inspector.addNumber("Grid Size", Settings.editor.grid_size, {name_width: 150})
+		this.inspector.addNumber("Grid Spacing", Settings.editor.grid_spacing, {name_width: 150})
+		this.inspector.addCheckbox("Show Axis", Settings.editor.axis_enabled, {name_width: 150})
+		this.inspector.addCheckbox("Camera Preview", Settings.editor.camera_preview_enabled, {name_width: 150})
+		this.inspector.addSlider("Preview Size", Settings.editor.camera_preview_percentage, {min: 0.05, max: 0.7, step: 0.05, name_width: 150})
+		this.inspector.addCheckbox("Antialiasing", Settings.render.antialiasing, {name_width: 150, name_width: 150})
+
+		var s = ""
+		if (Settings.render.shadows_type === THREE.BasicShadowMap) {
+			s = "Basic"
+		} else if (Settings.render.shadows_type === THREE.PCFShadowMap) {
+			s = "PCF"
+		} else if (Settings.render.shadows_type === THREE.PCFSoftShadowMap) {
+			s = "PCF Soft"
+		}
+
+		this.inspector.addCombo("Shadows Type", s, {values: ["Basic", "PCF", "PCF Soft"], name_width: 150})
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Asset Explorer")
-		this.inspector.addSlider("File Preview Size", Settings.file_preview_size, {min: 50, max: 100, step: 1, name_width: 150})
+		this.inspector.addSlider("File Preview Size", Settings.general.file_preview_size, {min: 50, max: 100, step: 1, name_width: 150})
 		this.inspector.addSeparator()
 
 		this.inspector.addTitle("Code Editor")
@@ -70,9 +80,10 @@ class SettingsTab {
 			themes.push(theme)
 		}
 
-		this.inspector.addCombo("Code Theme", Settings.code_theme,{values: themes, name_width: 150})
-		this.inspector.addNumber("Font Size", Settings.code_font_size, {name_width: 150})
-		this.inspector.addCheckbox("Line Numbers", Settings.code_line_numbers, {name_width: 150})
+		this.inspector.addCombo("Code Theme", Settings.code.theme,{values: themes, name_width: 150})
+		this.inspector.addNumber("Font Size", Settings.code.font_size, {name_width: 150})
+		this.inspector.addCheckbox("Line Numbers", Settings.code.line_numbers, {name_width: 150})
+		this.inspector.addCheckbox("Close Brackets Automatically", Settings.code.auto_close_brackets, {name_width: 150})
 		this.inspector.addSeparator()
 
 	}
@@ -94,39 +105,57 @@ class SettingsTab {
 			value = false
 		}
 
-		if (name === "Show stats") {
-			Settings.show_stats = value
-		} else if (name === "Antialiasing") {
-			Settings.antialiasing = value
-		} else if (name === "Shadows Type") {
-			if (value === "Basic") {
-				Settings.shadows_type = THREE.BasicShadowMap
-			} else if (value === "PCF") {
-				Settings.shadows_type = THREE.PCFShadowMap
-			} else if (value === "PCF Soft") {
-				Settings.shadows_type = THREE.PCFSoftShadowMap
+		if (name === "Show stats")
+		{
+			Settings.general.show_stats = value
+		}
+		else if (name === "Antialiasing") {
+			Settings.render.antialiasing = value
+		}
+		else if (name === "Shadows Type") {
+			if (value === "Basic")
+			{
+				Settings.render.shadows_type = THREE.BasicShadowMap
 			}
-		} else if (name === "Show Grid") {
-			Settings.grid_enabled = value
-		} else if (name === "Grid Size") {
-			Settings.grid_size = value
-		} else if (name === "Grid Spacing") {
-			Settings.grid_spacing = value
-		} else if (name === "Camera Preview") {
-			Settings.camera_preview_enabled = value
-		} else if (name === "Preview Size") {
-			Settings.camera_preview_percentage = value
-		} else if (name === "Show Axis") {
-			Settings.axis_enabled = value
-		} else if (name === "File Preview Size") {
-			Settings.file_preview_size = value
+			else if (value === "PCF") {
+				Settings.render.shadows_type = THREE.PCFShadowMap
+			}
+			else if (value === "PCF Soft") {
+				Settings.render.shadows_type = THREE.PCFSoftShadowMap
+			}
+		}
+		else if (name === "Show Grid") {
+			Settings.editor.grid_enabled = value
+			Editor.grid_helper.visible = Settings.editor.grid_enabled
+		}
+		else if (name === "Grid Size") {
+			Settings.editor.grid_size = value
+		}
+		else if (name === "Grid Spacing") {
+			Settings.editor.grid_spacing = value
+		}
+		else if (name === "Camera Preview") {
+			Settings.editor.camera_preview_enabled = value
+		}
+		else if (name === "Preview Size") {
+			Settings.editor.camera_preview_percentage = value
+		}
+		else if (name === "Show Axis") {
+			Settings.editor.axis_enabled = value
+			Editor.axis_helpers.visible = Settings.editor.axis_enabled
+		}
+		else if (name === "File Preview Size") {
+			Settings.general.file_preview_size = value
 			Editor.updateAssetExplorer()
-		} else if (name === "Font Size") {
-			Settings.code_font_size = value
-		} else if (name === "Code Theme") {
-			Settings.code_theme = value
-		} else if (name === "Line Numbers") {
-			Settings.code_line_numbers = value
+		}
+		else if (name === "Font Size") {
+			Settings.code.font_size = value
+		}
+		else if (name === "Code Theme") {
+			Settings.code.theme = value
+		}
+		else if (name === "Line Numbers") {
+			Settings.code.line_numbers = value
 		}
 	}
 

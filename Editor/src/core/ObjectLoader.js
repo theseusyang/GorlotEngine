@@ -581,7 +581,9 @@ function parseObject(data, geometries, materials, textures)
 				object.initial_camera = data.initial_camera
 			}
 
-			object.world.gravity.set(data.world.gravity.x, data.world.gravity.y, data.world.gravity.z)
+			if(object.world !== undefined) {
+				object.world.gravity.set(data.world.gravity.x, data.world.gravity.y, data.world.gravity.z)
+			}
 
 			break;
 

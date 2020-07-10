@@ -62,10 +62,10 @@ class MaterialEditor {
 		Mouse.canvas = this.preview
 
 		// Material preview renderer
-		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: true, antialias: Settings.antialiasing})
+		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: true, antialias: Settings.render.antialiasing})
 		this.renderer.setSize(200, 200)
-		this.renderer.shadowMap.ebaled = true
-		this.renderer.shadowMap.type = THREE.PCFShadowMap
+		this.renderer.shadowMap.enabled = Settings.render.shadows
+		this.renderer.shadowMap.type = Settings.render.shadows_type
 
 		// Material preview camera
 		this.camera = new PerspectiveCamera(50, 200/200, 0.1, 1000000)

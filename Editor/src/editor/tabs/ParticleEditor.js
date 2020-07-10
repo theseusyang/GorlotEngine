@@ -101,7 +101,7 @@ class ParticleEditor {
 		}
 
 		// Particle Preview renderer
-		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: false, antialias: Settings.antialiasing})
+		this.renderer = new THREE.WebGLRenderer({canvas: this.preview, alpha: false, antialias: Settings.render.antialiasing})
 		this.renderer.setSize((EditorUI.mainarea.getSection(0).getWidth()/2)-5, EditorUI.mainarea.getSection(0).getHeight() - EditorUI.assetEx_height)
 		this.renderer.shadowMap.enabled = false
 

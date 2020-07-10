@@ -148,7 +148,7 @@ class SceneEditor {
 		this.element.width = EditorUI.left_area.getWidth()
     	this.element.height = EditorUI.left_area.getHeight() - EditorUI.assetEx_height // - left_area.getSection().getHeight()
 
-    	if (Settings.show_stats) {
+    	if (Settings.general.show_stats) {
     		this.stats.dom.style.visibility = "visible"
     	} else {
     		this.stats.dom.style.visibility = "hidden"

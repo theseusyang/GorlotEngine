@@ -15,7 +15,7 @@ class File {
 
 		this.elm = document.createElement("li")
 		this.elm.className = "item"
-		var s = Settings.file_preview_size
+		var s = Settings.general.file_preview_size
 		this.elm.style = "width: " + s + "px; max-width: " + s + "px; display: inline-block; text-align: center; margin-right: 10px; cursor: pointer;"
 
 		this.img = document.createElement("img")

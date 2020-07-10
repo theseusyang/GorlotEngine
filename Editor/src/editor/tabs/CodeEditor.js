@@ -29,15 +29,31 @@ class CodeEditor {
 		this.element.style.position = "absolute"
 
 		// CodeMirror Editor
-		this.code = new CodeMirror(this.element, {value: "", lineNumbers: Settings.code_line_numbers, indentWithTabs: true, indentUnit: 4, tabSize: 4, mode: "javascript"})
-		this.code.setOption("theme", Settings.code_theme)
+		this.code = new CodeMirror(this.element,
+			{
+				value: "",
+				lineNumbers: Settings.code.line_numbers,
+				autoCloseBrackets: Settings.code.auto_code_brackets,
+				matchBrackets: true,
+				indentWithTabs: true,
+				indentUnit: 4,
+				tabSize: 4,
+				hintOptions: {
+					completeSingle: true
+				}
+			}
+		)
+		this.code.setOption("theme", Settings.code.theme)
 		this.code.setOption("mode", "javascript")
 
-		// Font size
-		this.font_size = Settings.code_font_size
+		// Set editor font size
+		this.font_size = Settings.code.font_size
 		this.setFontSize(this.font_size)
 
-		// Code changed event
+		// Self pointer
+		var self = this
+
+		// Codemirror onchange event
 		this.code.on("change", function() {
 			self.updateScript()
 		})
@@ -45,7 +61,6 @@ class CodeEditor {
 		// Script attached to the editor
 		this.script = null
 
-		var self = this
 		if (parent === undefined) {
 			// This means, we've created the parent
 			EditorUI.mainarea.onresize = function(e) {
@@ -147,8 +162,8 @@ class CodeEditor {
 
 	activate() {
 		this.updateScript()
-		this.setFontSize(Settings.code_font_size)
-		this.code.setOption("theme", Settings.code_theme)
+		this.setFontSize(Settings.code.font_size)
+		this.code.setOption("theme", Settings.code.theme)
 		Editor.setState(Editor.STATE_IDLE)
 		Editor.resetEditingFlags()
 	}
@@ -163,7 +178,7 @@ class CodeEditor {
 		this.code.display.wrapper.style.fontSize = size + "px"
 		this.code.refresh()
 
-		Settings.code_font_size = this.font_size
+		Settings.code.font_size = this.font_size
 	}
 
 	updateInterface() {

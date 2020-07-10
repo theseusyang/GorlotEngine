@@ -3,10 +3,17 @@
 include("libs/litegui/litegui.js")
 include("libs/jscolor/jscolor.js")
 
-include("libs/codemirror/codemirror.min.js")
+include("libs/codemirror/codemirror.js")
+include("libs/codemirror/addon/edit/closebrackets.js")
+include("libs/codemirror/addon/edit/matchbrackets.js")
 include("libs/codemirror/addon/search/search.js")
 include("libs/codemirror/addon/search/searchcursor.js")
-include("libs/codemirror/mode/javascript/javascript.js")
+include("libs/codemirror/addon/hint/show-hint.js")
+include("libs/codemirror/addon/hint/show-hint.css")
+include("libs/codemirror/addon/tern/tern.js")
+include("libs/codemirror/addon/tern/tern.css")
+include("libs/codemirror/mode/javascript.js")
+include("libs/codemirror/mode/glsl.js")
 include("libs/codemirror/codemirror.css")
 include("libs/codemirror/theme/*")
 
@@ -64,8 +71,8 @@ Editor.MODE_ROTATE = 3;
 
 // Editor version
 Editor.NAME = "Gorlot"
-Editor.VERSION = "V0.0.0.1-a"
-Editor.TIMESTAMP = "Fri 10 Jul 2020 13:00:50"
+Editor.VERSION = "V0.0.0.1-b dev"
+Editor.TIMESTAMP = "Fri 10 Jul 2020 13:30:32"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -75,10 +82,10 @@ Editor.clickable = true
 //Initialize Main
 Editor.initialize = function(canvas)
 {
-	// Copy static elements pointer to global object
-	//global.Editor = Editor
-	//global.EditorUI = EditorUI
-	//global.Settings = Settings
+	// Copy global elements pointer to global object
+	global.Editor = Editor
+	global.EditorUI = EditorUI
+	global.Settings = Settings
 
 	// Load settings
 	Settings.load()
@@ -152,18 +159,18 @@ Editor.initialize = function(canvas)
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
 
 	//Grid and axis helpers
-	Editor.grid_helper = new THREE.GridHelper(Settings.grid_size, Math.round(Settings.grid_size/Settings.grid_spacing)*2, 0x888888, 0x888888)
+	Editor.grid_helper = new THREE.GridHelper(Settings.editor.grid_size, Math.round(Settings.editor.grid_size/Settings.editor.grid_spacing)*2, 0x888888, 0x888888)
 	Editor.grid_helper.material.depthWrite = false
 	Editor.grid_helper.material.transparent = true
 	Editor.grid_helper.material.opacity = 0.5
-	Editor.grid_helper.visible = Settings.grid_enabled
+	Editor.grid_helper.visible = Settings.editor.grid_enabled
 	Editor.tool_scene.add(Editor.grid_helper)
 
-	Editor.axis_helper = new THREE.AxisHelper(Settings.grid_size)
+	Editor.axis_helper = new THREE.AxisHelper(Settings.editor.grid_size)
 	Editor.axis_helper.material.depthWrite = false
 	Editor.axis_helper.material.transparent = true
 	Editor.axis_helper.material.opacity = 1
-	Editor.axis_helper.visible = Settings.axis_enabled
+	Editor.axis_helper.visible = Settings.editor.axis_enabled
 	Editor.tool_scene.add(Editor.axis_helper)
 
 	// Object helper container
@@ -526,9 +533,9 @@ Editor.draw = function()
 		Editor.renderer.clearDepth()
 		Editor.renderer.render(Editor.tool_scene_top, Editor.camera)
 
-		if (Settings.camera_preview_enabled && Editor.selected_object instanceof THREE.Camera) {
-			var width = Settings.camera_preview_percentage * Editor.canvas.width
-			var height = Settings.camera_preview_percentage * Editor.canvas.height
+		if (Settings.editor.camera_preview_enabled && Editor.selected_object instanceof THREE.Camera) {
+			var width = Settings.editor.camera_preview_percentage * Editor.canvas.width
+			var height = Settings.editor.camera_preview_percentage * Editor.canvas.height
 			var offset = Editor.canvas.width - width - 10
 			var camera = Editor.selected_object
 
@@ -807,12 +814,12 @@ Editor.setRenderCanvas = function(canvas) {
 
 // Initialize the renderer
 Editor.initializeRenderer = function(canvas) {
-	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: Settings.antialiasing})
+	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: Settings.render.antialiasing})
 	Editor.renderer.autoClear = false
 
 	// Enable shadow maps
-	Editor.renderer.shadowMap.enabled = Settings.shadows
-	Editor.renderer.shadowMap.type = Settings.shadows_type
+	Editor.renderer.shadowMap.enabled = Settings.render.shadows
+	Editor.renderer.shadowMap.type = Settings.render.shadows_type
 	Editor.renderer.setSize(canvas.width, canvas.height)
 }
 

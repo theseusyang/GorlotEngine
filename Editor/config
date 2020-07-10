@@ -1,16 +1,25 @@
 {
-	"show_stats": true,
-	"grid_size": 500,
-	"grid_spacing": 5,
-	"grid_enabled": true,
-	"axis_enabled": true,
-	"file_preview_size": 70,
-	"camera_preview_enabled": true,
-	"camera_preview_percentage": 69.30348258706468,
-	"shadows": true,
-	"shadows_type": 2,
-	"antialiasing": true,
-	"code_theme": "monokai",
-	"code_font_size": 14,
-	"code_line_numbers": true
+	"general": {
+		"file_preview_size": 60,
+		"show_stats": true
+	},
+	"editor": {
+		"grid_size": 500,
+		"grid_spacing": 5,
+		"grid_enabled": true,
+		"axis_enabled": true,
+		"camera_preview_enabled": true,
+		"camera_preview_percentage": 0.2
+	},
+	"render": {
+		"shadows": true,
+		"shadows_type": 2,
+		"antialiasing": true
+	},
+	"code": {
+		"theme": "monokai",
+		"font_size": 14,
+		"line_numbers": true,
+		"auto_close_brackets": true
+	}
 }
