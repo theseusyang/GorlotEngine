@@ -14,6 +14,26 @@ include("libs/cannon/cannon.js")
 include("libs/stats.min.js")
 include("libs/SPE.min.js")
 
+// WebVR polyfill
+if (navigator.getVRDisplays === undefined) {
+	include("libs/webvr-polyfill.js", () => {
+		window.WebVRConfig = {
+			CARDBOARD_UI_DISABLED: false,
+			FORCE_ENABLE_VR: false, // Forces availability of VR mode in desktop
+			K_FILTER: 1.0, //0 for accelerometer, 1 for gyro
+			ROTATE_INSTRUCTIONS_DISABLED: true,
+			PREDICTION_TIME_S: 0.01, //Time predict during fast motion
+			TOUCH_PANNER_DISABLED: true,
+			YAW_ONLY: false,
+			MOUSE_KEYBOARD_CONTROLS_DISABLED: true,
+			DEFER_INITIALIZATION: false,
+			ENABLE_DEPRECATED_API: true,
+			BUFFER_SCALE: 0.5,
+			DIRTY_SUBMIT_FRAME_BINDINGS: false
+		}
+	})
+}
+
 // Then the code itself
 
 include("src/input/Key.js")
@@ -304,7 +324,7 @@ App.loadMain = function(main)
 	App.main.initialize()
 }
 
-// Check if WebVR is available
+// Check if webvr is available
 App.webvrAvailable = function() {
 	return (navigator.getVRDisplays !== undefined)
 }
@@ -357,7 +377,7 @@ App.resize = function()
 }
 
 //Auxiliar include
-function include(file)
+function include(file, onload)
 {
 	if(file.endsWith(".js"))
 	{
@@ -365,6 +385,9 @@ function include(file)
 		js.src = file
 		js.type = "text/javascript"
 		js.async = false
+		if (onload) {
+			js.onload = onload
+		}
 		document.body.appendChild(js)
 	}
 	else if(file.endsWith(".css"))

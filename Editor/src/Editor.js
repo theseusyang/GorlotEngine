@@ -92,7 +92,7 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
 
 // TIMESTAMP is equals to Date()
-Editor.TIMESTAMP = "Fri Jul 10 2020 20:26:32 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 10 2020 22:30:00 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
