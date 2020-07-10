@@ -45,7 +45,9 @@ class CodeEditor {
 				indentWithTabs: true,
 				indentUnit: 4,
 				tabSize: 4,
-				hint: CodeMirror.hint.javascript
+				hintOptions: {
+					hint: CodeMirror.hint.anyword
+				}
 			}
 		)
 		this.code.setOption("theme", Settings.code.theme)
@@ -57,10 +59,15 @@ class CodeEditor {
 		// Self pointer
 		var self = this
 
-		// Codemirror onchange event
-		/*this.code.on("change", function() {
-			self.updateScript()
-		})*/
+		// Keyup
+		this.code.on("keydown", (code, event) => {
+			var key = event.keyCode
+			if (key >= Keyboard.A && key <= Keyboard.Z) {
+				if (!code.state.completionActive) {
+					CodeMirror.commands.autocomplete(code, null, {completeSingle: false})
+				}
+			}
+		})
 
 		// Script attached to the editor
 		this.script = null
