@@ -8,6 +8,7 @@ function registerMaterialNodes() {
 	registerMaterialNodeTexture()
 	registerMaterialNodeColor()
 	registerMaterialNodeConstants()
+	registerArrayNodes()
 }
 
 function registerBlueprintsNodes() {
@@ -26,12 +27,14 @@ function registerParticleNodes() {
 	registerParticlesParticlesNodes()
 	registerMaterialNodeColor()
 	registerVectorNodes()
+	registerArrayNodes()
 	registerMaterialNodeConstants()
 }
 
 function registerAllNodes() {
 	registerBlueprintsNodes()
 	registerMaterialNodes()
+	registerParticleNodes()
 }
 
 registerAllNodes()

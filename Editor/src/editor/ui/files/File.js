@@ -27,6 +27,7 @@ class File {
 		this.nameText.innerHTML = this.name
 		this.nameText.style.position = "relative"
 		this.nameText.style.bottom = "12"
+		this.nameText.style.pointerEvents = "none"
 		this.elm.appendChild(this.nameText)
 
 		this.elm.ondrop = function(e) {

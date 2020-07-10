@@ -27,25 +27,26 @@ class Texture extends THREE.Texture {
 		}
 
 		function getDataURL(image) {
-			var canvas, transparent = false
+			var canvas, context
 
 			if (image.toDataURL !== undefined) {
 				canvas = image
+				context = canvas.getContext("2d")
 			} else {
 				canvas = document.createElement("canvas")
 				canvas.width = image.width
 				canvas.height = image.height
 
-				var context = canvas.getContext("2d")
+				context = canvas.getContext("2d")
 				context.drawImage(image, 0, 0, image.width, image.height)
-				var data = context.getImageData(0, 0, image.width, image.height)
+			}
 
-				// Check image transparency
-				for(var i = 0; i < data.length; i+= 4) {
-					if (data[i] !== 255) {
-						transparency = true
-						break
-					}
+			var transparent = false
+			var data = context.getImageData(0, 0, image.width, image.height).data
+			for(var i = 0; i < data.length; i+=4) {
+				if (data[i] !== 255) {
+					transparent = false
+					break
 				}
 			}
 

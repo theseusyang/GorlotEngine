@@ -212,19 +212,111 @@ ParticlesSetWiggleNode.prototype.onExecute = function() {
 }
 
 function ParticlesSetOpacityNode() {
-	// TODO: This
+	this.addInput("Particles", "Particles")
+	this.addInput("Opacity", "Array")
+	this.addInput("Spread", "Array")
+}
+ParticlesSetOpacityNode.title = "Opacity"
+ParticlesSetOpacityNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var o = this.getInputData(1)
+	var s = this.getInputData(2)
+
+	if (p !== undefined) {
+		if(o !== undefined) {
+			o.forEach((item, index) => {
+				p.emitter.opacity.value[index] = item
+			})
+		}
+		if (s !== undefined) {
+			s.forEach((item, index) => {
+				p.emitter.opacity.spread[index] = item
+			})
+		}
+	}
 }
 
-function ParticlesSetScaleNode() {
-	// TODO: This
+function ParticlesSetSizeNode() {
+	this.addInput("Particles", "Particles")
+	this.addInput("Size", "Array")
+	this.addInput("Spread", "Array")
+}
+ParticlesSetSizeNode.title = "Size"
+ParticlesSetSizeNode.prototype.onExecute = function() {
+	var particles = this.getInputData(0)
+	var size = this.getInputData(1)
+	var spread = this.getInputData(2)
+
+	if (particles !== undefined) {
+		if (size !== undefined) {
+			size.forEach((item, index) => {
+				particles.emitter.size.value[index] = item
+			})
+		}
+		if (spread !== undefined) {
+			spread.forEach((item, index) => {
+				particles.emitter.size.spread[index] = item
+			})
+		}
+	}
 }
 
 function ParticlesSetRotationNode() {
-	// TODO: This
+	this.addInput("Particles", "Particles")
+	this.addInput("Rotation", "Array")
+	this.addInput("Spread", "Array")
+}
+ParticlesSetRotationNode.title = "Rotation"
+ParticlesSetRotationNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var r = this.getInputData(1)
+	var s = this.getInputData(2)
+
+	if (p !== undefined) {
+		if (r !== undefined) {
+			r.forEach((item, index) => {
+				p.emitter.angle.value[index] = item
+			})
+		}
+		if (s !== undefined) {
+			s.forEach((item, index) => {
+				p.emitter.angle.spread[index] = item
+			})
+		}
+	}
 }
 
 function ParticlesSetColourNode() {
-	// TODO: This
+	this.addInput("Particles", "Particles")
+	this.addInput("Colour", "Array")
+	this.addInput("Spread", "Array")
+}
+ParticlesSetColourNode.title = "Colour"
+ParticlesSetColourNode.prototype.onExecute = function() {
+	var p = this.getInputData(0)
+	var c = this.getInputData(1)
+	var s = this.getInputData(2)
+
+	if (p !== undefined) {
+		if (c !== undefined) {
+			c.forEach((item, index) => {
+				if (item instanceof THREE.Color) {
+					p.emitter.color.value[index].r = item.r
+					p.emitter.color.value[index].g = item.g
+					p.emitter.color.value[index].b = item.b
+				}
+			})
+		}
+		if (s !== undefined) {
+			s.forEach((item, index) => {
+				if (item instanceof THREE.Color) {
+					p.emitter.color.spread[index].x = item.r
+					p.emitter.color.spread[index].y = item.g
+					p.emitter.color.spread[index].z = item.b
+				}
+			})
+		}
+	}
 }
 
 function registerParticlesParticlesNodes() {
@@ -240,4 +332,8 @@ function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/ParticlesSetVelocity", ParticlesSetVelocityNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetAcceleration", ParticlesSetAccelerationNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetWiggle", ParticlesSetWiggleNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetOpacity", ParticlesSetOpacityNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetSize", ParticlesSetSizeNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetRotation", ParticlesSetRotationNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetColour", ParticlesSetColourNode)
 }

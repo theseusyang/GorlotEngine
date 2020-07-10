@@ -133,9 +133,11 @@
             }
 
             var prev = this.registered_node_types[type];
-			if(prev)
-				console.log("replacing node type: " + type);
-			else
+			if(prev) {
+                // TODO: I modified this line
+				//console.log("replacing node type: " + type);
+			}
+            else
 			{
 				if( !Object.hasOwnProperty( base_class.prototype, "shape") )
 				Object.defineProperty(base_class.prototype, "shape", {
