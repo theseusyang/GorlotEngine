@@ -8,7 +8,7 @@ class AnimatedModel extends THREE.SkinnedMesh {
 		this.name = "model"
 
         this.receiveShadow = true
-            this.castShadow = true
+        this.castShadow = true
 
 		this.components = []
 		this.defaultComponents = []
@@ -38,7 +38,9 @@ class AnimatedModel extends THREE.SkinnedMesh {
     // Dispose model
     dispose() {
         // Dispose material and geometry
-        this.material.dispose()
+        if (this.material.dispose !== undefined) {
+        	this.material.dispose()
+        }
         this.geometry.dispose()
 
         // Dispose children

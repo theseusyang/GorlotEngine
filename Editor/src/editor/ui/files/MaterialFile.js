@@ -73,20 +73,31 @@ class MaterialFile extends File {
         	    	callback: () => {
         	    		if (self.attachedTo !== null) {
         	    			try {
+
+        	    				// Object Loader
         	    				var json = self.attachedTo.toJSON()
         	    				var loader = new ObjectLoader()
+
+        	    				// Load images
         	    				var images = loader.parseImages(json.images)
+        	    				for(var i = 0; i < images.length; i++) {
+        	    					images[i].uuid = THREE.Math.generateUUID()
+        	    				}
+
+        	    				// Load textures
         	    				var textures = loader.parseTextures(json.textures, images)
-        	    				for(var i = 0; i < textures.length; i++) {
+        	    				for(i = 0; i < textures.length; i++) {
         	    					textures[i].uuid = THREE.Math.generateUUID()
         	    				}
+
+        	    				// Load material
         	    				loader = new MaterialLoader()
         	    				loader.setTextures(textures)
-
         	    				var material = loader.parse(json)
         	    				var uuid = THREE.Math.generateUUID()
         	    				material.uuid = uuid
 
+        	    				// Set the "Material" node's material to the newly created one
         	    				if(material.nodes.nodes !== undefined) {
 									for(var i = 0; i < material.nodes.nodes.length; i++) {
 										if (material.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
@@ -95,6 +106,7 @@ class MaterialFile extends File {
 									}
 								}
 
+								// Add material
         	    				Editor.program.addMaterial(material)
         	    				Editor.updateObjectViews()
         	    			} catch (e) {

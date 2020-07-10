@@ -43,6 +43,7 @@ Main.initialize = function(canvas) {
 	Main.renderer.autoClear = false
 	Main.renderer.shadowMap.enabled = true
 	Main.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+	Main.renderer.setPixelRatio(window.devicePixelRatio || 1.0)
 	Main.renderer.setSize(Main.canvas.width, Main.canvas.height)
 
 

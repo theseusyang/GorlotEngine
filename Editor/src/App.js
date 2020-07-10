@@ -3,16 +3,6 @@
 // First, Libraries are added
 include("libs/three/three.min.js")
 
-include("libs/three/loaders/OBJLoader.js")
-include("libs/three/loaders/MTLLoader.js")
-include("libs/three/loaders/VRMLLoader.js")
-include("libs/three/loaders/FBXLoader.js")
-include("libs/three/loaders/GLTFLoader.js")
-include("libs/three/loaders/ColladaLoader.js")
-include("libs/three/loaders/collada/Animation.js")
-include("libs/three/loaders/collada/AnimationHandler.js")
-include("libs/three/loaders/collada/KeyFrameAnimation.js")
-
 //include("three/cameras/CinematicCamera.js")
 
 include("libs/three/effects/VREffect.js")
@@ -181,6 +171,7 @@ App.chooseFile = function(callback, filter, savemode) {
 	if (filter !== undefined) {
 		chooser.accept = filter
 	}
+
 	if (savemode === true) {
 		chooser.nwsaveas = "file"
 	}

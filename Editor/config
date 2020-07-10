@@ -1,6 +1,6 @@
 {
 	"general": {
-		"file_preview_size": 70,
+		"file_preview_size": 60,
 		"show_stats": true
 	},
 	"editor": {
@@ -17,9 +17,9 @@
 		"antialiasing": true
 	},
 	"code": {
-		"theme": "monokai",
-		"keymap": "vim",
-		"font_size": 16,
+		"theme": "pastel-on-dark",
+		"keymap": "default",
+		"font_size": "18.00",
 		"line_numbers": true,
 		"line_wrapping": true,
 		"auto_close_brackets": true,

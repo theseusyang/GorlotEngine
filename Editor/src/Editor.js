@@ -1,8 +1,12 @@
 "use strict"
 
+// GUI
 include("libs/litegui/litegui.js")
 include("libs/jscolor/jscolor.js")
+include("libs/litegui/litegui.css")
+include("libs/litegraph/litegraph.css")
 
+// Codemirror
 include("libs/codemirror/codemirror.js")
 include("libs/codemirror/codemirror.css")
 include("libs/codemirror/keymap/sublime.js")
@@ -23,8 +27,16 @@ include("libs/codemirror/mode/javascript.js")
 include("libs/codemirror/mode/glsl.js")
 include("libs/codemirror/theme/*")
 
-include("libs/litegui/litegui.css")
-include("libs/litegraph/litegraph.css")
+// Three
+include("libs/three/loaders/OBJLoader.js")
+include("libs/three/loaders/MTLLoader.js")
+include("libs/three/loaders/VRMLLoader.js")
+include("libs/three/loaders/FBXLoader.js")
+include("libs/three/loaders/GLTFLoader.js")
+include("libs/three/loaders/ColladaLoader.js")
+include("libs/three/loaders/collada/Animation.js")
+include("libs/three/loaders/collada/AnimationHandler.js")
+include("libs/three/loaders/collada/KeyFrameAnimation.js")
 
 // Editor Code
 
@@ -78,7 +90,9 @@ Editor.MODE_ROTATE = 3;
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
-Editor.TIMESTAMP = "Fri 10 Jul 2020 17:08:06"
+
+// TIMESTAMP is equals to Date()
+Editor.TIMESTAMP = "Fri Jul 10 2020 19:32:50 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -821,12 +835,13 @@ Editor.setRenderCanvas = function(canvas) {
 // Initialize the renderer
 Editor.initializeRenderer = function(canvas) {
 	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: Settings.render.antialiasing})
+	Editor.renderer.setSize(canvas.width, canvas.height)
+	Editor.renderer.setPixelRatio(window.devicePixelRatio || 1.0)
 	Editor.renderer.autoClear = false
 
 	// Enable shadow maps
 	Editor.renderer.shadowMap.enabled = Settings.render.shadows
 	Editor.renderer.shadowMap.type = Settings.render.shadows_type
-	Editor.renderer.setSize(canvas.width, canvas.height)
 }
 
 // Exit Editor

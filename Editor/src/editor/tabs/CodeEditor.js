@@ -62,7 +62,7 @@ class CodeEditor {
 		// Keyup
 		this.code.on("keydown", (code, event) => {
 			var key = event.keyCode
-			if (key >= Keyboard.A && key <= Keyboard.Z) {
+			if (!Keyboard.isKeyPressed(Keyboard.CTRL) && key >= Keyboard.A && key <= Keyboard.Z) {
 				if (!code.state.completionActive) {
 					CodeMirror.commands.autocomplete(code, null, {completeSingle: false})
 				}

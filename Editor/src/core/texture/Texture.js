@@ -9,9 +9,6 @@ class Texture extends THREE.Texture {
 		super(img)
 
 		this.img = img
-		
-		// Source URL
-		this.url = url
 
 		// Update texture content
 		this.needsUpdate = true
@@ -30,7 +27,7 @@ class Texture extends THREE.Texture {
 		}
 
 		function getDataURL(image) {
-			var canvas
+			var canvas, transparent = false
 
 			if (image.toDataURL !== undefined) {
 				canvas = image
@@ -38,13 +35,24 @@ class Texture extends THREE.Texture {
 				canvas = document.createElement("canvas")
 				canvas.width = image.width
 				canvas.height = image.height
-				canvas.getContext("2d").drawImage(image, 0, 0, image.width, image.height)
+
+				var context = canvas.getContext("2d")
+				context.drawImage(image, 0, 0, image.width, image.height)
+				var data = context.getImageData(0, 0, image.width, image.height)
+
+				// Check image transparency
+				for(var i = 0; i < data.length; i+= 4) {
+					if (data[i] !== 255) {
+						transparency = true
+						break
+					}
+				}
 			}
 
-			if (canvas.width > 2048 || canvas.height > 2048) {
-				return canvas.toDataURL("image/jpeg", 0.6)
-			} else {
+			if (transparent) {
 				return canvas.toDataURL("image/png")
+			} else {
+				return canvas.toDataURL("image/jpeg", 0.8)
 			}
 		}
 
@@ -65,7 +73,9 @@ class Texture extends THREE.Texture {
 
 			minFilter: this.minFilter,
 			magFilter: this.magFilter,
-			ansiotropy: this.ansiotropy
+			anisotropy: this.anisotropy,
+
+			flipY: this.flipY
 		}
 
 		if (this.image !== undefined) {
