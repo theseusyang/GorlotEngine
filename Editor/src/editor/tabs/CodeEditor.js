@@ -10,9 +10,6 @@ class CodeEditor {
 			clearInterval(self.interval)
 			CodeEditor.id--
 			EditorUI.selectPreviousTab()
-
-			// TODO: Delete this
-			self.updateScript()
 		}, callback: () => {
 			if(this.script !== undefined) {
 				self.activate()
@@ -59,7 +56,7 @@ class CodeEditor {
 		// Self pointer
 		var self = this
 
-		// Keyup
+		// Key pressed event
 		this.code.on("keydown", (code, event) => {
 			var key = event.keyCode
 			if (!Keyboard.isKeyPressed(Keyboard.CTRL) && key >= Keyboard.A && key <= Keyboard.Z) {
@@ -67,6 +64,11 @@ class CodeEditor {
 					CodeMirror.commands.autocomplete(code, null, {completeSingle: false})
 				}
 			}
+		})
+
+		// Change
+		this.code.on("change", () => {
+			self.updateScript()
 		})
 
 		// Script attached to the editor

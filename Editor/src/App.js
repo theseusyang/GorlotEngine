@@ -7,10 +7,9 @@ include("libs/three/three.min.js")
 
 include("libs/three/effects/VREffect.js")
 
-include("libs/leap/leap-0.6.4.min.js")
 
 include("libs/cannon/cannon.js")
-
+include("libs/leap.min.js")
 include("libs/stats.min.js")
 include("libs/SPE.min.js")
 
@@ -20,15 +19,16 @@ if (navigator.getVRDisplays === undefined) {
 		window.WebVRConfig = {
 			CARDBOARD_UI_DISABLED: false,
 			FORCE_ENABLE_VR: false, // Forces availability of VR mode in desktop
-			K_FILTER: 1.0, //0 for accelerometer, 1 for gyro
+			CARDBOARD_UI_DISABLED: false,
 			ROTATE_INSTRUCTIONS_DISABLED: true,
-			PREDICTION_TIME_S: 0.01, //Time predict during fast motion
 			TOUCH_PANNER_DISABLED: true,
-			YAW_ONLY: false,
 			MOUSE_KEYBOARD_CONTROLS_DISABLED: true,
+			K_FILTER: 1.0, //0 for accelerometer, 1 for gyro
+			PREDICTION_TIME_S: 0.0,
+			YAW_ONLY: false,
 			DEFER_INITIALIZATION: false,
-			ENABLE_DEPRECATED_API: true,
-			BUFFER_SCALE: 0.5,
+			ENABLE_DEPRECATED_API: false,
+			BUFFER_SCALE: 1.0,
 			DIRTY_SUBMIT_FRAME_BINDINGS: false
 		}
 	})

@@ -20,29 +20,29 @@ class WebcamTexture extends THREE.Texture {
 
 		this.video = video
 
+		// Self pointer
+		var self = this
+
 		if (navigator.webkitGetUserMedia) {
 			navigator.webkitGetUserMedia({video: true}, function(stream) {
-				this.video.src = URL.createObjectURL(stream)
+				self.video.src = URL.createObjectURL(stream)
 			}, (error) => {
 				console.warn("No webcam available")
 			})
 		} else if (navigator.mozGetUserMedia) {
 			navigator.mozGetUserMedia({video: true}, (stream) => {
-				this.video.src = URL.createObjectURL(stream)
+				self.video.src = URL.createObjectURL(stream)
 			}, (error) => {
 				console.warn("No webcam available")
 			})
 		}
-	}
 
-	update() {
-		if (this.video.readyState >= this.video.HAVE_CURRENT_DATA) {
-			this.texture.needsUpdate = true
-		}
-	}
+		// Set filtering
+		this.minFilter = THREE.LinearFilter
+		this.magFilter = THREE.LinearFilter
+		this.format = THREE.RGBFormat
 
-	dispose() {
-		this.video.pause()
-		THREE.Texture.prototype.toJSON.call(this)
+		// Name
+		this.name = "webcam"
 	}
 }

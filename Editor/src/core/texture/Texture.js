@@ -14,9 +14,6 @@ class Texture extends THREE.Texture {
 		this.needsUpdate = true
 	}
 
-	update() {
-	}
-
 	toJSON(meta) {
 		// Create JSON description
 

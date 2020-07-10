@@ -60,6 +60,20 @@ SetMaterialColorNode.prototype.onExecute = function() {
 	}
 }
 
+function SetMaterialDepthWriteNode() {
+	this.addInput("Material", "Material")
+	this.addInput("Depth Write", "Boolean")
+}
+SetMaterialDepthWriteNode.title = "Depth Write"
+SetMaterialDepthWriteNode.prototype.onExecute = function() {
+	var m = this.getInputData(0)
+	var d = this.getInputData(1)
+
+	if (m !== undefined && d !== undefined) {
+		m.depthWrite = d
+	}
+}
+
 function SetMaterialTransparentNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Transparent", "Boolean")
@@ -331,6 +345,7 @@ function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/MeshPhongMaterial", MeshPhongMaterialNode)
 	LiteGraph.registerNodeType("Material/SetMaterialColor", SetMaterialColorNode)
 	LiteGraph.registerNodeType("Material/SetMaterialTransparent", SetMaterialTransparentNode)
+	LiteGraph.registerNodeType("Material/SetMaterialDepthWrite", SetMaterialDepthWriteNode)
 	LiteGraph.registerNodeType("Material/SetMaterialOpacity", SetMaterialOpacityNode)
 	LiteGraph.registerNodeType("Material/SetBlendingModeMaterial", SetBlendingModeMaterialNode)
 	LiteGraph.registerNodeType("Material/SetBlendingSource", SetBlendingSourceNode)

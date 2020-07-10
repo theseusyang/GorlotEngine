@@ -236,13 +236,13 @@ ParticlesSetOpacityNode.prototype.onExecute = function() {
 	}
 }
 
-function ParticlesSetSizeNode() {
+function ParticlesSetScaleNode() {
 	this.addInput("Particles", "Particles")
-	this.addInput("Size", "Array")
+	this.addInput("Scale", "Array")
 	this.addInput("Spread", "Array")
 }
-ParticlesSetSizeNode.title = "Size"
-ParticlesSetSizeNode.prototype.onExecute = function() {
+ParticlesSetScaleNode.title = "Scale"
+ParticlesSetScaleNode.prototype.onExecute = function() {
 	var particles = this.getInputData(0)
 	var size = this.getInputData(1)
 	var spread = this.getInputData(2)
@@ -333,7 +333,7 @@ function registerParticlesParticlesNodes() {
 	LiteGraph.registerNodeType("Particles/ParticlesSetAcceleration", ParticlesSetAccelerationNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetWiggle", ParticlesSetWiggleNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetOpacity", ParticlesSetOpacityNode)
-	LiteGraph.registerNodeType("Particles/ParticlesSetSize", ParticlesSetSizeNode)
+	LiteGraph.registerNodeType("Particles/ParticlesSetScale", ParticlesSetScaleNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetRotation", ParticlesSetRotationNode)
 	LiteGraph.registerNodeType("Particles/ParticlesSetColour", ParticlesSetColourNode)
 }

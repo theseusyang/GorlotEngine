@@ -17,10 +17,10 @@ Main.initialize = function(canvas) {
 	// Renderer and canvas
 	Main.canvas = document.createElement("canvas")
 	Main.canvas.style.position = "absolute"
-	Main.canvas.style.top = "0px"
 	Main.canvas.style.left = "0px"
-	Main.canvas.stlye.width = window.innerWidth + "px"
-	Main.canvas.stlye.height = window.innerHeight + "px"
+	Main.canvas.style.right = "0px"
+	Main.canvas.style.width = window.innerWidth + "px"
+	Main.canvas.style.height = window.innerHeight + "px"
 	Main.canvas.width = window.innerWidth
 	Main.canvas.height= window.innerHeight
 	document.body.appendChild(Main.canvas)
@@ -29,14 +29,15 @@ Main.initialize = function(canvas) {
 
 	// Stats tool
 	Main.stats = new Stats()
-	Main.stats.setMode(0)
 	Main.stats.dom.style.position = "absolute"
-	Main.stats.dom.style.left = "0px"
-	Main.stats.dom.style.top = "0px"
-	Main.stats.dom.style.zIndex = "100"
-	Main.stats.dom.style.opacity = "0.7"
+	Main.stats.dom.style.zIndex = "1000"
+	Main.stats.dom.style.opacity = "0.8"
 	Main.stats.dom.style.pointerEvents = "none"
 	document.body.appendChild(Main.stats.dom)
+
+	// VR Stuff
+	Main.vr_controls = null
+	Main.vr_effect = null
 
 	// Set renderer
 	Main.renderer = new THREE.WebGLRenderer({canvas: Main.canvas, antialias: true})
