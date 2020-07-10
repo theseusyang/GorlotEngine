@@ -67,29 +67,42 @@ class MaterialFile extends File {
         	                }
         	            }
         	        }
+        	    },
+        	    {
+        	    	title: "Duplicate",
+        	    	callback: () => {
+        	    		if (self.attachedTo !== null) {
+        	    			try {
+        	    				var json = self.attachedTo.toJSON()
+        	    				var loader = new ObjectLoader()
+        	    				var images = loader.parseImages(json.images)
+        	    				var textures = loader.parseTextures(json.textures, images)
+        	    				for(var i = 0; i < textures.length; i++) {
+        	    					textures[i].uuid = THREE.Math.generateUUID()
+        	    				}
+        	    				loader = new MaterialLoader()
+        	    				loader.setTextures(textures)
+
+        	    				var material = loader.parse(json)
+        	    				var uuid = THREE.Math.generateUUID()
+        	    				material.uuid = uuid
+
+        	    				if(material.nodes.nodes !== undefined) {
+									for(var i = 0; i < material.nodes.nodes.length; i++) {
+										if (material.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
+											material.nodes.nodes[i].properties.mat = uuid
+										}
+									}
+								}
+
+        	    				Editor.program.addMaterial(material)
+        	    				Editor.updateObjectViews()
+        	    			} catch (e) {
+        	    				console.error("Material duplication failed: " + e)
+        	    			}
+        	    		}
+        	    	}
         	    }
-        	    //{
-        	    //	title: "Duplicate",
-        	    //	callback: () => {
-        	    //		if (self.attachedTo !== null) {
-        	    //			try {
-        	    //				var json = self.attachedTo.toJSON()
-        	    //				var loader = new ObjectLoader()
-        	    //				var images = loader.parseImages(json.images)
-        	    //				var textures = loader.parseTextures(json.textures, images)
-        	    //				loader = new MaterialLoader()
-        	    //				loader.setTextures(textures)
-        	    //				var material = loader.parse(json)
-        	    //				material.uuid = THREE.Math.generateUUID()
-        	    //				material.updateNodes(material.nodes)
-        	    //				Editor.program.addMaterial(material)
-        	    //				Editor.updateObjectViews()
-        	    //			} catch (e) {
-        	    //				console.error("Material duplication failed: " + e)
-        	    //			}
-        	    //		}
-        	    //	}
-        	    //}
         	], {title: self.attachedTo.name, event: e})
 		}
 
