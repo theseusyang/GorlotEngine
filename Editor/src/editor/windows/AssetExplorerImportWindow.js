@@ -78,6 +78,7 @@ class AssetExplorerImportWindow {
 			App.chooseFile((f) => {
 				try {
 					var loader = new THREE.ColladaLoader()
+					loader.options.convertUpAxis = true
 					var collada = loader.parse(App.readFile(f))
 					var scene = collada.scene
 
@@ -110,9 +111,9 @@ class AssetExplorerImportWindow {
 				try {
 					var loader = new THREE.GLTFLoader()
 					var gltf = loader.parse(App.readFile(f))
-					console.log(gltf)
-					if (gltf.scene !== undefined) {
-						Editor.addToScene(gltf.scene)
+					var scene = gltf.scene
+					if (scene !== undefined) {
+						Editor.addToScene(scene)
 					}
 				} catch (e) {
 					console.error("Error importing Object: " + e)

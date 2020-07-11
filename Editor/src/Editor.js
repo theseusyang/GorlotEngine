@@ -104,11 +104,6 @@ Editor.clickable = true
 //Initialize Main
 Editor.initialize = function(canvas)
 {
-	// Copy global elements pointer to global object
-	global.Editor = Editor
-	global.EditorUI = EditorUI
-	global.Settings = Settings
-
 	// Load settings
 	Settings.load()
 
