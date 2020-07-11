@@ -25,6 +25,23 @@ class ElementComponent extends Component {
 		} else if (name === "Scale") {
 			Editor.selected_object.scale.set(val[0], val[1], val[2])
 			Editor.selected_object.updateMatrix()
+
+			// Update physics objects
+			if (Editor.selected_object instanceof PhysicsObject) {
+				var shapes = Editor.selected_object.body.shapes
+				for(var i = 0; i < shapes.length; i++) {
+					var shape = shapes[i]
+
+					if (shape.type === CANNON.Shape.types.BOX) {
+						shape.halfExtents.x = Editor.selected_object.scale.x / 2.0
+						shape.halfExtents.y = Editor.selected_object.scale.y / 2.0
+						shape.halfExtents.z = Editor.selected_object.scale.z / 2.0
+					}
+					else if (shape.type === CANNON.Shape.types.SPHERE) {
+						shape.radius = Ediotr.selected_object.scale.x
+					}
+				}
+			}
 		}
 	}
 }
