@@ -1,17 +1,19 @@
 "use strict"
 
 // Code Editor class
-class CodeEditor {
+class ScriptEditor {
 	constructor(parent) {
 
+		// Self pointer
 		var self = this
-		this.id = "Code Editor " + CodeEditor.id
+
+		this.id = "Code Editor " + ScriptEditor.id
 		this.tab = EditorUI.tabs_widget.addTab(this.id, {selected: true, closable: true, onclose: () => {
 			clearInterval(self.interval)
-			CodeEditor.id--
+			ScriptEditor.id--
 			EditorUI.selectPreviousTab()
 		}, callback: () => {
-			if(this.script !== undefined) {
+			if(self.script !== undefined) {
 				self.activate()
 			}
 		}})
@@ -52,9 +54,6 @@ class CodeEditor {
 
 		// Set editor font size
 		this.setFontSize(Settings.code.font_size)
-
-		// Self pointer
-		var self = this
 
 		// Key pressed event
 		this.code.on("keydown", (code, event) => {
@@ -147,7 +146,7 @@ class CodeEditor {
 
 		this.parent.appendChild(this.element)
 		this.activate()
-		CodeEditor.id++
+		ScriptEditor.id++
 	}
 
 	setMode(mode) {
@@ -217,4 +216,4 @@ class CodeEditor {
 	}
 }
 
-CodeEditor.id = 0
+ScriptEditor.id = 0

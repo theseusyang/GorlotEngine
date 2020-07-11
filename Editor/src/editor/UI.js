@@ -115,6 +115,10 @@ EditorUI.updateInterface = function () {
         // Project Settings
         EditorUI.projSets.updateInterface()
     }
+    if (EditorUI.matShaEd !== undefined) {
+        // Shader Material Editor
+        EditorUI.matShaEd.updateInterface()
+    }
 }
 
 EditorUI.updateInspector = function() {

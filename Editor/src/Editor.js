@@ -52,7 +52,8 @@ include("src/editor/windows/AddMenuWindow.js")
 include("src/editor/windows/AssetExplorerImportWindow.js")
 include("src/editor/windows/AssetExplorerCreateWindow.js")
 
-include("src/editor/tabs/CodeEditor.js")
+include("src/editor/tabs/ScriptEditor.js")
+include("src/editor/tabs/ShaderMaterialEditor.js")
 include("src/editor/tabs/MaterialEditor.js")
 include("src/editor/tabs/ParticleEditor.js")
 include("src/editor/tabs/SceneEditor.js")
@@ -67,6 +68,7 @@ include("src/editor/ui/files/MaterialFile.js")
 include("src/editor/ui/files/TextureFile.js")
 
 include("src/editor/ui/components/AbsButton.js")
+include("src/editor/ui/components/CodeEditor.js")
 
 include("src/editor/utils/MaterialRenderer.js")
 include("src/editor/utils/DragBuffer.js")
@@ -94,7 +96,7 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
 
 // TIMESTAMP is equals to Date()
-Editor.TIMESTAMP = "Sat Jul 11 2020 17:38:38 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sat Jul 11 2020 22:42:18 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1

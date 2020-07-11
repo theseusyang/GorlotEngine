@@ -46,6 +46,20 @@ MeshPhongMaterialNode.prototype.onExecute = function() {
 	this.setOutputData(0, mat)
 }
 
+function ShaderNode() {
+	this.properties = {mat: null}
+}
+ShaderNode.title = "Shader"
+ShaderNode.prototype.onDblClick = function() {
+	var uuid = this.properties.mat
+	var mat = Editor.getAssetByUUID(uuid)
+
+	if (mat instanceof THREE.ShaderMaterial) {
+		EditorUI.matShaEd = new ShaderMaterialEditor()
+		EditorUI.matShaEd.attachMaterial(mat)
+	}
+}
+
 function SetMaterialColorNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Colour", "Color")
@@ -343,6 +357,7 @@ MaterialSetTextureMapNode.prototype.onExecute = function() {
 
 function registerMaterialNodeNodes() {
 	LiteGraph.registerNodeType("Material/MeshPhongMaterial", MeshPhongMaterialNode)
+	LiteGraph.registerNodeType("Material/Shader", ShaderNode)
 	LiteGraph.registerNodeType("Material/SetMaterialColor", SetMaterialColorNode)
 	LiteGraph.registerNodeType("Material/SetMaterialTransparent", SetMaterialTransparentNode)
 	LiteGraph.registerNodeType("Material/SetMaterialDepthWrite", SetMaterialDepthWriteNode)

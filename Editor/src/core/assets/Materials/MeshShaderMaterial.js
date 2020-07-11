@@ -2,12 +2,11 @@ class MeshShaderMaterial extends THREE.ShaderMaterial {
 	constructor(options) {
 		super(options)
 
-		// TODO: Shader nodes
 		this.nodes = {
 			config: {},
 			groups: [],
 			last_link_id: 0,
-			last_node_id: 1,
+			last_node_id: 2,
 			links: [],
 			nodes: [
 				{
@@ -57,6 +56,25 @@ class MeshShaderMaterial extends THREE.ShaderMaterial {
 					},
 					size: [178, 126],
 					type: "Material/MeshPhongMaterial"
+				},
+				{
+					flags: {},
+					id: 2,
+					inputs: [
+						{
+							link: null,
+							name: "Material",
+							type: "Material"
+						}
+					],
+					mode: 0,
+					order: 1,
+					pos: [502, 141],
+					properties: {
+						mat: this.uuid
+					},
+					size: [140, 26],
+					type: "Material/Shader"
 				}
 			],
 			version: 0.4

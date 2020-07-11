@@ -45,7 +45,7 @@ class BlueprintsEditor {
 			this.graph = new LGraph(blueprints.getLoop())
 		}
 
-		this.graphcanvas = new LGraphCanvas("#BlueprintsEditor"+CodeEditor.id, this.graph)
+		this.graphcanvas = new LGraphCanvas("#BlueprintsEditor"+BlueprintsEditor.id, this.graph)
 		this.graphcanvas.onShowMenuNodeProperties = null
 		
 		if (parent === undefined) {

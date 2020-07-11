@@ -38,11 +38,8 @@ class MaterialEditor {
 			Editor.resetEditingFlags()
 		}})
 
-		if (parent !== undefined) {
-			this.parent = parent
-		} else {
-			this.parent = EditorUI.tabs_widget.getTabContent(this.id)
-		}
+
+		this.parent = EditorUI.tabs_widget.getTabContent(this.id)
 
 		Editor.setState(Editor.STATE_IDLE)
 
@@ -54,8 +51,6 @@ class MaterialEditor {
 		// Material preview canvas
 		this.preview = document.createElement("canvas")
 		this.preview.id = "MaterialPreview"+MaterialEditor.id
-		this.preview.width = this.canvas.width
-		this.preview.height = this.canvas.height
 		this.preview.style.position = "relative"
 		this.parent.appendChild(this.preview)
 
@@ -169,7 +164,7 @@ class MaterialEditor {
 					this.obj.geometry = new THREE.SphereBufferGeometry(1, 64, 64)
 				} else if (this.prevIn === 1) {
 					// Torus
-					this.obj.geometry = new THREE.TorusBufferGeometry(0.8, 0.4, 64, 128)
+					this.obj.geometry = new THREE.TorusBufferGeometry(0.8, 0.4, 32, 64)
 				} else if (this.prevIn === 2) {
 					// Cube
 					this.obj.geometry = new THREE.BoxBufferGeometry(1, 1, 1, 32, 32, 32)

@@ -44,10 +44,10 @@ function EditorUIHierarchy() {
         // Script
         if (data.attachedTo instanceof Script) {
 
-            var id = CodeEditor.id-1
+            var id = ScriptEditor.id-1
             EditorUI.tabs_widget.removeTab("Code Editor " + id)
 
-            EditorUI.code = new CodeEditor()
+            EditorUI.code = new ScriptEditor()
             EditorUI.code.attachScript(data.attachedTo)
             EditorUI.code.updateInterface()
         }
