@@ -46,7 +46,9 @@ class Text3D extends THREE.Mesh {
 	// Dispose text
 	dispose() {
 		// Dispose material and geometry
-		this.material.dispose()
+		if (this.material.dispose !== undefined) {
+			this.material.dispose()
+		}
 		this.geometry.dispose()
 
 		// Dispose children
