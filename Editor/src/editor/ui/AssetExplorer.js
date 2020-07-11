@@ -10,6 +10,20 @@ function EditorUIAssetExplorer() {
 
     EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
 
+    EditorUI.asset_explorer_menu.add("Import", {callback: () => {
+        var w = new AssetExplorerImportWindow()
+        w.show()
+    }})
+
+    EditorUI.asset_explorer_menu.add("Create", {callback: () => {
+        var w = new AssetExplorerCreateWindow()
+        w.show()
+    }})
+
+    EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
+
+/*    EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
+
     /// ----- OBJECTS -----
     EditorUI.asset_explorer_menu.add("Import/Objects/Wavefront", {callback: () => {
         App.chooseFile((fname) => {
@@ -58,7 +72,7 @@ function EditorUIAssetExplorer() {
     }})
 
     // GLTF
-    /*EditorUI.asset_explorer_menu.add("Import/Objects/GLTF", {callback: () => {
+    EditorUI.asset_explorer_menu.add("Import/Objects/GLTF", {callback: () => {
         App.chooseFile((f) => {
             try {
                 var loader = new THREE.GLTFLoader()
@@ -73,7 +87,7 @@ function EditorUIAssetExplorer() {
         })
     }})*/
 
-    // VRML
+/*    // VRML
     EditorUI.asset_explorer_menu.add("Import/Objects/VRML", {callback: () => {
         App.chooseFile((fname) => {
 
@@ -209,7 +223,7 @@ function EditorUIAssetExplorer() {
         // TODO: The Script won't be an scene element, but an asset
     }})
     
-    EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
+    EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)*/
 
     EditorUI.asset_explorer_panel = new LiteGUI.Panel({scroll: true})
     EditorUI.asset_explorer.add(EditorUI.asset_explorer_panel)

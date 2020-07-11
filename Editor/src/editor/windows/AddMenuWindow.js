@@ -3,7 +3,6 @@
 // Add Menu Window class
 class AddMenuWindow {
 	constructor() {
-		// TODO: Add Icons
 		this.dialog = new LiteGUI.Dialog( {id: "dialog_add", title: "Add Objects", close: true, minimize: true, width: 400, height: 463, scroll: false, draggable: true} )
 		this.dialog.on_close = function() {
 			Editor.clickable = true

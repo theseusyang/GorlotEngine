@@ -3,7 +3,7 @@
 
 function EditorUI() {}
 
-EditorUI.assetEx_height = 256
+EditorUI.assetEx_height = 206
 EditorUI.ins = null
 
 // Areas

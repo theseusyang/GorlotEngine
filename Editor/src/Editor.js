@@ -49,6 +49,8 @@ include("src/editor/helpers/ObjectIconHelper.js")
 include("src/editor/helpers/PhysicsObjectHelper.js")
 
 include("src/editor/windows/AddMenuWindow.js")
+include("src/editor/windows/AssetExplorerImportWindow.js")
+include("src/editor/windows/AssetExplorerCreateWindow.js")
 
 include("src/editor/tabs/CodeEditor.js")
 include("src/editor/tabs/MaterialEditor.js")
@@ -92,7 +94,7 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
 
 // TIMESTAMP is equals to Date()
-Editor.TIMESTAMP = "Fri Jul 10 2020 23:15:10 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sat Jul 11 2020 16:32:40 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -467,6 +469,11 @@ Editor.addToScene = function(obj) {
 	if(Editor.program.scene !== null) {
 		Editor.program.scene.add(obj)
 		Editor.updateObjectViews()
+
+		if(obj.name === "") {
+			obj.name = "unnamed"
+		}
+		
 		Editor.renameObject(obj, obj.name)
 		Editor.selectObject(obj)
 	}
