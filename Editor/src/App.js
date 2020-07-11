@@ -40,13 +40,6 @@ include("src/input/Key.js")
 include("src/input/Keyboard.js")
 include("src/input/Mouse.js")
 
-include("src/core/ObjectLoader.js")
-include("src/core/MaterialLoader.js")
-
-include("src/core/Program.js")
-include("src/core/Scene.js")
-include("src/core/ObjectUtils.js")
-
 include("src/core/three/Object3D.js")
 include("src/core/three/Vector2.js")
 include("src/core/three/Vector3.js")
@@ -145,6 +138,14 @@ include("src/core/assets/Materials/MeshLambertMaterial.js")
 include("src/core/assets/Materials/MeshNormalMaterial.js")
 include("src/core/assets/Materials/MeshStandardMaterial.js")
 include("src/core/assets/Materials/MeshShaderMaterial.js")
+
+include("src/core/ObjectLoader.js")
+include("src/core/MaterialLoader.js")
+
+include("src/core/Program.js")
+include("src/core/Scene.js")
+include("src/core/ObjectUtils.js")
+include("src/core/MathUtils.js")
 
 //App class
 function App(){}

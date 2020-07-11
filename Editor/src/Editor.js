@@ -94,7 +94,7 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
 
 // TIMESTAMP is equals to Date()
-Editor.TIMESTAMP = "Sat Jul 11 2020 17:34:22 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sat Jul 11 2020 17:38:38 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -128,9 +128,6 @@ Editor.initialize = function(canvas)
 	//Editor initial state
 	Editor.tool_mode = Editor.MODE_SELECT
 	Editor.state = Editor.STATE_EDITING
-
-	// Auxiliar values
-	Editor.pid2 = Math.PI/2
 
 	//Editor Selected object
 	Editor.selected_object = null
@@ -322,8 +319,8 @@ Editor.update = function()
 				Editor.camera.position.x += Mouse.delta.y * speed * angle_sin
 
 				// Move camera lateral
-				var angle_cos = Math.cos(Editor.camera_rotation.x + Editor.pid2)
-				var angle_sin = Math.sin(Editor.camera_rotation.x + Editor.pid2)
+				var angle_cos = Math.cos(Editor.camera_rotation.x + MathUtils.pid2)
+				var angle_sin = Math.sin(Editor.camera_rotation.x + MathUtils.pid2)
 				Editor.camera.position.z += Mouse.delta.x * speed * angle_cos
 				Editor.camera.position.x += Mouse.delta.x * speed * angle_sin
 			} else if (Mouse.buttonPressed(Mouse.MIDDLE)) {

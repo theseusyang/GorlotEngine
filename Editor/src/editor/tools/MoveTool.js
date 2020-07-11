@@ -145,8 +145,8 @@ class MoveTool extends THREE.Object3D {
 					this.obj.position.y -= Mouse.delta.y * speed / scale.y
 				}
 				if (this.selected_z) {
-					this.obj.position.z -= Mouse.delta.y * speed * Math.sin(Editor.camera_rotation.x + Editor.pid2) / scale.z
-					this.obj.position.z -= Mouse.delta.x * speed * Math.cos(Editor.camera_rotation.x + Editor.pid2) / scale.z
+					this.obj.position.z -= Mouse.delta.y * speed * Math.sin(Editor.camera_rotation.x + MathUtils.pid2) / scale.z
+					this.obj.position.z -= Mouse.delta.x * speed * Math.cos(Editor.camera_rotation.x + MathUtils.pid2) / scale.z
 				}
 
 				return true
