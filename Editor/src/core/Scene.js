@@ -20,6 +20,8 @@ class Scene extends THREE.Scene {
 		
 		//Create CANNON world
 		this.world = new CANNON.World()
+		this.world.defaultContactMaterial.contactEquationStiffness = 1e9
+		this.world.defaultContactMaterial.contactEquationRelaxation = 4
 		this.world.quatNormalizeSkip = 0
 		this.world.quatNormalizeFast = false
 		this.world.gravity.set(0, -9.8, 0)

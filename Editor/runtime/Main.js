@@ -8,8 +8,6 @@ Main.app = "app.gsp"
 
 // Initialize Main
 Main.initialize = function(canvas) {
-	// Set mouse lock false
-	App.setMouseLock(false)
 
 	// Main program and scene
 	Main.program = Main.loadProgram(Main.app)
@@ -54,6 +52,11 @@ Main.initialize = function(canvas) {
 	Main.program.renderer = Main.renderer
 	Main.program.initialize()
 	Main.program.resize(Main.canvas.width, Main.canvas.height)
+
+	// Set pointer lock
+	if (Main.program.lock_pointer) {
+		Mouse.setLock(true)
+	}
 }
 
 // Update Main

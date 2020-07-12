@@ -52,6 +52,21 @@ class AssetExplorerCreateWindow {
 				name: "Script",
 				icon: "data/icons/script/script.png",
 				icon_style: "width: 12px"
+			},
+			{
+				name: "Texture",
+				icon: "data/icons/assets/image.png",
+				icon_style: "width: 12px"
+			},
+			{
+				name: "Video Texture",
+				icon: "data/icons/assets/video.png",
+				icon_style: "width: 12px"
+			},
+			{
+				name: "Webcam Texture",
+				icon: "data/icons/hw/webcam.png",
+				icon_style: "width: 12px"
 			}
 		]
 
@@ -140,6 +155,48 @@ class AssetExplorerCreateWindow {
 
 			// TODO: This
 			
+		}
+		else if (o === "Texture") {
+
+			App.chooseFile((f) => {
+				try {
+					var texture = new Texture(f)
+					texture.name = "texture"
+					var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
+					material.name = "texture"
+					Editor.program.addMaterial(material)
+					Editor.updateObjectViews()
+				} catch(e) {
+					console.error("Error loading Texture: " + e)
+				}
+			}, "image/*")
+
+		}
+		else if (o === "Video") {
+
+			App.chooseFile((f) => {
+				try {
+					var texture = new VideoTexture(f)
+					texture.name = "video"
+					var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
+					material.name = "video"
+					Editor.program.addMaterial(material)
+					Editor.updateObjectViews()
+				} catch(e) {
+					console.error("Error loading Video: " + e)
+				}
+			}, "video/*")
+
+		}
+		else if (o === "Webcam Texture") {
+
+			var texture = new WebcamTexture()
+			texture.name = "webcam"
+			var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
+			material.name = "webcam"
+			Editor.program.addMaterial(material)
+			setTimeout(Editor.updateObjectViews(), 500)
+
 		}
 	}
 

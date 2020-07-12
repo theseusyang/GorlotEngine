@@ -34,7 +34,10 @@ class PhysicsObject extends THREE.Object3D {
 	initialize() {
 		// Update body to world position
 		this.body.position.copy(this.position)
-		this.body.quaternion.copy(this.quaternion)
+
+		if (!this.body.fixedRotation) {
+			this.quaternion.copy(this.body.quaternion)
+		}
 
 		// Get physics world
 		var node = this

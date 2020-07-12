@@ -25,7 +25,7 @@ if (navigator.getVRDisplays === undefined) {
 
 include("libs/three/three.min.js")
 include("libs/three/effects/VREffect.js")
-include("libs/cannon/cannon.js")
+include("libs/cannon.min.js")
 include("libs/leap.min.js")
 include("libs/stats.min.js")
 include("libs/SPE.min.js")
@@ -322,27 +322,6 @@ App.loadMain = function(main)
 // Check if webvr is available
 App.webvrAvailable = function() {
 	return (navigator.getVRDisplays !== undefined)
-}
-
-//Set if mouse locked
-App.setMouseLock = function(value)
-{
-	if(value === true)
-	{
-		document.body.onclick = function()
-		{
-			try
-			{
-				document.body.requestPointerLock = canvas.mozRequestPointerLock || canvas.requestPointerLock || canvas.webkitRequestPointerLock
-				document.body.requestPointerLock()
-			}
-			catch(e){}
-		}
-	}
-	else
-	{
-		document.body.onclick = function(){}
-	}
 }
 
 //App loop

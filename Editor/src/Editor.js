@@ -81,15 +81,15 @@ include("src/editor/ui/Hierarchy.js")
 function Editor(){}
 
 //Editor state
-Editor.STATE_IDLE = 8; //Non scene window open
-Editor.STATE_EDITING = 9; //Editing a scene
-Editor.STATE_TESTING = 11; //Testing a scene
+Editor.STATE_IDLE = 8 //Non scene window open
+Editor.STATE_EDITING = 9 //Editing a scene
+Editor.STATE_TESTING = 11 //Testing a scene
 
 //Editor editing modes
-Editor.MODE_SELECT = 0;
-Editor.MODE_MOVE = 1;
-Editor.MODE_RESIZE = 2;
-Editor.MODE_ROTATE = 3;
+Editor.MODE_SELECT = 0
+Editor.MODE_MOVE = 1
+Editor.MODE_RESIZE = 2
+Editor.MODE_ROTATE = 3
 
 // Editor version
 Editor.NAME = "Gorlot"
@@ -123,9 +123,6 @@ Editor.initialize = function(canvas)
 
 	// Set window title
 	document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")"
-
-	// Set mouse Lock false
-	App.setMouseLock(false)
 
 	//Editor initial state
 	Editor.tool_mode = Editor.MODE_SELECT
@@ -682,21 +679,19 @@ Editor.resizeCamera = function()
 Editor.setCameraRotation = function(camera_rotation, camera)
 {
 	//Calculate direction vector
-	var cos_angle_y = Math.cos(camera_rotation.y);
-	var direction = new THREE.Vector3(Math.sin(camera_rotation.x)*cos_angle_y, Math.sin(camera_rotation.y), Math.cos(camera_rotation.x)*cos_angle_y);
+	var cos_angle_y = Math.cos(camera_rotation.y)
+	var direction = new THREE.Vector3(Math.sin(camera_rotation.x)*cos_angle_y, Math.sin(camera_rotation.y), Math.cos(camera_rotation.x)*cos_angle_y)
 
 	//Add position offset and set camera direction
-	direction.x += camera.position.x;
-	direction.y += camera.position.y;
-	direction.z += camera.position.z;
-	camera.lookAt(direction);
+	direction.add(camera.position)
+	camera.lookAt(direction)
 }
 
 //Update editor raycaster
 Editor.updateRaycasterFromMouse = function()
 {
-	var mouse = new THREE.Vector2((Mouse.position.x/Editor.canvas.width )*2 - 1, -(Mouse.position.y/Editor.canvas.height)*2 + 1);
-	Editor.raycaster.setFromCamera(mouse, Editor.camera);
+	var mouse = new THREE.Vector2((Mouse.position.x/Editor.canvas.width )*2 - 1, -(Mouse.position.y/Editor.canvas.height)*2 + 1)
+	Editor.raycaster.setFromCamera(mouse, Editor.camera)
 }
 
 // Update editor raycaster with new x and y positions (normalized, -1 to 1)
@@ -774,9 +769,26 @@ Editor.exportWebProject = function(dir) {
 	App.copyFolder("runtime", dir)
 	App.copyFolder("src/core", dir + "/src/core")
 	App.copyFolder("src/input", dir + "/src/input")
-	App.copyFolder("libs", dir + "/libs")
+	App.makeDirectory(dir + "/libs/")
+	App.copyFile("libs/litegraph/litegraph.js", dir + "/libs/litegraph/litegraph.js")
+	App.copyFile("libs/SPE.min.js", dir + "/libs/SPE.min.js")
+	App.copyFile("libs/leap.min.js", dir + "/libs/leap.min.js")
+	App.copyFile("libs/stats.min.js", dir + "/libs/stats.min.js")
+	App.copyFile("libs/cannon.min.js", dir + "/libs/cannon.min.js")
+	App.copyFile("libs/webvr-polyfill.js", dir + "/libs/webvr-polyfill.js")
+	App.makeDirectory(dir + "/libs/three")
+	App.copyFile("libs/three/three.min.js", dir + "/libs/three/three.min.js")
+	App.makeDirectory(dir + "/libs/three/effects")
+	App.copyFile("libs/three/effects/VREffect.js", dir + "/libs/three/effects/VREffect.js")
 	App.copyFile("src/App.js", dir + "/App.js")
 	Editor.saveProgram(dir + "/app.gsp")
+}
+
+// Export Linux project
+Editor.exportLinuxProject = function(dir) {
+	Editor.exportWebProject(dir)
+	App.copyFolder("nwjs", dir + "/nwjs")
+	App.writeFile(dir + "/package.json", JSON.stringify({name: Editor.program.name, main: "index.html", window: {frame: true}}))
 }
 
 // Set editor state
@@ -809,6 +821,11 @@ Editor.setState = function(state) {
 				Editor.vr_effect = new THREE.VREffect(Editor.renderer)
 			}
 		}
+
+		// Set mouse lock
+		if (Editor.program_running.lock_pointer) {
+			Mouse.setLock(true)
+		}
 	} else if (state === Editor.STATE_IDLE) {
 		// Dispose running program
 		Editor.disposeRunningProgram()
@@ -826,6 +843,9 @@ Editor.disposeRunningProgram = function() {
 		Editor.program_running = null
 		Editor.vr_effect = null
 	}
+
+	// Unlock Mouse
+	Mouse.setLock(false)
 }
 
 // Set performance meter to be used

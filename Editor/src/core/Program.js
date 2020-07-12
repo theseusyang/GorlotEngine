@@ -19,6 +19,9 @@ class Program extends THREE.Object3D {
 		this.author = ""
 		this.version = "0"
 
+		// Hardware flags
+		this.lock_pointer = false
+
 		// VR Flags
 		this.vr = false
 		this.vr_scale = 1
@@ -253,12 +256,19 @@ class Program extends THREE.Object3D {
             }
 		})
 
-		// Attributes
+		// Program info
 		data.object.author = this.author
 		data.object.description = this.description
 		data.object.version = this.version
+		
+		// Hardware flags
+		data.object.lock_pointer = this.lock_pointer
+
+		// VR Flags
 		data.object.vr = this.vr
 		data.object.vr_scale = this.vr_scale
+		
+		// Components
 		data.object.components = this.components
 
 		// Initial scene

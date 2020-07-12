@@ -29,15 +29,6 @@ class AssetExplorerImportWindow {
 				name: "FBX"
 			},
 			{
-				name: "Texture"
-			},
-			{
-				name: "Video Texture"
-			},
-			{
-				name: "Webcam Texture"
-			},
-			{
 				name: "Font"
 			},
 			{
@@ -152,48 +143,6 @@ class AssetExplorerImportWindow {
 					console.error("Error importing Object: " + e)
 				}
 			}, ".fbx")
-
-		}
-		else if (o === "Texture") {
-
-			App.chooseFile((f) => {
-				try {
-					var texture = new Texture(f)
-					texture.name = "texture"
-					var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
-					material.name = "texture"
-					Editor.program.addMaterial(material)
-					Editor.updateObjectViews()
-				} catch(e) {
-					console.error("Error loading Texture: " + e)
-				}
-			}, "image/*")
-
-		}
-		else if (o === "Video") {
-
-			App.chooseFile((f) => {
-				try {
-					var texture = new VideoTexture(f)
-					texture.name = "video"
-					var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
-					material.name = "video"
-					Editor.program.addMaterial(material)
-					Editor.updateObjectViews()
-				} catch(e) {
-					console.error("Error loading Video: " + e)
-				}
-			}, "video/*")
-
-		}
-		else if (o === "Webcam Texture") {
-
-			var texture = new WebcamTexture()
-			texture.name = "webcam"
-			var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
-			material.name = "webcam"
-			Editor.program.addMaterial(material)
-			Editor.updateObjectViews()
 
 		}
 		else if (o === "Font") {
