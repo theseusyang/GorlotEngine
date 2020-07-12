@@ -2,7 +2,7 @@
 
 // WebVR polyfill
 if (navigator.getVRDisplays === undefined) {
-	include("libs/webvr-polyfill.js", () => {
+	include("libs/webvr-polyfill.min.js", () => {
 		window.WebVRConfig = {
 			CARDBOARD_UI_DISABLED: false,
 			FORCE_ENABLE_VR: false, // Forces availability of VR mode in desktop

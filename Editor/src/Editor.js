@@ -775,7 +775,7 @@ Editor.exportWebProject = function(dir) {
 	App.copyFile("libs/leap.min.js", dir + "/libs/leap.min.js")
 	App.copyFile("libs/stats.min.js", dir + "/libs/stats.min.js")
 	App.copyFile("libs/cannon.min.js", dir + "/libs/cannon.min.js")
-	App.copyFile("libs/webvr-polyfill.js", dir + "/libs/webvr-polyfill.js")
+	App.copyFile("libs/webvr-polyfill.min.js", dir + "/libs/webvr-polyfill.js")
 	App.makeDirectory(dir + "/libs/three")
 	App.copyFile("libs/three/three.min.js", dir + "/libs/three/three.min.js")
 	App.makeDirectory(dir + "/libs/three/effects")
