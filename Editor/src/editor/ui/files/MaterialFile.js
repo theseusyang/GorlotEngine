@@ -174,18 +174,15 @@ class MaterialFile extends File {
 
 	attachAsset(asset) {
 		if (asset instanceof THREE.Material) {
-			if (Editor.material_renderer !== undefined) {
-				Editor.material_renderer.renderMaterial(asset, this.img)
-			}
-
 			this.attachedTo = asset
+			this.updatePreview()
 		}
 	}
 
 	// Update Material preview
 	updatePreview() {
-		if (this.material !== null) {
-			Editor.material_renderer.renderMaterial(this.material, this.img)
+		if (this.attachedTo !== null) {
+			Editor.material_renderer.renderMaterial(this.attachedTo, this.img)
 		}
 	}
 }

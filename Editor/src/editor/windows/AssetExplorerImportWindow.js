@@ -32,7 +32,10 @@ class AssetExplorerImportWindow {
 				name: "Texture"
 			},
 			{
-				name: "Video"
+				name: "Video Texture"
+			},
+			{
+				name: "Webcam Texture"
 			},
 			{
 				name: "Font"
@@ -156,7 +159,11 @@ class AssetExplorerImportWindow {
 			App.chooseFile((f) => {
 				try {
 					var texture = new Texture(f)
-					// TODO: This
+					texture.name = "texture"
+					var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
+					material.name = "texture"
+					Editor.program.addMaterial(material)
+					Editor.updateObjectViews()
 				} catch(e) {
 					console.error("Error loading Texture: " + e)
 				}
@@ -167,13 +174,26 @@ class AssetExplorerImportWindow {
 
 			App.chooseFile((f) => {
 				try {
-					var material = new THREE.SpriteMaterial({map: new VideoTexture(f), color: 0xffffff})
+					var texture = new VideoTexture(f)
+					texture.name = "video"
+					var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
 					material.name = "video"
-					Editor.addToScene(new Sprite(material))
+					Editor.program.addMaterial(material)
+					Editor.updateObjectViews()
 				} catch(e) {
 					console.error("Error loading Video: " + e)
 				}
 			}, "video/*")
+
+		}
+		else if (o === "Webcam Texture") {
+
+			var texture = new WebcamTexture()
+			texture.name = "webcam"
+			var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
+			material.name = "webcam"
+			Editor.program.addMaterial(material)
+			Editor.updateObjectViews()
 
 		}
 		else if (o === "Font") {

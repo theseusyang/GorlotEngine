@@ -26,10 +26,10 @@ class MaterialRenderer {
 		this.obj.visible = false
 		this.scene.add(this.obj)
 
-		//this.sprite = new Sprite(null)
-		//this.sprite.position.set(0, 0, -1.5)
-		//this.sprite.visible = false
-		//this.scene.add(this.sprite)
+		this.sprite = new Sprite(null)
+		this.sprite.position.set(0, 0, -1.5)
+		this.sprite.visible = false
+		this.scene.add(this.sprite)
 
 		this.scene.add(new PointLight(0x666666))
 		this.scene.add(new AmbientLight(0x666666))
@@ -44,13 +44,13 @@ class MaterialRenderer {
 	renderMaterial(material, img) {
 		// Renders material to internal canvas and copy image to html image element
 		if (material instanceof THREE.SpriteMaterial) {
-		//	this.sprite.material = material
-		//	this.sprite.visible = true
-		//	this.obj.visible = false
+			this.sprite.material = material
+			this.sprite.visible = true
+			this.obj.visible = false
 		} else {
 			this.obj.material = material
 			this.obj.visible = true
-			//this.sprite.visible = true
+			this.sprite.visible = false
 		}
 
 		this.renderer.render(this.scene, this.camera)

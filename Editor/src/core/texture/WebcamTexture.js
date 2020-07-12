@@ -4,14 +4,14 @@
 class WebcamTexture extends THREE.Texture {
 	constructor() {
 		// Check if webcam available
-		if (navigator.webkitGetUserMedia || navigator.mozGetUserMedia ? true : false) {
+		if (navigator.webkitGetUserMedia || navigator.mediaDevices.getUserMedia) {
 			console.log("Webcam available")
 		}
 
 		// Create the video element
 		var video = document.createElement("video")
-		video.width = 256
-		video.height = 256
+		video.width = 512
+		video.height = 512
 		video.autoplay = true
 		video.loop = true
 
@@ -29,8 +29,8 @@ class WebcamTexture extends THREE.Texture {
 			}, (error) => {
 				console.warn("No webcam available")
 			})
-		} else if (navigator.mozGetUserMedia) {
-			navigator.mozGetUserMedia({video: true}, (stream) => {
+		} else if (navigator.mediaDevices.getUserMedia) {
+			navigator.mediaDevices.getUserMedia({video: true}, (stream) => {
 				self.video.src = URL.createObjectURL(stream)
 			}, (error) => {
 				console.warn("No webcam available")

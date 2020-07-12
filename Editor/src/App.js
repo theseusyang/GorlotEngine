@@ -1,18 +1,5 @@
 "use strict"
 
-// First, Libraries are added
-include("libs/three/three.min.js")
-
-//include("three/cameras/CinematicCamera.js")
-
-include("libs/three/effects/VREffect.js")
-
-
-include("libs/cannon/cannon.js")
-include("libs/leap.min.js")
-include("libs/stats.min.js")
-include("libs/SPE.min.js")
-
 // WebVR polyfill
 if (navigator.getVRDisplays === undefined) {
 	include("libs/webvr-polyfill.js", () => {
@@ -35,6 +22,13 @@ if (navigator.getVRDisplays === undefined) {
 }
 
 // Then the code itself
+
+include("libs/three/three.min.js")
+include("libs/three/effects/VREffect.js")
+include("libs/cannon/cannon.js")
+include("libs/leap.min.js")
+include("libs/stats.min.js")
+include("libs/SPE.min.js")
 
 include("src/input/Key.js")
 include("src/input/Keyboard.js")

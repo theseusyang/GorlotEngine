@@ -102,6 +102,7 @@ class ShaderMaterialEditor {
 
 		// Material attached to the editor
 		this.material = null
+		this.file = null
 
 		//this.interval = setInterval(() => {
 		//	self.update()
@@ -124,6 +125,16 @@ class ShaderMaterialEditor {
 	attachMaterial(mat) {
 		this.material = mat
 		this.obj.material = this.material
+
+		var f = null
+		for(var i = 0; i < EditorUI.asset_explorer_objects.length; i++) {
+			if (EditorUI.asset_explorer_objects[i].attachedTo === this.material) {
+				f = EditorUI.asset_explorer_objects[i]
+			}
+		}
+
+		this.file = f
+		console.log(f)
 
 		this.setContent(this.material.fragmentShader, this.material.vertexShader)
 	}
@@ -153,7 +164,7 @@ class ShaderMaterialEditor {
 		this.preview.height = h
 		this.renderer.setSize(this.preview.width, this.preview.height)
 
-		this.camera.aspect = (w/2) / h
+		this.camera.aspect = (w/2) / (h/2)
 
 		this.fragment_editor.setSize(w/2, h/2)
 		this.fragment_editor.element.style.left = w/2
@@ -164,6 +175,11 @@ class ShaderMaterialEditor {
 	update() {
 		if (this.material !== null) {
 			this.renderer.render(this.scene, this.camera)
+
+			if(this.file !== null) {
+				this.file.updatePreview()
+				this.material.needsUpdate = true
+			}
 		}
 	}
 }
