@@ -1,7 +1,7 @@
 "use strict"
 
-// File class
-class File {
+// Asset class
+class Asset {
 	constructor(name, parent) {
 
 		if (parent === undefined) {

@@ -1,7 +1,7 @@
 "use strict"
 
-// Material File class
-class MaterialFile extends File {
+// Material Asset class
+class MaterialAsset extends Asset {
 	constructor(name, parent) {
 		super(name, parent)
 

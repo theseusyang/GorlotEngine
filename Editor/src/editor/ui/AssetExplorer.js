@@ -3,7 +3,7 @@
 function EditorUIAssetExplorer() {
 	    // ----- EXPLORER -----
 
-    EditorUI.asset_explorer = new LiteGUI.Panel({title: "Explorer"})
+    EditorUI.asset_explorer = new LiteGUI.Panel({title: "Asset Explorer"})
     EditorUI.left_area.getSection(1).add(EditorUI.asset_explorer)
 
     // ----- ASSET EXPLORER MENU -----
@@ -34,7 +34,7 @@ EditorUI.addAsset = function(name, attachedTo) {
     if (EditorUI.asset_explorer_objects !== undefined) {
 
         if (attachedTo instanceof THREE.Material) {
-            var fil = new MaterialFile(attachedTo.name, EditorUI.asset_explorer_panel.content)
+            var fil = new MaterialAsset(attachedTo.name, EditorUI.asset_explorer_panel.content)
             fil.attachAsset(attachedTo)
         }
 

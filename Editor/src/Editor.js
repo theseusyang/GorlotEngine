@@ -63,9 +63,9 @@ include("src/editor/tabs/BlueprintsEditor.js")
 include("src/editor/UI.js")
 include("src/editor/Settings.js")
 
-include("src/editor/ui/files/File.js")
-include("src/editor/ui/files/MaterialFile.js")
-include("src/editor/ui/files/TextureFile.js")
+include("src/editor/ui/assets/Asset.js")
+include("src/editor/ui/assets/MaterialAsset.js")
+include("src/editor/ui/assets/TextureAsset.js")
 
 include("src/editor/ui/components/AbsButton.js")
 include("src/editor/ui/components/CodeEditor.js")
@@ -96,7 +96,7 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
 
 // TIMESTAMP is equals to Date()
-Editor.TIMESTAMP = "Sun Jul 12 2020 17:18:20 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sun Jul 12 2020 17:24:58 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -154,7 +154,7 @@ Editor.initialize = function(canvas)
 	Editor.material_renderer = new MaterialRenderer()
 
 	// Default materials to be used when creating objects
-	Editor.default_material = new MeshPhongMaterial()
+	Editor.default_material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2})
 	Editor.default_material.name = "default"
 
 	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff})
@@ -734,7 +734,7 @@ Editor.createNewProgram = function() {
 	Editor.nameId = 1
 
 	Editor.program = new Program()
-	Editor.program.addDefaultScene()
+	Editor.program.addDefaultScene(Editor.default_material)
 	Editor.resetEditingFlags()
 
 	Editor.updateObjectViews()

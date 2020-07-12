@@ -1,7 +1,7 @@
 "use strict"
 
-// Texture file Class
-class TextureFile extends File {
+// Texture Asset Class
+class TextureAsset extends Asset {
 	constructor(name) {
 		super(name)
 	}

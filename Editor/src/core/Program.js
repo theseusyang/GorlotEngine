@@ -6,7 +6,7 @@ class Program extends THREE.Object3D {
 		super()
 
 		// Program type
-		this.name = "Program"
+		this.name = (name !== undefined) ? name : "program"
 		this.type = "Program"
 
 		// Disable auto matrix updates
@@ -22,13 +22,8 @@ class Program extends THREE.Object3D {
 		// VR Flags
 		this.vr = false
 		this.vr_scale = 1
-	
-		// Collect arguments
-		if (name !== undefined) {
-			this.name = name
-		}
 
-		// Assets
+		// Resources
 		this.images = []
 		this.videos = []
 		this.audio = []
@@ -130,7 +125,7 @@ class Program extends THREE.Object3D {
 	addDefaultScene(material) {
 		
 		if (material === undefined) {
-			material = new MeshPhongMaterial()
+			material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2})
 			material.name = "default"
 		}
 
