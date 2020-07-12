@@ -39,39 +39,43 @@ ElementNode.prototype.onExecute = function() {
 }
 
 function GetObjectByNameNode() {
-	this.addInput("Name", "Text")
+	this.addProperty("name", "")
+	this.widget = this.addWidget("text", "Name", "", "name")
+	this.widgets_up = true
 
 	this.addOutput("Object", "Object3D")
 }
-
-GetObjectByNameNode.title = "Get Object By Name"
+GetObjectByNameNode.title = "Object By Name"
 GetObjectByNameNode.prototype.onExecute = function() {
-	var n = this.getInputData(0)
-	if (n === undefined) {
-		return
-	}
-	if (Editor.program_running === undefined || Editor.program_running === null) {
-		if (Main.program === null || Main.program === undefined) {
-			return
+
+	var n = this.properties.name
+
+	if(n !== "") {
+		if (Editor.program_running === undefined || Editor.program_running === null) {
+			if (Main.program === null || Main.program === undefined) {
+				return
+			} else {
+				this.setOutputData(0, Main.program.scene.getObjectByName(n))
+			}
 		} else {
-			this.setOutputData(0, Main.program.scene.getObjectByName(n))
+			this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
 		}
-	} else {
-		this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
 	}
 }
 
 function GetObjectByUUIDNode() {
-	this.properties = {uuid: ""}
+	this.addProperty("uuid", "")
+	this.widget = this.addWidget("text", "UUID", "", "uuid")
+	this.widgets_up = true
+
 	this.addOutput("Object", "Object3D")
 }
 GetObjectByUUIDNode.title = "Get Object By UUID"
 GetObjectByUUIDNode.prototype.onExecute = function() {
+
 	var uuid = this.properties.uuid
+
 	if (uuid !== undefined || uuid !== "") {
-		//var obj = THREE.Object3D.prototype.getObjectByProperty("uuid", uuid)
-		//this.setOutputData(0, obj)
-		//var obj = Editor.program_running.getObjectByProperty("uuid", uuid)
 		if (Editor.program_running === undefined || Editor.program_running === null) {
 			if (Main.program === null || Main.program === undefined) {
 				return

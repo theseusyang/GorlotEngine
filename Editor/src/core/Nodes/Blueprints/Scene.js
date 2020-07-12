@@ -12,7 +12,6 @@ GetRunningScene.prototype.onExecute = function() {
 		var scene = ObjectUtils.getScene(obj)
 		this.setOutputData(0, scene)
 	}
-	// This output doesn't work :'(.this.setOutputData(0, Editor.program_running.scene)
 }
 
 function addObjectToScene() {

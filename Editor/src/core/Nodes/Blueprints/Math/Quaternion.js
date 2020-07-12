@@ -4,6 +4,16 @@ function QuaternionNode() {
 	this.addInput("Z", "number")
 	this.addInput("W", "number")
 	this.addOutput("Quaternion", "Quaternion")
+
+	this.setProperty("x", 0)
+	this.setProperty("y", 0)
+	this.setProperty("z", 0)
+	this.setProperty("w", 0)
+
+	this.widget_x = this.addWidget("number", "X", 0, "x")
+	this.widget_y = this.addWidget("number", "Y", 0, "y")
+	this.widget_z = this.addWidget("number", "Z", 0, "z")
+	this.widget_w = this.addWidget("number", "W", 0, "w")
 }
 QuaternionNode.title = "Quaternion"
 QuaternionNode.prototype.onExecute = function() {
@@ -12,8 +22,26 @@ QuaternionNode.prototype.onExecute = function() {
 	var z = this.getInputData(2)
 	var w = this.getInputData(3)
 
+	if (x === undefined) {
+		x = this.properties["x"]
+	}
+	if (y === undefined) {
+		y = this.properties["y"]
+	}
+	if (z === undefined) {
+		z = this.properties["z"]
+	}
+	if (w === undefined) {
+		w = this.properties["w"]
+	}
+
 	var q = new THREE.Quaternion(x, y, z, w)
 	this.setOutputData(0, q)
+}
+QuaternionNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function QuaternionGetXNode() {
@@ -158,6 +186,9 @@ function QuaternionFromArrayNode() {
 	this.addInput("Array", "Array")
 	this.addInput("Offset", "number")
 	this.addOutput("Quaternion", "Quaternion")
+
+	this.setProperty("offset", 0)
+	this.widget = this.addWidget("number", "Offset", 0, "offset")
 }
 QuaternionFromArrayNode.title = "From Array"
 QuaternionFromArrayNode.prototype.onExecute = function() {
@@ -165,10 +196,19 @@ QuaternionFromArrayNode.prototype.onExecute = function() {
 	var a = this.getInputData(1)
 	var o = this.getInputData(2)
 
+	if (o === undefined) {
+		o = this.properties["offset"]
+	}
+
 	if (q !== undefined && a !== undefined) {
 		var q1 = q.fromArray(a, o)
 		this.setOutputData(0, q1)
 	}
+}
+QuaternionFromArrayNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function QuaternionLengthNode() {
@@ -252,6 +292,9 @@ function QuaternionRotateTowardsNode() {
 	this.addInput("Step", "number")
 
 	this.addOutput("Out", "Quaternion")
+
+	this.setProperty("step", 0)
+	this.widget = this.addWidget("number", "Step", 0, "step")
 }
 QuaternionRotateTowardsNode.title = "Rotate Towards"
 QuaternionRotateTowardsNode.prototype.onExecute = function() {
@@ -259,9 +302,18 @@ QuaternionRotateTowardsNode.prototype.onExecute = function() {
 	var q = this.getInputData(1)
 	var s = this.getInputData(2)
 
+	if (s === undefined) {
+		s = this.properties["step"]
+	}
+
 	if (i !== undefined && q !== undefined && s !== undefined) {
 		this.setOutputData(0, i.rotateTowards(q, s))
 	}
+}
+QuaternionRotateTowardsNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function QuaternionSlerpNode() {
@@ -270,6 +322,9 @@ function QuaternionSlerpNode() {
 	this.addInput("Interpolation", "number")
 
 	this.addOutput("Out", "Quaternion")
+
+	this.setProperty("interpolation", 0)
+	this.widget = this.addWidget("number", "Interpolation", 0, "interpolation")
 }
 QuaternionSlerpNode.title = "Slerp"
 QuaternionSlerpNode.prototype.onExecute = function() {
@@ -277,9 +332,18 @@ QuaternionSlerpNode.prototype.onExecute = function() {
 	var q = this.getInputData(1)
 	var t = this.getInputData(2)
 
+	if (t === undefined) {
+		t = this.properties["interpolation"]
+	}
+
 	if (i !== undefined && q !== undefined && t !== undefined) {
 		i.slerp(q, t)
 	}
+}
+QuaternionSlerpNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function QuaternionSetNode() {
@@ -291,6 +355,16 @@ function QuaternionSetNode() {
 	this.addInput("W", "number")
 
 	this.addOutput("Out", "Quaternion")
+
+	this.setProperty("x", 0)
+	this.setProperty("y", 0)
+	this.setProperty("z", 0)
+	this.setProperty("w", 0)
+
+	this.widget_x = this.addWidget("number", "X", 0, "x")
+	this.widget_y = this.addWidget("number", "Y", 0, "y")
+	this.widget_z = this.addWidget("number", "Z", 0, "z")
+	this.widget_w = this.addWidget("number", "W", 0, "w")
 }
 QuaternionSetNode.title = "Set"
 QuaternionSetNode.prototype.onExecute = function() {
@@ -302,9 +376,27 @@ QuaternionSetNode.prototype.onExecute = function() {
 		var z = this.getInputData(3)
 		var w = this.getInputData(4)
 
+		if (x === undefined) {
+			x = this.properties["x"]
+		}
+		if (y === undefined) {
+			y = this.properties["y"]
+		}
+		if (z === undefined) {
+			z = this.properties["z"]
+		}
+		if (w === undefined) {
+			w = this.properties["w"]
+		}
+
 		i.set(x, y, z, w)
 		this.setOutputData(0, i)
 	}
+}
+QuaternionSetNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function QuaternionSetFromAxisAngleNode() {
@@ -314,6 +406,9 @@ function QuaternionSetFromAxisAngleNode() {
 	this.addInput("Angle", "number")
 
 	this.addOutput("Out", "Quaternion")
+
+	this.setProperty("angle", 0)
+	this.widget = this.addWidget("number", "Angle", 0, "angle")
 }
 QuaternionSetFromAxisAngleNode.title = "From Axis Angle"
 QuaternionSetFromAxisAngleNode.prototype.onExecute = function() {
@@ -322,9 +417,18 @@ QuaternionSetFromAxisAngleNode.prototype.onExecute = function() {
 	var ax = this.getInputData(1)
 	var an = this.getInputData(2)
 
+	if (an === undefined) {
+		an = this.properties["angle"]
+	}
+
 	if (i !== undefined && ax !== undefined && an !== undefined) {
 		i.setFromAxisAngle(ax, an)
 	}
+}
+QuaternionSetFromAxisAngleNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function QuaternionSetFromEulerNode() {

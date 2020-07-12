@@ -1,10 +1,59 @@
 function ParticlesNode() {
 	this.properties = {uuid: ""}
+
+	this.addInput("Direction", "Text")
+	this.addInput("Count", "number")
+	this.addInput("Rate", "number")
+	this.addInput("Duration", "number")
+	this.addInput("Wiggle", "number")
+
+	this.setProperty("direction", "Forward")
+	this.setProperty("directions", "Backward;Forward")
+
+	this.setProperty("count", 2000)
+	this.setProperty("rate", 2000)
+
+	this.setProperty("duration", 0)
+	this.setProperty("wiggle", 0)
+
+	var self = this
+	this.widget = this.addWidget("combo", "Direction", this.properties.direction, (v) => {
+		self.properties.direction = v
+	}, {property: "direction", values: this.properties.directions.split(";")})
+
+	this.count = this.addWidget("number", "Count", this.properties.count, "count")
+	this.rate = this.addWidget("slider", "Rate", this.properties.rate, (v) => {self.properties.rate = v}, {value: this.properties.rate, min: 0, max: this.properties.count})
+	this.duration = this.addWidget("number", "Duration", this.properties.duration, "duration")
+	this.wiggle = this.addWidget("number", "Wiggle", this.properties.wiggle, "wiggle")
+
 	this.addOutput("Particles", "Particles")
+}
+ParticlesNode.prototype.onPropertyChanged = function(n, v) {
+	if (n === "direction") {
+		if (this.graph && this.graph.onNodeConnectionChange) {
+        	this.graph.onNodeConnectionChange()
+    	}
+	}
+	if (n === "count") {
+		if (this.rate !== undefined) {
+			this.rate.options.max = v
+		}
+	}
+	if (n === "rate") {
+		if (this.rate !== undefined) {
+			this.rate.value = v
+		}
+	}
+}
+ParticlesNode.prototype.onMouseUp = function(e, pos) {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+        this.graph.onNodeConnectionChange()
+    }
 }
 ParticlesNode.title = "Particles"
 ParticlesNode.prototype.onExecute = function() {
 	var uuid = this.properties.uuid
+
 	if (Editor.program === undefined || Editor.program === null) {
 		if (Main.program === null || Main.program === undefined) {
 			return
@@ -14,7 +63,66 @@ ParticlesNode.prototype.onExecute = function() {
 	} else {
 		var obj = Editor.program.getObjectByProperty("uuid", uuid)
 	}
-	this.setOutputData(0, obj)
+
+	if(obj !== undefined) {
+		var d = this.getInputData(0)
+		var c = this.getInputData(1)
+		var r = this.getInputData(2)
+		var du = this.getInputData(3)
+		var w = this.getInputData(4)
+
+		if (d !== undefined) {
+			if (d !== "") {
+				if (d === "Forward") {
+					obj.emitter.direction = 1
+				} else if (d === "Backward") {
+					obj.emitter.direction = -1
+				}
+			}
+		} else {
+			if (this.properties["direction"] !== "") {
+				if (this.properties["direction"] === "Forward") {
+					obj.emitter.direction = 1
+				} else if (this.properties["direction"] === "Backward") {
+					obj.emitter.direction = -1
+				}
+			}
+		}
+
+		if (c !== undefined) {
+			obj.emitter.maxParticleCount = c
+		} else {
+			obj.emitter.maxParticleCount = parseInt(this.properties["count"])
+		}
+
+		if (r !== undefined) {
+			obj.emitter.particleCount = r
+		} else {
+			obj.emitter.particleCount = parseInt(this.properties["rate"])
+		}
+
+		if (du !== undefined) {
+			if (du < 0.00001) {
+				du = null
+			}
+			obj.emitter.duration = du
+		} else {
+			du = this.properties["duration"]
+
+			if (du < 0.00001) {
+				du = null
+			}
+			obj.emitter.duration = du
+		}
+
+		if (w !== undefined) {
+			obj.emitter.wiggle = w
+		} else {
+			obj.emitter.wiggle = this.properties["wiggle"]
+		}
+
+		this.setOutputData(0, obj)
+	}
 }
 
 function ParticlesSetBlendingNode() {

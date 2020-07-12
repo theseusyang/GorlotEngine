@@ -4,22 +4,36 @@ function ColourNode() {
 	this.addInput("Blue", "number")
 
 	this.addOutput("Colour", "Color")
+
+	this.setProperty("r", 0)
+	this.setProperty("g", 0)
+	this.setProperty("b", 0)
+
+	this.widget_r = this.addWidget("number", "Red", 0, "r")
+	this.widget_g = this.addWidget("number", "Green", 0, "g")
+	this.widget_b = this.addWidget("number", "Blue", 0, "b")
 }
 ColourNode.title = "Colour"
 ColourNode.prototype.onExecute = function() {
 	var r = this.getInputData(0)
 	var g = this.getInputData(1)
 	var b = this.getInputData(2)
+
 	if (r === undefined) {
-		r = 1
+		r = parseInt(this.properties["r"])
 	}
 	if (g === undefined) {
-		g = 1
+		g = parseInt(this.properties["g"])
 	}
 	if (b === undefined) {
-		b = 1
+		b = parseInt(this.properties["b"])
 	}
 	this.setOutputData(0, new THREE.Color(`rgb(${r},${g},${b})`))
+}
+ColourNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function ColourGetRedNode() {
@@ -94,15 +108,27 @@ ColourAddColoursNode.prototype.onExecute = function() {
 function ColourAddScalarNode() {
 	this.addInput("Input", "Color")
 	this.addInput("Scalar", "number")
+
+	this.setProperty("scalar", 0)
+	this.widget = this.addWidget("number", "Scalar", 0, "scalar")
 }
 ColourAddScalarNode.title = "Add Scalar"
 ColourAddScalarNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var s = this.getInputData(1)
 
-	if (i !== undefined && s !== undefined) {
+	if (s === undefined) {
+		s = parseInt(this.properties["scalar"])
+	}
+
+	if (i !== undefined) {
 		i.addScalar(s)
 	}
+}
+ColourAddScalarNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function ColourCloneNode() {
@@ -163,15 +189,27 @@ ColourMultiplyNode.prototype.onExecute = function() {
 function ColourMultiplyScalarNode() {
 	this.addInput("Input", "Color")
 	this.addInput("Scalar", "number")
+
+	this.setProperty("scalar", 0)
+	this.widget = this.addWidget("number", "Scalar", 0, "scalar")
 }
 ColourMultiplyScalarNode.title = "Multiply Scalar"
 ColourMultiplyScalarNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var s = this.getInputData(1)
 
-	if (i !== undefined && c !== undefined) {
+	if (s === undefined) {
+		s = parseInt(this.properties["scalar"])
+	}
+
+	if (i !== undefined) {
 		i.multiplyScalar(s)
 	}
+}
+ColourMultiplyScalarNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function ColourSetHSLNode() {
@@ -179,27 +217,39 @@ function ColourSetHSLNode() {
 	this.addInput("H", "number")
 	this.addInput("S", "number")
 	this.addInput("L", "number")
+
+	this.setProperty("h", 0)
+	this.setProperty("s", 0)
+	this.setProperty("l", 0)
+	this.widget_h = this.addWidget("number", "H", 0, "h")
+	this.widget_s = this.addWidget("number", "S", 0, "s")
+	this.widget_ = this.addWidget("number", "L", 0, "l")
 }
 ColourSetHSLNode.title = "Set HSL"
 ColourSetHSLNode.prototype.onExecute = function() {
 	var c = this.getInputData(0)
 	if (c !== undefined) {
-		var h = this.getInputData(0)
-		var s = this.getInputData(1)
-		var l = this.getInputData(2)
+		var h = this.getInputData(1)
+		var s = this.getInputData(2)
+		var l = this.getInputData(3)
 
 		if (h === undefined) {
-			h = 1
+			h = this.properties["h"]
 		}
 		if (s === undefined) {
-			s = 1
+			s = this.properties["s"]
 		}
 		if (l === undefined) {
-			l = 1
+			l = this.properties["l"]
 		}
 
 		c.setHSL(h, s, l)
 	}
+}
+ColourSetHSLNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function ColourSetRGBNode() {
@@ -207,51 +257,84 @@ function ColourSetRGBNode() {
 	this.addInput("R", "number")
 	this.addInput("G", "number")
 	this.addInput("B", "number")
+
+	this.setProperty("r", 0)
+	this.setProperty("g", 0)
+	this.setProperty("b", 0)
+
+	this.widget_r = this.addWidget("number", "Red", 0, "r")
+	this.widget_g = this.addWidget("number", "Green", 0, "g")
+	this.widget_b = this.addWidget("number", "Blue", 0, "b")
 }
 ColourSetRGBNode.title = "Set RGB"
 ColourSetRGBNode.prototype.onExecute = function() {
 	var c = this.getInputData(0)
 	if (c !== undefined) {
-		var r = this.getInputData(0)
-		var g = this.getInputData(1)
-		var b = this.getInputData(2)
+		var r = this.getInputData(1)
+		var g = this.getInputData(2)
+		var b = this.getInputData(3)
 
 		if (r === undefined) {
-			r = 1
+			r = this.properties["r"]
 		}
 		if (g === undefined) {
-			g = 1
+			g = this.properties["g"]
 		}
 		if (b === undefined) {
-			b = 1
+			b = this.properties["b"]
 		}
 		c.setRGB(r, g, b)
 	}
+}
+ColourSetRGBNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function ColourSetScalarNode() {
 	this.addInput("Input", "Color")
 	this.addInput("Scalar", "number")
+
+	this.setProperty("scalar", 0)
+	this.widget = this.addWidget("number", "Scalar", 0, "scalar")
 }
 ColourSetScalarNode.title = "Set Scalar"
 ColourSetScalarNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var s = this.getInputData(1)
-	if (i !== undefined && s !== undefined) {
+
+	if (s === undefined) {
+		s = this.properties["scalar"]
+	}
+
+	if (i !== undefined) {
 		i.setScalar(s)
 	}
+}
+ColourSetScalarNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function ColourSetColourNameNode() {
 	this.addInput("Input", "Color")
 	this.addInput("Name", "Text")
+
+	this.setProperty("name", "black")
+	this.addWidget("text", "Name", "black", "name")
 }
 ColourSetColourNameNode.title = "Set Colour Name"
 ColourSetColourNameNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var n = this.getInputData(1)
 
-	if (i !== undefined && n !== undefined) {
+	if (n === undefined) {
+		n = this.properties["name"]
+	}
+
+	if (i !== undefined) {
 		i.setColorName(n)
 	}
 }
@@ -269,8 +352,6 @@ ColourSubNode.prototype.onExecute = function() {
 		i.sub(c)
 	}
 }
-
-// TODO: Add every THREE.Color method and colours
 
 function registerMaterialNodeColor() {
 	LiteGraph.registerNodeType("Colour/Colour", ColourNode)

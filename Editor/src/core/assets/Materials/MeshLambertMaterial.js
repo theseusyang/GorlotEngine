@@ -54,7 +54,7 @@ class MeshLambertMaterial extends THREE.MeshLambertMaterial {
 					properties: {
 						mat: this.uuid
 					},
-					size: [178, 126],
+					size: [210, 382],
 					type: "Material/MeshPhongMaterial"
 				}
 			],

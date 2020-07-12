@@ -95,7 +95,7 @@ class AssetExplorerCreateWindow {
         	Editor.updateObjectViews()
 
 		}
-		else if (o === "Phong material") {
+		else if (o === "Phong Material") {
 
 			var material = new MeshPhongMaterial()
         	material.name = "phong"

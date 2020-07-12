@@ -12,8 +12,6 @@ EditorUI.mainarea
 EditorUI.left_area
 EditorUI.right_area
 
-// TODO: Move some elements to their own files
-
 EditorUI.Initialize = function() {
 
     // Initializing the LiteGUI library
@@ -57,6 +55,16 @@ EditorUI.Initialize = function() {
 
     // Call to the resize method
     EditorUI.Resize()
+
+    EditorUI.CustomLiteGraph()
+}
+
+// This function simply modifies some variables from the LiteGraph library
+EditorUI.CustomLiteGraph = function() {
+    LiteGraph.LINK_COLOR = "#FFF"
+    LiteGraph.EVENT_LINK_COLOR = "#FFF"
+    LiteGraph.CONNECTING_LINK_COLOR = "#FFF"
+    LiteGraph.NODE_TITLE_COLOR = "#FFF"
 }
 
 EditorUI.removeAllTabs = function() {

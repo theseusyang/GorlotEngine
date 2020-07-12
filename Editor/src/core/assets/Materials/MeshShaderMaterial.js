@@ -73,7 +73,7 @@ class MeshShaderMaterial extends THREE.ShaderMaterial {
 					properties: {
 						mat: this.uuid
 					},
-					size: [140, 26],
+					size: [210, 382],
 					type: "Material/Shader"
 				}
 			],

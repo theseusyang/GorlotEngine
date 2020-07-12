@@ -114,6 +114,10 @@
             this.mouse_captured = false;
             this.captureInput(false);
         }
+
+        if (this.graph && this.graph.onNodeConnectionChange) {
+            this.graph.onNodeConnectionChange()
+        }
     };
 
     //Constant
@@ -243,6 +247,10 @@
         else if(name == "value")
         {
             this.widget.value = value;
+        }
+
+        if (this.graph && this.graph.onNodeConnectionChanged) {
+            this.graph.onNodeConnectionChanged()
         }
     };
 
@@ -405,6 +413,10 @@
             this.properties[name] = parseFloat(value);
             return true; //block
         }
+
+        if (this.graph && this.graph.onNodeConnectionChanged) {
+            this.graph.onNodeConnectionChanged()
+        }
     };
 
     //Show value inside the debug console
@@ -435,6 +447,10 @@
     WidgetSliderGUI.prototype.onPropertyChanged = function(name, value) {
         if (name == "value") {
             this.slider.value = value;
+        }
+
+        if (this.graph && this.graph.onNodeConnectionChanged) {
+            this.graph.onNodeConnectionChanged()
         }
     };
 

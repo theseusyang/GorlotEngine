@@ -43,7 +43,7 @@
         EVENT_LINK_COLOR: "#A86",
         CONNECTING_LINK_COLOR: "#AFA",
 
-        MAX_NUMBER_OF_NODES: 1000, //avoid infinite loops
+        MAX_NUMBER_OF_NODES: 10000, //avoid infinite loops (I set it from 1000 to 10000)
         DEFAULT_POSITION: [100, 100], //default node position
         VALID_SHAPES: ["default", "box", "round", "card"], //,"circle"
 
@@ -4524,14 +4524,20 @@ LGraphNode.prototype.executeAction = function(action)
         this.node_title_color = LiteGraph.NODE_TITLE_COLOR;
         this.default_link_color = LiteGraph.LINK_COLOR;
         this.default_connection_color = {
-            input_off: "#778",
-            input_on: "#7F7",
-            output_off: "#778",
-            output_on: "#7F7"
+            // I Modified this
+            //input_off: "#778",
+            //input_on: "#7F7",
+            //output_off: "#778",
+            //output_on: "#7F7"
+            output_off: "#AAA",
+            output_on: "#EEE",
+            input_off: "#AAA",
+            input_on: "#EEE"
         };
 
         this.highquality_render = true;
-        this.use_gradients = false; //set to true to render titlebar with gradients
+        //this.use_gradients = false; //set to true to render titlebar with gradients
+        this.use_gradients = true // I Modified this
         this.editor_alpha = 1; //used for transition
         this.pause_rendering = false;
         this.clear_background = true;
@@ -7179,6 +7185,8 @@ LGraphNode.prototype.executeAction = function(action)
                 for (var i = 0; i < node.outputs.length; i++) {
                     var slot = node.outputs[i];
 
+                    slot.shape = LiteGraph.ARROW_SHAPE
+
                     var pos = node.getConnectionPos(false, i, slot_pos);
                     pos[0] -= node.pos[0];
                     pos[1] -= node.pos[1];
@@ -7425,6 +7433,7 @@ LGraphNode.prototype.executeAction = function(action)
         selected,
         mouse_over
     ) {
+
         //bg rect
         ctx.strokeStyle = fgcolor;
         ctx.fillStyle = bgcolor;
@@ -7521,9 +7530,10 @@ LGraphNode.prototype.executeAction = function(action)
                 if (this.use_gradients) {
                     var grad = LGraphCanvas.gradients[title_color];
                     if (!grad) {
+                        // I modified this
                         grad = LGraphCanvas.gradients[ title_color ] = ctx.createLinearGradient(0, 0, 400, 0);
-                        grad.addColorStop(0, title_color);
-                        grad.addColorStop(1, "#000");
+                        grad.addColorStop(0, "#242424")
+                        grad.addColorStop(0.35, "#424242");
                     }
                     ctx.fillStyle = grad;
                 } else {

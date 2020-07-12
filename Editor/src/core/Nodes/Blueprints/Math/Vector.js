@@ -2,20 +2,29 @@ function Vector2Node() {
 	this.addInput("X", "number")
 	this.addInput("Y", "number")
 	this.addOutput("Vector", "Vector")
+
+	this.setProperty("x", 0)
+	this.setProperty("y", 0)
+
+	this.widget_x = this.addWidget("number", "X", 0, "x")
+	this.widget_y = this.addWidget("number", "Y", 0, "y")
 }
-
 Vector2Node.title = "Vector2"
-
 Vector2Node.prototype.onExecute = function() {
 	var X = this.getInputData(0)
 	var Y = this.getInputData(1)
 	if (X === undefined) {
-		X = 0
+		X = this.properties["x"]
 	}
 	if (Y === undefined) {
-		Y = 0
+		Y = this.properties["y"]
 	}
 	this.setOutputData(0, new THREE.Vector2(X, Y))
+}
+Vector2Node.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function Vector2ToVector3Node() {
@@ -38,6 +47,14 @@ function Vector3Node() {
 	this.addInput("Y", "number")
 	this.addInput("Z", "number")
 	this.addOutput("Vector", "Vector")
+
+	this.setProperty("x", 0)
+	this.setProperty("y", 0)
+	this.setProperty("z", 0)
+
+	this.widget_x = this.addWidget("number", "X", 0, "x")
+	this.widget_y = this.addWidget("number", "Y", 0, "y")
+	this.widget_z = this.addWidget("number", "Z", 0, "z")
 }
 
 Vector3Node.title = "Vector3"
@@ -47,15 +64,20 @@ Vector3Node.prototype.onExecute = function() {
 	var Y = this.getInputData(1)
 	var Z = this.getInputData(2)
 	if (X === undefined) {
-		X = 0
+		X = this.properties["x"]
 	}
 	if (Y === undefined) {
-		Y = 0
+		Y = this.properties["y"]
 	}
 	if (Z === undefined) {
-		Z = 0
+		Z = this.properties["z"]
 	}
 	this.setOutputData(0, new THREE.Vector3(X, Y, Z))
+}
+Vector3Node.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorSetNode() {
@@ -64,15 +86,31 @@ function VectorSetNode() {
 	this.addInput("Y", "number")
 	this.addInput("Z", "number")
 	this.addOutput("Vector", "Vector")
+
+	this.setProperty("x", 0)
+	this.setProperty("y", 0)
+	this.setProperty("z", 0)
+
+	this.widget_x = this.addWidget("number", "X", 0, "x")
+	this.widget_y = this.addWidget("number", "Y", 0, "y")
+	this.widget_z = this.addWidget("number", "Z", 0, "z")
 }
-
 VectorSetNode.title = "Set Vector"
-
 VectorSetNode.prototype.onExecute = function() {
 	var Vec = this.getInputData(0)
 	var X = this.getInputData(1)
 	var Y = this.getInputData(2)
 	var Z = this.getInputData(3)
+
+	if (X === undefined) {
+		X = this.properties["x"]
+	}
+	if (Y === undefined) {
+		Y = this.properties["y"]
+	}
+	if (Z === undefined) {
+		Z = this.properties["z"]
+	}
 
 	if (Vec !== undefined && Vec instanceof THREE.Vector2) {
 		var vec = Vec.set(X, Y)
@@ -81,6 +119,11 @@ VectorSetNode.prototype.onExecute = function() {
 	}
 
 	this.setOutputData(0, vec)
+}
+VectorSetNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorAddNode() {
@@ -106,17 +149,29 @@ function VectorAddScalarNode() {
 	this.addInput("Scalar", "number")
 
 	this.addOutput("Vector", "Vector")
+
+	this.setProperty("scalar", 0)
+	this.widget = this.addWidget("number", "Scalar", 0, "scalar")
 }
 VectorAddScalarNode.title = "Add Scalar"
 VectorAddScalarNode.prototype.onExecute = function() {
 	var vec = this.getInputData(0)
 	var scalar = this.getInputData(1)
 
-	if (vec !== undefined && scalar !== undefined) {
+	if (scalar === undefined) {
+		scalar = this.properties["scalar"]
+	}
+
+	if (vec !== undefined) {
 		vec.addScalar(scalar)
 	}
 
 	this.setOutputData(0, vec)
+}
+VectorAddScalarNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorAddScaledVectorNode() {
@@ -125,6 +180,9 @@ function VectorAddScaledVectorNode() {
 	this.addInput("Vector", "Vector")
 	this.addInput("Scalar", "number")
 	this.addOutput("Vector", "Vector")
+
+	this.setProperty("scalar", 0)
+	this.widget = this.addWidget("number", "Scalar", 0, "scalar")
 }
 VectorAddScaledVectorNode.title = "Add Scaled Vector"
 VectorAddScaledVectorNode.prototype.onExecute = function() {
@@ -132,11 +190,20 @@ VectorAddScaledVectorNode.prototype.onExecute = function() {
 	var vector = this.getInputData(1)
 	var scalar = this.getInputData(2)
 
-	if (input !== undefined && vector !== undefined && scalar !== undefined) {
+	if (scalar === undefined) {
+		scalar = this.properties["scalar"]
+	}
+
+	if (input !== undefined && vector !== undefined) {
 		input.addScaledVector(vector, scalar)
 	}
 
 	this.setOutputData(0, input)
+}
+VectorAddScaledVectorNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorAddVectorsNode() {
@@ -168,6 +235,9 @@ function VectorApplyAxisAngleNode() {
 	this.addInput("Angle", "number")
 
 	this.addOutput("Output", "Vector")
+
+	this.setProperty("angle", 0)
+	this.widget = this.addWidget("number", "Angle", 0, "angle")
 }
 VectorApplyAxisAngleNode.title = "Apply Axis Angle"
 VectorApplyAxisAngleNode.prototype.onExecute = function() {
@@ -176,11 +246,20 @@ VectorApplyAxisAngleNode.prototype.onExecute = function() {
 	var axis = this.getInputData(1)
 	var angle = this.getInputData(2)
 
-	if (input !== undefined && axis !== undefined && angle !== undefined) {
+	if (angle === undefined) {
+		angle = this.properties["angle"]
+	}
+
+	if (input !== undefined && axis !== undefined) {
 		input.applyAxisAngle(axis, angle)
 	}
 
 	this.setOutputData(0, input)
+}
+VectorApplyAxisAngleNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorApplyEulerNode() {
@@ -244,6 +323,12 @@ function VectorClampLengthNode() {
 	this.addInput("Max", "number")
 	
 	this.addOutput("Output", "Vector")
+
+	this.setProperty("min", 0)
+	this.setProperty("max", 0)
+
+	this.widget_min = this.addWidget("number", "Min", 0, "min")
+	this.widget_max = this.addWidget("number", "Max", 0, "max")
 }
 VectorClampLengthNode.title = "Clamp Length"
 VectorClampLengthNode.prototype.onExecute = function() {
@@ -252,11 +337,23 @@ VectorClampLengthNode.prototype.onExecute = function() {
 	var min = this.getInputData(1)
 	var max = this.getInputData(2)
 
-	if (input !== undefined && min !== undefined && max !== undefined) {
+	if (min === undefined) {
+		min = this.properties["min"]
+	}
+	if (max === undefined) {
+		max = this.properties["max"]
+	}
+
+	if (input !== undefined) {
 		input.clampLength(min, max)
 	}
 
 	this.setOutputData(0, input)
+}
+VectorClampNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorClampScalarNode() {
@@ -266,6 +363,12 @@ function VectorClampScalarNode() {
 	this.addInput("Max", "number")
 
 	this.addOutput("Output", "Vector")
+
+	this.setProperty("min", 0)
+	this.setProperty("max", 0)
+
+	this.widget_min = this.addWidget("number", "Min", 0, "min")
+	this.widget_max = this.addWidget("number", "Max", 0, "max")
 }
 VectorClampScalarNode.title = "Clamp Scalar"
 VectorClampScalarNode.prototype.onExecute = function() {
@@ -274,11 +377,23 @@ VectorClampScalarNode.prototype.onExecute = function() {
 	var min = this.getInputData(1)
 	var max = this.getInputData(2)
 
-	if (input !== undefined && min !== undefined && max !== undefined) {
+	if (min === undefined) {
+		min = this.properties["min"]
+	}
+	if (max === undefined) {
+		max = this.properties["max"]
+	}
+
+	if (input !== undefined) {
 		input.clampScalar(min, max)
 	}
 
 	this.setOutputData(0, input)
+}
+VectorClampScalarNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorCloneNode() {
@@ -532,6 +647,9 @@ function VectorLerpNode() {
 	this.addInput("Alpha", "number")
 
 	this.addOutput("Output", "Vector3")
+
+	this.setProperty("alpha", 0)
+	this.widget = this.addWidget("number", "Alpha", 0, "alpha")
 }
 VectorLerpNode.title = "Lerp"
 VectorLerpNode.prototype.onExecute = function() {
@@ -539,11 +657,20 @@ VectorLerpNode.prototype.onExecute = function() {
 	var v = this.getInputData(1)
 	var a = this.getInputData(2)
 
-	if (i !== undefined && v !== undefined && a !== undefined) {
+	if (a === undefined) {
+		a = this.properties["alpha"]
+	}
+
+	if (i !== undefined && v !== undefined) {
 		i.lerp(v, a)
 	}
 
 	this.setOutputData(i)
+}
+VectorLerpNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorLerpVectorsNode() {
@@ -553,6 +680,9 @@ function VectorLerpVectorsNode() {
 	this.addInput("Alpha", "number")
 
 	this.addOutput("Output", "Vector")
+
+	this.setProperty("alpha", 0)
+	this.widget = this.addWidget("number", "Alpha", 0, "alpha")
 }
 VectorLerpVectorsNode.title = "Lerp Vectors"
 VectorLerpVectorsNode.prototype.onExecute = function() {
@@ -561,11 +691,20 @@ VectorLerpVectorsNode.prototype.onExecute = function() {
 	var v2 = this.getInputData(2)
 	var a = this.getInputData(3)
 
-	if (i !== undefined && v1 !== undefined && v2 !== undefined && a !== undefined) {
+	if (a === undefined) {
+		a = this.properties["alpha"]
+	}
+
+	if (i !== undefined && v1 !== undefined && v2 !== undefined) {
 		i.lerpVectors(v1, v2, a)
 	}
 
 	this.setOutputData(0, i)
+}
+VectorLerpVectorsNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorMaxNode() {
@@ -627,17 +766,29 @@ function VectorMultiplyScalarNode() {
 	this.addInput("Scalar", "number")
 
 	this.addOutput("Output", "Vector")
+
+	this.setProperty("scalar", 0)
+	this.widget = this.addWidget("number", "Scalar", 0, "scalar")
 }
 VectorMultiplyScalarNode.title = "Multiply Scalar"
 VectorMultiplyScalarNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var s = this.getInputData(1)
 
-	if (i !== undefined && v !== undefined) {
+	if (s === undefined) {
+		s = this.properties["scalar"]
+	}
+
+	if (i !== undefined) {
 		i.multiplyScalar(s)
 	}
 
 	this.setOutputData(0, i)
+}
+VectorMultiplyScalarNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function VectorMultiplyVectorsNode() {

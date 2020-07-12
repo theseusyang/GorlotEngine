@@ -4,6 +4,16 @@ function EulerNode() {
 	this.addInput("Z", "number")
 	this.addInput("Order", "Text")
 
+	this.setProperty("x", 0)
+	this.setProperty("y", 0)
+	this.setProperty("z", 0)
+	this.setProperty("order", "XYZ")
+
+	this.widget_x = this.addWidget("number", "X", 0, "x")
+	this.widget_y = this.addWidget("number", "Y", 0, "y")
+	this.widget_z = this.addWidget("number", "Z", 0, "z")
+	this.widget_order = this.addWidget("text", "Order", "XYZ", "order")
+
 	this.addOutput("Euler", "Euler")
 }
 EulerNode.title = "Euler"
@@ -14,19 +24,24 @@ EulerNode.prototype.onExecute = function() {
 	var order = this.getInputData(3)
 
 	if (x === undefined) {
-		x = 0
+		x = this.properties["x"]
 	}
 	if (y === undefined) {
-		y = 0
+		y = this.properties["y"]
 	}
 	if (z === undefined) {
-		z = 0
+		z = this.properties["z"]
 	}
 	if (order === undefined) {
-		order = "XYZ"
+		order = this.properties["order"]
 	}
 
 	this.setOutputData(0, new THREE.Euler(x, y, z, order))
+}
+EulerNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function EulerGetXNode() {
@@ -145,6 +160,16 @@ function EulerSetNode() {
 	this.addInput("Y", "number")
 	this.addInput("Z", "number")
 	this.addInput("Order", "Text")
+
+	this.setProperty("x", 0)
+	this.setProperty("y", 0)
+	this.setProperty("z", 0)
+	this.setProperty("order", "XYZ")
+
+	this.widget_x = this.addWidget("number", "X", 0, "x")
+	this.widget_y = this.addWidget("number", "Y", 0, "y")
+	this.widget_z = this.addWidget("number", "Z", 0, "z")
+	this.widget_order = this.addWidget("text", "Order", "XYZ", "order")
 }
 EulerSetNode.title = "Set"
 EulerSetNode.prototype.onExecute = function() {
@@ -155,7 +180,25 @@ EulerSetNode.prototype.onExecute = function() {
 	var z = this.getInputData(3)
 	var o = this.getInputData(4)
 
+	if (x === undefined) {
+		x = this.properties["x"]
+	}
+	if (y === undefined) {
+		y = this.properties["y"]
+	}
+	if (z === undefined) {
+		z = this.properties["z"]
+	}
+	if (o === undefined) {
+		o = this.properties["order"]
+	}
+
 	e.set(x, y, z, o)
+}
+EulerSetNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function EulerSetFromQuaternionNode() {

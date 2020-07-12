@@ -1,28 +1,72 @@
-// TODO: Texture map, Bump Map, Bump Map Scale, Normal Map, Normal Map Scale, Displacement Map, Displacement map scale, Displacement map bias, Specular map, Alpha Map, Environment Map, 
+// TODO: Texture map, Bump Map, Bump Map Scale, Normal Map, Normal Map Scale, Displacement Map, Displacement map scale, Displacement map bias, Specular map, Alpha Map, Environment Map
 
 function MeshPhongMaterialNode() {
 	this.addInput("Colour", "Color")
-	this.addInput("Emissive", "number")
+	this.addInput("Emissive", "Color")
 	this.addInput("Reflectivity", "number")
 	this.addInput("Shininess", "number")
 	this.addInput("Specular", "Color")
 	this.addInput("Wireframe", "Boolean")
+	this.addInput("Depth Write", "Boolean")
+	this.addInput("Transparent", "Boolean")
+	this.addInput("Opacity", "number")
+	this.addInput("Affected By Fog", "Boolean")
 
 	this.addOutput("Material", "Material")
+	var self = this
+	
+	this.setProperty("reflectivity", 1)
+	this.setProperty("shininess", 30)
+	this.setProperty("wireframe", false)
+	this.setProperty("depthwrite", false)
+	this.setProperty("transparent", false)
+	this.setProperty("opacity", 1)
+	this.setProperty("abf", true)
+
+	this.widget1 = this.addWidget("slider", "Reflectivity", this.properties.reflectivity,  (v) => {self.properties.reflectivity = v}, {value: this.properties.reflectivity, min: 0, max: 1, text: "R"})
+	this.widget2 = this.addWidget("slider", "Shininess", this.properties.shininess, (v) => {self.properties.shininess = v}, {value: this.properties.shininess, min: 0, max: 100, text: "S"})
+
+	this.addWidget("toggle", "Wireframe", this.properties.wireframe, "wireframe")
+	this.addWidget("toggle", "Depth Write", this.properties.depthwrite, "depthwrite")
+	this.addWidget("toggle", "Transparent", this.properties.transparent, "transparent")
+
+	this.widget3 = this.addWidget("slider", "Opacity", this.properties.opacity, (v) => {self.properties.opacity = v}, {value: this.properties.opacity, min: 0, max: 1})
+
+	this.addWidget("toggle", "Affected By Fog", this.properties.abf, "abf")
 }
 MeshPhongMaterialNode.title = "Material"
+MeshPhongMaterialNode.prototype.onPropertyChanged = function(n, v) {
+	if (n === "reflectivity") {
+		if(this.widget1 !== undefined) {
+			this.widget1.value = v
+		}
+	} else if (n === "shininess") {
+		if(this.widget2 !== undefined) {
+			this.widget2.value = v
+		}
+	} else if (n === "opacity") {
+		if (this.widget3 !== undefined) {
+			this.widget3.value = v
+		}
+	}
+}
 MeshPhongMaterialNode.prototype.onExecute = function() {
-	var mat = Editor.getAssetByUUID(this.properties.mat)	
-	mat.nodes = {}
+	var mat = Editor.getAssetByUUID(this.properties.mat)
 
-	var c = this.getInputData(0)
-	var e = this.getInputData(1)
-	var r = this.getInputData(2)
-	var s = this.getInputData(3)
-	var s1 = this.getInputData(4)
-	var w = this.getInputData(5)
-
-	if (mat !== undefined && mat instanceof THREE.MeshPhongMaterial) {
+	if (mat !== undefined/* && mat instanceof THREE.MeshPhongMaterial*/ && mat !== null) {
+		mat.nodes = {}
+	
+		var c = this.getInputData(0)
+		var e = this.getInputData(1)
+		var r = this.getInputData(2)
+		var s = this.getInputData(3)
+		var s1 = this.getInputData(4)
+		var w = this.getInputData(5)
+		var dw = this.getInputData(6)
+		var tr = this.getInputData(7)
+		var op = this.getInputData(8)
+		var abf = this.getInputData(9)
+		
 		if (c !== undefined) {
 			mat.color = c
 		}
@@ -31,19 +75,50 @@ MeshPhongMaterialNode.prototype.onExecute = function() {
 		}
 		if (r !== undefined) {
 			mat.reflectivity = r
+		} else {
+			mat.reflectivity = this.properties["reflectivity"]
 		}
 		if (s !== undefined) {
 			mat.shininess = s
+		} else {
+			mat.shininess = this.properties["shininess"]
 		}
 		if (s1 !== undefined) {
 			mat.specular = s1
 		}
 		if (w !== undefined) {
 			mat.wireframe = w
+		} else {
+			mat.wireframe = this.properties["wireframe"]
+		}
+		if (dw !== undefined) {
+			mat.depthWrite = dw
+		} else {
+			mat.depthwrite = this.properties["depthwrite"]
+		}
+		if (tr !== undefined) {
+			mat.transparent = tr
+		} else {
+			mat.transparent = this.properties["transparent"]
+		}
+		if (op !== undefined) {
+			mat.opacity = op
+		} else {
+			mat.opacity = this.properties["opacity"]
+		}
+		if (abf !== undefined) {
+			mat.fog = abf
+		} else {
+			mat.fog = this.properties["abf"]
 		}
 	}
 
 	this.setOutputData(0, mat)
+}
+MeshPhongMaterialNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function ShaderNode() {
@@ -105,15 +180,27 @@ SetMaterialTransparentNode.prototype.onExecute = function() {
 function SetMaterialOpacityNode() {
 	this.addInput("Material", "Material")
 	this.addInput("Opacity", "number")
+
+	this.setProperty("opacity", 0)
+	this.addWidget("number", "Opacity", 0, "opacity")
 }
 SetMaterialOpacityNode.title = "Opacity"
 SetMaterialOpacityNode.prototype.onExecute = function() {
 	var m = this.getInputData(0)
 	var o = this.getInputData(1)
 
-	if (m !== undefined && o !== undefined) {
+	if (o === undefined) {
+		o = this.properties["opacity"]
+	}
+
+	if (m !== undefined) {
 		m.opacity = o
 	}
+}
+SetMaterialOpacityNode.prototype.onPropertyChanged = function() {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
 }
 
 function SetBlendingModeMaterialNode() {
