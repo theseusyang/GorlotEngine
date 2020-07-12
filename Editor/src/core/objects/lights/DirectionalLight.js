@@ -46,17 +46,4 @@ class DirectionalLight extends THREE.DirectionalLight {
 			this.children[i].stop()
 		}
 	}
-
-	toJSON(meta) {
-		// Create JSON for this object
-		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
-
-		data.object.components = this.components
-		data.shadow_left = this.shadow.camera.left
-		data.shadow_right = this.shadow.camera.right
-		data.shadow_top = this.shadow.camera.top
-		data.shadow_bottom = this.shadow.camera.bottom
-
-		return data
-	}
 }

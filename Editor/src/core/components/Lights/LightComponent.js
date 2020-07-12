@@ -55,15 +55,16 @@ class LightComponent extends Component {
 			} else if (this.objectType === "Hemisphere") {
 				EditorUI.form.addTitle("Hemisphere")
 
-				// TODO: Include jsColor here
-				//EditorUI.form.addString("Ground Color", this.object.groundColor.getStyle())
-				//EditorUI.form.addString("Sky Color", this.object.color.getStyle())
 				EditorUI.form.addColor("Ground Color", [this.object.groundColor.r, this.object.groundColor.g, this.object.groundColor.b], {name_width: 150})
 				EditorUI.form.addColor("Sky Color", [this.object.color.r, this.object.color.g, this.object.color.b], {name_width: 150})
 
 				EditorUI.form.addSeparator()
 			} else if (this.objectType === "Point") {
 				EditorUI.form.addTitle("Point Light")
+
+				EditorUI.form.addNumber("Distance", this.object.distance, {name_width: 150})
+				//EditorUI.form.addSlider("Decay", this.object.decay, {min: 0, max: 10, step: 0.1, name_width: 150})
+
 				EditorUI.form.addTitle("Shadow")
 
 				EditorUI.form.addNumber("Near", this.object.shadow.camera.near, {name_width: 150})
@@ -77,10 +78,10 @@ class LightComponent extends Component {
 			} else if (this.objectType === "Spot") {
 				EditorUI.form.addTitle("Spot Light")
 
-				EditorUI.form.addSlider("Distance", this.object.distance, {min: 1, max: 100, step: 1, name_width: 150})
+				EditorUI.form.addNumber("Distance", this.object.distance, {name_width: 150})
 				EditorUI.form.addSlider("Angle", this.object.angle, {min: 0, max: 1.5, step: 0.1, name_width: 150})
 				EditorUI.form.addSlider("Penumbra", this.object.penumbra, {min: 0, max: 1.5, step: 0.1, name_width: 150})
-				EditorUI.form.addSlider("Decay", this.object.decay, {min: 0, max: 2, step: 0.1, name_width: 150})
+				//EditorUI.form.addSlider("Decay", this.object.decay, {min: 0, max: 10, step: 0.1, name_width: 150})
 
 				EditorUI.form.addSeparator()
 

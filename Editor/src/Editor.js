@@ -96,7 +96,7 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "V0.0.0.1-b dev"
 
 // TIMESTAMP is equals to Date()
-Editor.TIMESTAMP = "Sun Jul 12 2020 17:54:58 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sun Jul 12 2020 18:10:14 GMT+0000 (UTC)"
 
 // This is a variable for handling objects with a non-unique name
 Editor.nameId = 1
@@ -290,6 +290,9 @@ Editor.update = function()
 
 		// Check if mouse is inside canvas
 		if (Mouse.insideCanvas()) {
+			
+			// TODO: Lock mouse when camera is moving
+
 			// Look camera
 			if (Mouse.buttonPressed(Mouse.LEFT) && !Editor.is_editing_object) {
 				Editor.camera_rotation.x -= 0.002 * Mouse.delta.x
