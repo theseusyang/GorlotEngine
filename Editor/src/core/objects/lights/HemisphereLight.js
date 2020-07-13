@@ -2,8 +2,8 @@
 
 // Hemisphere light class
 class HemisphereLight extends THREE.HemisphereLight {
-	constructor(skyColorHex, groundColorHex, intensity) {
-		super(skyColorHex, groundColorHex, intensity)
+	constructor(skyColour, groundColour, intensity) {
+		super(skyColour, groundColour, intensity)
 
 		this.name = "hemisphere_light"
 

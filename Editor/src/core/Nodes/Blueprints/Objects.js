@@ -99,7 +99,7 @@ GetObjectPositionNode.title = "Get Position"
 GetObjectPositionNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 
-	if (o !== undefined) {
+	if (o !== undefined && o !== null) {
 		this.setOutputData(0, o.position)
 	}
 }
@@ -112,7 +112,7 @@ GetObjectRotationNode.title = "Get Rotation"
 GetObjectRotationNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 
-	if (o !== undefined) {
+	if (o !== undefined && o !== null) {
 		this.setOutputData(0, o.rotation)
 	}
 }
@@ -125,7 +125,7 @@ GetObjectScaleNode.title = "Get Scale"
 GetObjectScaleNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 
-	if (o !== undefined) {
+	if (o !== undefined && o !== null) {
 		this.setOutputData(0, o.scale)
 	}
 }
@@ -139,8 +139,10 @@ SetObjectPositionNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 	var p = this.getInputData(1)
 
-	if (o !== undefined && p !== undefined) {
-		o.position.copy(p)
+	if (o !== undefined && o !== null) {
+		if(p !== undefined) {
+			o.position.copy(p)
+		}
 	}
 }
 
@@ -153,8 +155,10 @@ SetObjectRotationNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 	var r = this.getInputData(1)
 
-	if (o !== undefined && r !== undefined) {
-		o.rotation.copy(r)
+	if (o !== undefined) {
+		if (r !== undefined) {
+			o.rotation.copy(r)
+		}
 	}
 }
 
@@ -167,8 +171,10 @@ SetObjectScaleNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 	var s = this.getInputData(1)
 
-	if (o !== undefined && s !== undefined) {
-		o.scale.copy(s)
+	if (o !== undefined && o !== null) {
+		if (s !== undefined) {
+			o.scale.copy(s)
+		}
 	}
 }
 

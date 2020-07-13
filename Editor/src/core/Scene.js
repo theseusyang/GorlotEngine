@@ -17,6 +17,9 @@ class Scene extends THREE.Scene {
 		this.fog_near = 2
 		this.fog_far = 30
 		this.fog_density = 0.01
+
+		// Clock
+		this.clock = new THREE.Clock()
 		
 		//Create CANNON world
 		this.world = new CANNON.World()
@@ -42,6 +45,9 @@ class Scene extends THREE.Scene {
 
 		this.defaultComponents = []
 		this.defaultComponents.push(new SceneComponent())
+
+		// Clear clock
+		this.clock.getDelta()
 	}
 
 	initialize() {
@@ -58,7 +64,7 @@ class Scene extends THREE.Scene {
 
 	update() {
 		// Update physics
-		this.world.step(0.016667);
+		this.world.step(this.clock.getDelta());
 	
 		for(var i = 0; i < this.children.length; i++)
 		{

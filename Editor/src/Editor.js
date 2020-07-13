@@ -34,9 +34,10 @@ include("libs/three/loaders/VRMLLoader.js")
 include("libs/three/loaders/FBXLoader.js")
 include("libs/three/loaders/GLTFLoader.js")
 include("libs/three/loaders/ColladaLoader.js")
-include("libs/three/loaders/collada/Animation.js")
-include("libs/three/loaders/collada/AnimationHandler.js")
-include("libs/three/loaders/collada/KeyFrameAnimation.js")
+
+include("libs/three/animation/Animation.js")
+include("libs/three/animation/AnimationHandler.js")
+include("libs/three/animation/KeyFrameAnimation.js")
 
 // Editor Code
 

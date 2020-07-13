@@ -1,5 +1,23 @@
 "use strict"
 
+// Core
+var BufferAttribute = THREE.BufferAttribute
+var BufferGeometry = THREE.BufferGeometry
+var Clock = THREE.Clock
+var Face3 = THREE.Face3
+var Geometry = THREE.Geometry
+var Object3D = THREE.Object3D
+var Raycaster = THREE.Raycaster
+
+// Materials
+var LineBasicMaterial = THREE.LineBasicMaterial
+var LineDashedMaterial = THREE.LineDashedMaterial
+var MeshPhysicalMaterial = THREE.MeshPhysicalMaterial
+var MultiMaterial = THREE.MultiMaterial
+var PointsMaterial = THREE.PointsMaterial
+var RawShaderMaterial = THREE.RawShaderMaterial
+var SpriteMaterial = THREE.SpriteMaterial
+
 // Math
 var Box2 = THREE.Box2
 var Box3 = THREE.Box3
@@ -20,12 +38,4 @@ var Vector4 = THREE.Vector4
 
 // Object
 var LOD = THREE.LOD
-
-// Materials
-var LineBasicMaterial = THREE.LineBasicMaterial
-var LineDashedMaterial = THREE.LineDashedMaterial
-var MeshPhysicalMaterial = THREE.MeshPhysicalMaterial
-var MultiMaterial = THREE.MultiMaterial
-var PointsMaterial = THREE.PointsMaterial
-var RawShaderMaterial = THREE.RawShaderMaterial
-var SpriteMaterial = THREE.SpriteMaterial
+var LensFlare = THREE.LensFlare
