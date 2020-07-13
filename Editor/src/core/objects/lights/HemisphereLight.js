@@ -20,22 +20,4 @@ class HemisphereLight extends THREE.HemisphereLight {
 			this.components.push(component)
 		}
 	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].initialize()
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
-		}
-	}
-
-	stop() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
-		}
-	}
 }

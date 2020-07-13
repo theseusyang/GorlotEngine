@@ -1,6 +1,6 @@
 "use strict"
 
-// Object3D Changes
+// Hidden attributes (hidden objects are not serialised and don't show up in the editor)
 THREE.Object3D.prototype.hidden = false
 
 // Initialize object
@@ -114,7 +114,9 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 
 		for(var i = 0; i < this.children.length; i++)
 		{
-			object.children.push( this.children[ i ].toJSON(meta).object);
+			if(!this.children[i].hidden) {
+				object.children.push( this.children[ i ].toJSON(meta).object);
+			}
 		}
 	}
 

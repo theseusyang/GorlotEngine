@@ -37,12 +37,6 @@ class Text3D extends THREE.Mesh {
 		}
 	}
 
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].initialize()
-		}
-	}
-
 	// Dispose text
 	dispose() {
 		// Dispose material and geometry
@@ -63,24 +57,12 @@ class Text3D extends THREE.Mesh {
 		this.geometry = new THREE.TextGeometry(this.text, {font: this.font})
 	}
 
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update
-		}
-	}
-
-	stop() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
-		}
-	}
-
 	toJSON(meta) {
 		// Backup Geometry and set to undefined, to avoid being stored
 		var geometry = this.geometry
 		this.geometry = undefined
 
-		// Generate JSON
+		// Call super toJSON
 		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
 		data.object.text = this.text

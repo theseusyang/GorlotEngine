@@ -23,7 +23,7 @@ ObjectUtils.getMaterials = function(obj, materials) {
 		var child = obj.children[i]
 
 		// Check if material is mesh or sprite
-		if (child.material !== undefined && !(child instanceof Sky)) {
+		if (!child.hidden && child.material !== undefined && !(child instanceof Sky)) {
 			if (child.material instanceof THREE.Material) {
 				add(child.material)
 			} else if (child.material instanceof THREE.MultiMaterial) {

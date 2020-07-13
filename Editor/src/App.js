@@ -30,16 +30,16 @@ include("libs/leap.min.js")
 include("libs/stats.min.js")
 include("libs/SPE.min.js")
 
-include("src/input/Key.js")
-include("src/input/Keyboard.js")
-include("src/input/Mouse.js")
-
+include("src/core/three/Three.js")
 include("src/core/three/Object3D.js")
 include("src/core/three/Vector2.js")
 include("src/core/three/Vector3.js")
 include("src/core/three/Color.js")
 include("src/core/three/Material.js")
-include("src/core/three/Three.js")
+
+include("src/input/Key.js")
+include("src/input/Keyboard.js")
+include("src/input/Mouse.js")
 
 include("src/core/webvr/VRControls.js")
 
