@@ -128,6 +128,48 @@ GetObjectScaleNode.prototype.onExecute = function() {
 	}
 }
 
+function SetObjectPositionNode() {
+	this.addInput("Object", "Object3D")
+	this.addInput("Position", "Vector")
+}
+SetObjectPositionNode.title = "Set Position"
+SetObjectPositionNode.prototype.onExecute = function() {
+	var o = this.getInputData(0)
+	var p = this.getInputData(1)
+
+	if (o !== undefined && p !== undefined) {
+		o.position.copy(p)
+	}
+}
+
+function SetObjectRotationNode() {
+	this.addInput("Object", "Object3D")
+	this.addInput("Rotation", "Euler")
+}
+SetObjectRotationNode.title = "Set Rotation"
+SetObjectRotationNode.prototype.onExecute = function() {
+	var o = this.getInputData(0)
+	var r = this.getInputData(1)
+
+	if (o !== undefined && r !== undefined) {
+		o.rotation.copy(r)
+	}
+}
+
+function SetObjectScaleNode() {
+	this.addInput("Object", "Object3D")
+	this.addInput("Scale", "Vector")
+}
+SetObjectScaleNode.title = "Set Scale"
+SetObjectScaleNode.prototype.onExecute = function() {
+	var o = this.getInputData(0)
+	var s = this.getInputData(1)
+
+	if (o !== undefined && s !== undefined) {
+		o.scale.copy(s)
+	}
+}
+
 function registerObjectNodes() {
 	LiteGraph.registerNodeType("Objects/Element", ElementNode)
 	LiteGraph.registerNodeType("Objects/GetObjectByName", GetObjectByNameNode)
@@ -135,4 +177,7 @@ function registerObjectNodes() {
 	LiteGraph.registerNodeType("Objects/GetObjectPosition", GetObjectPositionNode)
 	LiteGraph.registerNodeType("Objects/GetObjectRotation", GetObjectRotationNode)
 	LiteGraph.registerNodeType("Objects/GetObjectScale", GetObjectScaleNode)
+	LiteGraph.registerNodeType("Objects/SetObjectPosition", SetObjectPositionNode)
+	LiteGraph.registerNodeType("Objects/SetObjectRotation", SetObjectRotationNode)
+	LiteGraph.registerNodeType("Objects/SetObjectScale", SetObjectScaleNode)
 }

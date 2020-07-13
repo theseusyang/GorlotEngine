@@ -1,6 +1,5 @@
 function unregisterNodes() {
-	LiteGraph.registered_node_types = []
-	LiteGraph.Nodes = []
+	LiteGraph.clearRegisteredTypes()
 }
 
 function registerMaterialNodes() {

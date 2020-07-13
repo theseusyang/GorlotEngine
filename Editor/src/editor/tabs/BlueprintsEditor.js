@@ -55,7 +55,7 @@ class BlueprintsEditor {
 		}
 
 		this.interval = setInterval(() => {
-			// Every second, the blueprints are gonna save
+			// Every second, the blueprints are going to be saved
 			self.updateBlueprints()
 		}, 1000)
 
@@ -76,9 +76,6 @@ class BlueprintsEditor {
 
 	updateInterface() {
 		this.graphcanvas.resize(EditorUI.mainarea.getSection(0).getWidth() - 2, EditorUI.mainarea.getSection(0).getHeight() - EditorUI.assetEx_height)
-
-		//this.canvas.width = EditorUI.mainarea.getSection(0).getWidth() - 2
-		//this.canvas.height = EditorUI.mainarea.getSection(0).getHeight() - EditorUI.assetEx_height
 	}
 }
 
