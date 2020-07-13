@@ -55,7 +55,7 @@ class ShaderMaterialEditor {
 
 		// Material preview Lights
 		this.sky = new Sky()
-		var sun = this.sky.children[0]
+		var sun = this.sky.sun
 		sun.shadow.camera.left = -5
 		sun.shadow.camera.right = 5
 		sun.shadow.camera.top = 5
@@ -134,7 +134,6 @@ class ShaderMaterialEditor {
 		}
 
 		this.file = f
-		console.log(f)
 
 		this.setContent(this.material.fragmentShader, this.material.vertexShader)
 	}

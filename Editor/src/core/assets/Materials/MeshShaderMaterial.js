@@ -54,26 +54,19 @@ class MeshShaderMaterial extends THREE.ShaderMaterial {
 					properties: {
 						mat: this.uuid
 					},
-					size: [178, 126],
+					size: [210, 382],
 					type: "Material/MeshPhongMaterial"
 				},
 				{
 					flags: {},
 					id: 2,
-					inputs: [
-						{
-							link: null,
-							name: "Material",
-							type: "Material"
-						}
-					],
+					inputs: [],
 					mode: 0,
 					order: 1,
 					pos: [502, 141],
 					properties: {
 						mat: this.uuid
 					},
-					size: [210, 382],
 					type: "Material/Shader"
 				}
 			],
