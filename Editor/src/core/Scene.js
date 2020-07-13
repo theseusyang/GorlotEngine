@@ -7,8 +7,7 @@ class Scene extends THREE.Scene {
 
 		this.name = "scene"
 
-		// Disable auto matrix updates
-		this.rotationAutoUpdate = false
+		// Matrix auto update
 		this.matrixAutoUpdate = false
 
 		// Fog

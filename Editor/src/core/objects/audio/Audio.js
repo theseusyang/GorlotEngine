@@ -48,13 +48,6 @@ class Audio extends THREE.Audio {
 		}
 	}
 
-	update() {
-		// Update children
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
-		}
-	}
-
 	// Dispose music
 	dispose() {
 		if (this.isPlaying) {

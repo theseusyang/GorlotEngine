@@ -23,22 +23,4 @@ class Empty extends THREE.Object3D {
 			this.components.push(component)
 		}
 	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-				this.children[i].initialize()
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
-		}
-	}
-
-	stop() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
-		}
-	}
 }

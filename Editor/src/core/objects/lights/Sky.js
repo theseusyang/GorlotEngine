@@ -53,7 +53,7 @@ class Sky extends THREE.Object3D {
 		}
 		uniforms.top_color.value.copy(this.hemisphere.color)
 
-		// Sky
+		// Sky geometry
 		var geometry = new THREE.SphereBufferGeometry(5000, 16, 16)
 		var material = new THREE.ShaderMaterial({vertexShader: vertex, fragmentShader: fragment, uniforms: uniforms, side: THREE.BackSide})
 
@@ -62,6 +62,11 @@ class Sky extends THREE.Object3D {
 		this.sky.rotationAutoUpdate = false
 		this.sky.matrixAutoUpdate = false
 		this.add(this.sky)
+
+		// Override sky raycast function
+		this.sky.raycast = function() {
+			return null
+		}
 
 		// Day time (seconds) and sun distance
 		this.auto_update = true
@@ -256,11 +261,6 @@ class Sky extends THREE.Object3D {
 		data.object.time = this.time
 
 		return data
-	}
-
-	raycast() {
-		// Sky is not collidable
-		return null
 	}
 }
 

@@ -52,7 +52,7 @@ include("src/core/loaders/FontLoader.js")
 
 include("src/core/objects/physics/PhysicsObject.js")
 
-include("src/core/objects/device/LeapHand.js")
+include("src/core/objects/device/LeapMotion.js")
 
 include("src/core/objects/lights/PointLight.js")
 include("src/core/objects/lights/SpotLight.js")

@@ -34,6 +34,11 @@ THREE.Object3D.prototype.removeAll = function() {
 // Destroy object
 THREE.Object3D.prototype.destroy = function() {
 	if (this.parent !== null) {
+
+		if (this.dispose) {
+			this.dispose()
+		}
+
 		this.parent.remove(this)
 	}
 }
@@ -49,10 +54,11 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 	{
 		meta =
 		{
+			fonts: {},
+			videos: {},
+			images: {},
 			geometries: {},
-			materials: {},
-			textures: {},
-			images: {}
+			materials: {}
 		};
 
 		output.metadata =
@@ -75,11 +81,11 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 		object.userData = this.userData;
 	}
 
-	object.castShadow = (this.castShadow === true);
-	object.receiveShadow = (this.receiveShadow === true);
-	object.visible = !(this.visible === false);
+	object.castShadow = this.castShadow
+	object.receiveShadow = this.receiveShadow
+	object.visible = this.visible
 
-	object.matrixAutoUpdate = (this.matrixAutoUpdate === true)
+	object.matrixAutoUpdate = this.matrixAutoUpdate
 	object.matrix = this.matrix.toArray();
 
 	if(this.geometry !== undefined)

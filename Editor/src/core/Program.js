@@ -9,8 +9,7 @@ class Program extends THREE.Object3D {
 		this.name = (name !== undefined) ? name : "program"
 		this.type = "Program"
 
-		// Disable auto matrix updates
-		this.rotationAutoUpdate = false
+		// Matrix auto update
 		this.matrixAutoUpdate = false
 
 		//Program Info

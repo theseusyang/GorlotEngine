@@ -46,7 +46,6 @@ class LightComponent extends Component {
 				EditorUI.form.addNumber("Far", this.object.shadow.camera.far, {name_width: 150})
 
 				EditorUI.form.addNumber("Zoom", this.object.shadow.camera.zoom, {name_width: 150})
-				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y], {name_width: 150})
 
 				EditorUI.form.addNumber("Bias", this.object.shadow.bias, {name_width: 150})
 				EditorUI.form.addNumber("Radius", this.object.shadow.radius, {name_width: 150})
@@ -67,9 +66,19 @@ class LightComponent extends Component {
 
 				EditorUI.form.addTitle("Shadow")
 
+				var res = []
+
+				for(var i = 0; i < 13; i++) {
+					var size = Math.pow(2, i)
+					res.push(size.toString())
+				}
+
+				EditorUI.form.addTitle("Resolution")
+				EditorUI.form.addCombo("Res. X", Editor.selected_object.shadow.mapSize.width, {values: res, name_width: 150})
+				EditorUI.form.addCombo("Res. Y", Editor.selected_object.shadow.mapSize.height, {values: res, name_width: 150})
+
 				EditorUI.form.addNumber("Near", this.object.shadow.camera.near, {name_width: 150})
 				EditorUI.form.addNumber("Far", this.object.shadow.camera.far, {name_width: 150})
-				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y], {name_width: 150})
 
 				EditorUI.form.addNumber("Bias", this.object.shadow.bias, {name_width: 150})
 				EditorUI.form.addNumber("Radius", this.object.shadow.radius, {name_width: 150})
@@ -88,7 +97,6 @@ class LightComponent extends Component {
 				EditorUI.form.addTitle("Shadow")
 				EditorUI.form.addNumber("Near", this.object.shadow.camera.near, {name_width: 150})
 				EditorUI.form.addNumber("Far", this.object.shadow.camera.far, {name_width: 150})
-				EditorUI.form.addVector2("Map Size", [this.object.shadow.mapSize.x, this.object.shadow.mapSize.y], {name_width: 150})
 
 
 				EditorUI.form.addSeparator()
@@ -156,17 +164,26 @@ class LightComponent extends Component {
 			this.object.penumbra = value
 		} else if (name === "Decay") {
 			this.object.decay = value
+		} else if (name === "Res. X") {
+			this.object.shadow.mapSize.width = value
+			this.object.updateShadowMap()
+		} else if (name === "Res. Y") {
+			this.object.shadow.mapSize.height = value
+			this.object.updateShadowMap()
 		}
 
 		else if (name === "Near") {
 			this.object.shadow.camera.near = value
-			// TODO: Make this to function
+			
+			if (this.object.updateShadowMap !== undefined) {
+				this.object.updateShadowMap()
+			}
 		} else if (name === "Far") {
 			this.object.shadow.camera.far = value
-			// TODO: Make this to function
-		} else if (name === "Map Size") {
-			this.object.shadow.mapSize.set(value[0], value[1])
-			// TODO: Make this to function
+			
+			if (this.object.updateShadowMap !== undefined) {
+				this.object.updateShadowMap()
+			}
 		}
 
 		else if (name === "Intensity") {

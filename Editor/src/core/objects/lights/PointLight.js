@@ -29,4 +29,14 @@ class PointLight extends THREE.PointLight {
 			this.components.push(component)
 		}
 	}
+
+	// Update light shadow map
+	updateShadowMap() {
+		if(this.shadow.map !== null) {
+			this.shadow.map.dispose()
+			this.shadow.map = null
+		}
+
+		this.shadow.camera.updateProjectionMatrix()
+	}
 }

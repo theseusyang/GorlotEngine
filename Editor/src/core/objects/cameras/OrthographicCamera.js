@@ -3,7 +3,7 @@
 // Orthographic Camera class
 class OrthographicCamera extends THREE.OrthographicCamera {
 	constructor(size, aspect, mode, near, far) {
-		super(-1, 1, 1, -1, near, far)
+		super(-1.0, 1.0, 1.0, -1.0, near, far)
 
 		this.name = "camera"
 
@@ -37,12 +37,6 @@ class OrthographicCamera extends THREE.OrthographicCamera {
 
 		for(var i = 0; i < this.children.length; i++) {
 			this.children[i].initialize()
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
 		}
 	}
 

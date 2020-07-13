@@ -8,10 +8,6 @@ class Blueprints extends THREE.Object3D {
 		this.name = "blueprints"
 		this.type = "Blueprints"
 
-		// Disable auto matrix updates
-		this.rotationAutoUpdate = false
-		this.matrixAutoUpdate = false
-
 		// Program and scene pointers
 		this.program = null
 		this.scene = null

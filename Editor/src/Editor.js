@@ -624,6 +624,7 @@ Editor.selectObjectHelper = function() {
 		// Camera
 		if (Editor.selected_object instanceof THREE.Camera) {
 			Editor.object_helper.add(new THREE.CameraHelper(Editor.selected_object))
+			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, "data/icons/camera/camera.png"))
 		}
 		// Directional Light
 		else if (Editor.selected_object instanceof THREE.DirectionalLight) {
@@ -770,9 +771,14 @@ Editor.loadProgram = function(fname) {
 // Export web project
 Editor.exportWebProject = function(dir) {
 	// For using this in windows, replace "/" for "\\"
+
+	// Core
 	App.copyFolder("runtime", dir)
 	App.copyFolder("src/core", dir + "/src/core")
 	App.copyFolder("src/input", dir + "/src/input")
+	App.copyFile("App.js", dir + "/App.js")
+
+	// Libraries
 	App.makeDirectory(dir + "/libs/")
 	App.copyFile("libs/litegraph/litegraph.js", dir + "/libs/litegraph/litegraph.js")
 	App.copyFile("libs/SPE.min.js", dir + "/libs/SPE.min.js")
@@ -784,7 +790,8 @@ Editor.exportWebProject = function(dir) {
 	App.copyFile("libs/three/three.min.js", dir + "/libs/three/three.min.js")
 	App.makeDirectory(dir + "/libs/three/effects")
 	App.copyFile("libs/three/effects/VREffect.js", dir + "/libs/three/effects/VREffect.js")
-	App.copyFile("src/App.js", dir + "/App.js")
+
+	// Save program
 	Editor.saveProgram(dir + "/app.gsp")
 }
 

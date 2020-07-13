@@ -18,22 +18,4 @@ class Bone extends THREE.Bone {
 			this.components.push(compo())
 		}
 	}
-
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].initialize()
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
-		}
-	}
-
-	stop() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
-		}
-	}
 }

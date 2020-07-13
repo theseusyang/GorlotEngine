@@ -23,24 +23,6 @@ class Model3D extends THREE.Mesh {
 		}
 	}
 
-	initialize() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].initialize()
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
-		}
-	}
-
-	stop() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
-		}
-	}
-
 	// Dispose model
 	dispose() {
 		// Dispose material and geometry

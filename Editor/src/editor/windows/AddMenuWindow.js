@@ -117,7 +117,7 @@ class AddMenuWindow {
 				"icon_style": "width: 12px"
 			},
 			{
-				"name": "Leap Hand",
+				"name": "Leap Motion",
 				"icon": "data/icons/hw/leap.png",
 				"icon_style": "width: 12px"
 			},
@@ -307,8 +307,8 @@ class AddMenuWindow {
 			Editor.addToScene(obj)
 
 		}
-		else if (o === "Leap Hand") {
-			Editor.addToScene(new LeapHand())
+		else if (o === "Leap Motion") {
+			Editor.addToScene(new LeapMotion())
 		}
 		else if (o === "Script") {
 

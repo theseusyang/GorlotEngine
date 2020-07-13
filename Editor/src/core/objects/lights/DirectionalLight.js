@@ -9,7 +9,8 @@ class DirectionalLight extends THREE.DirectionalLight {
 		this.castShadow = true
 
 		this.shadow.camera.near = 1
-		this.shadow.camera.far = 5000
+		this.shadow.camera.far = 10000
+		
 		this.shadow.camera.left = -10
 		this.shadow.camera.right = 10
 		this.shadow.camera.top = 10
