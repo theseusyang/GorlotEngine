@@ -112,6 +112,8 @@ include("src/core/Nodes/Blueprints/Logic.js")
 include("src/core/Nodes/Blueprints/Arrays.js")
 include("src/core/Nodes/Blueprints/Objects.js")
 include("src/core/Nodes/Blueprints/Scene.js")
+include("src/core/Nodes/Blueprints/Keyboard.js")
+include("src/core/Nodes/Blueprints/Mouse.js")
 
 // Particles Nodes
 include("src/core/Nodes/Particles/Particles.js")

@@ -143,6 +143,9 @@
                 }
             }
 
+            // I modified this
+            base_class.prototype.shape = LiteGraph.CARD_SHAPE
+
             var prev = this.registered_node_types[type];
 			if(prev) {
                 // TODO: I modified this line

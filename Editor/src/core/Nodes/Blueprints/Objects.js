@@ -16,25 +16,27 @@ ElementNode.prototype.onExecute = function() {
 
 	o = this.getInputData(0)
 
-	p = this.getInputData(1)
-	r = this.getInputData(2)
-	s = this.getInputData(3)
-
-	if (p === undefined || p === null && o !== undefined) {
-		p = o.position
+	if(o !== undefined && o !== null) {
+		p = this.getInputData(1)
+		r = this.getInputData(2)
+		s = this.getInputData(3)
+	
+		if (p === undefined || p === null && o !== undefined) {
+			p = o.position
+		}
+		// TODO: r = euler
+		if (s === undefined || s === null && o !== undefined) {
+			s = o.scale
+		}
+	
+		o.position.set(p.x, p.y, p.z)
+	
+		o.scale.set(s.x, s.y, s.z)
+	
+		this.setOutputData(0, o.position)
+		this.setOutputData(1, o.rotation)
+		this.setOutputData(2, o.scale)
 	}
-	// TODO: r = euler
-	if (s === undefined || s === null && o !== undefined) {
-		s = o.scale
-	}
-
-	o.position.set(p.x, p.y, p.z)
-
-	o.scale.set(s.x, s.y, s.z)
-
-	this.setOutputData(0, o.position)
-	this.setOutputData(1, o.rotation)
-	this.setOutputData(2, o.scale)
 
 }
 

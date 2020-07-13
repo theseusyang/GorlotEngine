@@ -66,7 +66,9 @@ class SceneEditor {
 							}
 						} else if (file.name.endsWith(".gsp")) {
     						var confirm = LiteGUI.confirm("All unsaved changes to the program will be lost! Load program?", (v) => {
-    							Editor.loadProgram(file.path)
+								if(v) {    						
+    								Editor.loadProgram(file.path)
+    							}
     						}, {title: "Open Project"})
 						}
 					}

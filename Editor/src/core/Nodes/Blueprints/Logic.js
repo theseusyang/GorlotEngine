@@ -2,8 +2,12 @@
 function Subgraph() {
     var self = this
     this.size = [140, 80]
-    this.properties = {type: "if"}
-    this.addInput("Condition", "Boolean")
+    this.properties = {type: "if", types: "if;ifnot;for"}
+    this.values = this.properties.types.split(";")
+
+    this.widget = this.addWidget("combo", "Type", this.properties.type, (v) => {
+        self.properties.type = v
+    }, {property: "type", values: this.values})
 
     // Create inner graph
     this.subgraph = new LiteGraph.LGraph()
@@ -21,12 +25,8 @@ function Subgraph() {
     this.subgraph.onOutputTypeChanged = this.onSubgraphTypeChangeOutput.bind(this)
     this.subgraph.onOutputRemoved = this.onSubgraphRemovedOutput.bind(this)
 }
-Subgraph.title = "If"
-Subgraph.desc = "Checks for a condition (Executed in a SubGraph)"
+Subgraph.title = "Subgraph"
 Subgraph.title_color = "#334"
-//Subgraph.prototype.onGetInputs = function() {
-//    return [["enabled","boolean"]]
-//}
 Subgraph.prototype.onDrawTitle = function(ctx) {
     if (this.flags.collapsed) {
         return
@@ -59,13 +59,37 @@ Subgraph.prototype.onMouseDown = function(e, pos, graphcanvas) {
 Subgraph.prototype.onAction = function(action, param) {
     this.subgraph.onAction(action, param)
 }
+Subgraph.prototype.onAdded = function() {
+    this.updateInput("type", this.properties.type)
+}
+//Subgraph.prototype.onPropertyChanged = function(n, v) {
+//    this.updateInput(n, v)
+//}
+Subgraph.prototype.updateInput = function(n, v) {
+    /*
+    TODO: For
+    if (n === "type") {
+        if (v === "if" || v === "ifnot") {
+            if(this.inputs.length < 1) {
+                this.addInput("Condition", "Boolean") 
+            } else {
+                this.removeInput("Condition")
+            }
+        } else if (v === "for") {
+            this.inputs = []
+            this.addInput("Array", "ForCondition")
+        }
+    }*/
+    this.addInput("Condition", "Boolean")
+}
 Subgraph.prototype.onExecute = function() {
-    this.enabled = this.getInputData(0)
-    if (!this.enabled && this.properties.type === "if") {
+    this.input = this.getInputData(0)
+    if ((this.input == false) && this.properties.type === "if") {
         return
-    } else if (this.enabled && this.properties.type === "ifnot") {
+    } else if (this.input && this.properties.type === "ifnot") {
         return
     }
+
     // Sends input to subgraph global inputs
     if (this.inputs) {
         for(var i = 0; i < this.inputs.length; i++) {

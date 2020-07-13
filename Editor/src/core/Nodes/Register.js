@@ -20,6 +20,8 @@ function registerBlueprintsNodes() {
 	registerArrayNodes()
 	registerObjectNodes()
 	registerSceneNodes()
+	registerKeyboardNodes()
+	registerMouseNodes()
 }
 
 function registerParticleNodes() {
