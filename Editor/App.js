@@ -60,6 +60,8 @@ include("src/core/texture/Texture.js");
 
 include("src/core/loaders/FontLoader.js");
 include("src/core/loaders/ImageLoader.js")
+include("src/core/loaders/VideoLoader.js")
+
 include("src/core/loaders/TextureLoader.js")
 include("src/core/loaders/ObjectLoader.js")
 include("src/core/loaders/MaterialLoader.js")

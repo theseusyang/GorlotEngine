@@ -5,7 +5,7 @@ function Text3D(text, material, font)
 {
 	if(font === undefined)
 	{
-		this.font = new FontLoader().parse(App.readFile("data/fonts/montserrat.json"));
+		this.font = new FontLoader().parse(JSON.parse(App.readFile("data/fonts/montserrat.json")));
 	}
 	else
 	{

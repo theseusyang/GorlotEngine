@@ -48,7 +48,7 @@ VideoTexture.prototype.toJSON = function(meta) {
 	data.autoplay = this.autoplay
 
 	if (meta.videos[this.video.uuid] === undefined) {
-		meta.video[this.video.uuid] = this.video.toJSON()
+		meta.videos[this.video.uuid] = this.video.toJSON()
 	}
 
 	return data
