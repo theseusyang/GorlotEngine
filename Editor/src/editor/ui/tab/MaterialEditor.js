@@ -123,6 +123,8 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 // Initialise node editor
 MaterialEditor.prototype.initNodeEditor = function() {
 	this.graph = new LGraph(this.nodes)
+	this.graph.extra = {}
+	this.graph.extra.material = this.material
 
 	var self = this
 	this.graph.onNodeConnectionChange = function() {
@@ -164,7 +166,10 @@ MaterialEditor.prototype.destroy = function()
 MaterialEditor.prototype.close = function() {
 	if (this.graph !== null) {
 		this.graph.stop()
+		delete this.graph.extra
+
 		this.material.updateNodes(this.graph.serialize())
+		console.log(this.material.nodes)
 	}
 }
 
@@ -208,8 +213,9 @@ MaterialEditor.prototype.updateMaterial = function() {
 	if (this.nodes.nodes !== undefined) {
 		for(var i = 0; i < this.nodes.nodes.length; i++) {
 			if (this.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
-				var genesis = this.nodes.nodes[i].properties.mat
-				this.material.setValues(Editor.getAssetByUUID(genesis))
+				//var genesis = this.nodes.nodes[i].properties.mat
+				//this.material.setValues(Editor.getAssetByUUID(genesis))
+				this.material.setValues(this.graph.extra.material)
 			}
 		}
 	}

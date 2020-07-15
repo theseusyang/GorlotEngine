@@ -10166,7 +10166,7 @@ LGraphNode.prototype.executeAction = function(action)
 
 	LGraphCanvas.prototype.showShowNodePanel = function( node )
 	{
-		window.SELECTED_NODE = node;
+		/*window.SELECTED_NODE = node;
 		var panel = document.querySelector("#node-panel");
 		if(panel)
 			panel.close();
@@ -10206,12 +10206,12 @@ LGraphNode.prototype.executeAction = function(action)
 			if(node.onShowCustomPanelInfo)
 				node.onShowCustomPanelInfo(panel);
 
-			/*
+			
 			panel.addHTML("<h3>Connections</h3>");
 			var connection_containers = panel.addHTML("<div class='inputs connections_side'></div><div class='outputs connections_side'></div>","connections");
 			var inputs = connection_containers.querySelector(".inputs");
 			var outputs = connection_containers.querySelector(".outputs");
-			*/
+			
 
 			panel.addButton("Delete",function(){
 				if(node.block_delete)
@@ -10219,6 +10219,7 @@ LGraphNode.prototype.executeAction = function(action)
 				node.graph.remove(node);
 				panel.close();
 			}).classList.add("delete");
+
 		}
 
 		function inner_showCodePad( node, propname )
@@ -10267,6 +10268,7 @@ LGraphNode.prototype.executeAction = function(action)
 		inner_refresh();
 
 		this.canvas.parentNode.appendChild( panel );
+        */
 	}
 	
 	LGraphCanvas.prototype.showSubgraphPropertiesDialog = function(node)

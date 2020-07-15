@@ -44,11 +44,7 @@ function MeshLambertMaterial(options) {
 						link: null
 					}
 				],
-				outputs: [{
-					name: "Material",
-					type: "Material",
-					links: null
-				}],
+				outputs: [],
 				pos: [208, 140],
 				properties: {
 					mat: this.uuid

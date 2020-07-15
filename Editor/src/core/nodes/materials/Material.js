@@ -11,9 +11,6 @@ function MeshPhongMaterialNode() {
 	this.addInput("Transparent", "Boolean")
 	this.addInput("Opacity", "number")
 	this.addInput("Affected By Fog", "Boolean")
-
-	this.addOutput("Material", "Material")
-	var self = this
 	
 	this.setProperty("reflectivity", 1)
 	this.setProperty("shininess", 30)
@@ -23,6 +20,7 @@ function MeshPhongMaterialNode() {
 	this.setProperty("opacity", 1)
 	this.setProperty("abf", true)
 
+	var self = this
 	this.widget1 = this.addWidget("slider", "Reflectivity", this.properties.reflectivity,  (v) => {self.properties.reflectivity = v}, {value: this.properties.reflectivity, min: 0, max: 1, text: "R"})
 	this.widget2 = this.addWidget("slider", "Shininess", this.properties.shininess, (v) => {self.properties.shininess = v}, {value: this.properties.shininess, min: 0, max: 100, text: "S"})
 
@@ -39,7 +37,13 @@ MeshPhongMaterialNode.title_color1 = NodesHelper.colours.skyblue[1]
 MeshPhongMaterialNode.title_color2 = NodesHelper.colours.skyblue[1]
 MeshPhongMaterialNode.title_text_color = NodesHelper.title_colours.white
 MeshPhongMaterialNode.title = "Material"
+MeshPhongMaterialNode.prototype.onAdded = function() {
+}
 MeshPhongMaterialNode.prototype.onPropertyChanged = function(n, v) {
+	if (this.graph && this.graph.onNodeConnectionChange) {
+       this.graph.onNodeConnectionChange()
+    }
+
 	if (n === "reflectivity") {
 		if(this.widget1 !== undefined) {
 			this.widget1.value = v
@@ -55,10 +59,12 @@ MeshPhongMaterialNode.prototype.onPropertyChanged = function(n, v) {
 	}
 }
 MeshPhongMaterialNode.prototype.onExecute = function() {
-	var mat = Editor.getAssetByUUID(this.properties.mat)
-	mat.nodes = {}
+	if (this.graph.extra !== undefined) {
+		var mat = this.graph.extra.material
+		mat.nodes = {}
+	}
 
-	if (mat !== undefined/* && mat instanceof THREE.MeshPhongMaterial*/ && mat !== null) {
+	if (mat !== undefined && mat !== null) {
 
 		var c = this.getInputData(0)
 		var e = this.getInputData(1)
@@ -116,13 +122,6 @@ MeshPhongMaterialNode.prototype.onExecute = function() {
 			mat.fog = this.properties["abf"]
 		}
 	}
-
-	this.setOutputData(0, mat)
-}
-MeshPhongMaterialNode.prototype.onPropertyChanged = function() {
-	if (this.graph && this.graph.onNodeConnectionChange) {
-       this.graph.onNodeConnectionChange()
-    }
 }
 
 function ShaderNode() {
@@ -134,8 +133,7 @@ ShaderNode.title_color2 = NodesHelper.colours.aquamarine[2]
 ShaderNode.title_text_color = NodesHelper.title_colours.white
 ShaderNode.title = "Shader"
 ShaderNode.prototype.onDblClick = function() {
-	var uuid = this.properties.mat
-	var mat = Editor.getAssetByUUID(uuid)
+	var mat = this.graph.extra.material
 
 	if (mat instanceof THREE.ShaderMaterial) {
 
@@ -175,7 +173,6 @@ ShaderNode.prototype.onDblClick = function() {
 }
 
 function SetMaterialColorNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Colour", "Color")
 }
 SetMaterialColorNode.title_color = NodesHelper.colours.cadet[0]
@@ -184,8 +181,8 @@ SetMaterialColorNode.title_color2 = NodesHelper.colours.cadet[2]
 SetMaterialColorNode.title_text_color = NodesHelper.title_colours.white
 SetMaterialColorNode.title = "Colour"
 SetMaterialColorNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var c = this.getInputData(1)
+	var m = this.graph.extra.material
+	var c = this.getInputData(0)
 
 	if (m !== undefined && c !== undefined) {
 		m.color = c
@@ -193,7 +190,6 @@ SetMaterialColorNode.prototype.onExecute = function() {
 }
 
 function SetMaterialDepthWriteNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Depth Write", "Boolean")
 }
 SetMaterialDepthWriteNode.title_color = NodesHelper.colours.chartreuse[0]
@@ -202,8 +198,8 @@ SetMaterialDepthWriteNode.title_color2 = NodesHelper.colours.chartreuse[2]
 SetMaterialDepthWriteNode.title_text_color = NodesHelper.title_colours.white
 SetMaterialDepthWriteNode.title = "Depth Write"
 SetMaterialDepthWriteNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var d = this.getInputData(1)
+	var m = this.graph.extra.material
+	var d = this.getInputData(0)
 
 	if (m !== undefined && d !== undefined) {
 		m.depthWrite = d
@@ -211,7 +207,6 @@ SetMaterialDepthWriteNode.prototype.onExecute = function() {
 }
 
 function SetMaterialTransparentNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Transparent", "Boolean")
 }
 SetMaterialTransparentNode.title_color = NodesHelper.colours.chartreuse[0]
@@ -220,8 +215,8 @@ SetMaterialTransparentNode.title_color2 = NodesHelper.colours.chartreuse[2]
 SetMaterialTransparentNode.title_text_color = NodesHelper.title_colours.white
 SetMaterialTransparentNode.title = "Transparent"
 SetMaterialTransparentNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var t = this.getInputData(1)
+	var m = this.graph.extra.material
+	var t = this.getInputData(0)
 
 	if (m !== undefined && t !== undefined) {
 		m.transparent = t
@@ -229,7 +224,6 @@ SetMaterialTransparentNode.prototype.onExecute = function() {
 }
 
 function SetMaterialOpacityNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Opacity", "number")
 
 	this.setProperty("opacity", 0)
@@ -241,8 +235,8 @@ SetMaterialOpacityNode.title_color2 = NodesHelper.colours.chocolate[2]
 SetMaterialOpacityNode.title_text_color = NodesHelper.title_colours.white
 SetMaterialOpacityNode.title = "Opacity"
 SetMaterialOpacityNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var o = this.getInputData(1)
+	var m = this.graph.extra.material
+	var o = this.getInputData(0)
 
 	if (o === undefined) {
 		o = this.properties["opacity"]
@@ -259,7 +253,6 @@ SetMaterialOpacityNode.prototype.onPropertyChanged = function() {
 }
 
 function SetBlendingModeMaterialNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Blending Mode", "number")
 }
 SetBlendingModeMaterialNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -268,8 +261,8 @@ SetBlendingModeMaterialNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetBlendingModeMaterialNode.title_text_color = NodesHelper.title_colours.white
 SetBlendingModeMaterialNode.title = "Blending"
 SetBlendingModeMaterialNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var b = this.getInputData(1)
+	var m = this.graph.extra.material
+	var b = this.getInputData(0)
 
 	if (m !== undefined && b !== undefined) {
 		m.blending = b
@@ -277,7 +270,6 @@ SetBlendingModeMaterialNode.prototype.onExecute = function() {
 }
 
 function SetBlendingSourceNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Blending source", "number")
 }
 SetBlendingSourceNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -286,8 +278,8 @@ SetBlendingSourceNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetBlendingSourceNode.title_text_color = NodesHelper.title_colours.white
 SetBlendingSourceNode.title = "Blend Source"
 SetBlendingSourceNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var bs = this.getInputData(1)
+	var m = this.graph.extra.material
+	var bs = this.getInputData(0)
 
 	if (m !== undefined && bs !== undefined) {
 		m.blendSrc = bs
@@ -295,7 +287,6 @@ SetBlendingSourceNode.prototype.onExecute = function() {
 }
 
 function SetBlendingSourceAlphaNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Alpha", "number")
 }
 SetBlendingSourceAlphaNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -304,8 +295,8 @@ SetBlendingSourceAlphaNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetBlendingSourceAlphaNode.title_text_color = NodesHelper.title_colours.white
 SetBlendingSourceAlphaNode.title = "Blend Source Alpha"
 SetBlendingSourceAlphaNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var a = this.getInputData(1)
+	var m = this.graph.extra.material
+	var a = this.getInputData(0)
 
 	if (m !== undefined && a !== undefined) {
 		m.blendSrcAlpha = a
@@ -313,7 +304,6 @@ SetBlendingSourceAlphaNode.prototype.onExecute = function() {
 }
 
 function SetBlendingDestinationNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Blending Destination", "number")
 }
 SetBlendingDestinationNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -322,8 +312,8 @@ SetBlendingDestinationNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetBlendingDestinationNode.title_text_color = NodesHelper.title_colours.white
 SetBlendingDestinationNode.title = "Blend Destination"
 SetBlendingDestinationNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var bdst = this.getInputData(1)
+	var m = this.graph.extra.material
+	var bdst = this.getInputData(0)
 
 	if (m !== undefined && bdst !== undefined) {
 		m.blendDst = bdst
@@ -331,7 +321,6 @@ SetBlendingDestinationNode.prototype.onExecute = function() {
 }
 
 function SetBlendingDestinationAlphaNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Alpha", "number")
 }
 SetBlendingDestinationAlphaNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -340,8 +329,8 @@ SetBlendingDestinationAlphaNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetBlendingDestinationAlphaNode.title_text_color = NodesHelper.title_colours.white
 SetBlendingDestinationAlphaNode.title = "Blend Destination Alpha"
 SetBlendingDestinationAlphaNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var a = this.getInputData(1)
+	var m = this.graph.extra.material
+	var a = this.getInputData(0)
 
 	if (m !== undefined && a !== undefined) {
 		m.blendDst = a
@@ -349,7 +338,6 @@ SetBlendingDestinationAlphaNode.prototype.onExecute = function() {
 }
 
 function SetBlendEquationNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Equation", "number")
 }
 SetBlendEquationNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -358,8 +346,8 @@ SetBlendEquationNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetBlendEquationNode.title_text_color = NodesHelper.title_colours.white
 SetBlendEquationNode.title = "Blend Equation"
 SetBlendEquationNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var e = this.getInputData(1)
+	var m = this.graph.extra.material
+	var e = this.getInputData(0)
 
 	if (m !== undefined && e !== undefined) {
 		m.blendEquation = e
@@ -367,7 +355,6 @@ SetBlendEquationNode.prototype.onExecute = function() {
 }
 
 function SetBlendEquationAlphaNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Alpha", "number")
 }
 SetBlendEquationAlphaNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -376,8 +363,8 @@ SetBlendEquationAlphaNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetBlendEquationAlphaNode.title_text_color = NodesHelper.title_colours.white
 SetBlendEquationAlphaNode.title = "Blend Equation Alpha"
 SetBlendEquationAlphaNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var a = this.getInputData(1)
+	var m = this.graph.extra.material
+	var a = this.getInputData(0)
 
 	if (m !== undefined && a !== undefined) {
 		m.blendEquationAlpha = a
@@ -385,7 +372,6 @@ SetBlendEquationAlphaNode.prototype.onExecute = function() {
 }
 
 function SetAlphaTestNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Alpha Test", "number")
 }
 SetAlphaTestNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -394,8 +380,8 @@ SetAlphaTestNode.title_color2 = NodesHelper.colours.cornsilk[2]
 SetAlphaTestNode.title_text_color = NodesHelper.title_colours.white
 SetAlphaTestNode.title = "Alpha Test"
 SetAlphaTestNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var a = this.getInputData(1)
+	var m = this.graph.extra.material
+	var a = this.getInputData(0)
 
 	if (m !== undefined && a !== undefined) {
 		m.alphaTest = a
@@ -403,7 +389,6 @@ SetAlphaTestNode.prototype.onExecute = function() {
 }
 
 function TestDepthNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Test", "Boolean")
 }
 TestDepthNode.title_color = NodesHelper.colours.chartreuse[0]
@@ -412,8 +397,8 @@ TestDepthNode.title_color2 = NodesHelper.colours.chartreuse[2]
 TestDepthNode.title_text_color = NodesHelper.title_colours.white
 TestDepthNode.title = "Test Depth"
 TestDepthNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var t = this.getInputData(1)
+	var m = this.graph.extra.material
+	var t = this.getInputData(0)
 
 	if (m !== undefined && t !== undefined) {
 		m.depthTest = t
@@ -421,7 +406,6 @@ TestDepthNode.prototype.onExecute = function() {
 }
 
 function ShadingNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Shading", "number")
 }
 ShadingNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -430,8 +414,8 @@ ShadingNode.title_color2 = NodesHelper.colours.cornsilk[2]
 ShadingNode.title_text_color = NodesHelper.title_colours.white
 ShadingNode.title = "Shading"
 ShadingNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var s = this.getInputData(1)
+	var m = this.graph.extra.material
+	var s = this.getInputData(0)
 
 	if (m !== undefined && s !== undefined) {
 		m.shading = s
@@ -440,7 +424,6 @@ ShadingNode.prototype.onExecute = function() {
 }
 
 function AffectedByFogNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Value", "Boolean")
 }
 AffectedByFogNode.title_color = NodesHelper.colours.chartreuse[0]
@@ -449,8 +432,8 @@ AffectedByFogNode.title_color2 = NodesHelper.colours.chartreuse[2]
 AffectedByFogNode.title_text_color = NodesHelper.title_colours.white
 AffectedByFogNode.title = "Affected By Fog"
 AffectedByFogNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var v = this.getInputData(1)
+	var m = this.graph.extra.material
+	var v = this.getInputData(0)
 
 	if (m !== undefined && v !== undefined) {
 		m.fog = v
@@ -458,7 +441,6 @@ AffectedByFogNode.prototype.onExecute = function() {
 }
 
 function SetPrecisionNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Precision", "Text")
 }
 SetPrecisionNode.title_color = NodesHelper.colours.darkkhaki[0]
@@ -467,8 +449,8 @@ SetPrecisionNode.title_color2 = NodesHelper.colours.darkkhaki[2]
 SetPrecisionNode.title_text_color = NodesHelper.title_colours.white
 SetPrecisionNode.title = "Precision"
 SetPrecisionNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var p = this.getInputData(1)
+	var m = this.graph.extra.material
+	var p = this.getInputData(0)
 
 	if (m !== undefined && p !== undefined) {
 		m.precision = p
@@ -476,7 +458,6 @@ SetPrecisionNode.prototype.onExecute = function() {
 }
 
 function ShadowSideNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Side", "number")
 }
 ShadowSideNode.title_color = NodesHelper.colours.cornsilk[0]
@@ -485,8 +466,8 @@ ShadowSideNode.title_color2 = NodesHelper.colours.cornsilk[2]
 ShadowSideNode.title_text_color = NodesHelper.title_colours.white
 ShadowSideNode.title = "Shadow Side"
 ShadowSideNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var s = this.getInputData(1)
+	var m = this.graph.extra.material
+	var s = this.getInputData(0)
 
 	if (m !== undefined && s !== undefined) {
 		m.shadowSide = s
@@ -503,8 +484,8 @@ CombineNode.title_color2 = NodesHelper.colours.cornsilk[2]
 CombineNode.title_text_color = NodesHelper.title_colours.white
 CombineNode.title = "Combine"
 CombineNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var mode = this.getInputData(1)
+	var m = this.graph.extra.material
+	var mode = this.getInputData(0)
 
 	if (m !== undefined && mode !== undefined) {
 		m.combine = mode
@@ -512,7 +493,6 @@ CombineNode.prototype.onExecute = function() {
 }
 
 function MaterialSetSkinningNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Skinning", "Boolean")
 }
 MaterialSetSkinningNode.title_color = NodesHelper.colours.chartreuse[0]
@@ -521,8 +501,8 @@ MaterialSetSkinningNode.title_color2 = NodesHelper.colours.chartreuse[2]
 MaterialSetSkinningNode.title_text_color = NodesHelper.title_colours.white
 MaterialSetSkinningNode.title = "Skinning"
 MaterialSetSkinningNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var s = this.getInputData(1)
+	var m = this.graph.extra.material
+	var s = this.getInputData(0)
 
 	if (m !== undefined && s !== undefined) {
 		m.skinning = s
@@ -530,7 +510,6 @@ MaterialSetSkinningNode.prototype.onExecute = function() {
 }
 
 function MaterialSetRefractionRatioNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Ratio", "number")
 }
 MaterialSetRefractionRatioNode.title_color = NodesHelper.colours.chocolate[0]
@@ -539,8 +518,8 @@ MaterialSetRefractionRatioNode.title_color2 = NodesHelper.colours.chocolate[2]
 MaterialSetRefractionRatioNode.title_text_color = NodesHelper.title_colours.white
 MaterialSetRefractionRatioNode.title = "Refraction Ratio"
 MaterialSetRefractionRatioNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var r = this.getInputData(1)
+	var m = this.graph.extra.material
+	var r = this.getInputData(0)
 
 	if (m !== undefined && r !== undefined) {
 		m.refractionRatio = r
@@ -548,7 +527,6 @@ MaterialSetRefractionRatioNode.prototype.onExecute = function() {
 }
 
 function MaterialSetTextureMapNode() {
-	this.addInput("Material", "Material")
 	this.addInput("Texture", "Texture")
 }
 MaterialSetTextureMapNode.title_color = NodesHelper.colours.darkorchid[0]
@@ -557,8 +535,8 @@ MaterialSetTextureMapNode.title_color2 = NodesHelper.colours.darkorchid[2]
 MaterialSetTextureMapNode.title_text_color = NodesHelper.title_colours.white
 MaterialSetTextureMapNode.title = "Texture Map"
 MaterialSetTextureMapNode.prototype.onExecute = function() {
-	var m = this.getInputData(0)
-	var t = this.getInputData(1)
+	var m = this.graph.extra.material
+	var t = this.getInputData(0)
 
 	if (m !== undefined && t !== undefined) {
 		m.map = t
