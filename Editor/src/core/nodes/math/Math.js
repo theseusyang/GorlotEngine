@@ -439,8 +439,6 @@ TanNode.prototype.onExecute = function() {
 
 
 function AdditionNode() {
-	this.addInput("X", "number")
-	this.addInput("Y", "number")
 	this.addOutput("Result", "number")
 }
 AdditionNode.title_color = NodesHelper.colours.palevioletred[0]
@@ -448,22 +446,19 @@ AdditionNode.title_color1 = NodesHelper.colours.palevioletred[1]
 AdditionNode.title_color2 = NodesHelper.colours.palevioletred[1]
 AdditionNode.title_text_color = NodesHelper.title_colours.white
 AdditionNode.title = "Addition"
+AdditionNode.prototype.onGetInputs = function() {
+	return [["Input", "number"]]
+}
 AdditionNode.prototype.onExecute = function() {
-	var x = this.getInputData(0)
-	var y = this.getInputData(1)
-	if (x === undefined) {
-		x = 0
+	var result = 0
+	for(var i = 0; i < this.inputs.length; i++) {
+		result = result + this.getInputData(i)
 	}
-	if (y === undefined) {
-		y = 0
-	}
-	this.setOutputData(0, x + y)
+	this.setOutputData(0, result)
 }
 
 
 function SubtractionNode() {
-	this.addInput("X", "number")
-	this.addInput("Y", "number")
 	this.addOutput("Result", "number")
 }
 SubtractionNode.title_color = NodesHelper.colours.palevioletred[0]
@@ -471,16 +466,15 @@ SubtractionNode.title_color1 = NodesHelper.colours.palevioletred[1]
 SubtractionNode.title_color2 = NodesHelper.colours.palevioletred[1]
 SubtractionNode.title_text_color = NodesHelper.title_colours.white
 SubtractionNode.title = "Subtraction"
+SubtractionNode.prototype.onGetInputs = function() {
+	return [["Input", "number"]]
+}
 SubtractionNode.prototype.onExecute = function() {
-	var x = this.getInputData(0)
-	var y = this.getInputData(1)
-	if (x === undefined) {
-		x = 0
+	var result = 0
+	for(var i = 0; i < this.inputs.length; i++) {
+		result = result - this.getInputData(i)
 	}
-	if (y === undefined) {
-		y = 0
-	}
-	this.setOutputData(0, x - y)
+	this.setOutputData(0, result)
 }
 
 function registerMathNodes() {

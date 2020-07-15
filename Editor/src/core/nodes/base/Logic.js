@@ -99,6 +99,31 @@ Subgraph.prototype.sendEventToAllNodes = function(eventname, param, mode) {
         this.subgraph.sendEventToAllNodes(eventname, param, mode)
     }
 }
+Subgraph.prototype.onDrawBackground = function(ctx, graphcanvas, canvas, pos) {
+    if (this.flags.collapsed) {
+        return
+    }
+
+    var y = this.size[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5
+
+    // Button
+    var over = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LiteGraph.NODE_TITLE_HEIGHT)
+    ctx.fillStyle = over ? "#555" : "#222"
+    ctx.beginPath()
+    ctx.roundRect(0, y, this.size[0] + 1, LiteGraph.NODE_TITLE_HEIGHT, 0, 8)
+    ctx.fill()
+
+    // Button
+    ctx.textAlign = "center"
+    ctx.font = "24px Arial"
+    ctx.fillStyle = over ? "#DDD" : "#999"
+    ctx.fillText("+", this.size[0] * 0.5, y + 24)
+}
+Subgraph.prototype.computeSize = function() {
+    var num_inputs = this.inputs ? this.inputs.length : 0
+    var num_outputs = this.outputs ? this.outputs.length : 0
+    return [200, Math.max(num_inputs, num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_TITLE_HEIGHT]
+}
 // ** INPUTS *****
 Subgraph.prototype.onSubgraphTrigger = function(event, param) {
     var slot = this.findOutputSlot(event)

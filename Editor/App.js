@@ -32,7 +32,7 @@ include("lib/stats.min.js");
 include("lib/SPE.min.js");
 include("lib/base64.min.js")
 
-include("lib/litegraph/litegraph.js")
+include("lib/litegraph/lgraph.js")
 
 //Internal modules
 include("src/core/three/Three.js");
