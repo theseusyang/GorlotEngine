@@ -26,6 +26,10 @@ TextureNode.prototype.onExecute = function() {
 	}
 }
 
+function GetTextureThroughUUIDNode() {
+	// TODO: This
+}
+
 function TextureWrapHorNode() {
 	this.addInput("Texture", "Texture")
 	this.addInput("Wrap", "number")

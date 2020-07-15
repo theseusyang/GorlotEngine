@@ -6,6 +6,10 @@ function Font(data) {
 	this.uuid = THREE.Math.generateUUID()
 	this.type = "Font"
 
+	if (data !== undefined) {
+		this.name = data.original_font_information.fullName
+	}
+
 	this.data = data
 }
 
@@ -13,12 +17,19 @@ Font.prototype.isFont = true
 
 // Create JSON description
 Font.prototype.toJSON = function(meta) {
+
+	if (meta.fonts[this.uuid] !== undefined) {
+		return meta.fonts[this.uuid]
+	}
+
 	var data = {}
 
 	data.name = this.name
 	data.uuid = this.uuid
 	data.type = this.type
 	data.data = this.data
+
+	meta.fonts[this.uuid] = data
 
 	return data
 }
