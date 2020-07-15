@@ -1,7 +1,7 @@
 "use strict";
 
 //Codemirror
-include("lib/codemirror/codemirror.js");
+include("lib/codemirror/codemirror.min.js");
 include("lib/codemirror/codemirror.css");
 include("lib/codemirror/keymap/sublime.js");
 include("lib/codemirror/keymap/emacs.js");
@@ -139,7 +139,7 @@ Editor.MODE_ROTATE = 3;
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Jul 14 2020 16:12:10 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Web Jul 15 2020 13:00:00 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -362,14 +362,14 @@ Editor.update = function()
 		{
 			//TODO <FIX THIS>
 			//Lock mouse wheen camera is moving
-			/*if(Mouse.buttonJustPressed(Mouse.LEFT) || Mouse.buttonJustPressed(Mouse.RIGHT) || Mouse.buttonJustPressed(Mouse.MIDDLE))
+			if(Mouse.buttonJustPressed(Mouse.LEFT) || Mouse.buttonJustPressed(Mouse.RIGHT) || Mouse.buttonJustPressed(Mouse.MIDDLE))
 			{
 				Mouse.setLock(true);
 			}
 			else if(Mouse.buttonJustReleased(Mouse.LEFT) || Mouse.buttonJustReleased(Mouse.RIGHT) || Mouse.buttonJustReleased(Mouse.MIDDLE))
 			{
 				Mouse.setLock(false);
-			}*/
+			}
 
 			//Look camera
 			if(Mouse.buttonPressed(Mouse.LEFT) && !Editor.is_editing_object)
