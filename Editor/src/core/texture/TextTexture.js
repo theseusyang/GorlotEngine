@@ -1,26 +1,24 @@
-"use strict"
+"use strict";
 
-// Text texture class
-class TextTexture extends THREE.CanvasTexture {
-	constructor() {
+//Text texture constructor
+function TextTexture()
+{
+	//Text canvas
+	this.canvas = document.createElement("canvas");
+	this.canvas.width = 256;
+	this.canvas.height = 256;
 
-		// Text canvas
-		var canvas = document.createElement("canvas")
-		canvas.width = 256
-		canvas.height = 256
-		
-		super(canvas)
-		
-		// Assign this.canvas to canvas
-		this.canvas = canvas
+	//Draw text to canvas
+	this.context = this.canvas.getContext("2d");
+	this.context.font = "Normal 60px Arial";
+	this.context.textAlign = "center";
+	this.context.fillStyle = "#FFFFFF";
+	this.context.fillText("text", this.canvas.width/2, this.canvas.height/2);
 
-		this.context = this.canvas.getContext("2d")
-		this.context.font = "Normal 60px Arial"
-		this.context.textAlign = "center"
-		this.context.fillStyle = "rgba(255, 255, 255, 1)"
-		this.context.fillText("text", this.canvas.width/2, this.canvas.height/2)
+	THREE.CanvasTexture.call(this, this.canvas);
 
-		this.text = "text"
-		this.needsUpdate = true
-	}
+	this.text = "text";
+	this.needsUpdate = true;
 }
+
+TextTexture.prototype = Object.create(THREE.CanvasTexture.prototype);

@@ -1,128 +1,110 @@
-class Script extends THREE.Object3D {
-	constructor(code, mode) {
-		super()
+function Script(code, mode)
+{
+	THREE.Object3D.call(this);
+	
+	this.type = "Script";
+	this.name = "script";
 
-		// Set default name and object type
-		this.name = "script"
-		this.type = "Script"
+	//Program and scene pointers
+	this.program = null;
+	this.scene = null;
 
-		// Program and scene pointers
-		this.program = null
-		this.scene = null
+	//Script Code
+	this.func = null;
+	this.code = "//ADD CODE HERE";
+	this.mode = Script.INIT;
 
-		// Script code
-		this.func = null
-		this.code = "//ADD CODE HERE"
-		this.mode = Script.INIT
-
-		this.icon = "data/icons/script/script.png"
-
-		// Get arguments
-		if (code !== undefined) {
-			this.code = code
-		}
-		if (mode !== undefined) {
-			this.mode = mode
-		}
-
-		// Script functions
-		this.setCode(this.code)
-
-		this.components = []
-		
-		this.defaultComponents = []
-		this.defaultComponents.push(new ElementComponent())
-		this.defaultComponents.push(new Object3DComponent())
-		this.defaultComponents.push(new ScriptComponent())
-
+	//Get arguments
+	if(code !== undefined)
+	{
+		this.code = code;
+	}
+	if(mode !== undefined)
+	{
+		this.mode = mode;
 	}
 
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
+	//Script functions
+	this.setCode(this.code);
+}
+
+Script.prototype = Object.create(THREE.Object3D.prototype);
+
+//Script mode
+Script.INIT = 0;
+Script.LOOP = 1;
+
+//Initialize
+Script.prototype.initialize = function()
+{
+	//Program and scene
+	var node = this;
+	while(node.parent !== null)
+	{
+		node = node.parent;
+		if(node instanceof Scene)
+		{
+			this.scene = node;
 		}
-	}
-
-	initialize() {
-
-		// Program and scene
-		var node = this
-		while(node.parent !== null) {
-				node = node.parent
-			if (node instanceof Scene) {
-				node.scene = node
-			} else if (node instanceof Program) {
-				node.program = node
-			}
-		}
-
-		// Run script
-		if(this.mode === Script.INIT) {
-			try {
-				this.func()
-			} catch(e) {
-				console.error(e.message)
-			}
-		}
-
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].initialize()
+		else if(node instanceof Program)
+		{
+			this.program = node;
 		}
 	}
 
-	update() {
-		// Run script
-		if(this.mode === Script.LOOP) {
-			try {
-				this.func()
-			} catch (e) {
-				console.error(e.message)
-			}
-		}
-
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
-		}
+	//Run script
+	if(this.mode === Script.INIT)
+	{
+		this.func();
 	}
 
-	setCode(code) {
-		try {
-			this.code = code
-			this.func = Function(this.code)
-		} catch(e) {
-			if (e instanceof SyntaxError) {
-				var error = {
-					line: 0,
-					message: e.message
-				}
-
-				console.error(error)
-			}
-		}
-	}
-
-	setMode(mode) {
-		// Set mode
-		this.mode = mode
-	}
-
-	stop() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
-		}
-	}
-
-	toJSON(meta) {
-		var data = THREE.Object3D.prototype.toJSON.call(this, meta)
-
-		data.object.mode = this.mode
-		data.object.code = this.code
-		data.object.components = this.components
-
-		return data
+	//Initialize children
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].initialize();
 	}
 }
 
-// Script modes
-Script.INIT = 0
-Script.LOOP = 1
+//Update Script
+Script.prototype.update = function()
+{
+	//Run script
+	if(this.mode === Script.LOOP)
+	{
+		this.func();
+	}
+
+	//Update children
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].update();
+	}
+}
+
+//Define script code
+Script.prototype.setCode = function(code)
+{
+	try
+	{
+		this.code = code;
+		this.func = Function(this.code);
+	}
+	catch(e){}
+}
+
+//Set script mode
+Script.prototype.setMode = function(mode)
+{
+	this.mode = mode;
+}
+
+//Create JSON for object
+Script.prototype.toJSON = function(meta)
+{
+	var data = THREE.Object3D.prototype.toJSON.call(this, meta);
+
+	data.object.mode = this.mode;
+	data.object.code = this.code;
+
+	return data;
+}

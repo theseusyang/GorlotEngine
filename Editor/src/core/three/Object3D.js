@@ -1,51 +1,63 @@
-"use strict"
+"use strict";
 
-// Hidden attributes (hidden objects are not serialised and don't show up in the editor)
-THREE.Object3D.prototype.hidden = false
+//Folded
+THREE.Object3D.prototype.folded = false;
 
-// Initialize object
-THREE.Object3D.prototype.initialize = function() {
-	for(var i = 0; i < this.children.length; i++) {
-		this.children[i].initialize()
+//Hidden attribute (hidden objects are not serialized and dont show up in the editor)
+THREE.Object3D.prototype.hidden = false;
+
+//Initialize Object
+THREE.Object3D.prototype.initialize = function()
+{
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].initialize();
 	}
 }
 
-// Update object
-THREE.Object3D.prototype.update = function() {
-	for(var i = 0; i < this.children.length; i++) {
-		this.children[i].update
+//Update object
+THREE.Object3D.prototype.update = function()
+{
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].update();
 	}
 }
 
-// Dispose object
-THREE.Object3D.prototype.dispose = function() {
-	for(var i = 0; i < this.children.length; i++) {
-		this.children[i].dispose()
+//Dispose object
+THREE.Object3D.prototype.dispose = function()
+{
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].dispose();
 	}
 }
 
-// Remove all children from object
-THREE.Object3D.prototype.removeAll = function() {
-	for(var i = this.children.length - 1; i > -1; i--) {
-		this.remove(this.children[i])
+//Remove all children from object
+THREE.Object3D.prototype.removeAll = function()
+{
+	for(var i = this.children.length - 1; i > -1; i--)
+	{
+		this.remove(this.children[i]);
 	}
 }
 
-// Destroy object
-THREE.Object3D.prototype.destroy = function() {
-	if (this.parent !== null) {
-
-		if (this.dispose) {
-			this.dispose()
+//Destroy object
+THREE.Object3D.prototype.destroy = function()
+{
+	if(this.parent !== null)
+	{
+		if(this.dispose)
+		{
+			this.dispose();
 		}
-
-		this.parent.remove(this)
+		this.parent.remove(this);
 	}
 }
 
-// Create JSON for object
-THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
-
+//Create JSON for object
+THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
+{
 	var isRootObject = (meta === undefined);
 	var output = {};
 
@@ -58,13 +70,14 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 			videos: {},
 			images: {},
 			geometries: {},
-			materials: {}
+			materials: {},
+			textures: {}
 		};
 
 		output.metadata =
 		{
 			version: 1.0,
-			generator: 'GorlotProgram'
+			type: "NunuProgram"
 		};
 	}
 
@@ -73,31 +86,34 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 	object.uuid = this.uuid;
 	object.type = this.type;
 	object.name = this.name;
-	object.components = this.components
-	object.hidden = this.hidden
 
+	object.folded = this.folded;
+	object.hidden = this.hidden;
+	
 	if(JSON.stringify(this.userData) !== "{}")
 	{
 		object.userData = this.userData;
 	}
 
-	object.castShadow = this.castShadow
-	object.receiveShadow = this.receiveShadow
-	object.visible = this.visible
+	object.castShadow = this.castShadow;
+	object.receiveShadow = this.receiveShadow;
+	object.visible = this.visible;
 
-	object.matrixAutoUpdate = this.matrixAutoUpdate
+	object.matrixAutoUpdate = this.matrixAutoUpdate;
 	object.matrix = this.matrix.toArray();
 
+	//If there is geometry store it
 	if(this.geometry !== undefined)
 	{
-		if(meta.geometries[ this.geometry.uuid ] === undefined)
+		if(meta.geometries[this.geometry.uuid] === undefined)
 		{
-			meta.geometries[ this.geometry.uuid ] = this.geometry.toJSON( meta );
+			meta.geometries[this.geometry.uuid] = this.geometry.toJSON(meta);
 		}
 
 		object.geometry = this.geometry.uuid;
 	}
 
+	//If there is a material store it
 	if(this.material !== undefined)
 	{
 		if(meta.materials[this.material.uuid] === undefined)
@@ -108,9 +124,10 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 		object.material = this.material.uuid;
 	}
 
-	// Resource access callback
-	if (resourceAccess !== undefined) {
-		resourceAccess(meta, object)
+	//Resource access callback
+	if(resourceAccess !== undefined)
+	{
+		resourceAccess(meta, object);
 	}
 
 	//Collect children data
@@ -118,14 +135,16 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 	{
 		object.children = [];
 
-		for(var i = 0; i < this.children.length; i++)
+		for(var i = 0; i < this.children.length; i ++)
 		{
-			if(!this.children[i].hidden) {
-				object.children.push( this.children[ i ].toJSON(meta).object);
+			if(!this.children[i].hidden)
+			{
+				object.children.push(this.children[i].toJSON(meta).object);
 			}
 		}
 	}
 
+	//If root object add resources before returning
 	if(isRootObject)
 	{
 		var geometries = extractFromCache(meta.geometries);
@@ -160,12 +179,11 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess) {
 		var values = [];
 		for(var key in cache)
 		{
-			var data = cache[ key ];
+			var data = cache[key];
 			delete data.metadata;
-			values.push( data );
+			values.push(data);
 		}
 
 		return values;
 	}
-
 }

@@ -1,36 +1,28 @@
-"use strict"
+"use strict";
 
-// Sprite class
-class Sprite extends THREE.Sprite {
-	constructor(material) {
-		super(material)
+//Sprite constructor
+function Sprite(material)
+{
+	THREE.Sprite.call(this, material);
 
-		this.name = "sprite"
-		this.type = "Sprite"
+	this.name = "sprite";
+	this.type = "Sprite";
+}
 
-		this.components = []
+Sprite.prototype = Object.create(THREE.Sprite.prototype);
 
-		this.defaultComponents = []
-		this.defaultComponents.push(new ElementComponent())
-		this.defaultComponents.push(new Object3DComponent())
+//Dipose sprite
+Sprite.prototype.dispose = function()
+{
+	//Dipose material
+	if(this.material.dispose !== undefined)
+	{
+		this.material.dispose();
 	}
 
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	// Dispose sprite
-	dispose() {
-		// Dispose material
-		if (this.material.dispose !== undefined) {
-			this.material.dispose()
-		}
-
-		// Dispose children
-		for(var i = 0;  i < this.children.length; i++) {
-			this.children[i].dispose()
-		}
+	//Dipose children
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].dispose();
 	}
 }

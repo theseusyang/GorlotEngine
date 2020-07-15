@@ -1,23 +1,11 @@
-"use strict"
+"use strict";
 
-// Hemisphere light class
-class HemisphereLight extends THREE.HemisphereLight {
-	constructor(skyColour, groundColour, intensity) {
-		super(skyColour, groundColour, intensity)
+function HemisphereLight(skyColor, groundColor, intensity)
+{
+	THREE.HemisphereLight.call(this, skyColor, groundColor, intensity);
 
-		this.name = "hemisphere_light"
-
-		this.components = []
-
-		this.defaultComponents = []
-		this.defaultComponents.push(new ElementComponent())
-		this.defaultComponents.push(new Object3DComponent())
-		this.defaultComponents.push(new LightComponent())
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
+	this.name = "hemisphere_light";
 }
+
+//Function Prototype
+HemisphereLight.prototype = Object.create(THREE.HemisphereLight.prototype);

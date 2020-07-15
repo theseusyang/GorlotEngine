@@ -1,19 +1,23 @@
-"use strict"
+"use strict";
 
-// Font Loader class
-class FontLoader {
-	constructor(manager) {
-		this.manager = (manager !== undefined) ? manager : THREE.DefaultLoaderManager
-	}
+//Font loader
+function FontLoader(manager)
+{
+	this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
+}
 
-	parse(data) {
-		return new THREE.Font(JSON.parse(data))
-	}
+//Parse font data
+FontLoader.prototype.parse = function(data)
+{
+	return new THREE.Font(JSON.parse(data));
+}
 
-	load(url, onLoad, onProgress, onError) {
-		var loader = new THREE.XHRLoader(this.manager)
-		loader.load(url, function(text) {
-			onLoad(new THREE.Font(JSON.parse(text)))
-		}, onProgress, onError)
-	}
+//Load font file
+FontLoader.prototype.load = function(url, onLoad, onProgress, onError)
+{
+	var loader = new THREE.XHRLoader(this.manager);
+	loader.load(url, function(text)
+	{
+		onLoad(new THREE.Font(JSON.parse(text)));
+	}, onProgress, onError);
 }

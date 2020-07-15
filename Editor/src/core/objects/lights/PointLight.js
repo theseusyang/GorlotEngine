@@ -1,42 +1,26 @@
-"use strict"
+"use strict";
 
-// Point Light class
-class PointLight extends THREE.PointLight {
-	constructor(hex, intensity, distance, decay) {
-		super(hex, intensity, distance, decay)
+function PointLight(hex, intensity, distance, decay)
+{
+	THREE.PointLight.call(this, hex, intensity, distance, decay);
 
-		this.name = "point_light"
+	this.name = "point_light";
+	
+	this.castShadow = true;
 
-		this.castShadow = true
+	this.shadow.camera.near = 0.01;
+	this.shadow.camera.far = Number.MAX_SAFE_INTEGER;
+	this.shadow.bias = 0.01;
+}
 
-		this.shadow.camera.near = 0.01
-		this.shadow.camera.far = 50000
-		this.shadow.bias = 0.01
-		
-		//this.shadow.mapSize.width = 1024
-		//this.shadow.mapSize.height = 1024
+//Function Prototype
+PointLight.prototype = Object.create(THREE.PointLight.prototype);
 
-		this.components = []
+//Update ligth shadow map
+PointLight.prototype.updateShadowMap = function()
+{
+	this.shadow.map.dispose();
+	this.shadow.map = null;
 
-		this.defaultComponents = []
-		this.defaultComponents.push(new ElementComponent())
-		this.defaultComponents.push(new Object3DComponent())
-		this.defaultComponents.push(new LightComponent())
-	}
-
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	// Update light shadow map
-	updateShadowMap() {
-		if(this.shadow.map !== null) {
-			this.shadow.map.dispose()
-			this.shadow.map = null
-		}
-
-		this.shadow.camera.updateProjectionMatrix()
-	}
+	this.shadow.camera.updateProjectionMatrix();
 }

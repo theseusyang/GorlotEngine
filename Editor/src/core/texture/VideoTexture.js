@@ -1,33 +1,36 @@
-"use strict"
+"use strict";
 
-// Video Texture class
-class VideoTexture extends THREE.VideoTexture {
-	constructor(url) {
-		// Creates video element
-		var video = document.createElement("video")
-		video.width = 256
-		video.height = 256
-		video.autoplay = true
-		video.loop = true
+//Video texture constructor
+function VideoTexture(url)
+{
+	//Create video element
+	this.video = document.createElement("video");
+	this.video.width = 256;
+	this.video.height = 256;
+	this.video.autoplay = true;
+	this.video.loop = true;
+	this.video.src = url;
 
-		// Create Texture part of the object
-		super(video)
-		this.video = video
+	//Create Texture part of object
+	THREE.VideoTexture.call(this, this.video);
 
-		// Set filtering
-		this.minFilter = THREE.LinearFilter
-		this.magFilter = THREE.LinearFilter
-		this.format = THREE.RGBFormat
+	//Set filtering
+	this.minFilter = THREE.LinearFilter;
+	this.magFilter = THREE.LinearFilter;
+	this.format = THREE.RGBFormat;
 
-		// Name
-		this.name = "video"
+	//Name
+	this.name = "video";
+}
+
+VideoTexture.prototype = Object.create(THREE.VideoTexture.prototype);
+
+//Dispose texture
+VideoTexture.prototype.dispose = function()
+{
+	if(!this.video.paused)
+	{
+		this.video.pause();
 	}
-
-	dispose() {
-		// Dispose texture
-		if (!this.video.paused) {
-			this.video.pause()
-		}
-		THREE.Texture.prototype.toJSON.call(this)
-	}
+	THREE.Texture.prototype.dispose.call(this);
 }

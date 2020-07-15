@@ -1,58 +1,125 @@
-"use strict"
+"use strict";
 
-function EditorUIAssetExplorer() {
-	    // ----- EXPLORER -----
+function AssetExplorer(parent)
+{
+	//Parent
+	if(parent === undefined)
+	{
+		this.parent = document.body;
+	}
+	else
+	{
+		this.parent = parent;
+	}
+	
+	//ID
+	var id = "asset_explorer" + AssetExplorer.id;
+	AssetExplorer.id++;
 
-    EditorUI.asset_explorer = new LiteGUI.Panel({title: "Asset Explorer"})
-    EditorUI.left_area.getSection(1).add(EditorUI.asset_explorer)
+	//Create element
+	this.element = document.createElement("div");
+	this.element.id = id;
+	this.element.style.position = "absolute";
+	this.element.style.overflow = "auto";
+	this.element.style.cursor = "default";
+	this.element.style.backgroundColor = Editor.theme.panel_color;
+	
+	//Prevent Drop event
+	this.element.ondrop = function(event)
+	{
+		event.preventDefault();
+	};
 
-    // ----- ASSET EXPLORER MENU -----
+	//Prevent deafault when object dragged over
+	this.element.ondragover = function(event)
+	{
+		event.preventDefault();
+	};
 
-    EditorUI.asset_explorer_menu = new LiteGUI.Menubar()
+	//Element atributes
+	this.fit_parent = false;
+	this.size = new THREE.Vector2(0,0);
+	this.position = new THREE.Vector2(0,0);
+	this.visible = true;
+	
+	//Files in explorer
+	this.files_size = new THREE.Vector2(70, 70);
+	this.files_spacing = 0;
+	this.files = [];
 
-    EditorUI.asset_explorer_menu.add("Import", {callback: () => {
-        var w = new AssetExplorerImportWindow()
-        w.show()
-    }})
-
-    EditorUI.asset_explorer_menu.add("Create", {callback: () => {
-        var w = new AssetExplorerCreateWindow()
-        w.show()
-    }})
-
-    EditorUI.asset_explorer_menu.attachToPanel(EditorUI.asset_explorer)
-
-    EditorUI.asset_explorer_panel = new LiteGUI.Panel({scroll: true})
-    EditorUI.asset_explorer.add(EditorUI.asset_explorer_panel)
-
-    EditorUI.asset_explorer_objects = []
-
+	//Add element to document
+	this.parent.appendChild(this.element);
 }
 
-EditorUI.addAsset = function(name, attachedTo) {
+//AssetExplorer conter
+AssetExplorer.id = 0;
 
-    if (EditorUI.asset_explorer_objects !== undefined) {
-
-        if (attachedTo instanceof THREE.Material) {
-            var fil = new MaterialAsset(attachedTo.name, EditorUI.asset_explorer_panel.content)
-            fil.attachAsset(attachedTo)
-        }
-
-        EditorUI.asset_explorer_objects.push(fil)
-        EditorUI.updateAssetExplorer()
-    }
+//Remove all files
+AssetExplorer.prototype.clear = function()
+{
+	while(this.files.length > 0)
+	{
+		this.files.pop().destroy();
+	}
 }
 
-EditorUI.updateAssetExplorer = function() {
-    if(EditorUI.asset_explorer_panel !== undefined) {
-        EditorUI.asset_explorer_panel.content.innerHTML = ""
+//Add file to explorer
+AssetExplorer.prototype.add = function(file)
+{
+	file.setParent(this.element);
+	file.size.copy(this.files_size);
+	file.updateInterface();
 
-        if (EditorUI.asset_explorer_objects !== undefined) {
-            for(var i = 0; i < EditorUI.asset_explorer_objects.length; i++) {
-                var file = EditorUI.asset_explorer_objects[i]
-                file.show()
-            }
-        }
+	this.files.push(file);
+}
 
-    }
+//Remove element
+AssetExplorer.prototype.destroy = function()
+{
+	try
+	{
+		this.parent.removeChild(this.element);
+	}
+	catch(e){}
+}
+
+//Update AssetExplorer
+AssetExplorer.prototype.update = function(){}
+
+//Update division Size
+AssetExplorer.prototype.updateInterface = function()
+{
+	//Fit parent
+	if(this.fit_parent)
+	{
+		this.size.x = this.parent.offsetWidth;
+		this.size.y = this.parent.offsetHeight; 
+	}
+
+	//Element visibility
+	if(this.visible)
+	{
+		this.element.style.visibility = "visible";
+	}
+	else
+	{
+		this.element.style.visibility = "hidden";
+	}
+
+	//Update file position
+	var files_per_row = Math.floor(this.files.length / ((this.files.length * (this.files_size.x+this.files_spacing)) / this.size.x));
+	for(var i = 0; i < this.files.length; i++)
+	{
+		var row = Math.floor(i / files_per_row);
+		var col = i % files_per_row;
+		this.files[i].position.x = (col * this.files_size.x) + ((col+1) * this.files_spacing);
+		this.files[i].position.y = (row * this.files_size.y) + ((row+1) * this.files_spacing);
+		this.files[i].updateInterface();
+	}
+
+	//Update element
+	this.element.style.top = this.position.y + "px";
+	this.element.style.left = this.position.x + "px";
+	this.element.style.width = this.size.x + "px";
+	this.element.style.height = this.size.y + "px";
 }

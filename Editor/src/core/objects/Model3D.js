@@ -1,39 +1,31 @@
-"use strict"
+"use strict";
 
-// Model 3D Class
-class Model3D extends THREE.Mesh {
-	constructor(geometry, material) {
-		super(geometry, material)
+//Model 3D constructor
+function Model3D(geometry, material)
+{
+	THREE.Mesh.call(this, geometry, material);
 
-		this.name = "model"
+	this.name = "model";
 
-		this.receiveShadow = true
-		this.castShadow = true
+	this.receiveShadow = true;
+	this.castShadow = true;
+}
 
-		this.components = []
+Model3D.prototype = Object.create(THREE.Mesh.prototype);
 
-		this.defaultComponents = []
-		this.defaultComponents.push(new ElementComponent())
-		this.defaultComponents.push(new Object3DComponent())
+//Dipose model
+Model3D.prototype.dispose = function()
+{
+	//Dipose material and geometry
+	if(this.material.dispose !== undefined)
+	{
+		this.material.dispose();
 	}
+	this.geometry.dispose();
 
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	// Dispose model
-	dispose() {
-		// Dispose material and geometry
-		if (this.material.dispose !== undefined) {
-			this.material.dispose()
-		}
-		this.geometry.dispose()
-
-		// Dispose children
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].dispose()
-		}
+	//Dipose children
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].dispose();
 	}
 }

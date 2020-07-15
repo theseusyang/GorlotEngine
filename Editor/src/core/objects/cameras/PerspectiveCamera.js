@@ -1,45 +1,34 @@
-"use strict"
+"use strict";
 
-// Perspective Camera class
-class PerspectiveCamera extends THREE.PerspectiveCamera {
-	constructor(fov, aspect, near, far) {
-		super(fov, aspect, near, far)
+//Perspective camera from fov, aspect ration and near and far planes
+function PerspectiveCamera(fov, aspect, near, far)
+{
+	THREE.PerspectiveCamera.call(this, fov, aspect, near, far);
 
-		this.name = "camera"
-		this.rotationAutoUpdate = true
+	this.name = "camera";
 
-		this.components = []
+	this.rotationAutoUpdate = true;
+}
 
-		this.defaultComponents = []
-		this.defaultComponents.push(new ElementComponent())
-		this.defaultComponents.push(new Object3DComponent())
-		this.defaultComponents.push(new CameraComponent())
+PerspectiveCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+
+//Initialize
+PerspectiveCamera.prototype.initialize = function()
+{
+	this.getWorldScale(this.scale);
+	this.scale.set(1.0 / this.scale.x, 1.0 / this.scale.y, 1.0 / this.scale.z);
+
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].initialize();
 	}
+}
 
-	addComponent(component) {
-		if (component instanceof Component) {
-			this.components.push(component)
-		}
-	}
-
-	initialize() {
-		this.getWorldScale(this.scale)
-		this.scale.set(1.0 / this.scale.x, 1.0 / this.scale.y, 1.0 / this.scale.z)
-
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].initialize()
-		}
-	}
-
-	update() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].update()
-		}
-	}
-
-	stop() {
-		for(var i = 0; i < this.children.length; i++) {
-			this.children[i].stop()
-		}
+//Update State
+PerspectiveCamera.prototype.update = function()
+{
+	for(var i = 0; i < this.children.length; i++)
+	{
+		this.children[i].update();
 	}
 }

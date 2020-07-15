@@ -1,21 +1,12 @@
-"use strict"
+"use strict";
 
-// Bone class
-class Bone extends THREE.Bone {
-	constructor() {
-		super()
+//Bone constructor
+function Bone()
+{
+	THREE.Bone.call(this);
 
-		this.name = "bone"
-		this.components = []
-
-		this.defaultComponents = []
-		this.defaultComponents.push(new ElementComponent())
-		this.defaultComponents.push(new Object3DComponent())
-	}
-
-	addComponent(compo) {
-		if (compo instanceof Component) {
-			this.components.push(compo())
-		}
-	}
+	this.name = "bone";
 }
+
+//Bone Methods
+Bone.prototype = Object.create(THREE.Bone.prototype);

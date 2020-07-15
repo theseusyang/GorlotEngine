@@ -1,9 +1,6 @@
-nwjs
+*.db
+*.log
+editor/nwjs
+editor/nwjs/*
+nwjs/
 nwjs/*
-build
-build/*
-node_modules
-node_modules/*
-.eslintrc.json
-Editor/config
-config

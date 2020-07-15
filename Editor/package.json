@@ -1,15 +1,13 @@
 {
-	"name": "Gorlot",
-	"description": "A 3D Game engine based in nunuStudio",
-	"main": "index.html",
-	"window": {
-		"fullscreen": false,
-		"title": "Gorlot - Booting",
-		"width": 1366,
-		"height": 768,
+	"name": "gorlot",
+	"main": "editor.html",
+	"window":
+	{
+		"icon": "src/editor/files/icon.png",
+		"frame": true,
+		"width": 1280,
+		"height": 720,
 		"min_width": 1024,
-		"min_height": 768,
-		"as_desktop": true,
-		"resizable": false		
+		"min_height": 600
 	}
 }

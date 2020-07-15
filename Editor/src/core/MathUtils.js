@@ -1,8 +1,6 @@
-"use strict"
+"use strict";
 
-// MathUtils function
-function MathUtils() {}
+function MathUtils(){}
 
-// Variables
-MathUtils.pi2 = 2 * Math.PI
-MathUtils.pid2 = Math.PI / 2
+MathUtils.pi2 = 2 * Math.PI;
+MathUtils.pid2 = Math.PI / 2;
