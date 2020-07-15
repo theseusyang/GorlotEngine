@@ -1,12 +1,10 @@
 "use strict";
 
-//Font loader
 function FontLoader(manager)
 {
 	this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 }
 
-//Load font file
 FontLoader.prototype.load = function(url, onLoad, onProgress, onError)
 {
 	var loader = new THREE.XHRLoader(this.manager);
@@ -16,7 +14,6 @@ FontLoader.prototype.load = function(url, onLoad, onProgress, onError)
 	}, onProgress, onError);
 }
 
-// Parse JSON font data
 FontLoader.prototype.parse = function(json) {
 	if (json.data !== undefined) {
 		var font = new Font(json.data)

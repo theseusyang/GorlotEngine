@@ -50,7 +50,7 @@ include("src/core/webvr/VRControls.js");
 
 include("src/core/assets/Font.js")
 include("src/core/assets/Video.js")
-
+include("src/core/assets/Audio.js")
 include("src/core/assets/Image.js")
 
 include("src/core/texture/TextTexture.js");
@@ -67,19 +67,25 @@ include("src/core/loaders/ObjectLoader.js")
 include("src/core/loaders/MaterialLoader.js")
 
 include("src/core/objects/physics/PhysicsObject.js");
+
 include("src/core/objects/device/LeapMotion.js");
 include("src/core/objects/device/KinectDevice.js");
+
 include("src/core/objects/lights/PointLight.js");
 include("src/core/objects/lights/SpotLight.js");
 include("src/core/objects/lights/AmbientLight.js");
 include("src/core/objects/lights/DirectionalLight.js");
 include("src/core/objects/lights/HemisphereLight.js");
 include("src/core/objects/lights/Sky.js");
+
 include("src/core/objects/cameras/PerspectiveCamera.js");
 include("src/core/objects/cameras/OrthographicCamera.js");
-include("src/core/objects/audio/Audio.js");
+
+include("src/core/objects/audio/AudioEmitter.js");
+
 include("src/core/objects/script/Script.js");
 include("src/core/objects/script/BlockScript.js");
+
 include("src/core/objects/Bone.js");
 include("src/core/objects/Container.js");
 include("src/core/objects/Mesh.js");

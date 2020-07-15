@@ -72,19 +72,16 @@ TextureLoader.prototype.parse = function(json, onLoad) {
 	return texture
 }
 
-// Set Images
 TextureLoader.prototype.setImages = function(images) {
 	this.images = images
 	return this
 }
 
-// Set Videos
 TextureLoader.prototype.setVideos = function(videos) {
 	this.videos = videos
 	return this
 }
 
-// Set Path
 TextureLoader.prototype.setFonts = function(fonts) {
 	this.fonts = fonts
 	return this

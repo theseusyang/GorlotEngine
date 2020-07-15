@@ -390,7 +390,7 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 	switch(data.type)
 	{
 		case "Audio":
-			object = new Audio();
+			object = new AudioEmitter();
 			if (object.data !== undefined) {
 				object.encoding = data.encoding
 				object.data = Base64Binary.decodeArrayBuffer(data.data)
