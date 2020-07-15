@@ -10,7 +10,8 @@
 		"grid_enabled": true,
 		"axis_enabled": true,
 		"camera_preview_enabled": true,
-		"camera_preview_percentage": 0.2
+		"camera_preview_percentage": 0.2,
+		"lock_mouse": true
 	},
 	"render": {
 		"shadows": true,

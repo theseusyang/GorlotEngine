@@ -22,7 +22,6 @@ include("lib/codemirror/mode/glsl.js");
 include("lib/codemirror/theme/*");
 
 include("lib/litegraph/litegraph.css")
-include("lib/litegraph/litegui.js")
 include("lib/litegraph/litegui.css")
 
 //Threejs
@@ -32,6 +31,8 @@ include("lib/three/loaders/VRMLLoader.js");
 include("lib/three/loaders/FBXLoader.js");
 include("lib/three/loaders/GLTFLoader.js");
 include("lib/three/loaders/ColladaLoader.js");
+include("lib/three/loaders/PLYLoader.js")
+include("lib/three/loaders/VTKLoader.js")
 
 include("lib/three/animation/Animation.js");
 include("lib/three/animation/AnimationHandler.js");
@@ -139,7 +140,7 @@ Editor.MODE_ROTATE = 3;
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Web Jul 15 2020 13:00:00 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Web Jul 15 2020 16:08:20 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -1018,7 +1019,7 @@ Editor.loadProgram = function(fname)
 //Export web project
 Editor.exportWebProject = function(dir)
 {
-	//Nunu core
+	//Gorlot core
 	App.copyFolder("runtime", dir);
 	App.copyFolder("core", dir + "\\core");
 	App.copyFolder("input", dir + "\\input");
@@ -1031,6 +1032,7 @@ Editor.exportWebProject = function(dir)
 	App.copyFile("lib\\leap.min.js", dir + "\\lib\\leap.min.js");
 	App.copyFile("lib\\stats.min.js", dir + "\\lib\\stats.min.js");
 	App.copyFile("lib\\cannon.min.js", dir + "\\lib\\cannon.min.js");
+	App.copyFile("lib\\base64.min.js", dir + "\\lib\\base64.min.js");
 	App.copyFile("lib\\webvr-polyfill.min.js", dir + "\\lib\\webvr-polyfill.min.js");	
 	App.makeDirectory(dir + "\\lib\\three");
 	App.copyFile("lib\\three\\three.min.js", dir + "\\lib\\three\\three.min.js");

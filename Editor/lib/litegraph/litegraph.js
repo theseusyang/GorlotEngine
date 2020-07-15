@@ -4548,7 +4548,7 @@ LGraphNode.prototype.executeAction = function(action)
         };
 
         this.highquality_render = true;
-        this.use_gradients = true; //set to true to render titlebar with gradients
+        this.use_gradients = false; //set to true to render titlebar with gradients
         this.editor_alpha = 1; //used for transition
         this.pause_rendering = false;
         this.clear_background = true;

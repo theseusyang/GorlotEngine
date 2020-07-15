@@ -1,7 +1,7 @@
 "use strict";
 
-//Model 3D constructor
-function Model3D(geometry, material)
+// Mesh constructor
+function Mesh(geometry, material)
 {
 	THREE.Mesh.call(this, geometry, material);
 
@@ -11,10 +11,11 @@ function Model3D(geometry, material)
 	this.castShadow = true;
 }
 
-Model3D.prototype = Object.create(THREE.Mesh.prototype);
+// Super prototype
+Mesh.prototype = Object.create(THREE.Mesh.prototype);
 
-//Dipose model
-Model3D.prototype.dispose = function()
+// Dispose model
+Mesh.prototype.dispose = function()
 {
 	//Dipose material and geometry
 	if(this.material.dispose !== undefined)

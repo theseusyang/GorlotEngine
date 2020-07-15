@@ -30,6 +30,7 @@ include("lib/cannon.min.js");
 include("lib/leap.min.js");
 include("lib/stats.min.js");
 include("lib/SPE.min.js");
+include("lib/base64.min.js")
 
 include("lib/litegraph/litegraph.js")
 
@@ -46,12 +47,18 @@ include("src/input/Mouse.js");
 
 include("src/core/webvr/VRControls.js");
 
+include("src/core/assets/Image.js")
+
 include("src/core/texture/TextTexture.js");
 include("src/core/texture/VideoTexture.js");
 include("src/core/texture/WebcamTexture.js");
 include("src/core/texture/Texture.js");
 
 include("src/core/loaders/FontLoader.js");
+include("src/core/loaders/ImageLoader.js")
+include("src/core/loaders/TextureLoader.js")
+include("src/core/loaders/ObjectLoader.js")
+include("src/core/loaders/MaterialLoader.js")
 
 include("src/core/objects/physics/PhysicsObject.js");
 include("src/core/objects/device/LeapMotion.js");
@@ -69,8 +76,8 @@ include("src/core/objects/script/Script.js");
 include("src/core/objects/script/BlockScript.js");
 include("src/core/objects/Bone.js");
 include("src/core/objects/Container.js");
-include("src/core/objects/Model3D.js");
-include("src/core/objects/AnimatedModel.js");
+include("src/core/objects/Mesh.js");
+include("src/core/objects/SkinnedMesh.js");
 include("src/core/objects/Text3D.js");
 include("src/core/objects/Sprite.js");
 include("src/core/objects/ParticleEmitter.js");
@@ -118,7 +125,6 @@ include("src/core/nodes/materials/Constants.js")
 
 include("src/core/nodes/Register.js")
 
-include("src/core/ObjectLoader.js");
 include("src/core/ObjectUtils.js");
 include("src/core/MathUtils.js");
 
@@ -155,177 +161,6 @@ App.initialize = function(main)
 
 	//Start Loop
 	App.loop();
-}
-
-//Open file chooser dialog receives callback function, file filter, savemode and is its directory only
-App.chooseFile = function(callback, filter, savemode)
-{
-	//Create file chooser element
-	var chooser = document.createElement("input");
-	chooser.type = "file";
-
-	if(filter !== undefined)
-	{
-		chooser.accept = filter;
-	}
-	
-	if(savemode === true)
-	{
-		chooser.nwsaveas = "file";
-	}
-
-	//Create onchange event
-	chooser.onchange = function(event)
-	{
-		if(callback !== undefined)
-		{
-			callback(chooser.value);
-		}
-	};
-
-	//Force trigger onchange event
-	chooser.click();
-}
-
-//Read File
-App.readFile = function(fname, sync, callback)
-{
-	//If sync undefined set true
-	if(sync === undefined)
-	{
-		sync = true;
-	}
-
-	//Check if node available
-	if(App.fs !== undefined)
-	{
-		//If sync
-		if(sync)
-		{
-			return App.fs.readFileSync(fname, "utf8");
-		}
-		else
-		{
-			App.fs.readFile(fname, "utf8", callback);
-			return null;
-		}
-	}
-	else
-	{
-		var file = new XMLHttpRequest();
-		file.overrideMimeType("text/plain");
-		var data = null;
-
-		//Request file to server
-		file.open("GET", fname, false);
-
-		//Get file
-		file.onreadystatechange = function ()
-		{
-			if(file.status === 200 || file.status === 0)
-			{
-				data = file.responseText;
-
-				//Callback
-				if(callback !== undefined)
-				{
-					callback(file.responseText);
-				}
-			}
-		}
-
-		//Send null to ensure that file was received
-		if(sync)
-		{
-			file.send(null);
-		}
-
-		return data;
-	}
-}
-
-//Write File
-App.writeFile = function(fname, data)
-{
-	if(App.fs !== undefined)
-	{
-		var stream = App.fs.createWriteStream(fname, "utf8");
-		stream.write(data);
-		stream.end();
-	}
-}
-
-//Copy file (can't be used to copy folders)
-App.copyFile = function(src, dest)
-{
-	if(App.fs !== undefined)
-	{
-		App.fs.createReadStream(src).pipe(App.fs.createWriteStream(dest));
-	}
-}
-
-//Make a directory (dont trow exeption if directory already exists)
-App.makeDirectory = function(dir)
-{
-	if(App.fs !== undefined)
-	{
-		try
-		{
-			App.fs.mkdirSync(dir);
-		}
-		catch(e){}
-	}
-}
-
-//Returns files in directory (returns empty array in case of error)
-App.getFilesDirectory = function(dir)
-{
-	if(App.fs !== undefined)
-	{
-		try
-		{
-			return App.fs.readdirSync(dir);
-		}
-		catch(e)
-		{
-			return [];
-		}
-	}
-	return [];
-}
-
-//Copy folder and all its files (includes symbolic links)
-App.copyFolder = function(src, dest)
-{
-	if(App.fs !== undefined)
-	{
-		App.makeDirectory(dest);
-		var files = App.fs.readdirSync(src);
-
-		for(var i = 0; i < files.length; i++)
-		{
-			var source = src + "\\" + files[i];
-			var destiny = dest + "\\" + files[i];
-			var current = App.fs.statSync(source);
-			
-			//Directory
-			if(current.isDirectory())
-			{
-				App.copyFolder(source, destiny);
-			}
-			//Symbolic link
-			else if(current.isSymbolicLink())
-			{
-				App.fs.symlinkSync(App.fs.readlinkSync(source), destiny);
-			}
-			//File
-			else
-			{
-				App.copyFile(source, destiny);
-			}
-			
-		}
-	}
 }
 
 //Leave fullscreen mode
@@ -417,7 +252,213 @@ App.resize = function()
 	App.main.resize();
 }
 
-//Auxiliar include
+//Open file chooser dialog receives callback function, file filter, savemode and is its directory only
+App.chooseFile = function(callback, filter, savemode)
+{
+	//Create file chooser element
+	var chooser = document.createElement("input");
+	chooser.type = "file";
+
+	if(filter !== undefined)
+	{
+		chooser.accept = filter;
+	}
+	
+	if(savemode === true)
+	{
+		chooser.nwsaveas = "file";
+	}
+
+	//Create onchange event
+	chooser.onchange = function(event)
+	{
+		if(callback !== undefined)
+		{
+			callback(chooser.value);
+		}
+	};
+
+	//Force trigger onchange event
+	chooser.click();
+}
+
+//Read File
+App.readFile = function(fname, sync, callback)
+{
+	//If sync undefined set true
+	if(sync === undefined)
+	{
+		sync = true;
+	}
+
+	//Check if node available
+	if(App.fs !== undefined)
+	{
+		//If sync
+		if(sync)
+		{
+			return App.fs.readFileSync(fname, "utf8");
+		}
+		else
+		{
+			App.fs.readFile(fname, "utf8", callback);
+			return null;
+		}
+	}
+	else
+	{
+		var file = new XMLHttpRequest();
+		file.overrideMimeType("text/plain");
+
+		//Request file to server
+		file.open("GET", fname, false);
+
+		//Get file
+		file.onreadystatechange = function ()
+		{
+			if(file.status === 200 || file.status === 0)
+			{
+				//Callback
+				if(callback !== undefined)
+				{
+					callback(file.responseText);
+				}
+			}
+		}
+
+		//Send null to ensure that file was received
+		if(sync)
+		{
+			file.send(null);
+		}
+
+		return file.responseText
+	}
+}
+
+// Read File
+App.readFileArrayBuffer = function(fname, callback) 
+{
+	if (App.fs !== undefined) 
+	{
+		var buffer = App.fs.readFileSync(fname, undefined)
+		var array = new ArrayBuffer(buffer.length)
+		var view = new Uint8Array(array)
+
+		for(var i = 0; i < buffer.length; i++) 
+		{
+			view[i] = buffer[i]
+		}
+
+		return array
+	}
+	else
+	{
+		var file = new XMLHttpRequest()
+		file.open("GET", fname, false)
+		file.responseType = "arraybuffer"
+
+		file.onreadystatechange = function() 
+		{
+			if (file.status === 200 || file.status === 0) 
+			{
+				if (callback !== undefined) 
+				{
+					callback(file.response)
+				}
+			}
+		}
+
+		file.send(null)
+		return file.response
+	}
+}
+
+//Write File
+App.writeFile = function(fname, data)
+{
+	if(App.fs !== undefined)
+	{
+		var stream = App.fs.createWriteStream(fname, "utf8");
+		stream.write(data);
+		stream.end();
+	}
+}
+
+//Copy file (can't be used to copy folders)
+App.copyFile = function(src, dest)
+{
+	if(App.fs !== undefined)
+	{
+		App.fs.createReadStream(src).pipe(App.fs.createWriteStream(dest));
+	}
+}
+
+//Make a directory (dont trow exeption if directory already exists)
+App.makeDirectory = function(dir)
+{
+	if(App.fs !== undefined)
+	{
+		try
+		{
+			App.fs.mkdirSync(dir);
+		}
+		catch(e){}
+	}
+}
+
+//Returns files in directory (returns empty array in case of error)
+App.getFilesDirectory = function(dir)
+{
+	if(App.fs !== undefined)
+	{
+		try
+		{
+			return App.fs.readdirSync(dir);
+		}
+		catch(e)
+		{
+			return [];
+		}
+	}
+	return [];
+}
+
+//Copy folder and all its files (includes symbolic links)
+App.copyFolder = function(src, dest)
+{
+	if(App.fs !== undefined)
+	{
+		App.makeDirectory(dest);
+		var files = App.fs.readdirSync(src);
+
+		for(var i = 0; i < files.length; i++)
+		{
+			var source = src + "\\" + files[i];
+			var destiny = dest + "\\" + files[i];
+			var current = App.fs.statSync(source);
+			
+			//Directory
+			if(current.isDirectory())
+			{
+				App.copyFolder(source, destiny);
+			}
+			//Symbolic link
+			else if(current.isSymbolicLink())
+			{
+				App.fs.symlinkSync(App.fs.readlinkSync(source), destiny);
+			}
+			//File
+			else
+			{
+				App.copyFile(source, destiny);
+			}
+			
+		}
+	}
+}
+
+// Include javascript or css file in project
 function include(file, onload)
 {
 	if(file.endsWith(".js"))
@@ -461,4 +502,58 @@ function include(file, onload)
 		}
 		catch(e){}
 	}
+}
+
+//Create base64 string from arraybuffer object
+function base64ArrayBuffer(arrayBuffer)
+{
+	var base64 = ""
+	var encodings = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+
+	var bytes = new Uint8Array(arrayBuffer)
+	var remainder = bytes.byteLength % 3
+	var length = bytes.byteLength - remainder
+
+	//Auxiliar variables
+	var a, b, c, d
+	var chunk
+
+	//Main loop deals with bytes in chunks of 3 bytes
+	for(var i = 0; i < length; i += 3)
+	{
+		//Combine the three bytes into a single integer
+		chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+
+		//Use bitmasks to extract 6-bit segments from the triplet
+		a = (chunk & 16515072) >> 18 //16515072 = (2^6 - 1) << 18
+		b = (chunk & 258048) >> 12 //258048 = (2^6 - 1) << 12
+		c = (chunk & 4032) >> 6 //4032 = (2^6 - 1) << 6
+		d = chunk & 63 //63 = 2^6 - 1
+
+		// Convert the raw binary segments to the appropriate ASCII encoding
+		base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+	}
+
+	//Deal with the remaining bytes and padding
+	if(remainder === 1)
+	{
+		chunk = bytes[length]
+
+		a = (chunk & 252) >> 2 //252 = (2^6 - 1) << 2
+		b = (chunk & 3) << 4 //3 = 2^2 - 1 (Set the 4 LSB to zero)
+
+		base64 += encodings[a] + encodings[b] + '=='
+	}
+	else if(remainder === 2)
+	{
+		chunk = (bytes[length] << 8) | bytes[length + 1]
+
+		a = (chunk & 64512) >> 10 //64512 = (2^6 - 1) << 10
+		b = (chunk & 1008) >> 4 //1008  = (2^6 - 1) << 4
+		c = (chunk & 15) << 2 //15 = 2^4 - 1 (Set the 2 LSB to zero)
+
+		base64 += encodings[a] + encodings[b] + encodings[c] + '='
+	}
+
+	return base64
 }

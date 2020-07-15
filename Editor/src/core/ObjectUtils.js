@@ -133,34 +133,25 @@ ObjectUtils.convertFromThreeType = function(obj)
 //Set static
 ObjectUtils.setMatrixAutoUpdate = function(obj, value)
 {
-	obj.matrixAutoUpdate = value;
-
-	for(var i = 0; i < obj.children.length; i++)
-	{
-		ObjectUtils.setMatrixAutoUpdate(obj.children[i], value);
-	}
+	obj.traverse((child) => {
+		child.matrixAutoUpdate = value
+	})
 }
 
 //Set shadow receiving
 ObjectUtils.setShadowReceiving = function(obj, value)
 {
-	obj.receiveShadow = value;
-
-	for(var i = 0; i < obj.children.length; i++)
-	{
-		ObjectUtils.setShadowReceiving(obj.children[i], value);
-	}
+	obj.traverse((child) => {
+		child.receiveShadow = value
+	})
 }
 
 //Enable shadow casting
 ObjectUtils.setShadowCasting = function(obj, value)
 {
-	obj.castShadow = value;
-
-	for(var i = 0; i < obj.children.length; i++)
-	{
-		ObjectUtils.setShadowCasting(obj.children[i], value);
-	}
+	obj.traverse((child) => {
+		child.castShadow = value
+	})
 }
 
 //Check if object is child of another object
@@ -174,24 +165,6 @@ ObjectUtils.isChildOf = function(parent, child)
 		}
 	}
 	return false;
-}
-
-//Create a cylinder between points a and b
-ObjectUtils.createCylinderBetweenPoints = function(a, b)
-{
-	var dist = Math.sqrt(Math.pow((a.x - b.x),2) + Math.pow((a.y - b.y),2) + Math.pow((a.z - b.z),2));
-
-	var geometry = new THREE.CylinderGeometry(0.1, 0.1, dist, 16, 32, false);
-	var material = new THREE.MeshPhongMaterial({color: 0xff0000});
-	var cylinder = new Model3D(geometry, material);
-	cylinder.position.set(0, dist/2, 0)
-
-	var obj = new THREE.Object3D();
-	obj.position.set(a.x, a.y, a.z);
-	obj.add(cylinder);
-	obj.lookAt(b);
-
-	return obj;
 }
 
 //Create grass tufts (nice to render large fields of grass)
@@ -227,14 +200,14 @@ ObjectUtils.createGrassTufts = function(positions)
 			var angle = base_angle + j*Math.PI/n_planes;
 
 			//Front face
-			var object3d = new Model3D(geometry, material);
+			var object3d = new Mesh(geometry, material);
 			object3d.rotateY(angle);
 			object3d.position.copy(position);
 			object3d.updateMatrix();
 			merged_geometry.merge(object3d.geometry, object3d.matrix);
 
 			//Back face
-			var object3d = new Model3D(geometry, material);
+			var object3d = new Mesh(geometry, material);
 			object3d.rotateY(angle + Math.PI);
 			object3d.position.copy(position);
 			object3d.updateMatrix();
@@ -242,5 +215,5 @@ ObjectUtils.createGrassTufts = function(positions)
 		}
 	}
 
-	return new Model3D(merged_geometry, material);
+	return new Mesh(merged_geometry, material);
 }
