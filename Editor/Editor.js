@@ -252,7 +252,7 @@ Editor.initialize = function(canvas)
 	}
 
 	//Create new program
-	if(i === App.args.length) {
+	if(Editor.program === null) {
 		Editor.createNewProgram();
 	}
 

@@ -1,17 +1,17 @@
 "use strict";
 
-//Folded
-THREE.Object3D.prototype.folded = false;
+//Folded attribute
+THREE.Object3D.prototype.folded = false
 
-//Hidden attribute (hidden objects are not serialized and dont show up in the editor)
-THREE.Object3D.prototype.hidden = false;
+//Hidden attribute (hidden objects are not serialised and dont show up in the editor)
+THREE.Object3D.prototype.hidden = false
 
 //Initialize Object
 THREE.Object3D.prototype.initialize = function()
 {
 	for(var i = 0; i < this.children.length; i++)
 	{
-		this.children[i].initialize();
+		this.children[i].initialize()
 	}
 }
 
@@ -20,7 +20,7 @@ THREE.Object3D.prototype.update = function()
 {
 	for(var i = 0; i < this.children.length; i++)
 	{
-		this.children[i].update();
+		this.children[i].update()
 	}
 }
 
@@ -29,7 +29,7 @@ THREE.Object3D.prototype.dispose = function()
 {
 	for(var i = 0; i < this.children.length; i++)
 	{
-		this.children[i].dispose();
+		this.children[i].dispose()
 	}
 }
 
@@ -38,7 +38,7 @@ THREE.Object3D.prototype.removeAll = function()
 {
 	for(var i = this.children.length - 1; i > -1; i--)
 	{
-		this.remove(this.children[i]);
+		this.remove(this.children[i])
 	}
 }
 
@@ -49,17 +49,17 @@ THREE.Object3D.prototype.destroy = function()
 	{
 		if(this.dispose)
 		{
-			this.dispose();
+			this.dispose()
 		}
-		this.parent.remove(this);
+		this.parent.remove(this)
 	}
 }
 
 //Create JSON for object
 THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 {
-	var isRootObject = (meta === undefined);
-	var output = {};
+	var isRootObject = (meta === undefined)
+	var output = {}
 
 	//If root object initialize base structure
 	if(isRootObject)
@@ -73,45 +73,40 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 			geometries: {},
 			materials: {},
 			textures: {}
-		};
+		}
 
 		output.metadata =
 		{
 			version: Editor.VERSION,
 			type: "GorlotProgram"
-		};
+		}
 	}
 
-	var object = {};
+	var object = {}
 
-	object.uuid = this.uuid;
-	object.type = this.type;
-	object.name = this.name;
+	object.uuid = this.uuid
+	object.type = this.type
+	object.name = this.name
 
-	object.folded = this.folded;
-	object.hidden = this.hidden;
-	
-	if(JSON.stringify(this.userData) !== "{}")
-	{
-		object.userData = this.userData;
-	}
+	object.folded = this.folded
+	object.hidden = this.hidden
 
-	object.castShadow = this.castShadow;
-	object.receiveShadow = this.receiveShadow;
-	object.visible = this.visible;
+	object.castShadow = this.castShadow
+	object.receiveShadow = this.receiveShadow
+	object.visible = this.visible
 
-	object.matrixAutoUpdate = this.matrixAutoUpdate;
-	object.matrix = this.matrix.toArray();
+	object.matrixAutoUpdate = this.matrixAutoUpdate
+	object.matrix = this.matrix.toArray()
 
 	//If there is geometry store it
 	if(this.geometry !== undefined)
 	{
 		if(meta.geometries[this.geometry.uuid] === undefined)
 		{
-			meta.geometries[this.geometry.uuid] = this.geometry.toJSON(meta);
+			meta.geometries[this.geometry.uuid] = this.geometry.toJSON(meta)
 		}
 
-		object.geometry = this.geometry.uuid;
+		object.geometry = this.geometry.uuid
 	}
 
 	//If there is a material store it
@@ -119,72 +114,59 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 	{
 		if(meta.materials[this.material.uuid] === undefined)
 		{
-			meta.materials[this.material.uuid] = this.material.toJSON(meta);
+			meta.materials[this.material.uuid] = this.material.toJSON(meta)
 		}
 
-		object.material = this.material.uuid;
+		object.material = this.material.uuid
 	}
 
 	//Resource access callback
 	if(resourceAccess !== undefined)
 	{
-		resourceAccess(meta, object);
+		resourceAccess(meta, object)
 	}
 
 	//Collect children data
 	if(this.children.length > 0)
 	{
-		object.children = [];
+		object.children = []
 
 		for(var i = 0; i < this.children.length; i ++)
 		{
 			if(!this.children[i].hidden)
 			{
-				object.children.push(this.children[i].toJSON(meta).object);
+				object.children.push(this.children[i].toJSON(meta).object)
 			}
 		}
 	}
 
-	//If root object add resources before returning
+	//If root object add assets
 	if(isRootObject)
 	{
-		var geometries = extractFromCache(meta.geometries);
-		var materials = extractFromCache(meta.materials);
-		var textures = extractFromCache(meta.textures);
-		var images = extractFromCache(meta.images);
-
-		if(geometries.length > 0)
-		{
-			output.geometries = geometries;
-		}
-		if(materials.length > 0)
-		{
-			output.materials = materials;
-		}
-		if(textures.length > 0)
-		{
-			output.textures = textures;
-		}
-		if(images.length > 0)
-		{
-			output.images = images;
-		}
+		output.geometries = extractFromCache(meta.geometries)
+		output.materials = extractFromCache(meta.materials)
+		output.textures = extractFromCache(meta.textures)
+		output.images = extractFromCache(meta.images)
+		output.videos = extractFromCache(meta.videos)
+		output.audio = extractFromCache(meta.audio)
+		output.fonts = extractFromCache(meta.fonts)
 	}
 
-	output.object = object;
-	return output;
+	output.object = object
+	return output
 
 	//Extract data from the cache hash remove metadata on each item and return as array
 	function extractFromCache(cache)
 	{
-		var values = [];
+		var values = []
+
 		for(var key in cache)
 		{
-			var data = cache[key];
-			delete data.metadata;
-			values.push(data);
+			var data = cache[key]
+			delete data.metadata
+			values.push(data)
 		}
 
-		return values;
+		return values
 	}
 }

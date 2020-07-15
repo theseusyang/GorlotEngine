@@ -40,12 +40,16 @@ include("src/core/three/Object3D.js");
 include("src/core/three/Vector3.js");
 include("src/core/three/Vector2.js");
 include("src/core/three/Color.js");
+include("src/core/three/Texture.js")
 
 include("src/input/Key.js");
 include("src/input/Keyboard.js");
 include("src/input/Mouse.js");
 
 include("src/core/webvr/VRControls.js");
+
+include("src/core/assets/Font.js")
+include("src/core/assets/Video.js")
 
 include("src/core/assets/Image.js")
 
@@ -139,7 +143,9 @@ try
 	App.clipboard = App.gui.Clipboard.get();
 	App.args = App.gui.App.argv
 }
-catch(e){}
+catch(e){
+	App.args = []
+}
 
 //App initialization
 App.initialize = function(main)
