@@ -10,19 +10,13 @@ var Object3D = THREE.Object3D;
 var Raycaster = THREE.Raycaster;
 
 //Materials
+var Material = THREE.Material
 var LineBasicMaterial = THREE.LineBasicMaterial;
 var LineDashedMaterial = THREE.LineDashedMaterial;
-var MeshBasicMaterial = THREE.MeshBasicMaterial;
-var MeshDepthMaterial = THREE.MeshDepthMaterial;
-var MeshLambertMaterial = THREE.MeshLambertMaterial;
-var MeshNormalMaterial = THREE.MeshNormalMaterial;
-var MeshPhongMaterial = THREE.MeshPhongMaterial;
 var MeshPhysicalMaterial = THREE.MeshPhysicalMaterial;
-var MeshStandardMaterial = THREE.MeshStandardMaterial;
 var MultiMaterial = THREE.MultiMaterial;
 var PointsMaterial = THREE.PointsMaterial;
 var RawShaderMaterial = THREE.RawShaderMaterial;
-var ShaderMaterial = THREE.ShaderMaterial;
 var SpriteMaterial = THREE.SpriteMaterial;
 
 //Math

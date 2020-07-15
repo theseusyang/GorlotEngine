@@ -683,7 +683,7 @@ THREE.VRMLLoader.prototype = {
 					var radius = 2e4;
 
 					var skyGeometry = new THREE.SphereGeometry( radius, segments, segments );
-					var skyMaterial = new THREE.MeshBasicMaterial( { fog: false, side: THREE.BackSide } );
+					var skyMaterial = new MeshBasicMaterial( { fog: false, side: THREE.BackSide } );
 
 					if ( data.skyColor.length > 1 ) {
 
@@ -707,7 +707,7 @@ THREE.VRMLLoader.prototype = {
 						radius = 1.2e4;
 
 						var groundGeometry = new THREE.SphereGeometry( radius, segments, segments, 0, 2 * Math.PI, 0.5 * Math.PI, 1.5 * Math.PI );
-						var groundMaterial = new THREE.MeshBasicMaterial( { fog: false, side: THREE.BackSide, vertexColors: THREE.VertexColors } );
+						var groundMaterial = new MeshBasicMaterial( { fog: false, side: THREE.BackSide, vertexColors: THREE.VertexColors } );
 
 						paintFaces( groundGeometry, radius, data.groundAngle, data.groundColor, false );
 
@@ -881,7 +881,7 @@ THREE.VRMLLoader.prototype = {
 
 						if ( 'Material' === child.nodeType ) {
 
-							var material = new THREE.MeshPhongMaterial();
+							var material = new MeshPhongMaterial();
 
 							if ( undefined !== child.diffuseColor ) {
 

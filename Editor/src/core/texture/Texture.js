@@ -3,10 +3,14 @@
 //Texture constructor
 function Texture(image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding)
 {
+	// Image data
+	this.data = ""
+	this.encoding = ""
+
 	// Self pointer
 	var self = this
 
-	// Check if image is url
+	// If image is a URL
 	if (typeof image === "string") {
 		var url = image
 		var image = document.createElement("img")
@@ -17,6 +21,7 @@ function Texture(image, mapping, wrapS, wrapT, magFilter, minFilter, format, typ
 		}
 	}
 
+	// Call super constructor
 	THREE.Texture.call(this, image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding)
 
 	// Name
@@ -30,59 +35,26 @@ Texture.prototype = Object.create(THREE.Texture.prototype);
 //Create JSON description
 Texture.prototype.toJSON = function(meta)
 {
-	if(meta.textures[this.uuid] !== undefined)
-	{
-		return meta.textures[this.uuid];
+	var data = THREE.Texture.prototype.toJSON.call(this, meta)
+
+	// Serialise image data
+	var image = this.image
+	
+	if (image.uuid === undefined) {
+		image.uuid = THREE.Math.generateUUID()
 	}
 
-
-	var output =
-	{
-		metadata:
-		{
-			version: Editor.VERSION,
-			type: "Texture"
-		},
-
-		uuid: this.uuid,
-		name: this.name,
-
-		category: this.category,
-
-		mapping: this.mapping,
-
-		repeat: [this.repeat.x, this.repeat.y],
-		offset: [this.offset.x, this.offset.y],
-		wrap: [this.wrapS, this.wrapT],
-
-		minFilter: this.minFilter,
-		magFilter: this.magFilter,
-		anisotropy: this.anisotropy,
-
-		flipY: this.flipY
-	};
-
-	if(this.image !== undefined)
-	{
-		var image = this.image;
-
-		if(image.uuid === undefined)
-		{
-			image.uuid = THREE.Math.generateUUID();
+	if (meta.images[image.uuid] === undefined) {
+		meta.images[image.uuid] = {
+			uuid: image.uuid,
+			url: getDataURL(image)
 		}
-
-		if(meta.images[image.uuid] === undefined)
-		{
-			meta.images[image.uuid] =
-			{
-				uuid: image.uuid,
-				url: getDataURL(image)
-			};
-		}
-
-		output.image = image.uuid;
 	}
 
+	data.image = image.uuid
+	return data
+
+	// Create data url for image element
 	function getDataURL(image)
 	{
 		var canvas, context;

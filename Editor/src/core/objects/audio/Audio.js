@@ -1,9 +1,10 @@
 "use strict";
 
-function Audio(url)
+function Audio(audio)
 {
 	THREE.Audio.call(this, Audio.listener);
 
+	// Name and type
 	this.name = "audio";
 	this.type = "Audio";
 
@@ -11,17 +12,17 @@ function Audio(url)
 	this.encoding = ""
 	this.data = null
 
+	// Load audio file
+	if (audio !== undefined) {
+		this.encoding = audio.split(".").pop()
+		this.data = App.readFileArrayBuffer(url)
+	}
+
 	// Playback control
 	this.autoplay = true;
 	this.playbackRate = 1;
 	this.startTime = 0;
 	this.source.loop = true;
-
-	// Load audio file
-	if (url !== undefined) {
-		this.encoding = url.split(".").pop()
-		this.data = App.readFileArrayBuffer(url)
-	}
 }
 
 // Default audio listener

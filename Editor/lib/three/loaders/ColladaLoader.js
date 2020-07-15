@@ -1176,7 +1176,7 @@ THREE.ColladaLoader = function () {
 				}
 
 				var mesh;
-				var material = first_material || new THREE.MeshLambertMaterial( { color: 0xdddddd, side: geometry.doubleSided ? THREE.DoubleSide : THREE.FrontSide } );
+				var material = first_material || new MeshLambertMaterial( { color: 0xdddddd, side: geometry.doubleSided ? THREE.DoubleSide : THREE.FrontSide } );
 				var geom = geometry.mesh.geometry3js;
 
 				if ( num_materials > 1 ) {
@@ -3805,19 +3805,19 @@ THREE.ColladaLoader = function () {
 			case 'constant':
 
 				if (props.emissive != undefined) props.color = props.emissive;
-				this.material = new THREE.MeshBasicMaterial( props );
+				this.material = new MeshBasicMaterial( props );
 				break;
 
 			case 'phong':
 			case 'blinn':
 
-				this.material = new THREE.MeshPhongMaterial( props );
+				this.material = new MeshPhongMaterial( props );
 				break;
 
 			case 'lambert':
 			default:
 
-				this.material = new THREE.MeshLambertMaterial( props );
+				this.material = new MeshLambertMaterial( props );
 				break;
 
 		}

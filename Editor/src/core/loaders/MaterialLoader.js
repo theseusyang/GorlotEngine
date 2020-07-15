@@ -44,7 +44,7 @@ MaterialLoader.prototype = {
 
 	parse: function ( json ) {
 
-		var type = json.type	
+		var type = json.type
 
 		if (type === "MeshPhongMaterial") {
 			var material = new MeshPhongMaterial()

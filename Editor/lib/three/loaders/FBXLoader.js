@@ -254,11 +254,11 @@
 		var material;
 		if ( texture !== undefined ) {
 
-			material = new THREE.MeshBasicMaterial( { map: texture } );
+			material = new MeshBasicMaterial( { map: texture } );
 
 		} else {
 
-			material = new THREE.MeshBasicMaterial( { color: 0x3300ff } );
+			material = new MeshBasicMaterial( { color: 0x3300ff } );
 
 		}
 

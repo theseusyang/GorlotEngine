@@ -89,7 +89,7 @@ function SceneEditor(parent)
 				}
 				// Video
 				else if (file.type.startsWith("video")) {
-					var object = intersections[0]
+					var object = intersections[0].object
 
 					if (object instanceof THREE.Mesh) {
 						var texture = new VideoTexture(file.path)

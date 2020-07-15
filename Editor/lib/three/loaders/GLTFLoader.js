@@ -188,7 +188,7 @@ THREE.GLTFLoader.prototype = {
 
 			var material = materials[ materialId ];
 
-			var _material = new THREE.MeshPhongMaterial();
+			var _material = new MeshPhongMaterial();
 			_material.name = material.name;
 
 			var values = material.values;
