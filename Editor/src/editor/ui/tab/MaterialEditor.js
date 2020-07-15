@@ -147,7 +147,7 @@ MaterialEditor.prototype.activate = function()
 
 	Editor.setState(Editor.STATE_IDLE);
 	Editor.resetEditingFlags();
-	Mouse.canvas = this.canvas.element;
+	Mouse.setCanvas(this.canvas.element);
 }
 
 //Remove element

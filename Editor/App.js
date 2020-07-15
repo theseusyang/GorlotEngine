@@ -74,6 +74,8 @@ include("src/core/objects/AnimatedModel.js");
 include("src/core/objects/Text3D.js");
 include("src/core/objects/Sprite.js");
 include("src/core/objects/ParticleEmitter.js");
+include("src/core/objects/Program.js");
+include("src/core/objects/Scene.js");
 
 // Assets
 include("src/core/assets/materials/MeshBasicMaterial.js")
@@ -117,20 +119,19 @@ include("src/core/nodes/materials/Constants.js")
 include("src/core/nodes/Register.js")
 
 include("src/core/ObjectLoader.js");
-include("src/core/Program.js");
-include("src/core/Scene.js");
 include("src/core/ObjectUtils.js");
 include("src/core/MathUtils.js");
 
 //App class
 function App(){}
 
-//Require NodeJS modules
+// NWJS modules
 try
 {
 	App.fs = require("fs");
 	App.gui = require("nw.gui");
 	App.clipboard = App.gui.Clipboard.get();
+	App.args = App.gui.App.argv
 }
 catch(e){}
 

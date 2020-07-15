@@ -13,19 +13,19 @@ KeyboardNode.title = "Keyboard"
 KeyboardNode.prototype.onExecute = function() {
 	var k = this.getInputData(0)
 
-	if (Keyboard.isKeyPressed(k)) {
+	if (Keyboard.keyPressed(k)) {
 		this.setOutputData(0, true)
 	} else {
 		this.setOutputData(0, false)
 	}
 
-	if (Keyboard.isKeyJustPressed(k)) {
+	if (Keyboard.keyJustPressed(k)) {
 		this.setOutputData(1, true)
 	} else {
 		this.setOutputData(1, false)
 	}
 
-	if (Keyboard.isKeyJustReleased(k)) {
+	if (Keyboard.keyJustReleased(k)) {
 		this.setOutputData(2, true)
 	} else {
 		this.setOutputData(2, false)

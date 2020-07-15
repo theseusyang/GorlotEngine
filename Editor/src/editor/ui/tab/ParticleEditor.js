@@ -179,7 +179,7 @@ ParticleEditor.prototype.activate = function() {
 	Editor.resetEditingFlags()
 
 	// Set mouse canvas
-	Mouse.canvas = this.canvas.element
+	Mouse.setCanvas(this.canvas.element)
 }
 
 // Remove element
