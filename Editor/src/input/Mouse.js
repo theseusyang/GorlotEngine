@@ -48,6 +48,12 @@ Mouse.initialize = function()
 			Mouse._wheel_updated = true;
 		}, false);
 	}
+	else if (document.onwheel !== undefined) {
+		document.onwheel = function(e) {
+			Mouse._wheel = e.deltaY
+			Mouse._wheel_updated = true
+		}
+	}
 
 	//Touchscreen input
 	if("ontouchstart" in window || navigator.msMaxTouchPoints > 0)

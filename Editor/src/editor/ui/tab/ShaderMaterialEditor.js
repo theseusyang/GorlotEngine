@@ -79,7 +79,7 @@ function ShaderMaterialEditor(parent) {
 	this.renderer.shadowMap.type = Settings.render.shadows_type
 
 	// Material camera
-	this.camera = new PerspectiveCamera(90, this.canvas.size.x/this.canvas.size.y, 0.1, 1000000)
+	this.camera = new PerspectiveCamera(90, this.canvas.size.x/this.canvas.size.y)
 
 	// Material preview scene
 	this.scene = new Scene()

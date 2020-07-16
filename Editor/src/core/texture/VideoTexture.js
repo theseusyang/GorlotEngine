@@ -42,14 +42,11 @@ VideoTexture.prototype.dispose = function()
 // Create JSON description
 VideoTexture.prototype.toJSON = function(meta) {
 	var data = THREE.Texture.prototype.toJSON.call(this, meta)
+	var video = this.video.toJSON(meta)
 
-	data.video = this.video.uuid
+	data.video = video.uuid
 	data.loop = this.loop
 	data.autoplay = this.autoplay
-
-	if (meta.videos[this.video.uuid] === undefined) {
-		meta.videos[this.video.uuid] = this.video.toJSON()
-	}
 
 	return data
 }

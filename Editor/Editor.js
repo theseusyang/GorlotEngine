@@ -193,12 +193,13 @@ Editor.initialize = function(canvas)
 	//Material renderer for material previews
 	Editor.material_renderer = new MaterialRenderer();
 
-	//Default assets to be used when creating objects
+	//Default resources
 	Editor.default_material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2});
 	Editor.default_material.name = "default";
 	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff});
 	Editor.default_sprite_material.name = "default";
-	Editor.default_font = new Font(JSON.parse(App.readFile("data/fonts/montserrat.json")))
+	Editor.default_font = new Font("data/fonts/montserrat.json")
+	Editor.default_audio = new Audio("data/sample.ogg")
 
 	//Initialize User Interface
 	Interface.initialize();
@@ -211,7 +212,7 @@ Editor.initialize = function(canvas)
 	Editor.raycaster = new THREE.Raycaster(); 
 
 	//Editor Camera
-	Editor.default_camera = new PerspectiveCamera(60, 1, 0.01, 1000000);
+	Editor.default_camera = new PerspectiveCamera(60, 1);
 	Editor.default_camera.position.set(0, 5, 5);
 	Editor.camera = Editor.default_camera;
 	Editor.camera_rotation = new THREE.Vector2(3.14, 0);
