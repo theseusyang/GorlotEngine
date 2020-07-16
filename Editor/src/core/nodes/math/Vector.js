@@ -1016,6 +1016,63 @@ VectorGetZNode.prototype.onExecute = function() {
 	}
 }
 
+function VectorSetXNode() {
+	this.addInput("Vector", "Vector")
+	this.addInput("X", "number")
+	// TODO: Number component
+}
+VectorSetXNode.title_color = NodesHelper.colours.purple[0]
+VectorSetXNode.title_color1 = NodesHelper.colours.purple[1]
+VectorSetXNode.title_color2 = NodesHelper.colours.purple[1]
+VectorSetXNode.title_text_color = NodesHelper.title_colours.white
+VectorSetXNode.title = "Set X"
+VectorSetXNode.prototype.onExecute = function() {
+	var vec = this.getInputData(0)
+	var x = this.getInputData(1)
+
+	if (vec !== undefined) {
+		vec.x = x
+	}
+}
+
+function VectorSetYNode() {
+	this.addInput("Vector", "Vector")
+	this.addInput("Y", "number")
+	// TODO: Number component
+}
+VectorSetYNode.title_color = NodesHelper.colours.purple[0]
+VectorSetYNode.title_color1 = NodesHelper.colours.purple[1]
+VectorSetYNode.title_color2 = NodesHelper.colours.purple[1]
+VectorSetYNode.title_text_color = NodesHelper.title_colours.white
+VectorSetYNode.title = "Set Y"
+VectorSetYNode.prototype.onExecute = function() {
+	var vec = this.getInputData(0)
+	var y = this.getInputData(1)
+
+	if (vec !== undefined) {
+		vec.y = y
+	}
+}
+
+function VectorSetZNode() {
+	this.addInput("Vector", "Vector")
+	this.addInput("Z", "number")
+	// TODO: Number component
+}
+VectorSetZNode.title_color = NodesHelper.colours.purple[0]
+VectorSetZNode.title_color1 = NodesHelper.colours.purple[1]
+VectorSetZNode.title_color2 = NodesHelper.colours.purple[1]
+VectorSetZNode.title_text_color = NodesHelper.title_colours.white
+VectorSetZNode.title = "Set Z"
+VectorSetZNode.prototype.onExecute = function() {
+	var vec = this.getInputData(0)
+	var z = this.getInputData(1)
+
+	if (vec !== undefined) {
+		vec.z = z
+	}
+}
+
 function registerVectorNodes() {
 	// REGISTER THE NODES
 	LiteGraph.registerNodeType("Vectors/Vector2", Vector2Node)
@@ -1058,4 +1115,7 @@ function registerVectorNodes() {
 	LiteGraph.registerNodeType("Vectors/VectorGetX", VectorGetXNode)
 	LiteGraph.registerNodeType("Vectors/VectorGetY", VectorGetYNode)
 	LiteGraph.registerNodeType("Vectors/VectorGetZ", VectorGetZNode)
+	LiteGraph.registerNodeType("Vectors/VectorSetX", VectorSetXNode)
+	LiteGraph.registerNodeType("Vectors/VectorSetY", VectorSetYNode)
+	LiteGraph.registerNodeType("Vectors/VectorSetZ", VectorSetZNode)
 }

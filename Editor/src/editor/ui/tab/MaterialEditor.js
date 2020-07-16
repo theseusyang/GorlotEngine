@@ -115,7 +115,58 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 
 	//Store material
 	this.material = material;
-	this.nodes = this.material.nodes
+
+	// The default material nodes
+	this.defaultNodes = {
+		config: {},
+		groups: [],
+		last_link_id: 0,
+		last_node_id: 1,
+		links: [],
+		nodes: [
+			{
+				flags: {},
+				id: 1,
+				mode: 0,
+				inputs: [],
+				outputs: [],
+				pos: [208, 140],
+				properties: {
+					reflectivity: (this.material.reflectivity !== undefined) ? this.material.reflectivity : 0,
+					shininess: (this.material.shininess !== undefined) ? this.material.shininess : 0,
+					wireframe: (this.material.wireframe !== undefined) ? this.material.wireframe : false,
+					depthwrite: (this.material.depthWrite !== undefined) ? this.material.depthWrite : false,
+					transparent: (this.material.transparent !== undefined) ? this.material.transparent : false,
+					opacity: (this.material.opacity !== undefined) ? this.material.opacity : 0,
+					abf: (this.material.fog !== undefined) ? this.material.fog : false
+				},
+				size: [210, 382],
+				type: "Material/MeshPhongMaterial"
+			}
+		],
+		version: 0.4
+	}
+
+	if(JSON.stringify(this.material.nodes) === "{}") {
+		this.nodes = this.defaultNodes
+		
+		if (this.material instanceof MeshShaderMaterial) {
+			this.nodes.nodes.push({
+				flags: {},
+				id: 2,
+				// TODO: Uniforms
+				inputs: [],
+				order: 1,
+				pos: [502, 141],
+				properties: {},
+				type: "Material/Shader"
+			})
+		}
+		
+	} else {
+		this.nodes = this.material.nodes
+	}
+
 
 	this.initNodeEditor()
 }
