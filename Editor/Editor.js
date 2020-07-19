@@ -121,7 +121,7 @@ Editor.MODE_ROTATE = 3;
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sun Jul 19 2020 03:40:12 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sun Jul 19 2020 04:01:20 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -943,7 +943,7 @@ Editor.exportWebProject = function(dir)
 	App.copyFile("lib\\stats.min.js", dir + "\\lib\\stats.min.js");
 	App.copyFile("lib\\cannon.min.js", dir + "\\lib\\cannon.min.js");
 	App.copyFile("lib\\base64.min.js", dir + "\\lib\\base64.min.js");
-	App.copyFile("lib\\webvr-polyfill.min.js", dir + "\\lib\\webvr-polyfill.min.js");	
+	//App.copyFile("lib\\webvr-polyfill.min.js", dir + "\\lib\\webvr-polyfill.min.js");	
 	App.makeDirectory(dir + "\\lib\\three");
 	App.copyFile("lib\\three\\three.min.js", dir + "\\lib\\three\\three.min.js");
 	App.makeDirectory(dir + "\\lib\\three\\effects");
