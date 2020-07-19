@@ -13,75 +13,29 @@ function ImageBox(parent)
 	}
 
 	//ID
-	var id = "img_box" + ImageBox.id;
+	var id = "img" + ImageBox.id;
 	ImageBox.id++;
 
 	//Create element
 	this.element = document.createElement("div");
 	this.element.style.position = "absolute";
-
-	//Alpha background
-	this.alpha = document.createElement("img");
-	this.alpha.style.position = "absolute";
-	this.alpha.src = "src/editor/files/alpha.png";
-	this.element.appendChild(this.alpha);
+	this.element.style.pointerEvents = "none";
 
 	//Image
 	this.img = document.createElement("img");
+	this.img.style.pointerEvents = "none";
 	this.img.style.position = "absolute";
+	this.img.style.top = "0px";
+	this.img.style.left = "0px";
 	this.element.appendChild(this.img);
-
-	//Self pointer
-	var self = this;
-
-	//On drop get file dropped
-	this.element.ondrop = function(event)
-	{
-		event.preventDefault();
-
-		if(event.dataTransfer.files.length > 0)
-		{
-			//Get first file from event
-			var file = event.dataTransfer.files[0];
-
-			//Check if its a image
-			if(file.type.startsWith("image"))
-			{
-				self.setImage(file.path);
-				self.onchange(file.path);
-			}
-		}
-	};
-
-	//Prevent deafault when object dragged over
-	this.element.ondragover = function(event)
-	{
-		event.preventDefault();
-	};
-
-	//Onclick select image file
-	this.element.onclick = function()
-	{
-		if(self.onchange !== null)
-		{
-			App.chooseFile(function(file)
-			{
-				self.setImage(file);
-				self.onchange(file);
-			}, "image/*");
-		}
-	};
-
-	//On change function
-	this.onchange = null;
 
 	//Element atributes
 	this.fit_parent = false;
-	this.size = new THREE.Vector2(100, 100);
+	this.size = new THREE.Vector2(0,0);
 	this.position = new THREE.Vector2(0,0);
 	this.visible = true;
 
-	//Image
+	//ImageBox
 	this.keep_aspect_ratio = false;
 	this.image_scale = new THREE.Vector2(1,1);
 
@@ -89,13 +43,13 @@ function ImageBox(parent)
 	this.parent.appendChild(this.element);
 }
 
-//ImageBox ID counter
+//Image ID counter
 ImageBox.id = 0;
 
-//Set onchange callback function
-ImageBox.prototype.setOnChange = function(callback)
+//Set image onclick callback function
+ImageBox.prototype.setCallback = function(callback)
 {
-	this.onchange = callback;
+	this.element.onclick = callback;
 }
 
 //Remove element
@@ -111,16 +65,27 @@ ImageBox.prototype.destroy = function()
 //Update
 ImageBox.prototype.update = function(){}
 
-//Set image from URL
-ImageBox.prototype.setImage = function(url)
+//Set ImageBox
+ImageBox.prototype.setImage = function(image)
 {
-	this.img.src = url;
+	this.img.src = image;
 }
 
-//Get image URL
-ImageBox.prototype.getValue = function()
+//Set element visibility
+ImageBox.prototype.setVisibility = function(value)
 {
-	return this.img.src;
+	this.visible = value;
+
+	if(this.visible)
+	{
+		this.element.style.visibility = "visible";
+		this.img.style.visibility = "visible";
+	}
+	else
+	{
+		this.element.style.visibility = "hidden";
+		this.img.style.visibility = "hidden";
+	}
 }
 
 //Update Interface
@@ -138,13 +103,11 @@ ImageBox.prototype.updateInterface = function()
 	{
 		this.element.style.visibility = "visible";
 		this.img.style.visibility = "visible";
-		this.alpha.style.visibility = "visible";
 	}
 	else
 	{
 		this.element.style.visibility = "hidden";
 		this.img.style.visibility = "hidden";
-		this.alpha.style.visibility = "hidden";
 	}
 
 	//Keep image aspect ratio
@@ -166,11 +129,6 @@ ImageBox.prototype.updateInterface = function()
 	this.img.style.left = ((this.size.x - (this.size.x * this.image_scale.x))/2) + "px";
 	this.img.style.top = ((this.size.y - (this.size.y * this.image_scale.y))/2) + "px";
 	
-	this.alpha.width = this.size.x;
-	this.alpha.height = this.size.y;
-	this.alpha.style.left = this.img.style.left;
-	this.alpha.style.top = this.img.style.top;
-
 	//Update base element
 	this.element.style.top = this.position.y + "px";
 	this.element.style.left = this.position.x + "px";

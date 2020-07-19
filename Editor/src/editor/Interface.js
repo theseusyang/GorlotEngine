@@ -748,7 +748,7 @@ Interface.initialize = function()
 	Interface.top_bar.size.y = 25 ;
 
 	//Editor Logo
-	//Interface.image = new Image();
+	//Interface.image = new ImageBox();
 	//Interface.image.setImage("src/editor/files/logo.png");
 	//Interface.image.size.set(108, 18);
 	//Interface.image.updateInterface();
@@ -990,7 +990,6 @@ Interface.updateInterface = function()
 	Interface.explorer_resizable.updateInterface();
 
 	Interface.tree_view.updateInterface();
-	Interface.panel.updateInterface();
 
 	//---------------------------------Asset Explorer----------------------------------
 	Interface.asset_explorer_div.size.x = size.x - Interface.explorer.size.x - Interface.tool_bar.size.x;

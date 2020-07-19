@@ -343,8 +343,7 @@ SettingsTab.prototype.updateMetadata = function(container){}
 SettingsTab.prototype.activate = function()
 {
 	Editor.setState(Editor.STATE_IDLE);
-	Editor.resetEditingFlags();
-
+	
 	//General
 	this.theme.setValue(Settings.general.theme);
 	this.file_preview_size.setValue(Settings.general.file_preview_size);

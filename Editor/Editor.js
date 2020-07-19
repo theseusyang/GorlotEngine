@@ -46,7 +46,7 @@ include("src/editor/ui/Button.js");
 include("src/editor/ui/DropdownMenu.js");
 include("src/editor/ui/Text.js");
 include("src/editor/ui/Division.js");
-include("src/editor/ui/Image.js");
+include("src/editor/ui/ImageBox.js");
 include("src/editor/ui/DivisionResizable.js");
 include("src/editor/ui/ButtonImage.js");
 include("src/editor/ui/ButtonDrawer.js");
@@ -88,7 +88,7 @@ include("src/editor/ui/input/Slider.js");
 include("src/editor/ui/input/DropdownList.js");
 include("src/editor/ui/input/NumberBox.js");
 include("src/editor/ui/input/CoordinatesBox.js");
-include("src/editor/ui/input/ImageBox.js");
+include("src/editor/ui/input/ImageChooser.js");
 include("src/editor/ui/input/TextureBox.js");
 
 include("src/editor/tools/MoveTool.js");
@@ -121,7 +121,7 @@ Editor.MODE_ROTATE = 3;
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sun Jul 19 2020 04:01:20 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sun Jul 19 2020 22:10:54 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)

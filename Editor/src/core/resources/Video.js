@@ -8,6 +8,7 @@ function Video(url) {
 
 	this.encoding = ""
 	this.data = ""
+        this.format = ""
 
 	if (url !== undefined) {
 		var file = new XMLHttpRequest()
@@ -15,9 +16,10 @@ function Video(url) {
 		file.overrideMimeType("text/plain; charset=x-user-defined")
 		file.send(null)
 
-		this.encoding = url.split(".").pop()
-		this.data = base64BinaryString(file.response)
-	}
+                this.encoding = url.split(".").pop()
+                this.data = "data:video/" + this.encoding + ";base64," + base64BinaryString(file.response)
+                this.format = "base64"
+    }
 }
 
 // Create JSON description
@@ -33,7 +35,8 @@ Video.prototype.toJSON = function(meta) {
 	data.uuid = this.uuid
 	data.type = this.type
 	data.encoding = this.encoding
-	data.data = this.data
+        data.format = this.format
+        data.data = this.data
 
 	meta.videos[this.uuid] = data
 

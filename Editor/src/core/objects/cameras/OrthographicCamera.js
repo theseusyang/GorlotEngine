@@ -19,8 +19,6 @@ function OrthographicCamera(size, aspect, mode, near, far)
 	this.aspect = aspect;
 	this.mode = (mode !== undefined) ? mode : OrthographicCamera.FIXED_VERTICAL;
 
-	this.updateProjectionMatrix();
-
 	this.components = []
 	this.defaultComponents = []
 

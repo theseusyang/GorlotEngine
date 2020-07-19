@@ -12,7 +12,8 @@ function BlockScript(nodes, uuid)
 
 	this.nodes = {
 		config: {},
-		groups: [],
+        extra: {},
+        groups: [],
 		last_link_id: 0,
 		last_node_id: 2,
 		links: [],
@@ -68,6 +69,10 @@ BlockScript.prototype = Object.create(THREE.Object3D.prototype);
 //Initialize
 BlockScript.prototype.initialize = function()
 {
+
+        // Program and scene
+        console.log(this.parent)
+
 	for(var i = 0; i < this.nodes.nodes.length; i++) {
 		if (this.nodes.nodes[i].properties.type === "initialization") {
 			this.init = i
@@ -77,7 +82,7 @@ BlockScript.prototype.initialize = function()
 		}
 	}
 
-	// TODO: Improve performance
+	// TODO: Optimise this code
 	this.init_nodes = JSON.parse(JSON.stringify(this.nodes))
 	this.init_nodes.nodes[this.loop] = {}
 

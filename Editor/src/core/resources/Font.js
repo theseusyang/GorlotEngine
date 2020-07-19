@@ -6,8 +6,9 @@ function Font(url) {
 	this.uuid = THREE.Math.generateUUID()
 	this.type = "Font"
 
-	this.encoding = ""
-	this.data = null
+        this.encoding = ""
+        this.format = ""
+        this.data = null
 
 	if (url !== undefined) {
 		this.encoding = url.split(".").pop()
@@ -20,8 +21,9 @@ function Font(url) {
 
 			this.data = JSON.parse(file.response)
 			this.name = this.data.original_font_information.fullName
-		} else {
-			// TODO: TTF Support
+                this.format = "JSON"
+        } else {
+			// TODO: TTF/OTF Support
 			console.warn("Font: Font format is not supported", this.encoding)
 		}
 	}
@@ -42,6 +44,7 @@ Font.prototype.toJSON = function(meta) {
 	data.uuid = this.uuid
 	data.encoding = this.encoding
 	data.type = this.type
+        data.format = this.format
 	data.data = this.data
 
 	meta.fonts[this.uuid] = data

@@ -1,6 +1,6 @@
 "use strict";
 
-function Image(parent)
+function ImageChooser(parent)
 {
 	//Parent
 	if(parent === undefined)
@@ -13,27 +13,71 @@ function Image(parent)
 	}
 
 	//ID
-	var id = "img" + Image.id;
-	Image.id++;
+	var id = "img_box" + ImageChooser.id;
+	ImageChooser.id++;
 
 	//Create element
 	this.element = document.createElement("div");
 	this.element.style.position = "absolute";
-	this.element.style.pointerEvents = "none";
+
+	//Alpha background
+	this.alpha = document.createElement("img");
+	this.alpha.style.position = "absolute";
+	this.alpha.src = "editor/files/alpha.png";
+	this.element.appendChild(this.alpha);
 
 	//Image
 	this.img = document.createElement("img");
-	this.img.style.pointerEvents = "none";
 	this.img.style.position = "absolute";
-	this.img.style.top = "0px";
-	this.img.style.left = "0px";
-
-	//Add image to element
 	this.element.appendChild(this.img);
+
+	//Self pointer
+	var self = this;
+
+	//On drop get file dropped
+	this.element.ondrop = function(event)
+	{
+		event.preventDefault();
+
+		if(event.dataTransfer.files.length > 0)
+		{
+			//Get first file from event
+			var file = event.dataTransfer.files[0];
+
+			//Check if its a image
+			if(file.type.startsWith("image"))
+			{
+				self.setImage(file.path);
+				self.onchange(file.path);
+			}
+		}
+	};
+
+	//Prevent deafault when object dragged over
+	this.element.ondragover = function(event)
+	{
+		event.preventDefault();
+	};
+
+	//Onclick select image file
+	this.element.onclick = function()
+	{
+		if(self.onchange !== null)
+		{
+			App.chooseFile(function(file)
+			{
+				self.setImage(file);
+				self.onchange(file);
+			}, "image/*");
+		}
+	};
+
+	//On change function
+	this.onchange = null;
 
 	//Element atributes
 	this.fit_parent = false;
-	this.size = new THREE.Vector2(0,0);
+	this.size = new THREE.Vector2(100, 100);
 	this.position = new THREE.Vector2(0,0);
 	this.visible = true;
 
@@ -45,17 +89,17 @@ function Image(parent)
 	this.parent.appendChild(this.element);
 }
 
-//Image ID counter
-Image.id = 0;
+//ImageChooser ID counter
+ImageChooser.id = 0;
 
-//Set image onclick callback function
-Image.prototype.setCallback = function(callback)
+//Set onchange callback function
+ImageChooser.prototype.setOnChange = function(callback)
 {
-	this.element.onclick = callback;
+	this.onchange = callback;
 }
 
 //Remove element
-Image.prototype.destroy = function()
+ImageChooser.prototype.destroy = function()
 {
 	try
 	{
@@ -65,33 +109,22 @@ Image.prototype.destroy = function()
 }
 
 //Update
-Image.prototype.update = function(){}
+ImageChooser.prototype.update = function(){}
 
-//Set Image
-Image.prototype.setImage = function(image)
+//Set image from URL
+ImageChooser.prototype.setImage = function(url)
 {
-	this.img.src = image;
+	this.img.src = url;
 }
 
-//Set element visibility
-Image.prototype.setVisibility = function(value)
+//Get image URL
+ImageChooser.prototype.getValue = function()
 {
-	this.visible = value;
-
-	if(this.visible)
-	{
-		this.element.style.visibility = "visible";
-		this.img.style.visibility = "visible";
-	}
-	else
-	{
-		this.element.style.visibility = "hidden";
-		this.img.style.visibility = "hidden";
-	}
+	return this.img.src;
 }
 
 //Update Interface
-Image.prototype.updateInterface = function()
+ImageChooser.prototype.updateInterface = function()
 {
 	//Fit parent element
 	if(this.fit_parent)
@@ -105,11 +138,13 @@ Image.prototype.updateInterface = function()
 	{
 		this.element.style.visibility = "visible";
 		this.img.style.visibility = "visible";
+		this.alpha.style.visibility = "visible";
 	}
 	else
 	{
 		this.element.style.visibility = "hidden";
 		this.img.style.visibility = "hidden";
+		this.alpha.style.visibility = "hidden";
 	}
 
 	//Keep image aspect ratio
@@ -131,6 +166,11 @@ Image.prototype.updateInterface = function()
 	this.img.style.left = ((this.size.x - (this.size.x * this.image_scale.x))/2) + "px";
 	this.img.style.top = ((this.size.y - (this.size.y * this.image_scale.y))/2) + "px";
 	
+	this.alpha.width = this.size.x;
+	this.alpha.height = this.size.y;
+	this.alpha.style.left = this.img.style.left;
+	this.alpha.style.top = this.img.style.top;
+
 	//Update base element
 	this.element.style.top = this.position.y + "px";
 	this.element.style.left = this.position.x + "px";

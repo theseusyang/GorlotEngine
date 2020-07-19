@@ -8,22 +8,28 @@ function Image(url) {
 
 	this.encoding = ""
 	this.data = null
+        this.format = ""
 
 	if (url !== undefined) {
-		var file = XMLHttpRequest()
+		var file = new XMLHttpRequest()
 		file.open("GET", url, false)
 		file.overrideMimeType("text/plain; charset=x-user-defined")
 		file.send(null)
 
 		this.encoding = url.split(".").pop()
-		this.data = base64BinaryString(file.response)
+            this.data = "data:image/" + this.encoding + ";base64," + base64BinaryString(file.response)
+            this.format = "base64"
 	}
 
 	this.encoding = ""
 	this.data = null
 }
 
-// Create JSON description
+// Choose proper encoding for image data
+Image.prototype.compressData = function() { 
+}
+
+// JSON Serialisation
 Image.prototype.toJSON = function(meta) {
 	
 	if (meta.images[this.uuid] !== undefined) {
@@ -36,7 +42,8 @@ Image.prototype.toJSON = function(meta) {
 	data.uuid = this.uuid
 	data.type = this.type
 	data.encoding = this.encoding
-	data.data = this.data
+        data.format = this.format
+        data.data = this.data
 
 	meta.images[this.uuid] = data
 

@@ -130,7 +130,7 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 		resourceAccess(meta, object)
 	}
 
-	//Collect children data
+	//Serialise children data
 	if(this.children.length > 0)
 	{
 		object.children = []
