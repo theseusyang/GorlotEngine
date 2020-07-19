@@ -42,17 +42,13 @@ Interface.initialize = function()
 	// OBJ File Loader
 	import_models.addOption("Wavefront OBJ", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			try
-			{
-				var loader = new THREE.OBJLoader();
-				var obj = loader.parse(App.readFile(fname));
-				Editor.addToScene(obj);
-			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
+			if (files.length > 0) {
+				var file = files[0].path
+				var loader = new THREE.OBJLoader()
+				var obj = loader.parse(FileSystem.readFile(file))
+				Editor.addToScene(obj)
 			}
 		}, ".obj");
 	});
@@ -60,19 +56,15 @@ Interface.initialize = function()
 	// Collada File Loader
 	import_models.addOption("Collada", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			try
-			{
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.ColladaLoader();
 				loader.options.convertUpAxis = true;
-				var collada = loader.parse(App.readFile(fname));
+				var collada = loader.parse(FileSystem.readFile(file));
 				var scene = collada.scene;
 				Editor.addToScene(scene);
-			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
 			}
 		}, ".dae");
 	});
@@ -82,14 +74,12 @@ Interface.initialize = function()
 
 	// ThreeJS Object loader
 	import_models_three.addOption("Object Loader", () => {
-		App.chooseFile((f) => {
-			try {
+		App.chooseFile(function(files) {
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.ObjectLoader()
-				var object = loader.parse(JSON.parse(App.readFile(f)))
+				var object = loader.parse(JSON.parse(FileSystem.readFile(file)))
 				Editor.addToScene(object)
-			}
-			catch(e) {
-				alert("Error loading file\n("+e+")")
 			}
 		}, ".json")
 	})
@@ -97,12 +87,12 @@ Interface.initialize = function()
 	// ThreeJS JSON Loader
 	import_models_three.addOption("JSON Loader", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			try
-			{
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.JSONLoader();
-				var data = loader.parse(JSON.parse(App.readFile(fname)))
+				var data = loader.parse(JSON.parse(FileSystem.readFile(file)))
 				var materials = data.materials
 				var geometry = data.geometry
 
@@ -127,55 +117,45 @@ Interface.initialize = function()
 
 				Editor.addToScene(model)
 			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
-			}
 		}, ".json");
 	});
 
 	//GLTF File loader
 	import_models.addOption("GLTF", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			try
-			{
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.GLTFLoader();
-				var gltf = loader.parse(App.readFile(fname));
+				var gltf = loader.parse(FileSystem.readFile(file));
 				if (gltf.scene !== undefined) {
 					Editor.addToScene(gltf.scene)
 				}
-			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
 			}
 		}, ".gltf");
 	});
 
 	// PLY File Loader
 	import_models.addOption("PLY", () => {
-		App.chooseFile((f) => {
-			try {
+		App.chooseFile(function(files) {
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.PLYLoader()
-				var geometry = new loader.parse(App.readFile(f))
+				var geometry = new loader.parse(FileSystem.readFile(file))
 				Editor.addToScene(geometry)
-			} catch(e) {
-				alert("Error loading file\n("+e+")")
 			}
 		}, ".ply")
 	})
 
 	// VTK FIle Loader
 	import_models.addOption("VTK", () => {
-		App.chooseFile((f) => {
-			try {
+		App.chooseFile(function(files) {
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.VTKLoader()
-				var geometry = loader.parse(App.readFileArrayBuffer(f))
+				var geometry = loader.parse(FileSystem.readFileArrayBuffer(file))
 				Editor.addToScene(geometry)
-			} catch(e) {
-				alert("Error loading file\n("+e+")")
 			}
 		}, ".vtk, .vtp")
 	})
@@ -185,18 +165,14 @@ Interface.initialize = function()
 	{
 		App.chooseFile(function(fname)
 		{
-			try
-			{
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.VRMLLoader();
-				var scene = loader.parse(App.readFile(fname));
+				var scene = loader.parse(FileSystem.readFile(file));
 				for(var i = 0; i < scene.children.length; i++)
 				{
 					Editor.addToScene(scene.children[i]);
 				}
-			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
 			}
 		}, ".wrl, .vrml");
 	});
@@ -204,17 +180,13 @@ Interface.initialize = function()
 	//FBX
 	import_models.addOption("FBX", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			try
-			{
+			if(files.length > 0) {
+				var file = files[0].path
 				var loader = new THREE.FBXLoader();
-				var obj = loader.parse(App.readFile(fname));
+				var obj = loader.parse(FileSystem.readFile(file));
 				Editor.addToScene(obj);
-			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
 			}
 		}, ".fbx");
 	});
@@ -222,20 +194,16 @@ Interface.initialize = function()
 	//Load Image texture
 	Interface.asset_file.addOption("Texture", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			try
-			{
-				var texture = new Texture(new Image(fname));
+			if(files.length > 0) {
+				var file = files[0].path
+				var texture = new Texture(new Image(file));
 				texture.name = "texture";
 				var material = new MeshPhongMaterial({map: texture, color: 0xffffff});
 				material.name = "texture";
 				Editor.program.addMaterial(material);
 				Editor.updateObjectViews();
-			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
 			}
 		}, "image/*");
 	}, Interface.file_dir + "icons/assets/image.png");
@@ -243,20 +211,17 @@ Interface.initialize = function()
 	//Video texture
 	Interface.asset_file.addOption("Video Texture", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			try
-			{
-				var texture = new VideoTexture(new Video(fname));
+			if(files.length > 0) {
+				var file = files[0].path
+				var texture = new VideoTexture(new Video(file));
 				var material = new MeshPhongMaterial({map: texture, color: 0xffffff});
 				material.name = "video";
 				Editor.program.addMaterial(material);
 				Editor.updateObjectViews();
 			}
-			catch(e)
-			{
-				alert("Error loading file\n("+e+")");
-			}
+
 		}, "video/*");
 	}, Interface.file_dir + "icons/assets/video.png");
 
@@ -273,18 +238,23 @@ Interface.initialize = function()
 	//Load Font
 	Interface.asset_file.addOption("Font", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			//TODO <ADD CODE HERE>
+			if (files.length > 0) {
+				var file = files[0].path
+				var font = new Font(file)
+				// TODO: This
+			}
 		}, ".json, .ttf, .otf");
 	}, Interface.file_dir + "icons/assets/font.png");
 
 	//Load audio file
 	Interface.asset_file.addOption("Audio", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
-			var audio = new AudioEmitter(new Audio(fname))
+			var file = files[0].path
+			var audio = new AudioEmitter(new Audio(file))
 			Editor.addToScene(audio)
 			Editor.updateObjectViews()
 		}, "audio/*");
@@ -801,11 +771,11 @@ Interface.initialize = function()
 	var publish = Interface.file.addMenu("Publish");
 	publish.addOption("Web", function()
 	{
-		App.chooseFile(function(dir)
+		App.chooseFile(function(files)
 		{
 			try
 			{
-				Editor.exportWebProject(dir);
+				Editor.exportWebProject(files[0].path);
 			}
 			catch(e)
 			{
@@ -816,11 +786,11 @@ Interface.initialize = function()
 
 	publish.addOption("Windows", function()
 	{
-		App.chooseFile(function(dir)
+		App.chooseFile(function(files)
 		{
 			try
 			{
-				Editor.exportWindowsProject(dir);
+				Editor.exportWindowsProject(files[0].path);
 			}
 			catch(e)
 			{
@@ -887,17 +857,19 @@ Interface.initialize = function()
 
 	Interface.project.addOption("Execute script", function()
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
 			try
 			{
-				var code = App.readFile(fname);
-				var func = Function(code);
-				func();
+				if (files.length > 0) {
+					var code = FileSystem.readFile(files[0].path)
+					var func = Function(code)
+					func()
+				}
 			}
 			catch(e)
 			{
-				alert(e);
+				alert("Error: " + e);
 			}
 		}, ".js");
 	}, Interface.file_dir + "icons/script/script.png");
@@ -1020,11 +992,11 @@ Interface.updateInterface = function()
 //Open to save program window
 Interface.saveProgram = function()
 {
-	App.chooseFile(function(fname)
+	App.chooseFile(function(files)
 	{
 		try
 		{
-			Editor.saveProgram(fname);
+			Editor.saveProgram(files[0].path);
 			alert("Project saved");
 		}
 		catch(e)
@@ -1039,11 +1011,11 @@ Interface.loadProgram = function()
 {
 	if(confirm("All unsaved changes to the project will be lost! Load file?"))
 	{
-		App.chooseFile(function(fname)
+		App.chooseFile(function(files)
 		{
 			try
 			{
-				Editor.loadProgram(fname);
+				Editor.loadProgram(files[0].path);
 				Editor.resetEditingFlags()
 				Editor.updateObjectViews()
 				alert("Project loaded");

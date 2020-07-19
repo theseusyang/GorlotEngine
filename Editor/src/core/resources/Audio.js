@@ -16,11 +16,9 @@ function Audio(url) {
 		file.overrideMimeType("text/plain; charset=x-user-defined")
 		file.send(null)
 
-                //this.encoding = url.split(".").pop()
-                //this.data = App.readFileArrayBuffer(url)
-                this.encoding = url.split(".").pop()
-                this.format = "arraybuffer"
-                this.data = arrayBufferBinaryString(file.response)
+		this.encoding = url.split(".").pop()
+		this.format = "arraybuffer"
+		this.data = ArraybufferUtils.fromBinaryString(file.response)
 	}
 }
 
@@ -37,8 +35,8 @@ Audio.prototype.toJSON = function(meta) {
 	data.uuid = this.uuid
 	data.type = this.type
 	data.encoding = this.encoding
-	data.data = base64ArrayBuffer(this.data)
-        data.format = "base64"
+	data.data = Base64Utils.fromArraybuffer(this.data)
+	data.format = "base64"
 
 	meta.audio[this.uuid] = data
 

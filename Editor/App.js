@@ -30,7 +30,6 @@ include("lib/cannon.min.js");
 include("lib/leap.min.js");
 include("lib/stats.min.js");
 include("lib/SPE.min.js");
-include("lib/base64.min.js")
 
 include("lib/litegraph/lgraph.js")
 
@@ -97,6 +96,9 @@ include("src/core/objects/ParticleEmitter.js");
 include("src/core/objects/Program.js");
 include("src/core/objects/Scene.js");
 
+include("src/core/utils/Base64Utils.js")
+include("src/core/utils/ArraybufferUtils.js")
+
 // Assets
 include("src/core/assets/materials/MeshBasicMaterial.js")
 include("src/core/assets/materials/MeshLambertMaterial.js")
@@ -158,6 +160,7 @@ include("src/core/nodes/materials/Constants.js")
 
 include("src/core/nodes/Register.js")
 
+include("src/core/FileSystem.js")
 include("src/core/ObjectUtils.js");
 include("src/core/MathUtils.js");
 
@@ -309,177 +312,12 @@ App.chooseFile = function(callback, filter, savemode)
 	{
 		if(callback !== undefined)
 		{
-			callback(chooser.value);
+			callback(chooser.files);
 		}
 	};
 
 	//Force trigger onchange event
 	chooser.click();
-}
-
-//Read text file
-App.readFile = function(fname, sync, callback)
-{
-	if(sync === undefined)
-	{
-		sync = true;
-	}
-
-	//Check if node available
-	if(App.fs !== undefined)
-	{
-		if(sync)
-		{
-			return App.fs.readFileSync(fname, "utf8");
-		}
-		else
-		{
-			App.fs.readFile(fname, "utf8", callback);
-		}
-	}
-	else
-	{
-		var file = new XMLHttpRequest();
-		file.overrideMimeType("text/plain");
-
-		//Get file
-		file.open("GET", fname, !sync);
-		file.onreadystatechange = function ()
-		{
-			if(file.status === 200 || file.status === 0)
-			{
-				//Callback
-				if(callback !== undefined)
-				{
-					callback(file.responseText);
-				}
-			}
-		}
-
-		file.send(null)
-		return file.responseText
-	}
-}
-
-// Read file as arraybuffer
-App.readFileArrayBuffer = function(fname, callback) 
-{
-	if (App.fs !== undefined) 
-	{
-		var buffer = App.fs.readFileSync(fname, undefined)
-		var length = buffer.length
-		var array = new ArrayBuffer(length)
-		var view = new Uint8Array(array)
-
-		for(var i = 0; i < length; i++) 
-		{
-			view[i] = buffer[i]
-		}
-
-		return array
-	} else {
-		// TODO: THis
-	}
-}
-
-App.readFileBase64 = function (fname) {
-	if(App.fs !== undefined) {
-		// TODO: This
-	}
-	else
-	{
-		var file = new XMLHttpRequest()
-		file.open("GET", fname, false)
-
-		file.overrideMimeType("text/plain; charset=x-user-defined")
-		file.send(null)
-
-		return base64BinaryString(file.response)
-	}
-}
-
-//Write File
-App.writeFile = function(fname, data)
-{
-	if(App.fs !== undefined)
-	{
-		var stream = App.fs.createWriteStream(fname, "utf8");
-		stream.write(data);
-		stream.end();
-	}
-}
-
-//Copy file (can't be used to copy folders)
-App.copyFile = function(src, dest)
-{
-	if(App.fs !== undefined)
-	{
-		App.fs.createReadStream(src).pipe(App.fs.createWriteStream(dest));
-	}
-}
-
-//Make a directory (dont trow exeption if directory already exists)
-App.makeDirectory = function(dir)
-{
-	if(App.fs !== undefined)
-	{
-		try
-		{
-			App.fs.mkdirSync(dir);
-		}
-		catch(e){}
-	}
-}
-
-//Returns files in directory (returns empty array in case of error)
-App.getFilesDirectory = function(dir)
-{
-	if(App.fs !== undefined)
-	{
-		try
-		{
-			return App.fs.readdirSync(dir);
-		}
-		catch(e)
-		{
-			return [];
-		}
-	}
-	return [];
-}
-
-//Copy folder and all its files (includes symbolic links)
-App.copyFolder = function(src, dest)
-{
-	if(App.fs !== undefined)
-	{
-		App.makeDirectory(dest);
-		var files = App.fs.readdirSync(src);
-
-		for(var i = 0; i < files.length; i++)
-		{
-			var source = src + "\\" + files[i];
-			var destiny = dest + "\\" + files[i];
-			var current = App.fs.statSync(source);
-			
-			//Directory
-			if(current.isDirectory())
-			{
-				App.copyFolder(source, destiny);
-			}
-			//Symbolic link
-			else if(current.isSymbolicLink())
-			{
-				App.fs.symlinkSync(App.fs.readlinkSync(source), destiny);
-			}
-			//File
-			else
-			{
-				App.copyFile(source, destiny);
-			}
-			
-		}
-	}
 }
 
 // Include javascript or css file in project
@@ -506,131 +344,22 @@ function include(file, onload)
 	}
 	else if(file.endsWith("*"))
 	{
-		var directory = file.replace("*", "");
-		var files = App.getFilesDirectory(directory);
-		for(var i = 0; i < files.length; i++)
-		{
-			include(directory + files[i]);
-		}
-	}
-	else
-	{
-		var directory = file + "/";
-		try
-		{
-			var files = App.getFilesDirectory(directory);
-			for(var i = 0; i < files.length; i++)
-			{
-				include(directory + files[i]);
+		if (App.fs !== undefined) {
+			var directory = file.replace("*", "")
+			var files = App.fs.readdirSync(directory)
+			for(var i = 0; i < files.length; i++) {
+				include(directory + files[i])
 			}
 		}
-		catch(e){}
-	}
-}
-
-//Create base64 string from arraybuffer object
-function base64ArrayBuffer(arrayBuffer)
-{
-	var encoding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-	var base64 = ""
-
-	var bytes = new Uint8Array(arrayBuffer)
-	var remainder = bytes.byteLength % 3
-	var length = bytes.byteLength - remainder
-
-	var a, b, c, d
-	var chunk
-
-	//Main loop deals with bytes in chunks of 3 bytes
-	for(var i = 0; i < length; i += 3)
-	{
-		chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
-
-		a = (chunk & 16515072) >> 18 //16515072 = (2^6 - 1) << 18
-		b = (chunk & 258048) >> 12 //258048 = (2^6 - 1) << 12
-		c = (chunk & 4032) >> 6 //4032 = (2^6 - 1) << 6
-		d = chunk & 63 //63 = 2^6 - 1
-
-		// Convert the raw binary segments to the appropriate ASCII encoding
-		base64 += encoding[a] + encoding[b] + encoding[c] + encoding[d]
-	}
-
-	//Deal with the remaining bytes and padding
-	if(remainder === 1)
-	{
-		chunk = bytes[length]
-
-		a = (chunk & 252) >> 2 //252 = (2^6 - 1) << 2
-		b = (chunk & 3) << 4 //3 = 2^2 - 1 (Set the 4 LSB to zero)
-
-		base64 += encoding[a] + encoding[b] + "=="
-	}
-	else if(remainder === 2)
-	{
-		chunk = (bytes[length] << 8) | bytes[length + 1]
-
-		a = (chunk & 64512) >> 10 //64512 = (2^6 - 1) << 10
-		b = (chunk & 1008) >> 4 //1008  = (2^6 - 1) << 4
-		c = (chunk & 15) << 2 //15 = 2^4 - 1 (Set the 2 LSB to zero)
-
-		base64 += encoding[a] + encoding[b] + encoding[c] + "="
-	}
-
-	return base64
-}
-
-//Create base64 string from binary string
-function base64BinaryString(str)
-{
-	var enconding = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-	var base64 = ""
-
-	var length = str.length
-	var c1, c2, c3
-
-	var i = 0
-	while(i < length)
-	{
-		c1 = str.charCodeAt(i++) & 0xff
-		if(i === length)
-		{
-			base64 += enconding.charAt(c1 >> 2)
-			base64 += enconding.charAt((c1 & 0x3) << 4)
-			base64 += "=="
-			break
+	} else {
+		if (App.fs !== undefined) {
+			var directory = file + "/"
+			try {
+				var files = App.fs.readdirSync(directory)
+				for(var i = 0; i < files.length; i++) {
+					include(directory + files[i])
+				}
+			} catch(e) {}
 		}
-
-		c2 = str.charCodeAt(i++)
-		if(i === length)
-		{
-			base64 += enconding.charAt(c1 >> 2)
-			base64 += enconding.charAt(((c1 & 0x3)<< 4) | ((c2 & 0xF0) >> 4))
-			base64 += enconding.charAt((c2 & 0xF) << 2)
-			base64 += "="
-			break
-		}
-
-		c3 = str.charCodeAt(i++)
-		base64 += enconding.charAt(c1 >> 2)
-		base64 += enconding.charAt(((c1 & 0x3) << 4) | ((c2 & 0xF0) >> 4))
-		base64 += enconding.charAt(((c2 & 0xF) << 2) | ((c3 & 0xC0) >> 6))
-		base64 += enconding.charAt(c3 & 0x3F)
 	}
-
-	return base64
-}
-
-//Create array buffer from binary string
-function arrayBufferBinaryString(str)
-{
-	var length = str.length
-	var buffer = new ArrayBuffer(length)
-	var view = new Uint8Array(buffer)
-
-	for(var i = 0; i < length; i++)
-	{
-		view[i] = str.charCodeAt(i)
-	}
-
-	return buffer
 }

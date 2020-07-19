@@ -9,10 +9,10 @@ function PhysicsObjectHelper(obj)
 	this.meshes = [];
 
 	this.material = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true});
-	this.sphere_geometry = new THREE.SphereBufferGeometry(1, 12, 12);
-	this.box_geometry = new THREE.BoxBufferGeometry(1, 1, 1);
-	this.plane_geometry = new THREE.PlaneBufferGeometry(50, 50, 10, 10);
-	this.cylinder_geometry = new THREE.CylinderBufferGeometry(1, 1, 10, 10);
+	this.sphere = new THREE.SphereBufferGeometry(1, 12, 12);
+	this.box = new THREE.BoxBufferGeometry(1, 1, 1);
+	this.plane = new THREE.PlaneBufferGeometry(100, 100, 20, 20);
+	this.cylinde = new THREE.CylinderBufferGeometry(1, 1, 10, 10);
 
 	this.tmpVec0 = new CANNON.Vec3();
 	this.tmpVec1 = new CANNON.Vec3();
@@ -113,19 +113,19 @@ PhysicsObjectHelper.prototype.createMesh = function(shape)
 	switch(shape.type)
 	{
 		case CANNON.Shape.types.SPHERE:
-			mesh = new THREE.Mesh(this.sphere_geometry, material);
+			mesh = new THREE.Mesh(this.sphere, material);
 			break;
 
 		case CANNON.Shape.types.PARTICLE:
-			mesh = new THREE.Mesh(this.sphere_geometry, material);
+			mesh = new THREE.Mesh(this.sphere, material);
 			break;
 
 		case CANNON.Shape.types.BOX:
-			mesh = new THREE.Mesh(this.box_geometry, material);
+			mesh = new THREE.Mesh(this.box, material);
 			break;
 
 		case CANNON.Shape.types.PLANE:
-			mesh = new THREE.Mesh(this.plane_geometry, material);
+			mesh = new THREE.Mesh(this.plane, material);
 			break;
 
 		case CANNON.Shape.types.CONVEXPOLYHEDRON:
