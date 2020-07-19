@@ -1,56 +1,28 @@
-"use strict"
+"use strict";
 
 function ImageLoader(manager)
 {
-	this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager
+	this.manager = (manager !== undefined) ? manager : THREE.DefaultLoadingManager;
 }
 
-ImageLoader.prototype.load = function(url, onLoad, onProgress, onError) 
+ImageLoader.prototype.load = function(url, onLoad, onProgress, onError)
 {
-	var self = this
-	var image = document.createElement("img")
-
-	image.onload = function()
+	var self = this;
+	var loader = new THREE.XHRLoader(this.manager);
+	loader.load(url, function(text)
 	{
-		URL.revokeObjectURL(image.src)
-
-		if (onLoad)
-		{
-			onLoad(image)
-		}
-
-		self.manager.itemEnd(url)
-	}
-
-	if (url.indexOf("data:") === 0)
-	{
-		image.src = url
-	}
-	else
-	{
-		var loader = new XHRLoader()
-		loader.setPath(this.path)
-		loader.setResponseText("blob")
-		loader.setWithCredentials(this.withCredentials)
-		loader.load(url, (blob) =>
-		{
-			image.src = URL.createObjectURL(blob)
-		}, onProgress, onError)
-	}
-
-	this.manager.itemStart(url)
-
-	return image
+		self.parse(JSON.parse(text), onLoad);
+	}, onProgress, onError);
 }
 
-ImageLoader.prototype.setWithCredentials = function(value)
+ImageLoader.prototype.parse = function(json, onLoad)
 {
-	this.withCredentials = value
-	return this
-}
-
-ImageLoader.prototype.setPath = function(value)
-{
-	this.path = value
-	return this
+	var image = new Image();
+	
+	image.name = json.name;
+	image.uuid = json.uuid;
+	image.encoding = json.encoding;
+	image.data = json.data;
+	
+	return image;
 }

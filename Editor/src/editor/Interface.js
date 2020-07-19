@@ -226,7 +226,7 @@ Interface.initialize = function()
 		{
 			try
 			{
-				var texture = new Texture(fname);
+				var texture = new Texture(new Image(fname));
 				texture.name = "texture";
 				var material = new MeshPhongMaterial({map: texture, color: 0xffffff});
 				material.name = "texture";
@@ -247,7 +247,7 @@ Interface.initialize = function()
 		{
 			try
 			{
-				var texture = new VideoTexture(fname);
+				var texture = new VideoTexture(new Video(fname));
 				var material = new MeshPhongMaterial({map: texture, color: 0xffffff});
 				material.name = "video";
 				Editor.program.addMaterial(material);

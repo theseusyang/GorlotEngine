@@ -121,7 +121,7 @@ Editor.MODE_ROTATE = 3;
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sun Jul 19 2020 22:10:54 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sun Jul 19 2020 22:32:10 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -175,12 +175,13 @@ Editor.initialize = function(canvas)
 	Editor.material_renderer = new MaterialRenderer();
 
 	//Default resources
-	Editor.default_material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2});
-	Editor.default_material.name = "default";
-	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture("data/sample.png"), color: 0xffffff});
-	Editor.default_sprite_material.name = "default";
+	Editor.default_image = new Image("data/sample.png")
 	Editor.default_font = new Font("data/fonts/montserrat.json")
 	Editor.default_audio = new Audio("data/sample.ogg")
+	Editor.default_material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2});
+	Editor.default_material.name = "default";
+	Editor.default_sprite_material = new THREE.SpriteMaterial({map: new Texture(Editor.default_image), color: 0xffffff});
+	Editor.default_sprite_material.name = "default";
 
 	//Initialize User Interface
 	Interface.initialize();

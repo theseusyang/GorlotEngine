@@ -1,51 +1,98 @@
-"use strict"
+"use strict";
 
-// Image constructor
-function Image(url) {
-	this.name = "image"
-	this.uuid = THREE.Math.generateUUID()
-	this.type = "Image"
+//Image constructor
+function Image(url)
+{
+	this.name = "image";
+	this.uuid = THREE.Math.generateUUID();
+	this.type = "Image";
 
+	this.format = "";
 	this.encoding = ""
-	this.data = null
-        this.format = ""
+	this.data = null;
 
-	if (url !== undefined) {
-		var file = new XMLHttpRequest()
-		file.open("GET", url, false)
-		file.overrideMimeType("text/plain; charset=x-user-defined")
-		file.send(null)
+	if(url !== undefined)
+	{
+		this.enconding = url.split(".").pop();
 
-		this.encoding = url.split(".").pop()
-            this.data = "data:image/" + this.encoding + ";base64," + base64BinaryString(file.response)
-            this.format = "base64"
+		if(this.enconding !== "gif")
+		{
+			this.format = "url";
+			this.data = url;
+		}
+		else
+		{
+			var file = new XMLHttpRequest();
+			file.open("GET", url, false);
+			file.overrideMimeType("text/plain; charset=x-user-defined");
+			file.send(null);
+
+			this.data = "data:image/" + this.encoding + ";base64," + base64BinaryString(file.response);
+			this.format = "base64";
+		}
 	}
-
-	this.encoding = ""
-	this.data = null
 }
 
-// Choose proper encoding for image data
-Image.prototype.compressData = function() { 
-}
+//Encode image data to jpeg or png
+Image.prototype.encodeData = function()
+{
+	var image = document.createElement("img");
+	image.src = this.data;
 
-// JSON Serialisation
-Image.prototype.toJSON = function(meta) {
-	
-	if (meta.images[this.uuid] !== undefined) {
-		return meta.images[this.uuid]
+	var canvas = document.createElement("canvas");
+	canvas.width = image.width;
+	canvas.height = image.height;
+
+	var context = canvas.getContext("2d");
+	context.drawImage(image, 0, 0, image.width, image.height);
+
+	var transparent = false;
+	var data = context.getImageData(0, 0, image.width, image.height).data;
+	for(var i = 3; i < data.length; i += 4)
+	{
+		if(data[i] !== 255)
+		{
+			transparent = true;
+			break;
+		}
 	}
 
-	var data = {}
+	if(transparent)
+	{
+		this.format = "base64";
+		this.encoding = "png";
+		this.data = canvas.toDataURL("image/png");
+	}
+	else
+	{
+		this.format = "base64";
+		this.encoding = "jpeg";
+		this.data = canvas.toDataURL("image/jpeg", 0.8);
+	}
+}
 
-	data.name = this.name
-	data.uuid = this.uuid
-	data.type = this.type
-	data.encoding = this.encoding
-        data.format = this.format
-        data.data = this.data
+//JSON serialization
+Image.prototype.toJSON = function(meta)
+{
+	if(meta.images[this.uuid] !== undefined)
+	{
+		return meta.images[this.uuid];
+	}
 
-	meta.images[this.uuid] = data
+	if(this.format === "url")
+	{
+		this.encodeData();
+	}
 
-	return data
+	var data = {};
+	data.name = this.name;
+	data.uuid = this.uuid;
+	data.type = this.type;
+	data.encoding = this.encoding;
+	data.format = this.format;
+	data.data = this.data;
+
+	meta.images[this.uuid] = data;
+
+	return data;
 }

@@ -6,9 +6,9 @@ function Video(url) {
 	this.uuid = THREE.Math.generateUUID()
 	this.type = "Video"
 
+	this.format = ""
 	this.encoding = ""
 	this.data = ""
-        this.format = ""
 
 	if (url !== undefined) {
 		var file = new XMLHttpRequest()
@@ -16,9 +16,9 @@ function Video(url) {
 		file.overrideMimeType("text/plain; charset=x-user-defined")
 		file.send(null)
 
-                this.encoding = url.split(".").pop()
-                this.data = "data:video/" + this.encoding + ";base64," + base64BinaryString(file.response)
-                this.format = "base64"
+		this.encoding = url.split(".").pop()
+		this.data = "data:video/" + this.encoding + ";base64," + base64BinaryString(file.response)
+		this.format = "base64"
     }
 }
 

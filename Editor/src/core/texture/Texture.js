@@ -5,25 +5,26 @@ function Texture(image, mapping, wrapS, wrapT, magFilter, minFilter, format, typ
 {
 	// If image is a URL
 	if (typeof image === "string") {
-		var url = image
-		var image = document.createElement("img")
-		image.src = url
+		this.img = new Image(image)
+	} else {
+		this.img = image
 	}
 
-	// Call super constructor
-	THREE.Texture.call(this, image, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding)
+	// Super constructor
+	THREE.Texture.call(this, document.createElement("img"), mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding)
 
 	// Self pointer
 	var self = this
 
-	// Update texture after image loads
-	image.onload = function() {
-		self.needsUpdate = true
-	}
-
 	// Name
 	this.name = "texture"
 	this.category = "Image"
+	
+	// Set image source
+	this.image.src = this.img.data
+	this.image.onload = function() {
+		self.needsUpdate = true
+	}
 }
 
 // Super prototypes
@@ -33,65 +34,9 @@ Texture.prototype = Object.create(THREE.Texture.prototype);
 Texture.prototype.toJSON = function(meta)
 {
 	var data = THREE.Texture.prototype.toJSON.call(this, meta)
-
-	// Serialise image data
-	var image = this.image
-	
-	if (image.uuid === undefined) {
-		image.uuid = THREE.Math.generateUUID()
-	}
-
-	if (meta.images[image.uuid] === undefined) {
-		meta.images[image.uuid] = {
-			uuid: image.uuid,
-			url: getDataURL(image)
-		}
-	}
+	var image = this.img.toJSON(meta)
 
 	data.image = image.uuid
+
 	return data
-
-	// Create data url for image element
-	function getDataURL(image)
-	{
-		var canvas, context;
-		
-		if(image.toDataURL !== undefined)
-		{
-			canvas = image;
-			context = canvas.getContext("2d");
-		}
-		else
-		{
-			canvas = document.createElement("canvas");
-			canvas.width = image.width;
-			canvas.height = image.height;
-
-			context = canvas.getContext("2d");
-			context.drawImage(image, 0, 0, image.width, image.height);
-		}
-		
-		var transparent = false;
-		var data = context.getImageData(0, 0, image.width, image.height).data;
-		for(var i = 3; i < data.length; i += 4)
-		{
-			if(data[i] !== 255)
-			{
-				transparent = true;
-				break;
-			}
-		}
-
-		if(transparent)
-		{
-			return canvas.toDataURL("image/png");
-		}
-		else
-		{
-			return canvas.toDataURL("image/jpeg", 0.8);
-		}
-	}
-
-	meta.textures[this.uuid] = output;
-	return output;
 }
