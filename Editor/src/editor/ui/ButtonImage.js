@@ -44,13 +44,13 @@ function ButtonImage(parent)
         // Mouse over event
 	this.element.onmouseenter = function()
 	{
-		this.element.style.backgroundColor = Editor.theme.button_over_color;
+		this.style.backgroundColor = Editor.theme.button_over_color;
 	};
 
 	//Mouse leave event
 	this.element.onmouseleave = function()
 	{
-		this.element.style.backgroundColor = "";
+		this.style.backgroundColor = "";
 	};
 
 	//Add element to document

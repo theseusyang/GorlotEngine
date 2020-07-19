@@ -51,12 +51,12 @@ function Button(parent)
 	//Mouse over and mouse out events
 	this.element.onmouseenter = function()
 	{
-        this.element.style.backgroundColor = Editor.theme.button_over_color;
+        this.style.backgroundColor = Editor.theme.button_over_color;
 	};
 
 	this.element.onmouseleave = function()
 	{
-		this.element.style.backgroundColor = Editor.theme.button_color;
+		this.style.backgroundColor = Editor.theme.button_color;
 	};
 
 	//Add element to document

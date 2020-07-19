@@ -108,7 +108,7 @@ include("src/editor/Settings.js");
 function Editor(){}
 
 //Editor state
-Editor.STATE_IDLE = 8; //Non scene window open
+Editor.STATE_IDLE = 8; // Idle mode
 Editor.STATE_EDITING = 9; //Editing a scene
 Editor.STATE_TESTING = 11; //Testing a scene
 
