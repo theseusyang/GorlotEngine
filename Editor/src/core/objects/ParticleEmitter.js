@@ -102,6 +102,12 @@ function ParticleEmitter(group, emitter)
 
 	//Add emitter to group
 	this.group.addEmitter(this.emitter);
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
 }
 
 ParticleEmitter.prototype = Object.create(THREE.Object3D.prototype);

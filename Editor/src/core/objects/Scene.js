@@ -38,6 +38,11 @@ function Scene()
 	//Runtime variables
 	this.camera = null;
 	this.listener = new THREE.AudioListener();
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new SceneComponent())
 }
 
 //Fog modes

@@ -56,6 +56,11 @@ function BlockScript(nodes, uuid)
 	if (nodes !== undefined) {
 		this.nodes = nodes
 	}
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
 }
 
 BlockScript.prototype = Object.create(THREE.Object3D.prototype);

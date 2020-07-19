@@ -52,6 +52,13 @@ function KinectDevice()
 			self.camera = event.data;
 		}
 	};
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new KinectComponent())
 }
 
 //Data timeout limit

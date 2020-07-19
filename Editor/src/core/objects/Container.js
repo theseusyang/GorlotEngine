@@ -7,6 +7,12 @@ function Container()
 
 	this.name = "container";
 	this.type = "Group";
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
 }
 
 // Super prototype

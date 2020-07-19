@@ -16,6 +16,13 @@ function DirectionalLight(hex, intensity)
 	this.shadow.camera.bottom = -10;
 	this.shadow.mapSize.width = 1024;
 	this.shadow.mapSize.height = 1024;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new LightComponent())
 }
 
 //Function Prototype

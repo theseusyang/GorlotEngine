@@ -14,6 +14,12 @@ function AudioEmitter(audio)
 	this.playbackRate = 1;
 	this.startTime = 0;
 	this.source.loop = true;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new AudioComponent())
 }
 
 // Default audio listener

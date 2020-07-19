@@ -14,6 +14,13 @@ function PerspectiveCamera(fov, aspect, near, far)
 	THREE.PerspectiveCamera.call(this, fov, aspect, near, far);
 
 	this.name = "camera";
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new CameraComponent())
 }
 
 PerspectiveCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);

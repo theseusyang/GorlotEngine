@@ -12,6 +12,13 @@ function SpotLight(hex, intensity, distance, angle, exponent, decay)
 	this.shadow.camera.far = 500;
 	this.shadow.mapSize.width = 512;
 	this.shadow.mapSize.height = 512;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new LightComponent())
 }
 
 //Function Prototype

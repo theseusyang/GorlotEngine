@@ -78,6 +78,13 @@ function Sky(auto_update, day_time, sun_distance, time)
 	this.time = (time !== undefined) ? time : 150;
 
 	this.updateSky();
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+    this.defaultComponents.push(new SkyComponent())
 }
 
 Sky.prototype = Object.create(THREE.Object3D.prototype);

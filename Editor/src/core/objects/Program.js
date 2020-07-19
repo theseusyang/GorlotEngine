@@ -45,6 +45,11 @@ function Program(name)
 	//Runtime variables
 	this.renderer = null;
 	this.scene = null;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ProgramComponent())
 }
 
 Program.prototype = Object.create(THREE.Object3D.prototype);

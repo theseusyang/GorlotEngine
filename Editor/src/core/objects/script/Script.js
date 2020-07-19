@@ -26,6 +26,12 @@ function Script(code, mode)
 
 	//Script functions
 	this.setCode(this.code);
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+    this.defaultComponents.push(new ScriptComponent())
 }
 
 Script.prototype = Object.create(THREE.Object3D.prototype);

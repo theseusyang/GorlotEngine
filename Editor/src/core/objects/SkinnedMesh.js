@@ -8,6 +8,12 @@ function SkinnedMesh(geometry, material, useVertexTexture) {
 
 	this.receiveShadow = true
 	this.castShadow = true
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
 }
 
 // Super prototypes

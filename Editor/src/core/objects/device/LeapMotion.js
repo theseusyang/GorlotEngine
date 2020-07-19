@@ -43,6 +43,13 @@ function LeapMotion()
 
 	//Data storage
 	this.data = null;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new LeapComponent())
 }
 
 LeapMotion.prototype = Object.create(THREE.Object3D.prototype);

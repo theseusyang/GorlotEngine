@@ -15,6 +15,13 @@ function Text3D(text, material, font)
 		
 	this.receiveShadow = true;
 	this.castShadow = true;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+    this.defaultComponents.push(new TextComponent())
 }
 
 // Super prototype

@@ -20,6 +20,13 @@ function OrthographicCamera(size, aspect, mode, near, far)
 	this.mode = (mode !== undefined) ? mode : OrthographicCamera.FIXED_VERTICAL;
 
 	this.updateProjectionMatrix();
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new CameraComponent())
 }
 
 OrthographicCamera.prototype = Object.create(THREE.OrthographicCamera.prototype);

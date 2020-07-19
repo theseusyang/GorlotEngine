@@ -105,6 +105,25 @@ include("src/core/assets/materials/MeshPhongMaterial.js")
 include("src/core/assets/materials/MeshShaderMaterial.js")
 include("src/core/assets/materials/MeshStandardMaterial.js")
 
+// Components
+include("src/core/components/Panel.js")
+include("src/core/components/Component.js")
+
+include("src/core/components/objects/AudioComponent.js")
+include("src/core/components/objects/ElementComponent.js")
+include("src/core/components/objects/KinectComponent.js")
+include("src/core/components/objects/LeapComponent.js")
+include("src/core/components/objects/ObjectComponent.js")
+include("src/core/components/objects/PhysicsComponent.js")
+include("src/core/components/objects/ProgramComponent.js")
+include("src/core/components/objects/SceneComponent.js")
+include("src/core/components/objects/SkyComponent.js")
+include("src/core/components/objects/TextComponent.js")
+
+include("src/core/components/cameras/CameraComponent.js")
+
+include("src/core/components/lights/LightComponent.js")
+include("src/core/components/objects/ScriptComponent.js")
 // Nodes
 include("src/core/nodes/NodesHelper.js")
 

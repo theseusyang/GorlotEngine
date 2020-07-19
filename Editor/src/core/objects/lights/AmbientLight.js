@@ -7,6 +7,13 @@ function AmbientLight(hex)
 	this.name = "ambient_light";
 
 	this.matrixAutoUpdate = false;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new LightComponent())
 }
 
 //Function Prototype

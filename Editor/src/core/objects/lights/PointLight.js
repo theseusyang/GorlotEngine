@@ -11,6 +11,13 @@ function PointLight(hex, intensity, distance, decay)
 	this.shadow.camera.near = 0.01;
 	this.shadow.camera.far = Number.MAX_SAFE_INTEGER;
 	this.shadow.bias = 0.01;
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
+	this.defaultComponents.push(new LightComponent())
 }
 
 //Function Prototype

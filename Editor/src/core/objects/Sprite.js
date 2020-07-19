@@ -7,6 +7,12 @@ function Sprite(material)
 
 	this.name = "sprite";
 	this.type = "Sprite";
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
 }
 
 // Super prototype
