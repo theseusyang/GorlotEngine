@@ -132,6 +132,7 @@ include("src/core/nodes/NodesHelper.js")
 include("src/core/nodes/base/Arrays.js")
 include("src/core/nodes/base/Base.js")
 include("src/core/nodes/base/Logic.js")
+include("src/core/nodes/base/JSON.js")
 
 include("src/core/nodes/input/Keyboard.js")
 include("src/core/nodes/input/Mouse.js")

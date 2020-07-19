@@ -22,6 +22,7 @@ NodesHelper.colours.purple = ["#551a8b", "#551a8c", "#8c1a8a"]
 NodesHelper.colours.red = ["#cd0000", "#cc0000", "#cc2200"]
 NodesHelper.colours.rosybrown = ["#8b6969", "#8c6a6a", "#8c7b6a"]
 NodesHelper.colours.royalblue = ["#27408b", "#27408c", "#40278c"]
+NodesHelper.colours.azure = ["#838b8b", "#838c8c", "#83888c"]
 
 // Title Colours
 NodesHelper.title_colours = {}

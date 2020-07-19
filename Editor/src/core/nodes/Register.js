@@ -7,6 +7,7 @@ function baseRegisterBaseNodes() {
 	registerBaseNodes()
 	registerLogicNodes()
 	registerArrayNodes()
+    registerJSONNodes()
 }
 
 function mathRegisterMathNodes() {
@@ -48,10 +49,11 @@ function registerMaterialNodes() {
 	registerMaterialNodeColor()
 	registerMaterialNodeConstants()
 	registerArrayNodes()
+        registerJSONNodes()
 }
 
 function registerParticleNodes() {
-	registerParticlesParticlesNodes()
+    registerParticlesParticlesNodes()
 	registerMaterialNodeColor()
 	registerVectorNodes()
 	registerArrayNodes()

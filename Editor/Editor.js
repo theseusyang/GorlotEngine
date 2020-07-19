@@ -121,7 +121,7 @@ Editor.MODE_ROTATE = 3;
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Thu Jul 16 2020 13:02:00 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sun Jul 19 2020 03:40:12 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)

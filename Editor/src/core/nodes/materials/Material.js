@@ -126,6 +126,8 @@ MeshPhongMaterialNode.prototype.onExecute = function() {
 
 function ShaderNode() {
 	this.properties = {mat: null}
+
+        this.addInput("Uniforms", "JSON")
 }
 ShaderNode.title_color = NodesHelper.colours.aquamarine[0]
 ShaderNode.title_color1 = NodesHelper.colours.aquamarine[1]
@@ -170,6 +172,13 @@ ShaderNode.prototype.onDblClick = function() {
 		}
 
 	}
+}
+ShaderNode.prototype.onExecute = function() {
+        var uniforms = this.getInputData(0)
+
+        if(uniforms !== undefined) {
+               this.graph.extra.material.uniforms = uniforms 
+        }
 }
 
 function SetMaterialColorNode() {

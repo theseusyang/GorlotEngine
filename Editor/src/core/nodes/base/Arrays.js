@@ -3,11 +3,11 @@ function ArrayNode() {
 }
 ArrayNode.title_color = NodesHelper.colours.deepskyblue[0]
 ArrayNode.title_color1 = NodesHelper.colours.deepskyblue[1]
-ArrayNode.title_color2 = NodesHelper.colours.deepskyblue[1]
+ArrayNode.title_color2 = NodesHelper.colours.deepskyblue[2]
 ArrayNode.title_text_color = NodesHelper.title_colours.white
 ArrayNode.title = "Array"
 ArrayNode.prototype.onGetInputs = function() {
-	return [["Element", null]]
+	return [["Item", null]]
 }
 ArrayNode.prototype.onExecute = function() {
 	var arr = []
@@ -30,7 +30,7 @@ function PushNode() {
 }
 PushNode.title_color = NodesHelper.colours.hotpink[0]
 PushNode.title_color1 = NodesHelper.colours.hotpink[1]
-PushNode.title_color2 = NodesHelper.colours.hotpink[1]
+PushNode.title_color2 = NodesHelper.colours.hotpink[2]
 PushNode.title_text_color = NodesHelper.title_colours.white
 PushNode.title = "Push"
 PushNode.prototype.onExecute = function() {
@@ -45,7 +45,7 @@ function RemoveFirstNode() {
 }
 RemoveFirstNode.title_color = NodesHelper.colours.hotpink[0]
 RemoveFirstNode.title_color1 = NodesHelper.colours.hotpink[1]
-RemoveFirstNode.title_color2 = NodesHelper.colours.hotpink[1]
+RemoveFirstNode.title_color2 = NodesHelper.colours.hotpink[2]
 RemoveFirstNode.title_text_color = NodesHelper.title_colours.white
 RemoveFirstNode.title = "Remove First"
 RemoveFirstNode.prototype.onExecute = function() {
@@ -62,7 +62,7 @@ function RemoveLastNode() {
 }
 RemoveLastNode.title_color = NodesHelper.colours.hotpink[0]
 RemoveLastNode.title_color1 = NodesHelper.colours.hotpink[1]
-RemoveLastNode.title_color2 = NodesHelper.colours.hotpink[1]
+RemoveLastNode.title_color2 = NodesHelper.colours.hotpink[2]
 RemoveLastNode.title_text_color = NodesHelper.title_colours.white
 RemoveLastNode.title = "Remove Last"
 RemoveLastNode.prototype.onExecute = function() {
@@ -80,7 +80,7 @@ function GetArrayLengthNode() {
 }
 GetArrayLengthNode.title_color = NodesHelper.colours.hotpink[0]
 GetArrayLengthNode.title_color1 = NodesHelper.colours.hotpink[1]
-GetArrayLengthNode.title_color2 = NodesHelper.colours.hotpink[1]
+GetArrayLengthNode.title_color2 = NodesHelper.colours.hotpink[2]
 GetArrayLengthNode.title_text_color = NodesHelper.title_colours.white
 GetArrayLengthNode.title = "Length"
 GetArrayLengthNode.prototype.onExecute = function() {
@@ -97,7 +97,7 @@ function GetArrayPositionItemNode() {
 }
 GetArrayPositionItemNode.title_color = NodesHelper.colours.hotpink[0]
 GetArrayPositionItemNode.title_color1 = NodesHelper.colours.hotpink[1]
-GetArrayPositionItemNode.title_color2 = NodesHelper.colours.hotpink[1]
+GetArrayPositionItemNode.title_color2 = NodesHelper.colours.hotpink[2]
 GetArrayPositionItemNode.title_text_color = NodesHelper.title_colours.white
 GetArrayPositionItemNode.title = "Get Position Item"
 GetArrayPositionItemNode.prototype.onExecute = function() {
@@ -115,7 +115,7 @@ function GetLastItemNode() {
 }
 GetLastItemNode.title_color = NodesHelper.colours.hotpink[0]
 GetLastItemNode.title_color1 = NodesHelper.colours.hotpink[1]
-GetLastItemNode.title_color2 = NodesHelper.colours.hotpink[1]
+GetLastItemNode.title_color2 = NodesHelper.colours.hotpink[2]
 GetLastItemNode.title_text_color = NodesHelper.title_colours.white
 GetLastItemNode.title = "Get Last Item"
 GetLastItemNode.prototype.onExecute = function() {
@@ -132,7 +132,7 @@ function SetValueAtPositionNode() {
 }
 SetValueAtPositionNode.title_color = NodesHelper.colours.hotpink[0]
 SetValueAtPositionNode.title_color1 = NodesHelper.colours.hotpink[1]
-SetValueAtPositionNode.title_color2 = NodesHelper.colours.hotpink[1]
+SetValueAtPositionNode.title_color2 = NodesHelper.colours.hotpink[2]
 SetValueAtPositionNode.title_text_color = NodesHelper.title_colours.white
 SetValueAtPositionNode.title = "Set At Position"
 SetValueAtPositionNode.prototype.onExecute = function() {
@@ -155,7 +155,7 @@ function IsArrayNode() {
 }
 IsArrayNode.title_color = NodesHelper.colours.deepskyblue[0]
 IsArrayNode.title_color1 = NodesHelper.colours.deepskyblue[1]
-IsArrayNode.title_color2 = NodesHelper.colours.deepskyblue[1]
+IsArrayNode.title_color2 = NodesHelper.colours.deepskyblue[2]
 IsArrayNode.title_text_color = NodesHelper.title_colours.white
 IsArrayNode.title = "Is Array"
 IsArrayNode.prototype.onExecute = function() {
@@ -169,7 +169,7 @@ function ToStringNode() {
 }
 ToStringNode.title_color = NodesHelper.colours.hotpink[0]
 ToStringNode.title_color1 = NodesHelper.colours.hotpink[1]
-ToStringNode.title_color2 = NodesHelper.colours.hotpink[1]
+ToStringNode.title_color2 = NodesHelper.colours.hotpink[2]
 ToStringNode.title_text_color = NodesHelper.title_colours.white
 ToStringNode.title = "To String"
 ToStringNode.prototype.onExecute = function() {
@@ -186,7 +186,7 @@ function JoinNode() {
 }
 JoinNode.title_color = NodesHelper.colours.hotpink[0]
 JoinNode.title_color1 = NodesHelper.colours.hotpink[1]
-JoinNode.title_color2 = NodesHelper.colours.hotpink[1]
+JoinNode.title_color2 = NodesHelper.colours.hotpink[2]
 JoinNode.title_text_color = NodesHelper.title_colours.white
 JoinNode.title = "Join"
 JoinNode.prototype.onExecute = function() {
@@ -205,7 +205,7 @@ function MergeNode() {
 }
 MergeNode.title_color = NodesHelper.colours.hotpink[0]
 MergeNode.title_color1 = NodesHelper.colours.hotpink[1]
-MergeNode.title_color2 = NodesHelper.colours.hotpink[1]
+MergeNode.title_color2 = NodesHelper.colours.hotpink[2]
 MergeNode.title_text_color = NodesHelper.title_colours.white
 MergeNode.title = "Merge"
 MergeNode.prototype.onExecute = function() {
