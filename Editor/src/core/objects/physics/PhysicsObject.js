@@ -1,6 +1,6 @@
 "use strict";
 
-//PhysicsObject constructor
+//Physics Object constructor
 function PhysicsObject()
 {
 	THREE.Object3D.call(this);
@@ -8,12 +8,10 @@ function PhysicsObject()
 	this.name = "physics";
 	this.type = "Physics";
 
-	//Body
 	this.body = new CANNON.Body();
 	this.body.type = CANNON.Body.DYNAMIC;
 	this.body.mass = 1.0;
 
-	//World pointer
 	this.world = null;
 
 	this.components = []
@@ -29,7 +27,6 @@ PhysicsObject.prototype = Object.create(THREE.Object3D.prototype);
 //Initialize physics object
 PhysicsObject.prototype.initialize = function()
 {
-	//Update body to world position
 	this.body.position.copy(this.position);
 	this.body.quaternion.copy(this.quaternion);
 	

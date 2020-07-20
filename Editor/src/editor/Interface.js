@@ -136,6 +136,18 @@ Interface.initialize = function()
 		}, ".gltf");
 	});
 
+	// AWD File loader
+	import_models.addOption("AWD", () => {
+		App.chooseFile((files) => {
+			if (files.length > 0) {
+				var file = files[0].path
+				var loader = new THREE.AWDLoader()
+				var awd = loader.parse(FileSystem.readFileArrayBuffer(file))
+				Editor.addToScene(awd)
+			}
+		}, ".awd")
+	})
+
 	// PLY File Loader
 	import_models.addOption("PLY", () => {
 		App.chooseFile(function(files) {
@@ -232,7 +244,7 @@ Interface.initialize = function()
 		var material = new MeshPhongMaterial({map: texture, color: 0xffffff});
 		material.name = "webcam";
 		Editor.program.addMaterial(material);
-		setTimeout(Editor.updateObjectViews, 500);
+		Editor.updateObjectViews()
 	}, Interface.file_dir + "icons/hw/webcam.png");
 
 	//Load Font
@@ -336,7 +348,7 @@ Interface.initialize = function()
 	Interface.explorer_resizable.tab_position = 0.6;
 
 	//Project explorer
-	Interface.tree_view = new TreeView(Interface.explorer_resizable.div_a, Interface.explorer_resizable);
+	Interface.tree_view = new TreeView(Interface.explorer_resizable.div_a);
 
 	//Object panel variables
 	Interface.panel = new Panel(Interface.explorer_resizable.div_b);

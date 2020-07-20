@@ -18,6 +18,7 @@ AudioLoader.prototype.parse = function(json) {
 
 	audio.name = json.name
 	audio.uuid = json.uuid
+	audio.format = json.format
 	audio.encoding = json.encoding
 	audio.data = ArraybufferUtils.fromBase64(json.data)
 

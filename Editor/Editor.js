@@ -33,6 +33,8 @@ include("lib/three/loaders/GLTFLoader.js");
 include("lib/three/loaders/ColladaLoader.js");
 include("lib/three/loaders/PLYLoader.js")
 include("lib/three/loaders/VTKLoader.js")
+include("lib/three/loaders/AWDLoader.js")
+include("lib/three/loaders/TGALoader.js")
 
 include("lib/three/animation/Animation.js");
 include("lib/three/animation/AnimationHandler.js");
@@ -670,10 +672,10 @@ Editor.updateObjectViews = function()
 	// TODO: Remove this
 	var delta = Date.now() - start
 	console.log("Update " + (update++) + " ObjectView: " + delta + "ms")
-	console.log("   Treeview " + tree_delta + "ms")
-	console.log("   Panel " + panel_delta + "ms")
-	console.log("   Tabs " + tabs_delta + "ms")
-	console.log("   Assets " + asset_delta + "ms\n\n")
+	console.log("    Treeview " + tree_delta + "ms")
+	console.log("    Panel " + panel_delta + "ms")
+	console.log("    Tabs " + tabs_delta + "ms")
+	console.log("    Assets " + asset_delta + "ms\n\n")
 }
 
 //Update tab names to match objects actual info
@@ -715,12 +717,12 @@ Editor.updateAssetExplorer = function()
 	}
 
 	// Textures
-	var textures = ObjectUtils.getTextures(Editor.program, Editor.program.textures)
-	for(var i in textures) {
-		var file = new TextureAsset(Interface.asset_explorer.element)
-		file.setTexture(textures[i])
-		Interface.asset_explorer.add(file)
-	}
+	// var textures = ObjectUtils.getTextures(Editor.program, Editor.program.textures)
+	// for(var i in textures) {
+		// var file = new TextureAsset(Interface.asset_explorer.element)
+		// file.setTexture(textures[i])
+		// Interface.asset_explorer.add(file)
+	// }
 
 	Interface.asset_explorer.updateInterface();
 
@@ -836,7 +838,7 @@ Editor.selectObjectHelper = function()
 			Editor.object_helper.add(new PhysicsObjectHelper(Editor.selected_object));
 		}
 		// Script
-		if (Editor.selected_object instanceof Script || Editor.selected_object instanceof AudioEmitter || Editor.selected_object instanceof BlockScript) {
+		else if (Editor.selected_object instanceof Script || Editor.selected_object instanceof AudioEmitter || Editor.selected_object instanceof BlockScript) {
 			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, ObjectIcons.get(Editor.selected_object.type)))
 		}
 		// Animated Mesh
