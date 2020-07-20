@@ -499,6 +499,59 @@
         this.setOutputData(0, this.properties.value);
     };
 
+    // Stores a variable
+    function VariableNode() {
+        this.size = [60, 30]
+        this.addInput("in")
+        this.addOutput("out")
+        this.properties = {varname: "myname", container: VariableNode.LITEGRAPH}
+    }
+    VariableNode.title = "Variable"
+
+    VariableNode.LITEGRAPH = 0 // Between all graphics
+    VariableNode.GRAPH = 1 // Only inside this graph
+    VariableNode.GLOBALSCOPE = 2 // Attached to window
+
+    VariableNode["@container"] = {type: "enum", values: {"litegraph": VariableNode.LITEGRAPH, "graph": VariableNode.GRAPH, "global": VariableNode.GLOBALSCOPE}}
+
+    VariableNode.prototype.onExecute = function() {
+        var container = this.getContainer()
+
+        if (this.isInputConnected(0)) {
+            this.value = this.getInputData(0)
+            container[this.properties.varname]  = this.value
+            this.setOutputData(0, this.value)
+            return
+        }
+
+        this.setOutputData(0, container[this.properties.varname])
+    }
+
+    VariableNode.prototype.getContainer = function() {
+        switch(this.properties.container) {
+
+            case VariableNode.GRAPH:
+                if (this.graph) {
+                    return this.graph.vars
+                }
+                return {}
+                break
+
+            case VariableNode.GLOBALSCOPE:
+                return global
+                break
+
+            case VariableNode.LITEGRAPH:
+            default:
+                return LiteGraph.Globals
+                break
+
+        }
+    }
+
+    VariableNode.prototype.getTitle = function() {
+        return this.properties.varname
+    }
 
     function registerBaseNodes() {
         LiteGraph.registerNodeType("Base/number", WidgetNumber);
@@ -510,6 +563,7 @@
         LiteGraph.registerNodeType("Base/combo", WidgetCombo);
         LiteGraph.registerNodeType("Base/knob", WidgetKnob);
         LiteGraph.registerNodeType("Base/internal_slider", WidgetSliderGUI);
+        LiteGraph.registerNodeType("Base/Variable", VariableNode)
     }
 
 

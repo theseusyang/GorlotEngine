@@ -31,7 +31,7 @@ include("lib/leap.min.js");
 include("lib/stats.min.js");
 include("lib/SPE.min.js");
 
-include("lib/litegraph/lgraph.js")
+include("lib/litegraph/litegraph.js")
 
 //Internal modules
 include("src/core/three/Three.js");

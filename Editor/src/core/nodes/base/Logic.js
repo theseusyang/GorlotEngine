@@ -110,7 +110,11 @@ Subgraph.prototype.onDrawBackground = function(ctx, graphcanvas, canvas, pos) {
     var over = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LiteGraph.NODE_TITLE_HEIGHT)
     ctx.fillStyle = over ? "#555" : "#222"
     ctx.beginPath()
-    ctx.roundRect(0, y, this.size[0] + 1, LiteGraph.NODE_TITLE_HEIGHT, 0, 8)
+    if (this._shape === LiteGraph.BOX_SHAPE) {
+        ctx.rect(0, y, this.size[0]+1, LiteGraph.NODE_TITLE_HEIGHT)
+    } else {
+        ctx.roundRect(0, y, this.size[0]+1, LiteGraph.NODE_TITLE_HEIGHT, 0, 8)
+    }
     ctx.fill()
 
     // Button
@@ -326,15 +330,22 @@ GraphInputNode.title = "Input"
 GraphInputNode.prototype.onConfigure = function() {
     this.updateType()
 }
+// Ensures the type in the node output and the type in the associated graph input are the same
 GraphInputNode.prototype.updateType = function() {
     var type = this.properties.type
     this.type_widget.value = type
 
+    // Update output
     if (this.outputs[0].type !== type) {
+
+        if (!LiteGraph.isValidConnection(this.outputs[0].type, type)) {
+            this.disconnectOutput(0)
+        }
+
         this.outputs[0].type = type
-        this.disconnectOutput(0)
     }
 
+    // Update widget
     if (type === "number") {
         this.value_widget.type = "number"
         this.value_widget.value = 0
@@ -353,7 +364,14 @@ GraphInputNode.prototype.updateType = function() {
     }
 
     this.properties.value = this.value_widget.value
+
+    // Update graph
+    if (this.graph && this.name_in_graph) {
+        this.graph.changeInputType(this.name_in_graph, type)
+    }
 }
+
+// This is executed AFTER the property has changed
 GraphInputNode.prototype.onPropertyChanged = function(name, v) {
     if (name === "name") {
         if (v === "" || v === this.name_in_graph || v === "enabled") {
@@ -372,13 +390,7 @@ GraphInputNode.prototype.onPropertyChanged = function(name, v) {
         this.name_widget.value = v
         this.name_in_graph = v
     } else if (name === "type") {
-        v = v || ""
-
-        if (this.graph) {
-            this.graph.changeInputType(this.name_in_graph, v)
-        }
-
-        this.updateType(v)
+        this.updateType()
     } else if (name === "value") {
 
     }
@@ -444,6 +456,11 @@ function GraphOutput() {
             if (v == "action" || v == "event") {
                 v = LiteGraph.ACTION;
             }
+
+            if (!LiteGraph.isValidConnection(that.inputs[0].type, v)) {
+                that.disconnectOutput(0)
+            }
+
             that.inputs[0].type = v;
             if (that.name_in_graph) {
                 //already added
