@@ -195,9 +195,6 @@ Editor.initialize = function(canvas)
 	Editor.camera_rotation = new THREE.Vector2(3.14, 0);
 	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
 
-	//Update interface
-	Interface.updateInterface();
-
 	//Grid and axis helpers
 	Editor.grid_helper = new THREE.GridHelper(Settings.editor.grid_size, Math.round(Settings.editor.grid_size/Settings.editor.grid_spacing)*2, 0x888888, 0x888888);
 	Editor.grid_helper.material.depthWrite = false;
@@ -234,9 +231,6 @@ Editor.initialize = function(canvas)
 	if(Editor.program === null) {
 		Editor.createNewProgram();
 	}
-
-	//Update interface explorer tree view
-	Editor.updateObjectViews();
 }
 
 //Update Editor
@@ -658,31 +652,55 @@ Editor.updateSelectedObjectUI = function()
 	}
 }
 
+// TODO: Test code
+var update = 0
+var tree_delta, asset_delta, tabs_delta, panel_delta
+
 //Update all object views
 Editor.updateObjectViews = function()
 {
+	// TODO: Remove this
+	var start = Date.now()
+
 	Editor.updateTreeView();
 	Editor.updateObjectPanel();
 	Editor.updateTabsData();
-	Editor.selectObjectHelper();
 	Editor.updateAssetExplorer()
+
+	// TODO: Remove this
+	var delta = Date.now() - start
+	console.log("Update " + (update++) + " ObjectView: " + delta + "ms")
+	console.log("   Treeview " + tree_delta + "ms")
+	console.log("   Panel " + panel_delta + "ms")
+	console.log("   Tabs " + tabs_delta + "ms")
+	console.log("   Assets " + asset_delta + "ms\n\n")
 }
 
 //Update tab names to match objects actual info
 Editor.updateTabsData = function()
 {
+	var start = Date.now()
+
 	Interface.tab.updateMetadata();
+
+	tabs_delta = Date.now() - start
 }
 
 //Update tree view to match actual scene
 Editor.updateTreeView = function()
 {
+	var start = Date.now()
+
 	Interface.tree_view.fromObject(Editor.program);
+
+	tree_delta = Date.now() - start
 }
 
 //Update assets explorer content
 Editor.updateAssetExplorer = function()
 {
+	var start = Date.now()
+
 	//Clean asset explorer
 	Interface.asset_explorer.clear();
 	
@@ -705,15 +723,21 @@ Editor.updateAssetExplorer = function()
 	}
 
 	Interface.asset_explorer.updateInterface();
+
+	asset_delta = Date.now() - start
 }
 
 //Updates object panel values
 Editor.updateObjectPanel = function()
 {
+	var start = Date.now()
+
 	if(Interface.panel !== null)
 	{
 		Interface.panel.updatePanel();
 	}
+
+	panel_delta = Date.now() - start
 }
 
 // Create default resources to be used when creating new objects
@@ -934,6 +958,7 @@ Editor.loadProgram = function(fname)
 	var data = JSON.parse(FileSystem.readFile(fname));
 	var program = loader.parse(data);
 	Editor.program = program;
+	Editor.resetEditingFlags()
 	
 	//Remove old tabs from interface
 	Interface.tab.clear();
