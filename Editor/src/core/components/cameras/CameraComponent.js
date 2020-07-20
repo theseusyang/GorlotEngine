@@ -52,37 +52,6 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 		this.form.add(this.fov)
 		this.form.nextRow()
 
-		// Rendering distance
-		this.form.addText("Distance")
-		this.form.nextRow()
-
-		// Near
-		this.form.addText("Near")
-		this.near = new NumberBox(this.form.element)
-		this.near.size.set(60, 18)
-		this.near.setStep(0.1)
-		this.near.setRange(0, Number.MAX_SAFE_INTEGER)
-		this.near.setOnChange(() => {
-			if (self.obj !== null) {
-				self.obj.near = self.near.getValue()
-			}
-		})
-		this.form.add(this.near)
-		this.form.nextRow()
-
-		// Far
-		this.form.addText("Far")
-		this.far = new NumberBox(this.form.element)
-		this.far.size.set(80, 18)
-		this.far.setRange(0, Number.MAX_SAFE_INTEGER)
-		this.far.setOnChange(() => {
-			if (self.obj !== null) {
-				self.obj.far = self.far.getValue()
-			}
-		})
-		this.form.add(this.far)
-		this.form.nextRow()
-
 	} else if (this.obj instanceof OrthographicCamera) {
 
 		// Size
@@ -112,6 +81,37 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 		this.form.add(this.mode)
 		this.form.nextRow()
 	}
+
+	// Rendering distance
+	this.form.addText("Distance")
+	this.form.nextRow()
+
+	// Near
+	this.form.addText("Near")
+	this.near = new NumberBox(this.form.element)
+	this.near.size.set(60, 18)
+	this.near.setStep(0.1)
+	this.near.setRange(0, Number.MAX_SAFE_INTEGER)
+	this.near.setOnChange(() => {
+		if (self.obj !== null) {
+			self.obj.near = self.near.getValue()
+		}
+	})
+	this.form.add(this.near)
+	this.form.nextRow()
+
+	// Far
+	this.form.addText("Far")
+	this.far = new NumberBox(this.form.element)
+	this.far.size.set(80, 18)
+	this.far.setRange(0, Number.MAX_SAFE_INTEGER)
+	this.far.setOnChange(() => {
+		if (self.obj !== null) {
+			self.obj.far = self.far.getValue()
+		}
+	})
+	this.form.add(this.far)
+	this.form.nextRow()
 
 	// Select camera as scene default
 	this.default = new CheckBox(this.form.element)
@@ -144,12 +144,13 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 CameraComponent.prototype.updateData = function() {
 	if (this.obj instanceof PerspectiveCamera) {
 		this.fov.setValue(this.obj.fov)
-		this.near.setValue(this.obj.near)
-		this.far.setValue(this.obj.far)
 	} else if (this.obj instanceof OrthographicCamera) {
 		this.size.setValue(this.obj.size)
 		this.mode.setSelectedIndex(this.obj.mode)
 	}
+
+	this.near.setValue(this.obj.near)
+	this.far.setValue(this.obj.far)
 
 	var scene = ObjectUtils.getScene(this.obj)
 	if (scene !== null) {

@@ -259,13 +259,12 @@ MaterialEditor.prototype.updateMetadata = function(container)
 
 // Update the attached material
 MaterialEditor.prototype.updateMaterial = function() {
-	this.material_file.updateMetadata()
+	// this.material_file.updateMetadata()
+	Editor.updateAssetExplorer()
 
 	if (this.nodes.nodes !== undefined) {
 		for(var i = 0; i < this.nodes.nodes.length; i++) {
 			if (this.nodes.nodes[i].type === "Material/MeshPhongMaterial") {
-				//var genesis = this.nodes.nodes[i].properties.mat
-				//this.material.setValues(Editor.getAssetByUUID(genesis))
 				this.material.setValues(this.graph.extra.material)
 			}
 		}

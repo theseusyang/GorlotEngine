@@ -264,8 +264,9 @@ ShaderMaterialEditor.prototype.update = function() {
 	if (this.material !== null) {
 		// If needs update file metadata
 		if (this.material.needsUpdate) {
-			this.material_file.updateMetadata()
-			this.material.needsUpdate = true
+			//this.material_file.updateMetadata()
+			//this.material.needsUpdate = true
+			Editor.updateAssetExplorer()
 		}
 
 		// Render scene

@@ -12,18 +12,18 @@ JSONNode.prototype.onGetInputs = function() {
 JSONNode.prototype.onExecute = function () {
         var j = {}
         if(this.inputs) {
-                // TODO: Improve performance
+                // TODO: Clean this code
                 for(var i = 0; i < this.inputs.length; i++) {
                         var input = this.getInputData(i)
                         var name = input[0]
                                 
-                        if(name !== "") {
+                        if(name !== undefined) {
                                 var value = input[1]
                                 j[name] = value
                         }
                 }
 
-                this.setOutputData(0, j)
+                this.setOutputData(0, JSON.stringify(j))
         }
 }
 
@@ -52,7 +52,24 @@ JSONElementNode.prototype.onExecute = function() {
         this.setOutputData(0, val)
 }
 
+function JSONParseNode() {
+        this.addInput("Stringified", "JSON")
+        this.addOutput("Parsed", "JSON")
+}
+JSONParseNode.title_color = NodesHelper.colours.azure[0]
+JSONParseNode.title_color1 = NodesHelper.colours.azure[1]
+JSONParseNode.title_color2 = NodesHelper.colours.azure[2]
+JSONParseNode.title = "Parse"
+JSONParseNode.prototype.onExecute = function() {
+        var j = this.getInputData(0)
+
+        if (j !== undefined) {
+                this.setOutputData(0, JSON.parse(j))
+        }
+}
+
 function registerJSONNodes() {
         LiteGraph.registerNodeType("JSON/JSON", JSONNode)
         LiteGraph.registerNodeType("JSON/Element", JSONElementNode)
+        LiteGraph.registerNodeType("JSON/Parse", JSONParseNode)
 }

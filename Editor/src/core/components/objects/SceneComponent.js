@@ -60,9 +60,9 @@ SceneComponent.prototype.initUI = function(pos, obj) {
 		if (self.obj !== null) {
 			var program = self.obj.parent
 			if (self.default.getValue()) {
-				program.initial_scene = self.obj.uuid
+				program.default_scene = self.obj.uuid
 			} else {
-				program.initial_scene = null
+				program.default_scene = null
 			}
 		}
 	})
@@ -234,7 +234,7 @@ SceneComponent.prototype.updateForms = function() {
 
 SceneComponent.prototype.updateData = function() {
 	this.name.setText(this.obj.name)
-	this.default.setValue(this.obj.uuid === this.obj.parent.initial_scene)
+	this.default.setValue(this.obj.uuid === this.obj.parent.default_scene)
 	this.fog.setValue(this.obj.fog_mode)
 	this.fog_linear_colour.setValueHex(this.obj.fog_color)
 	this.fog_near.setValue(this.obj.fog_near)
@@ -251,7 +251,7 @@ SceneComponent.prototype.updateData = function() {
 SceneComponent.prototype.onReset = function() {
 	this.obj.name = this.values.name
 	this.obj.default = this.values.default
-	this.obj.parent.initial_scene = null
+	this.obj.parent.default_scene = null
 	this.obj.fog_mode = this.values.fog
 	this.obj.fog_color = this.values.fog_colour
 	this.obj.fog_near = this.values.fog_near

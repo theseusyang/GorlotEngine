@@ -39,10 +39,11 @@ function Program(name)
 	this.geometries = [];
 
 	//Initial values
-	this.initial_scene = null;
+	this.default_scene = null;
 	this.default_camera = null;
 
 	//Runtime variables
+	this.html = null
 	this.renderer = null;
 	this.scene = null;
 
@@ -122,11 +123,11 @@ Program.prototype.setScene = function(scene)
 //Select initial scene and initialize that scene
 Program.prototype.initialize = function()
 {
-	if(this.initial_scene !== null)
+	if(this.default_scene !== null)
 	{
 		for(var i = 0; i < this.children.length; i++)
 		{
-			if(this.children[i].uuid === this.initial_scene)
+			if(this.children[i].uuid === this.default_scene)
 			{
 				this.setScene(this.children[i]);
 				break;
@@ -191,7 +192,7 @@ Program.prototype.clone = function()
 //Set as initial scene (from uuid reference)
 Program.prototype.setInitialScene = function(scene)
 {
-	this.initial_scene = scene.uuid;
+	this.default_scene = scene.uuid;
 }
 
 //Create a default scene with sky
@@ -261,37 +262,51 @@ Program.prototype.toJSON = function(meta)
 
 	var data = THREE.Object3D.prototype.toJSON.call(this, meta, function(meta, object)
 	{
-		var textures = self.textures;
-		var materials = self.materials;
-		var geometries = self.geometries;
+		// Fonts
+		var fonts = self.fonts
+		for(var i in fonts) {
+			fonts[i].toJSON(meta)
+		}
 
-		//Store textures
-		for(var i in textures)
-		{
-			var texture = textures[i];
-			if(meta.textures[texture.uuid] === undefined)
-			{
-				meta.textures[texture.uuid] = texture.toJSON(meta);
+		// Videos
+		var videos = self.videos
+		for(i in videos) {
+			videos[i].toJSON(meta)
+		}
+
+		// Audio
+		var audio = self.audio
+		for(i in audio) {
+			audio[i].toJSON(meta)
+		}
+
+		// Images
+		var images = self.images
+		for(i in images) {
+			images[i].toJSON(meta)
+		}
+
+		// Textures
+		var textures = self.textures
+		for(i in textures) {
+			textures[i].toJSON(meta)
+		}
+
+		// Materials
+		var materials = self.materials
+		for(i in materials) {
+			var material = materials[i]
+			if (meta.materials[material.uuid] === undefined) {
+				meta.materials[material.uuid] = material.toJSON(meta)
 			}
 		}
 
-		//Store materials
-		for(var i in materials)
-		{
-			var material = materials[i];
-			if(meta.materials[material.uuid] === undefined)
-			{
-				meta.materials[material.uuid] = material.toJSON(meta);
-			}
-		}
-
-		//Store geometries
-		for(var i in geometries)
-		{
-			var geometry = geometries[i];
-			if(meta.geometries[geometry.uuid] === undefined)
-			{
-				meta.geometries[geometry.uuid] = geometry.toJSON(meta);
+		// Geometries
+		var geometries = self.geometries
+		for(i in geometries) {
+			var geometry = geometries[i]
+			if (meta.geometries[geometry.uuid] === undefined) {
+				meta.geometries[geometry.uuid] = geometry.toJSON(meta)
 			}
 		}
 	});
@@ -309,9 +324,9 @@ Program.prototype.toJSON = function(meta)
 	data.object.vr_scale = this.vr_scale;
 
 	//Initial scene
-	if(this.initial_scene !== null)
+	if(this.default_scene !== null)
 	{
-		data.object.initial_scene = this.initial_scene;
+		data.object.default_scene = this.default_scene;
 	}
 
 	return data;

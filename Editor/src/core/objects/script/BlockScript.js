@@ -69,7 +69,6 @@ BlockScript.prototype = Object.create(THREE.Object3D.prototype);
 //Initialize
 BlockScript.prototype.initialize = function()
 {
-	
 	for(var i = 0; i < this.nodes.nodes.length; i++) {
 		if (this.nodes.nodes[i].properties.type === "initialization") {
 			this.init = i
