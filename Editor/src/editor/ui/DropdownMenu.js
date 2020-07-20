@@ -103,8 +103,9 @@ DropdownMenu.id = 0;
 
 //Options location
 DropdownMenu.DOWN = 0;
-DropdownMenu.LEFT = 1;
-DropdownMenu.RIGHT = 1;
+DropdownMenu.UP = 1;
+DropdownMenu.LEFT = 2;
+DropdownMenu.RIGHT = 3
 
 //Add extra element to dropdown
 DropdownMenu.prototype.add = function(element)
@@ -224,8 +225,9 @@ DropdownMenu.prototype.addMenu = function(name, icon)
 //Update interface
 DropdownMenu.prototype.updateInterface = function()
 {
-	//Check visibility
+	// Visibility
 	var visibility, visible;
+
 	if(this.expanded && this.visible)
 	{
 		visibility = "visible";
@@ -237,7 +239,7 @@ DropdownMenu.prototype.updateInterface = function()
 		visible = false;
 	}
 
-	//Update options
+	// Options
 	for(var i = 0; i < this.options.length; i++)
 	{
 		this.options[i].visible = visible;
@@ -246,14 +248,14 @@ DropdownMenu.prototype.updateInterface = function()
 		this.options[i].updateInterface();
 	}
 
-	//Update attached elements
+	// Attached element
 	for(var i = 0; i < this.children.length; i++)
 	{
 		this.children[i].visible = this.visible;
 		this.children[i].updateInterface();
 	}
 
-	//Update text
+	// Text
 	this.text.size.set(this.size.x, this.size.y);
 	this.text.visible = this.visible;
 	this.text.updateInterface();
@@ -263,6 +265,10 @@ DropdownMenu.prototype.updateInterface = function()
 	{
 		this.panel.style.top = (this.position.y + this.size.y) + "px";
 		this.panel.style.left = this.position.x + "px";
+	}
+	else if (this.options_location === DropdownMenu.UP) {
+		this.panel.style.top = (this.position.y - this.size.y) + "px"
+		this.panel.style.left = this.position.x + "px"
 	}
 	else if(this.options_location === DropdownMenu.LEFT)
 	{

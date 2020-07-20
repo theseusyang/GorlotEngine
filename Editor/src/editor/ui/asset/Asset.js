@@ -30,10 +30,10 @@ function Asset(parent)
 	}
 
 	//Image
-	this.img = document.createElement("img");
-	this.img.style.position = "absolute";
-	this.img.style.top = "5px";
-	this.element.appendChild(this.img);
+	this.image = document.createElement("img");
+	this.image.style.position = "absolute";
+	this.image.style.top = "5px";
+	this.element.appendChild(this.image);
 
 	//Text
 	this.text = new Text(this.element);
@@ -78,7 +78,7 @@ Asset.prototype.setParent = function(parent)
 //Set file icon
 Asset.prototype.setIcon = function(image)
 {
-	this.img.src = image;
+	this.image.src = image;
 }
 
 //Set file label
@@ -119,9 +119,9 @@ Asset.prototype.updateInterface = function()
 	}
 
 	//Update image
-	this.img.width = this.size.x * this.scale.x;
-	this.img.height = this.size.y * this.scale.y;
-	this.img.style.left = ((this.size.x - (this.size.x * this.scale.x))/2) + "px";
+	this.image.width = this.size.x * this.scale.x;
+	this.image.height = this.size.y * this.scale.y;
+	this.image.style.left = ((this.size.x - (this.size.x * this.scale.x))/2) + "px";
 
 	//Update file text
 	this.text.visible = this.visible;

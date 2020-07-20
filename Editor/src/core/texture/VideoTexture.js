@@ -13,6 +13,7 @@ function VideoTexture(video, mapping, wrapS, wrapT, type, anisotropy)
 	THREE.Texture.call(this, document.createElement("video"), mapping, wrapS, wrapT, THREE.LinearFilter, THREE.LinearFilter, THREE.RGBFormat, type, anisotropy);
 
 	this.generateMipmaps = false
+	this.disposed = false
 
 	// Name
 	this.name = "video"
@@ -31,9 +32,12 @@ function VideoTexture(video, mapping, wrapS, wrapT, type, anisotropy)
 	var texture = this
 	var video = this.image
 	function update() {
-		requestAnimationFrame(update)
 		if (video.readyState >= video.HAVE_CURRENT_DATA) {
 			texture.needsUpdate = true
+		}
+
+		if (!texture.disposed) {
+			requestAnimationFrame(update)
 		}
 	}
 	update()
@@ -45,11 +49,14 @@ VideoTexture.prototype = Object.create(THREE.Texture.prototype);
 //Dispose texture
 VideoTexture.prototype.dispose = function()
 {
+	THREE.Texture.prototype.dispose.call(this);
+
+	this.disposed = true
+
 	if(!this.image.paused)
 	{
 		this.image.pause();
 	}
-	THREE.Texture.prototype.dispose.call(this);
 }
 
 // Create JSON description

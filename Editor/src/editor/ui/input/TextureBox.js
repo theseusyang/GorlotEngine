@@ -67,22 +67,7 @@ function TextureBox(parent)
 			//Get first file from event
 			var file = event.dataTransfer.files[0];
 
-			//Image
-			if(file.type.startsWith("image") || file.path.endsWith("tga"))
-			{
-				self.texture = new Texture(new Image(file.path));
-				self.use_texture.setValue(true);
-			}
-			// Video
-			else if (file.type.startsWith("video")) {
-				self.texture = new VideoTexture(new Video(file.path))
-				self.use_texture.setValue(true)
-			}
-
-			if (self.onchange !== null) {
-				self.onchange()
-			}
-			self.updatePreview()
+			self.loadTexture(file)
 		}
 
 		event.preventDefault()
@@ -98,21 +83,7 @@ function TextureBox(parent)
 				if(files.length > 0) {
 					var file = files[0]
 
-					// Image
-					if (file.type.startsWith("image") || file.path.endsWith("tga")) {
-						self.texture = new Texture(file.path)
-						self.use_texture.setValue(true)
-					}
-					// Video
-					else if (file.type.startsWith("video")) {
-						self.texture = new VideoTexture(file.path)
-						self.use_texture.setValue(true)
-					}
-
-					if (self.onchange !== null) {
-						self.onchange()
-					}
-					self.updatePreview()
+					self.loadTexture(file)
 				}
 
 			}, "image/*, video/*, .tga");
@@ -223,7 +194,7 @@ TextureBox.prototype.setValue = function(texture)
 	}
 }
 
-//Get image URL
+//Get texture value
 TextureBox.prototype.getValue = function()
 {
 	if(this.use_texture.getValue())
@@ -240,6 +211,26 @@ TextureBox.prototype.getValue = function()
 	}
 
 	return null;
+}
+
+// Load texture from file
+TextureBox.prototype.loadTexture = function(file) {
+	//Image
+	if(file.type.startsWith("image") || file.path.endsWith("tga"))
+	{
+		self.texture = new Texture(new Image(file.path));
+		self.use_texture.setValue(true);
+	}
+	// Video
+	else if (file.type.startsWith("video")) {
+		self.texture = new VideoTexture(new Video(file.path))
+		self.use_texture.setValue(true)
+	}
+
+	if (self.onchange !== null) {
+		self.onchange()
+	}
+	self.updatePreview()
 }
 
 // Update texture preview
