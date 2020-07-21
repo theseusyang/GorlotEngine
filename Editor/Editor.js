@@ -105,6 +105,7 @@ include("src/editor/tools/TransformGizmoTranslate.js")
 include("src/editor/helpers/ParticleEmitterHelper.js");
 include("src/editor/helpers/ObjectIconHelper.js");
 include("src/editor/helpers/PhysicsObjectHelper.js");
+include("src/editor/helpers/WireframeHelper.js")
 
 include("src/editor/utils/MaterialRenderer.js");
 include("src/editor/utils/ObjectIcons.js");
@@ -128,7 +129,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Jul 21 2020 18:30:54 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Jul 21 2020 20:26:40 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -663,14 +664,14 @@ Editor.updateSelectedObjectUI = function()
 	}
 }
 
-// TODO: Test code
+// TODO: Remove Test code
 var update = 0
 var tree_delta, asset_delta, tabs_delta, panel_delta
 
 //Update all object views
 Editor.updateObjectViews = function()
 {
-	// TODO: Remove this
+	// TODO: Remove test code
 	var start = Date.now()
 
 	Editor.updateTreeView();
@@ -678,7 +679,7 @@ Editor.updateObjectViews = function()
 	Editor.updateTabsData();
 	Editor.updateAssetExplorer()
 
-	// TODO: Remove this
+	// TODO: Remove test code
 	var delta = Date.now() - start
 	console.log("Update " + (update++) + " ObjectView: " + delta + "ms")
 	console.log("    Treeview " + tree_delta + "ms")
@@ -690,6 +691,7 @@ Editor.updateObjectViews = function()
 //Update tab names to match objects actual info
 Editor.updateTabsData = function()
 {
+	// TODO: Remove test code
 	var start = Date.now()
 
 	Interface.tab.updateMetadata();
@@ -700,16 +702,19 @@ Editor.updateTabsData = function()
 //Update tree view to match actual scene
 Editor.updateTreeView = function()
 {
+	// TODO: Remove test code
 	var start = Date.now()
 
 	Interface.tree_view.fromObject(Editor.program);
 
+	// TODO: Remove test code
 	tree_delta = Date.now() - start
 }
 
 //Update assets explorer content
 Editor.updateAssetExplorer = function()
 {
+	// TODO: Remove test code
 	var start = Date.now()
 
 	//Clean asset explorer
@@ -735,12 +740,14 @@ Editor.updateAssetExplorer = function()
 
 	Interface.asset_explorer.updateInterface();
 
+	// TODO: Remove test code
 	asset_delta = Date.now() - start
 }
 
 //Updates object panel values
 Editor.updateObjectPanel = function()
 {
+	// TODO: Remove test code
 	var start = Date.now()
 
 	if(Interface.panel !== null)
@@ -748,6 +755,7 @@ Editor.updateObjectPanel = function()
 		Interface.panel.updatePanel();
 	}
 
+	// TODO: Remove test code
 	panel_delta = Date.now() - start
 }
 
@@ -864,6 +872,11 @@ Editor.selectObjectHelper = function()
 			Editor.object_helper.add(new THREE.BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
 			Editor.object_helper.add(new THREE.SkeletonHelper(Editor.selected_object))
 		}
+		// Mesh
+		else if (Editor.selected_object instanceof THREE.Mesh) {
+			Editor.object_helper.add(new THREE.BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
+			Editor.object_helper.add(new WireframeHelper(Editor.selected_object))
+		}
 		//Object 3D
 		else if(Editor.selected_object instanceof THREE.Object3D)
 		{
@@ -905,6 +918,11 @@ Editor.updateRaycasterFromMouse = function()
 {
 	var mouse = new THREE.Vector2((Mouse.position.x/Editor.canvas.width)*2 - 1, -(Mouse.position.y/Editor.canvas.height)*2 + 1);
 	Editor.raycaster.setFromCamera(mouse, Editor.camera);
+}
+
+// Update editor raycaster with new x and y positions (normalised -1 to 1)
+Editor.updateRaycaster = function(x, y) {
+	Editor.raycaster.setFromCamera(new THREE.Vector2(x, y), Editor.camera)
 }
 
 //Reset editing flags

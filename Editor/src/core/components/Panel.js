@@ -145,7 +145,7 @@ Panel.prototype.updateInterface = function() {
 	}
 
 	for(var i = 0; i < this.components.length; i++) {
-		this.components[i].updateInterface(this.size)
+		this.components[i].updateInterface()
 	}
 
 	if (this.visible) {
