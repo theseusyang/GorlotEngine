@@ -94,10 +94,6 @@ include("src/editor/ui/input/CoordinatesBox.js");
 include("src/editor/ui/input/ImageChooser.js");
 include("src/editor/ui/input/TextureBox.js");
 
-include("src/editor/tools/MoveTool.js");
-include("src/editor/tools/ResizeTool.js");
-include("src/editor/tools/RotateTool.js");
-
 include("src/editor/tools/TransformControls.js")
 include("src/editor/tools/GizmoMaterial.js")
 include("src/editor/tools/GizmoLineMaterial.js")
@@ -132,7 +128,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Jul 21 2020 16:46:46 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Jul 21 2020 17:06:52 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -334,6 +330,9 @@ Editor.update = function()
 			if(Editor.tool !== null)
 			{
 				Editor.is_editing_object = Editor.tool.update();
+				if (Editor.is_editing_object) {
+					Editor.updateObjectPanel()
+				}
 			}
 			else
 			{
@@ -356,7 +355,7 @@ Editor.update = function()
 		{
 			//Lock mouse wheen camera is moving
 			if(Settings.editor.lock_mouse) {
-				if(Mouse.buttonJustPressed(Mouse.LEFT) || Mouse.buttonJustPressed(Mouse.RIGHT) || Mouse.buttonJustPressed(Mouse.MIDDLE))
+				if(!Editor.is_editing_object && (Mouse.buttonJustPressed(Mouse.LEFT) || Mouse.buttonJustPressed(Mouse.RIGHT) || Mouse.buttonJustPressed(Mouse.MIDDLE)))
 				{
 					Mouse.setLock(true);
 				}
@@ -786,18 +785,16 @@ Editor.selectTool = function(tool)
 
 	if(tool === Editor.MODE_MOVE)
 	{
-		//Editor.tool = new MoveTool();
 		Editor.tool = new TransformControls()
+		Editor.tool.setMode("translate")
 	}
 	else if(tool === Editor.MODE_ROTATE)
 	{
-		//Editor.tool = new RotateTool();
 		Editor.tool = new TransformControls()
 		Editor.tool.setMode("rotate")
 	}
 	else if(tool === Editor.MODE_RESIZE)
 	{
-		// Editor.tool = new ResizeTool();
 		Editor.tool = new TransformControls()
 		Editor.tool.setMode("scale")
 	}
