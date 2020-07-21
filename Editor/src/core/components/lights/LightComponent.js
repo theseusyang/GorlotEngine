@@ -54,21 +54,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 	this.form.add(this.colour)
 	this.form.nextRow()
 
-	// Directional Light 
-	if (this.obj instanceof DirectionalLight || this.obj instanceof PointLight) {
-		this.cast_shadow = new CheckBox(this.form.element)
-		this.cast_shadow.setText("Cast Shadow")
-		this.cast_shadow.size.set(200, 15)
-		this.cast_shadow.position.set(5, 85)
-		this.cast_shadow.updateInterface()
-		this.cast_shadow.setOnChange(() => {
-			if (self.obj !== null) {
-				self.obj.castShadow = self.cast_shadow.getValue()
-			}
-		})
-		this.form.add(this.cast_shadow)
-		this.form.nextRow()
-	}
 	// Hemisphere Light
 	if (this.obj instanceof HemisphereLight) {
 		// Ground Colour
@@ -114,8 +99,60 @@ LightComponent.prototype.initUI = function(pos, obj) {
 		this.form.add(this.intensity)
 		this.form.nextRow()
 
-		// Shadow Map
-		this.form.addText("Shadow Map")
+	}
+	// Spot Light
+	if (this.obj instanceof SpotLight) {
+		// Penumbra
+		this.form.addText("Penumbra")
+		this.penumbra = new Slider(this.form.element)
+		this.penumbra.size.set(160, 18)
+		this.penumbra.position.set(65, 110)
+		this.penumbra.setRange(0, 1)
+		this.penumbra.setStep(0.01)
+		this.penumbra.updateInterface()
+		this.penumbra.setOnChange(() => {
+			if (self.obj !== null) {
+				self.obj.penumbra = self.penumbra.getValue()
+			}
+		})
+		this.form.add(this.penumbra)
+		this.form.nextRow()
+
+		// Angle
+		this.form.addText("Angle")
+		this.angle = new Slider(this.form.element)
+		this.angle.size.set(160, 18)
+		this.angle.setRange(0, 1.57)
+		this.angle.setStep(0.01)
+		this.angle.setOnChange(() => {
+			if (self.obj !== null) {
+				self.obj.angle = self.angle.getValue()
+			}
+		})
+		this.form.add(this.angle)
+		this.form.nextRow()
+	}
+
+	if (this.obj instanceof DirectionalLight || this.obj instanceof PointLight || this.obj instanceof SpotLight) {
+		//Shadows
+		this.form.addText("Shadows")
+		this.form.nextRow()
+
+		this.cast_shadow = new CheckBox(this.form.element)
+		this.cast_shadow.setText("Cast Shadow")
+		this.cast_shadow.size.set(200, 15)
+		this.cast_shadow.position.set(5, 85)
+		this.cast_shadow.updateInterface()
+		this.cast_shadow.setOnChange(() => {
+			if (self.obj !== null) {
+				self.obj.castShadow = self.cast_shadow.getValue()
+			}
+		})
+		this.form.add(this.cast_shadow)
+		this.form.nextRow()
+
+		// Map
+		this.form.addText("Map")
 		this.form.nextRow()
 
 		// Shadow resolution
@@ -176,38 +213,66 @@ LightComponent.prototype.initUI = function(pos, obj) {
 		this.form.add(this.shadow_far)
 		this.form.nextRow()
 
-	}
-	// Spot Light
-	if (this.obj instanceof SpotLight) {
-		// Penumbra
-		this.form.addText("Penumbra")
-		this.penumbra = new Slider(this.form.element)
-		this.penumbra.size.set(160, 18)
-		this.penumbra.position.set(65, 110)
-		this.penumbra.setRange(0, 1)
-		this.penumbra.setStep(0.01)
-		this.penumbra.updateInterface()
-		this.penumbra.setOnChange(() => {
-			if (self.obj !== null) {
-				self.obj.penumbra = self.penumbra.getValue()
-			}
-		})
-		this.form.add(this.penumbra)
-		this.form.nextRow()
-
-		// Angle
-		this.form.addText("Angle")
-		this.angle = new Slider(this.form.element)
-		this.angle.size.set(160, 18)
-		this.angle.setRange(0, 1.57)
-		this.angle.setStep(0.01)
-		this.angle.setOnChange(() => {
-			if (self.obj !== null) {
-				self.obj.angle = self.angle.getValue()
-			}
-		})
-		this.form.add(this.angle)
-		this.form.nextRow()
+		if(this.obj instanceof DirectionalLight) {
+			// ShadowMap Camera left
+			this.form.addText("Left")
+			this.shadow_left = new NumberBox(this.form.element)
+			this.shadow_left.size.set(60, 18)
+			this.shadow_left.setStep(0.1)
+			this.shadow_left.setRange(0, Number.MAX_SAFE_INTEGER)
+			this.shadow_left.setOnChange(() => {
+				if (self.obj !== null) {
+					self.obj.shadow.camera.left = self.shadow_left.getValue()
+					self.obj.updateShadowMap()
+				}
+			})
+			this.form.add(this.shadow_left)
+	
+			// ShadowMap Camera right
+			this.form.addText("Right")
+			this.shadow_right = new NumberBox(this.form.element)
+			this.shadow_right.size.set(60, 18)
+			this.shadow_right.setStep(0.1)
+			this.shadow_right.setRange(0, Number.MAX_SAFE_INTEGER)
+			this.shadow_right.setOnChange(() => {
+				if (self.obj !== null) {
+					self.obj.shadow.camera.right = self.shadow_right.getValue()
+					self.obj.updateShadowMap()
+				}
+			})
+			this.form.add(this.shadow_right)
+			this.form.nextRow()
+	
+			// ShadowMap Camera top
+			this.form.addText("Top")
+			this.shadow_top = new NumberBox(this.form.element)
+			this.shadow_top.size.set(60, 18)
+			this.shadow_top.setStep(0.1)
+			this.shadow_top.setRange(0, Number.MAX_SAFE_INTEGER)
+			this.shadow_top.setOnChange(() => {
+				if (self.obj !== null) {
+					self.obj.shadow.camera.top = self.shadow_top.getValue()
+					self.obj.updateShadowMap()
+				}
+			})
+			this.form.add(this.shadow_top)
+	
+			// ShadowMap Camera bottom
+			this.form.addText("Bottom")
+			this.shadow_bottom = new NumberBox(this.form.element)
+			this.shadow_bottom.size.set(60, 18)
+			this.shadow_bottom.setStep(0.1)
+			this.shadow_bottom.setRange(0, Number.MAX_SAFE_INTEGER)
+			this.shadow_bottom.setOnChange(() => {
+				if (self.obj !== null) {
+					self.obj.shadow.camera.bottom = self.shadow_bottom.getValue()
+					self.obj.updateShadowMap()
+				}
+			})
+			this.form.add(this.shadow_bottom)
+			this.form.nextRow()
+		}
+		
 	}
 
 	// Set form position and update interface
@@ -223,23 +288,31 @@ LightComponent.prototype.initUI = function(pos, obj) {
 LightComponent.prototype.updateData = function() {
 	this.colour.setValue(this.obj.color.r, this.obj.color.g, this.obj.color.b)
 
-	if (this.obj instanceof DirectionalLight || this.obj instanceof PointLight) {
-		this.cast_shadow.setValue(this.obj.castShadow)
-	}
 	if (this.obj instanceof HemisphereLight) {
 		this.groundCol.setValue(this.obj.groundColor.r, this.obj.groundColor.g, this.obj.groundColor.b)
 	}
 	if (this.obj instanceof PointLight) {
 		this.distance.setValue(this.obj.distance)
 		this.intensity.setValue(this.obj.intensity)
+	}
+	if (this.obj instanceof SpotLight) {
+		this.angle.setValue(this.obj.angle)
+		this.penumbra.setValue(this.obj.penumbra)
+	}
+
+	if (this.obj instanceof DirectionalLight || this.obj instanceof PointLight || this.obj instanceof SpotLight) {
+		this.cast_shadow.setValue(this.obj.castShadow)
 		this.shadow_width.setValue(this.obj.shadow.mapSize.width)
 		this.shadow_height.setValue(this.obj.shadow.mapSize.height)
 		this.shadow_near.setValue(this.obj.shadow.camera.near)
 		this.shadow_far.setValue(this.obj.shadow.camera.far)
 	}
-	if (this.obj instanceof SpotLight) {
-		this.angle.setValue(this.obj.angle)
-		this.penumbra.setValue(this.obj.penumbra)
+
+	if (this.obj instanceof DirectionalLight) {
+		this.shadow_left.setValue(this.obj.shadow.camera.left)
+		this.shadow_right.setValue(this.obj.shadow.camera.right)
+		this.shadow_top.setValue(this.obj.shadow.camera.top)
+		this.shadow_bottom.setValue(this.obj.shadow.camera.bottom)
 	}
 
 }
