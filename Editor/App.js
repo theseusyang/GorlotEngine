@@ -75,6 +75,8 @@ include("src/core/objects/Scene.js");
 
 include("src/core/utils/Base64Utils.js")
 include("src/core/utils/ArraybufferUtils.js")
+include("src/core/utils/MathUtils.js")
+include("src/core/utils/ObjectUtils.js")
 
 // Assets
 include("src/core/assets/materials/MeshBasicMaterial.js")
@@ -138,8 +140,6 @@ include("src/core/nodes/materials/Constants.js")
 include("src/core/nodes/Register.js")
 
 include("src/core/FileSystem.js")
-include("src/core/ObjectUtils.js");
-include("src/core/MathUtils.js");
 
 //App class
 function App(){}

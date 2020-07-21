@@ -205,6 +205,7 @@ Subgraph.prototype.serialize = function() {
     return data
 }
 Subgraph.prototype.clone = function() {
+    // TODO: Fix
     var node = LiteGraph.createNode(this.type)
     var data = this.serialize()
     delete data["id"]
