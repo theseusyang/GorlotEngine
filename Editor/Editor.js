@@ -129,7 +129,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Jul 21 2020 20:26:40 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Jul 21 2020 21:54:02 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -526,16 +526,19 @@ Editor.resize = function()
 }
 
 //Select a object
-Editor.selectObject = function(obj)
+Editor.selectObject = function(object)
 {
-	if (obj !== null) {
-		Editor.selected_object = obj
+	if (object instanceof THREE.Object3D) {
+		Editor.selected_object = object
+
 		Editor.updateSelectedObjectUI()
 		Editor.selectObjectHelper()
 
 		if (Editor.tool !== null) {
 			Editor.tool.detach()
-			Editor.tool.attach(Editor.selected_object)
+			Editor.tool.attach(object)
+		} else {
+			Editor.selectTool(Editor.tool_mode)
 		}
 	} else {
 		Editor.selected_object = null
@@ -795,30 +798,28 @@ Editor.selectTool = function(tool)
 		Editor.tool.dispose()
 	}
 
-	if(tool === Editor.MODE_MOVE)
-	{
-		Editor.tool = new TransformControls()
-		Editor.tool.setMode("translate")
-		Editor.tool.setSpace(Settings.editor.transformation_space)
-	}
-	else if(tool === Editor.MODE_SCALE)
-	{
-		Editor.tool = new TransformControls()
-		Editor.tool.setMode("scale")
-	} else if (tool === Editor.MODE_ROTATE) {
-		Editor.tool = new TransformControls()
-		Editor.tool.setMode("rotate")
-		Editor.tool.setSpace(Settigns.editor.transformation_space)
-	}
-	else
-	{
-		Editor.tool = null;
-	}
+	if (Editor.selected_object !== null && tool !== Editor.MODE_SELECT) {
+		if(tool === Editor.MODE_MOVE)
+		{
+			Editor.tool = new TransformControls()
+			Editor.tool.setMode("translate")
+			Editor.tool.setSpace(Settings.editor.transformation_space)
+		}
+		else if(tool === Editor.MODE_SCALE)
+		{
+			Editor.tool = new TransformControls()
+			Editor.tool.setMode("scale")
+		}
+		else if (tool === Editor.MODE_ROTATE) {
+			Editor.tool = new TransformControls()
+			Editor.tool.setMode("rotate")
+			Editor.tool.setSpace(Settigns.editor.transformation_space)
+		}
 
-	if(Editor.tool !== null && Editor.selected_object !== null)
-	{
-		Editor.tool.attach(Editor.selected_object);
-		Editor.tool_container.add(Editor.tool);
+		Editor.tool.attach(Editor.selected_object)
+		Editor.tool_container.add(Editor.tool)
+	} else {
+		Editor.tool = null
 	}
 }
 
@@ -1185,7 +1186,6 @@ Editor.initializeRenderer = function(canvas)
 {
 	Editor.renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: Settings.render.antialiasing});
 	Editor.renderer.setSize(canvas.width, canvas.height);
-	Editor.renderer.setPixelRatio(window.devicePixelRatio || 1.0);
 	Editor.renderer.autoClear = false;
 	Editor.renderer.shadowMap.enabled = Settings.render.shadows;
 	Editor.renderer.shadowMap.type = Settings.render.shadows_type;
