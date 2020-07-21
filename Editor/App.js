@@ -86,7 +86,7 @@ include("src/core/assets/materials/MeshPhongMaterial.js")
 include("src/core/assets/materials/MeshShaderMaterial.js")
 include("src/core/assets/materials/MeshStandardMaterial.js")
 
-// Components
+// Default Components
 include("src/core/components/Panel.js")
 include("src/core/components/Component.js")
 
@@ -105,6 +105,10 @@ include("src/core/components/cameras/CameraComponent.js")
 
 include("src/core/components/lights/LightComponent.js")
 include("src/core/components/objects/ScriptComponent.js")
+
+// Addable components
+include("src/core/components/scripts/BlocksComponent.js")
+
 // Nodes
 include("src/core/nodes/NodesHelper.js")
 
@@ -143,6 +147,8 @@ include("src/core/FileSystem.js")
 
 //App class
 function App(){}
+
+App.componentManager = []
 
 // NWJS modules
 try

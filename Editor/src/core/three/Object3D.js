@@ -98,6 +98,10 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 	object.matrixAutoUpdate = this.matrixAutoUpdate
 	object.matrix = this.matrix.toArray()
 
+	if (this.components !== undefined) {
+		object.components = this.components
+	}
+
 	if (JSON.stringify(this.userData) !== "{}") {
 		object.userData = this.userData
 	}
@@ -137,7 +141,7 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 
 		for(var i = 0; i < this.children.length; i ++)
 		{
-			if(!this.children[i].hidden)
+			if((this.children[i] instanceof BlockScript) || (!this.children[i].hidden))
 			{
 				object.children.push(this.children[i].toJSON(meta).object)
 			}

@@ -746,6 +746,19 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 		object.blocks_type = data.blocks_type
 	}
 
+	// Load components
+	if (data.components !== undefined) {
+		for(var i in data.components) {
+			var compo = data.components[i]
+			var className = compo.className
+
+			eval(`
+				object.components.push(new ${className}())
+				object.components[object.components.length - 1].values = compo.values
+			`)
+		}
+	}
+
 	//Set static and update transformation matrix if necessary
 	if(data.matrixAutoUpdate !== undefined)
 	{

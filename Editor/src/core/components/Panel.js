@@ -50,7 +50,12 @@ Panel.id = 0
 Panel.prototype.updatePanel = function() {
 	if (this.obj !== null) {
 		for(var i = 0; i < this.components.length; i++) {
-			this.components[i].updateData(this.obj)
+
+			// If the component retrieves some info from an object
+			if (this.components[i].updateData) {
+				this.components[i].updateData(this.obj)
+			}
+
 		}
 	}
 }
@@ -59,9 +64,56 @@ Panel.prototype.updatePanel = function() {
 Panel.prototype.attachObject = function(obj) {
 	if (obj instanceof THREE.Object3D) {
 		this.obj = obj
+		this.updateComponents()
 
-		this.components = this.obj.defaultComponents
-		this.components.concat(this.obj.components)
+		var self = this
+
+		// Add component
+		this.add = new Button(this.element)
+		this.add.setText("Add Component")
+
+		this.add.setCallback((e) => {
+			var menu = new ContextMenu()
+			menu.size.set(130, 20)
+			var length = App.componentManager.length
+			menu.position.set(e.clientX - 5, event.clientY - (length * 10))
+
+			for(var i = 0; i < length; i++) {
+				var compo = App.componentManager[i]
+
+				menu.addOption(compo.component_name, () => {
+					var found = false
+
+					// You can only add one component of a kind
+					if (self.obj.components.includes(compo)) {
+						found = true
+					}
+
+					if (!found) {
+						self.obj.components.push(compo)
+						self.obj.components[self.obj.components.length-1].onCreate(self.obj)
+						self.updateComponents()
+					}
+				})
+			}
+
+		})
+
+		this.add.updateInterface()
+		this.updateInterface()
+
+		this.updatePanel()
+	}
+}
+
+// Shows an object's components
+Panel.prototype.updateComponents = function() {
+	if(this.obj.components !== undefined && this.obj.defaultComponents !== undefined) {
+		this.components = this.obj.defaultComponents.concat(this.obj.components)
+
+		if (!this.children_pos.equals(new THREE.Vector2(5, 10))) {
+			this.children_pos.set(5, 10)
+		}
 
 		for(var i = 0; i < this.components.length; i++) {
 			this.element.appendChild(this.components[i].initUI(this.children_pos, this.obj))
@@ -69,17 +121,9 @@ Panel.prototype.attachObject = function(obj) {
 			// Add a little separation between components
 			this.children_pos.y += 10
 		}
-
-		// Add component
-		this.add = new Button(this.element)
-		this.add.setText("Add Component")
-		this.add.setCallback((e) => {
-			console.log("Oniichan, >w< you clicked me nwn *moans", e)
-		})
-		this.add.updateInterface()
-		this.updateInterface()
-
+	
 		this.updatePanel()
+		this.updateInterface()
 	}
 }
 
