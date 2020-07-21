@@ -122,13 +122,13 @@ Editor.STATE_TESTING = 11
 //Editor editing modes
 Editor.MODE_SELECT = 0
 Editor.MODE_MOVE = 1
-Editor.MODE_RESIZE = 2
+Editor.MODE_SCALE = 2
 Editor.MODE_ROTATE = 3
 
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Jul 21 2020 17:06:52 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Jul 21 2020 17:14:10 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -786,14 +786,16 @@ Editor.selectTool = function(tool)
 	if(tool === Editor.MODE_MOVE)
 	{
 		Editor.tool = new TransformControls()
+		Editor.tool.setSpace(Settings.editor.transformation_space)
 		Editor.tool.setMode("translate")
 	}
 	else if(tool === Editor.MODE_ROTATE)
 	{
 		Editor.tool = new TransformControls()
+		Editor.tool.setSpace(Settings.editor.transformation_space)
 		Editor.tool.setMode("rotate")
 	}
-	else if(tool === Editor.MODE_RESIZE)
+	else if(tool === Editor.MODE_SCALE)
 	{
 		Editor.tool = new TransformControls()
 		Editor.tool.setMode("scale")

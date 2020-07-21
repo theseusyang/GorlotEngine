@@ -129,6 +129,22 @@ function SettingsTab(parent)
 	this.general_form.add(this.lock_mouse)
 	this.general_form.nextRow()
 
+	// Transformations space
+	this.general_form.addText("Transformations Space")
+	this.transformation_space = new DropdownList(this.general_form.element)
+	this.transformation_space.size.set(150, 20)
+	this.transformation_space.addValue("Local", "local")
+	this.transformation_space.addValue("World", "world")
+	this.transformation_space.setOnChange(() => {
+		Settings.editor.transformation_space = self.transformation_space.getValue()
+
+		if (Editor.tool !== null && Editor.tool_mode !== Editor.MODE_SCALE) {
+			Editor.tool.setSpace(Settings.editor.transformation_space)
+		}
+	})
+	this.general_form.add(this.transformation_space)
+	this.general_form.nextRow()
+
 	//Enable camera preview
 	this.camera_preview_enabled = new CheckBox(this.general_form.element);
 	this.camera_preview_enabled.setText("Camera preview");
@@ -353,6 +369,7 @@ SettingsTab.prototype.activate = function()
 	this.grid_enabled.setValue(Settings.editor.grid_enabled);
 	this.axis_enabled.setValue(Settings.editor.axis_enabled);
 	this.lock_mouse.setValue(Settings.editor.lock_mouse)
+	this.transformation_space.setValue(Settings.editor.transformation_space)
 	this.camera_preview_enabled.setValue(Settings.editor.camera_preview_enabled);
 	this.camera_preview_percentage.setValue(Settings.editor.camera_preview_percentage);
 
