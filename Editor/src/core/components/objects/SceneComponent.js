@@ -10,12 +10,7 @@ function SceneComponent() {
 		name: "scene",
 		default: false,
 		background: [0,0,0],
-		fog: 0,
-		fog_colour: 0xffffff,
-		fog_near: 4,
-		fog_far: 10,
-		fog_density: 0.01,
-		gravity: [0, -9.8, 0]
+		fog: THREE.Fog.NONE
 	}
 }
 
@@ -89,13 +84,13 @@ SceneComponent.prototype.initUI = function(pos, obj) {
 	this.form.addText("Fog")
 	this.fog = new DropdownList(this.form.element)
 	this.fog.size.set(100, 20)
-	this.fog.addValue("Off", Scene.FOG_NONE)
-	this.fog.addValue("Linear", Scene.FOG_LINEAR)
-	this.fog.addValue("Exponential", Scene.FOG_EXPONENTIAL)
+	this.fog.addValue("None", THREE.Fog.NONE)
+	this.fog.addValue("Linear", THREE.Fog.LINEAR)
+	this.fog.addValue("Exponential", THREE.Fog.EXPONENTIAL)
 	this.fog.setOnChange(() => {
 		if (self.obj !== null) {
 			self.obj.setFogMode(self.fog.getSelectedIndex())
-			self.updateForms()
+			self.updateData()
 		}
 	})
 	this.form.add(this.fog)
@@ -118,9 +113,7 @@ SceneComponent.prototype.initUI = function(pos, obj) {
 	this.fog_linear_colour.setOnChange(() => {
 		if (self.obj !== null) {
 			var colour = self.fog_linear_colour.getValueHex()
-			self.obj.fog_color = colour
-			self.fog_exponential_colour.setValueHex(colour)
-			self.obj.updateFog()
+			self.obj.fog.color.setHex(colour)
 		}
 	})
 	this.fog_linear_form.add(this.fog_linear_colour)
@@ -132,8 +125,7 @@ SceneComponent.prototype.initUI = function(pos, obj) {
 	this.fog_near.size.set(60, 18)
 	this.fog_near.setOnChange(() => {
 		if (self.obj !== null) {
-			self.obj.fog_near = self.fog_near.getValue()
-			self.obj.updateFog()
+			self.obj.fog.near = self.fog_near.getValue()
 		}
 	})
 	this.fog_linear_form.add(this.fog_near)
@@ -145,8 +137,7 @@ SceneComponent.prototype.initUI = function(pos, obj) {
 	this.fog_far.size.set(60, 18)
 	this.fog_far.setOnChange(() => {
 		if (self.obj !== null) {
-			self.obj.fog_far = self.fog_far.getValue()
-			self.obj.updateFog()
+			self.obj.fog.far = self.fog_far.getValue()
 		}
 	})
 	this.fog_linear_form.add(this.fog_far)
@@ -171,8 +162,7 @@ SceneComponent.prototype.initUI = function(pos, obj) {
 	this.fog_density.setStep(0.0001)
 	this.fog_density.setOnChange(() => {
 		if (self.obj !== null) {
-			self.obj.fog_density = self.fog_density.getValue()
-			self.obj.updateFog()
+			self.obj.fog.density = self.fog_density.getValue()
 		}
 	})
 	this.fog_exponential_form.add(this.fog_density)
@@ -235,14 +225,31 @@ SceneComponent.prototype.updateForms = function() {
 SceneComponent.prototype.updateData = function() {
 	this.name.setText(this.obj.name)
 	this.default.setValue(this.obj.uuid === this.obj.parent.default_scene)
-	this.fog.setValue(this.obj.fog_mode)
-	this.fog_linear_colour.setValueHex(this.obj.fog_color)
-	this.fog_near.setValue(this.obj.fog_near)
-	this.fog_far.setValue(this.obj.fog_far)
-	this.fog_density.setValue(this.obj.fog_density)
+
+	if (this.obj.fog instanceof THREE.Fog) {
+		this.fog.setValue(THREE.Fog.LINEAR)
+	} else if (this.obj.fog instanceof THREE.FogExp2) {
+		this.fog.setValue(THREE.Fog.EXPONENTIAL)
+	} else {
+		this.fog.setValue(THREE.Fog.NONE)
+	}
+
+	if (this.obj.fog !== null) {
+		this.fog_linear_colour.setValueHex(this.obj.fog.color.getHex())
+		this.fog_near.setValue((this.obj.fog.near !== undefined) ? this.obj.fog.near : 0)
+		this.fog_far.setValue((this.obj.fog.far !== undefined) ? this.obj.fog.far : 0)
+		this.fog_density.setValue((this.obj.fog.density !== undefined) ? this.obj.fog.density : 0)
+	} else {
+		this.fog_linear_colour.setValueHex(0x000000)
+		this.fog_near.setValue(0)
+		this.fog_far.setValue(0)
+		this.fog_density.setValue(0)
+	}
+
 	if (this.obj.background !== null) {
 		this.background.setValue(this.obj.background.r, this.obj.background.g, this.obj.background.b)
 	}
+
 	this.gravity.setValue(this.obj.world.gravity.x, this.obj.world.gravity.y, this.obj.world.gravity.z)
 
 	this.updateForms()
@@ -252,12 +259,7 @@ SceneComponent.prototype.onReset = function() {
 	this.obj.name = this.values.name
 	this.obj.default = this.values.default
 	this.obj.parent.default_scene = null
-	this.obj.fog_mode = this.values.fog
-	this.obj.fog_color = this.values.fog_colour
-	this.obj.fog_near = this.values.fog_near
-	this.obj.fog_far = this.values.fog_far
-	this.obj.fog_density = this.values.fog_density
-	this.obj.world.gravity.set(this.values.gravity[0], this.values.gravity[1], this.values.gravity[2])
+	this.obj.setFogMode(this.values.fog)
 
 	this.updateData()
 	Editor.updateObjectViews()

@@ -450,32 +450,39 @@ Editor.update = function()
 //Draw stuff into screen
 Editor.draw = function()
 {
-	Editor.renderer.clear();
+	var renderer = Editor.renderer
+	renderer.clear()
 
 	if(Editor.state === Editor.STATE_EDITING)
 	{
-		Editor.renderer.setViewport(0, 0, Editor.canvas.width, Editor.canvas.height);
-		Editor.renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height);
-		Editor.renderer.render(Editor.program.scene, Editor.camera);
+		renderer.setViewport(0, 0, Editor.canvas.width, Editor.canvas.height)
+		renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height)
+		renderer.render(Editor.program.scene, Editor.camera)
 
-		Editor.renderer.render(Editor.tool_scene, Editor.camera);
-		Editor.renderer.clearDepth();
-		Editor.renderer.render(Editor.tool_scene_top, Editor.camera);
+		renderer.render(Editor.tool_scene, Editor.camera)
+		renderer.clearDepth()
+		renderer.render(Editor.tool_scene_top, Editor.camera)
 
 		if(Settings.editor.camera_preview_enabled && Editor.selected_object instanceof THREE.Camera)
 		{
-			var width = Settings.editor.camera_preview_percentage * Editor.canvas.width;
-			var height = Settings.editor.camera_preview_percentage * Editor.canvas.height;
-			var offset = Editor.canvas.width - width - 10;
+			var width = Settings.editor.camera_preview_percentage * Editor.canvas.width
+			var height = Settings.editor.camera_preview_percentage * Editor.canvas.height
+			var offset = Editor.canvas.width - width - 10
+
 			var camera = Editor.selected_object;
+			camera.aspect = width/height
+			camera.updateProjectionMatrix()
 
-			camera.aspect = width/height;
-			camera.updateProjectionMatrix();
+			// TODO: Hack
+			var background = Editor.program.scene.background
+			Editor.program.scene.background = null
 
-			Editor.renderer.clearDepth();
-			Editor.renderer.setViewport(offset, 10, width, height);
-			Editor.renderer.setScissor(offset, 10, width, height);
-			Editor.renderer.render(Editor.program.scene, camera);
+			Editor.renderer.setViewport(offset, 10, width, height)
+			Editor.renderer.setScissor(offset, 10, width, height)
+			Editor.renderer.render(Editor.program.scene, camera)
+
+			// TODO: Hack
+			Editor.program.scene.background = background
 		}
 	}
 	else if(Editor.state === Editor.STATE_TESTING)
@@ -484,35 +491,35 @@ Editor.draw = function()
 		if(Editor.vr_effect !== null)
 		{
 			//Update VR controls
-			Editor.vr_controls.scale = Editor.program_running.vr_scale;
-			Editor.vr_controls.update();
+			Editor.vr_controls.scale = Editor.program_running.vr_scale
+			Editor.vr_controls.update()
 
 			//Backup camera atributes
-			var camera = Editor.program_running.scene.camera;
-			var position = camera.position.clone();
-			var quaternion = camera.quaternion.clone();
+			var camera = Editor.program_running.scene.camera
+			var position = camera.position.clone()
+			var quaternion = camera.quaternion.clone()
 
 			//Apply VR controller offsets to actual camera
-			camera.position.add(Editor.vr_controls.position);
-			camera.quaternion.multiply(Editor.vr_controls.quaternion);
+			camera.position.add(Editor.vr_controls.position)
+			camera.quaternion.multiply(Editor.vr_controls.quaternion)
 
 			//Render scene
-			Editor.vr_effect.render(Editor.program_running.scene, camera);
+			Editor.vr_effect.render(Editor.program_running.scene, camera)
 
 			//Backup camera atributes
-			camera.position.copy(position);
-			camera.quaternion.copy(quaternion);
+			camera.position.copy(position)
+			camera.quaternion.copy(quaternion)
 		}
 		else
 		{
-			Editor.renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera);
+			renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera)
 		}
 	}
 
 	//End performance measure
 	if(Editor.stats !== null)
 	{
-		Editor.stats.end();
+		Editor.stats.end()
 	}
 }
 
@@ -521,7 +528,7 @@ Editor.resize = function()
 {
 	if(!App.fullscreen)
 	{
-		Interface.updateInterface();
+		Interface.updateInterface()
 	}
 }
 
@@ -551,9 +558,9 @@ Editor.isObjectSelected = function(obj)
 {
 	if(Editor.selected_object !== null)
 	{
-		return Editor.selected_object.uuid === obj.uuid;
+		return Editor.selected_object.uuid === obj.uuid
 	}
-	return false;
+	return false
 }
 
 //Delete Selected Object
@@ -561,18 +568,18 @@ Editor.deleteObject = function(obj)
 {
 	if(obj !== undefined)
 	{
-		obj.destroy();
-		Editor.updateObjectViews();
+		obj.destroy()
+		Editor.updateObjectViews()
 		if(Editor.isObjectSelected(obj))
 		{
-			Editor.resetEditingFlags();
+			Editor.resetEditingFlags()
 		}
 	}
 	else if(Editor.selected_object !== null)
 	{
-		Editor.selected_object.destroy();
-		Editor.updateObjectViews();
-		Editor.resetEditingFlags();
+		Editor.selected_object.destroy()
+		Editor.updateObjectViews()
+		Editor.resetEditingFlags()
 	}
 }
 
@@ -583,14 +590,14 @@ Editor.copyObject = function(obj)
 	{
 		if(App.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(obj.toJSON()), "text");
+			App.clipboard.set(JSON.stringify(obj.toJSON()), "text")
 		}
 	}
 	else if(Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene))
 	{
 		if(App.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text");
+			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
 		}
 	}
 }
@@ -602,24 +609,24 @@ Editor.cutObject = function(obj)
 	{
 		if(App.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(obj.toJSON()), "text");
+			App.clipboard.set(JSON.stringify(obj.toJSON()), "text")
 		}
-		obj.destroy();
-		Editor.updateObjectViews();
+		obj.destroy()
+		Editor.updateObjectViews()
 		if(Editor.isObjectSelected(obj))
 		{
-			Editor.resetEditingFlags();
+			Editor.resetEditingFlags()
 		}
 	}
 	else if(Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene))
 	{
 		if(App.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text");
+			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
 		}
-		Editor.selected_object.destroy();
-		Editor.updateObjectViews();
-		Editor.resetEditingFlags();
+		Editor.selected_object.destroy()
+		Editor.updateObjectViews()
+		Editor.resetEditingFlags()
 	}
 }
 
