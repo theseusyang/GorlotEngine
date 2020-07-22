@@ -41,6 +41,13 @@ BlocksComponent.prototype.initUI = function(pos, obj) {
 	var self = this
 	this.obj = obj
 
+	// Blocks
+	this.obj.traverse((child) => {
+		if (child.uuid === self.values["blocks"]) {
+			self.blocks = child
+		}
+	})
+
 	// Form
 	this.form = new Form(this.element)
 	this.form.spacing.set(5, 5)
@@ -54,14 +61,6 @@ BlocksComponent.prototype.initUI = function(pos, obj) {
 	this.edit.setText("Edit blocks")
 	this.edit.size.set(200, 20)
 	this.edit.setCallback(() => {
-		if(self.blocks === undefined) {
-			self.obj.traverse((child) => {
-				if (child.uuid === self.values["blocks"]) {
-					self.blocks = child
-				}
-			})
-		}
-		
 		// Check if there's already a tab with this block script attached
 		var found = false
 
@@ -95,7 +94,26 @@ BlocksComponent.prototype.initUI = function(pos, obj) {
 
 	this.widgetsPos.y += this.form.size.y
 
+	this.addDeleteButton()
+
 	return this.element
+}
+
+BlocksComponent.prototype.onDelete = function() {
+	if (this.blocks !== undefined) {
+		if (this.blocks.parent === this.obj) {
+			Editor.deleteObject(this.blocks)
+
+			for(var i = 0; i < this.obj.components.length; i++) {
+				if (this.obj.components[i] === this) {
+					this.obj.components.splice(i, 1)
+				}
+			}
+
+			this.clearElement()
+			Interface.panel.updateComponents()
+		}
+	}
 }
 
 App.componentManager.push(new BlocksComponent())

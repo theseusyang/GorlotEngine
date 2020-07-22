@@ -18,7 +18,15 @@ Component.prototype.clearElement = function() {
 }
 
 Component.prototype.addDeleteButton = function() {
+	var self = this
 
+	this.delete = new Button(this.element)
+	this.delete.setText("Delete Component")
+	this.delete.size.set(120, 20)
+	this.delete.position.copy(this.widgetsPos)
+	this.delete.updateInterface()
+	this.delete.setCallback(() => {self.onDelete()})
+	this.widgetsPos.y += this.delete.size.y
 }
 
 Component.prototype.addResetButton = function() {
