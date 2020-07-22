@@ -72,6 +72,7 @@ include("src/core/objects/script/BlockScript.js");
 include("src/core/objects/physics/PhysicsObject.js");
 
 include("src/core/objects/spine/SpineAnimation.js")
+include("src/core/objects/spine/SpineTexture.js")
 
 include("src/core/objects/Bone.js");
 include("src/core/objects/Container.js");

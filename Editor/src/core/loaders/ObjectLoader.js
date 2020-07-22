@@ -410,6 +410,13 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 
 	switch(data.type)
 	{
+		case "SpineAnimation":
+			for(var i = 0; i < data.textures.length; i++) {
+				data.textures[i].texture = getTexture(data.textures[i].texture)
+			}
+			object = new SpineAnimation(data.json, data.atlas, "", data.textures)
+			break
+
 		case "Audio":
 			object = new AudioEmitter(getAudio(data.audio));
 			object.autoplay = data.autoplay;

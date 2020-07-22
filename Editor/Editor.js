@@ -129,7 +129,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Wed Jul 22 2020 19:40:36 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Wed Jul 22 2020 20:09:40 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -1012,23 +1012,24 @@ Editor.loadProgram = function(fname)
 Editor.exportWebProject = function(dir)
 {
 	FileSystem.copyFolder("runtime", dir);
-	FileSystem.copyFolder("core", dir + "\\core");
-	FileSystem.copyFolder("input", dir + "\\input");
-	FileSystem.copyFile("App.js", dir + "\\App.js");
+	FileSystem.copyFolder("core", dir + "/core");
+	FileSystem.copyFolder("input", dir + "/input");
+	FileSystem.copyFile("App.js", dir + "/App.js");
 
-	FileSystem.makeDirectory(dir + "\\lib");
-	FileSystem.copyFile("lib\\leap.min.js", dir + "\\lib\\leap.min.js");
-	FileSystem.copyFile("lib\\SPE.min.js", dir + "\\lib\\SPE.min.js");
-	FileSystem.copyFile("lib\\leap.min.js", dir + "\\lib\\leap.min.js");
-	FileSystem.copyFile("lib\\stats.min.js", dir + "\\lib\\stats.min.js");
-	FileSystem.copyFile("lib\\cannon.min.js", dir + "\\lib\\cannon.min.js");
-	FileSystem.copyFile("lib\\base64.min.js", dir + "\\lib\\base64.min.js");
-	FileSystem.makeDirectory(dir + "\\lib\\three");
-	FileSystem.copyFile("lib\\three\\three.min.js", dir + "\\lib\\three\\three.min.js");
-	FileSystem.makeDirectory(dir + "\\lib\\three\\effects");
-	FileSystem.copyFile("lib\\three\\effects\\VREffect.js", dir + "\\lib\\three\\effects\\VREffect.js");
+	FileSystem.makeDirectory(dir + "/lib");
+	FileSystem.copyFile("lib/leap.min.js", dir + "/lib/leap.min.js");
+	FileSystem.copyFile("lib/SPE.min.js", dir + "/lib/SPE.min.js");
+	FileSystem.copyFile("lib/leap.min.js", dir + "/lib/leap.min.js");
+	FileSystem.copyFile("lib/stats.min.js", dir + "/lib/stats.min.js");
+	FileSystem.copyFile("lib/cannon.min.js", dir + "/lib/cannon.min.js");
+	FileSystem.copyFile("lib/spine.min.js", dir + "/lib/spine.min.js");
+	FileSystem.copyFile("lib/base64.min.js", dir + "/lib/base64.min.js");
+	FileSystem.makeDirectory(dir + "/lib/three");
+	FileSystem.copyFile("lib/three/three.min.js", dir + "/lib/three/three.min.js");
+	FileSystem.makeDirectory(dir + "/lib/three/effects");
+	FileSystem.copyFile("lib/three/effects/VREffect.js", dir + "/lib/three/effects/VREffect.js");
 
-	Editor.saveProgram(dir + "\\app.isp");
+	Editor.saveProgram(dir + "/app.isp");
 }
 
 //Export windows project
@@ -1036,10 +1037,9 @@ Editor.exportWindowsProject = function(dir)
 {
 	Editor.exportWebProject(dir);
 
-	FileSystem.copyFolder("nwjs", dir + "\\nwjs");
-	FileSystem.writeFile(dir + "\\package.json", JSON.stringify({name: Editor.program.name,main: "index.html",window:{frame: true}}));
-	FileSystem.writeFile(dir + "\\" + Editor.program.name + ".bat", "cd nwjs/win\nstart nw.exe ../../");
-	Editor.saveProgram(dir + "\\app.isp");
+	FileSystem.copyFolder("nwjs", dir + "/nwjs");
+	FileSystem.writeFile(dir + "/package.json", JSON.stringify({name: Editor.program.name,main: "index.html",window:{frame: true}}));
+	Editor.saveProgram(dir + "/app.isp");
 }
 
 // Get an asset through its UUID

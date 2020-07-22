@@ -113,8 +113,8 @@ FileSystem.copyFolder = function(src, dest) {
 		var files = App.fs.readdirSync(src)
 
 		for(var i = 0; i < files.length; i++) {
-			var source = src + "\\" + files[i]
-			var destination = dest + "\\" + files[i]
+			var source = src + "/" + files[i]
+			var destination = dest + "/" + files[i]
 			var current = App.fs.statSync(source)
 
 			// Directory
