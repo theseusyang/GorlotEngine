@@ -1017,6 +1017,10 @@ Interface.updateInterface = function()
 
 	Interface.empty_tab_text.updateInterface();
 
+	//------------------------------------Panel------------------------------------
+	// TODO: Clean this
+	Interface.panel.updateInterface()
+
 	//Resize editor camera
 	Editor.resizeCamera();
 }
