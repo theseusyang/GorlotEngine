@@ -46,6 +46,7 @@ include("src/core/loaders/AudioLoader.js")
 include("src/core/loaders/TextureLoader.js")
 include("src/core/loaders/ObjectLoader.js")
 include("src/core/loaders/MaterialLoader.js")
+include("src/core/loaders/TTFLoader.js")
 
 include("src/core/objects/device/LeapMotion.js");
 include("src/core/objects/device/KinectDevice.js");

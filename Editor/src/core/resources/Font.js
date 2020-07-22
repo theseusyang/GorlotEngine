@@ -11,20 +11,24 @@ function Font(url) {
         this.data = null
 
 	if (url !== undefined) {
-		this.encoding = url.split(".").pop()
+		if (typeof url === "object") {
+			this.data = url
+			this.name = url.original_font_information.fullName
+			this.format = "json"
+			this.encoding = "json"
+		} else {
+			this.encoding = url.split(".").pop().toLowerCase()
 
-		if (this.encoding === "json") {
-			var file = new XMLHttpRequest()
-			file.open("GET", url, false)
-			file.overrideMimeType("text/plain")
-			file.send(null)
-
-			this.data = JSON.parse(file.response)
-			this.name = this.data.original_font_information.fullName
-                this.format = "JSON"
-        } else {
-			// TODO: TTF/OTF Support
-			console.warn("Font: Font format is not supported", this.encoding)
+			if (this.encoding === "json") {
+				this.data = JSON.parse(FileSystem.readFile(url))
+				this.name = this.data.original_font_information.fullName
+				this.format = "json"
+			} else if (this.encoding === "ttf") {
+				this.data = new TTFLoader().parse(FileSystem.readFileArrayBuffer(url))
+				this.name = this.data.original_font_information.fullName
+				this.format = "json"
+				this.encoding = "json"
+			}
 		}
 	}
 }
