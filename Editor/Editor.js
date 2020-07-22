@@ -1,98 +1,99 @@
 "use strict";
 
 //Codemirror
-include("lib/codemirror/codemirror.min.js");
-include("lib/codemirror/codemirror.css");
-include("lib/codemirror/keymap/sublime.js");
-include("lib/codemirror/keymap/emacs.js");
-include("lib/codemirror/keymap/vim.js");
-include("lib/codemirror/addon/edit/closebrackets.js");
-include("lib/codemirror/addon/edit/matchbrackets.js");
-include("lib/codemirror/addon/search/search.js");
-include("lib/codemirror/addon/search/searchcursor.js");
-include("lib/codemirror/addon/search/jump-to-line.js");
-include("lib/codemirror/addon/hint/show-hint.js");
-include("lib/codemirror/addon/hint/show-hint.css");
-include("lib/codemirror/addon/hint/anyword-hint.js");
-include("lib/codemirror/addon/dialog/dialog.js");
-include("lib/codemirror/addon/dialog/dialog.css");
-include("lib/codemirror/addon/selection/active-line.js");
-include("lib/codemirror/mode/javascript.js");
-include("lib/codemirror/mode/glsl.js");
-include("lib/codemirror/theme/*");
+include("lib/codemirror/codemirror.min.js")
+include("lib/codemirror/codemirror.css")
+include("lib/codemirror/keymap/sublime.js")
+include("lib/codemirror/keymap/emacs.js")
+include("lib/codemirror/keymap/vim.js")
+include("lib/codemirror/addon/edit/closebrackets.js")
+include("lib/codemirror/addon/edit/matchbrackets.js")
+include("lib/codemirror/addon/search/search.js")
+include("lib/codemirror/addon/search/searchcursor.js")
+include("lib/codemirror/addon/search/jump-to-line.js")
+include("lib/codemirror/addon/hint/show-hint.js")
+include("lib/codemirror/addon/hint/show-hint.css")
+include("lib/codemirror/addon/hint/anyword-hint.js")
+include("lib/codemirror/addon/dialog/dialog.js")
+include("lib/codemirror/addon/dialog/dialog.css")
+include("lib/codemirror/addon/selection/active-line.js")
+include("lib/codemirror/mode/javascript.js")
+include("lib/codemirror/mode/glsl.js")
+include("lib/codemirror/theme/*")
 
 include("lib/litegraph/litegraph.css")
 include("lib/litegraph/litegui.css")
 
 //Threejs
-include("lib/three/loaders/OBJLoader.js");
-include("lib/three/loaders/MTLLoader.js");
-include("lib/three/loaders/VRMLLoader.js");
-include("lib/three/loaders/FBXLoader.js");
-include("lib/three/loaders/GLTFLoader.js");
-include("lib/three/loaders/ColladaLoader.js");
+include("lib/three/loaders/OBJLoader.js")
+include("lib/three/loaders/MTLLoader.js")
+include("lib/three/loaders/VRMLLoader.js")
+include("lib/three/loaders/FBXLoader.js")
+include("lib/three/loaders/GLTFLoader.js")
+include("lib/three/loaders/ColladaLoader.js")
 include("lib/three/loaders/PLYLoader.js")
 include("lib/three/loaders/VTKLoader.js")
 include("lib/three/loaders/AWDLoader.js")
 include("lib/three/loaders/TGALoader.js")
 
-include("lib/three/animation/Animation.js");
-include("lib/three/animation/AnimationHandler.js");
-include("lib/three/animation/KeyFrameAnimation.js");
+include("lib/three/animation/Animation.js")
+include("lib/three/animation/AnimationHandler.js")
+include("lib/three/animation/KeyFrameAnimation.js")
 
-include("lib/jscolor.min.js");
+include("lib/opentype.min.js")
+include("lib/jscolor.min.js")
 
 //Internal modules
-include("src/editor/ui/Bar.js");
-include("src/editor/ui/Button.js");
-include("src/editor/ui/DropdownMenu.js");
-include("src/editor/ui/Text.js");
-include("src/editor/ui/Division.js");
-include("src/editor/ui/ImageBox.js");
-include("src/editor/ui/DivisionResizable.js");
-include("src/editor/ui/ButtonImage.js");
-include("src/editor/ui/ButtonDrawer.js");
-include("src/editor/ui/Canvas.js");
-include("src/editor/ui/TabGroup.js");
-include("src/editor/ui/TabElement.js");
-include("src/editor/ui/DualDivisionResizable.js");
-include("src/editor/ui/ButtonImageToggle.js");
-include("src/editor/ui/TreeView.js");
-include("src/editor/ui/TreeElement.js");
-include("src/editor/ui/ContextMenu.js");
-include("src/editor/ui/Form.js");
-include("src/editor/ui/DragBuffer.js");
-include("src/editor/ui/AssetExplorer.js");
+include("src/editor/ui/Bar.js")
+include("src/editor/ui/Button.js")
+include("src/editor/ui/DropdownMenu.js")
+include("src/editor/ui/Text.js")
+include("src/editor/ui/Division.js")
+include("src/editor/ui/ImageBox.js")
+include("src/editor/ui/DivisionResizable.js")
+include("src/editor/ui/ButtonImage.js")
+include("src/editor/ui/ButtonDrawer.js")
+include("src/editor/ui/Canvas.js")
+include("src/editor/ui/TabGroup.js")
+include("src/editor/ui/TabElement.js")
+include("src/editor/ui/DualDivisionResizable.js")
+include("src/editor/ui/ButtonImageToggle.js")
+include("src/editor/ui/TreeView.js")
+include("src/editor/ui/TreeElement.js")
+include("src/editor/ui/ContextMenu.js")
+include("src/editor/ui/Form.js")
+include("src/editor/ui/DragBuffer.js")
+include("src/editor/ui/AssetExplorer.js")
 
-include("src/editor/ui/asset/Asset.js");
-include("src/editor/ui/asset/MaterialAsset.js");
+include("src/editor/ui/asset/Asset.js")
+include("src/editor/ui/asset/MaterialAsset.js")
 include("src/editor/ui/asset/TextureAsset.js")
 
-include("src/editor/files/style/editor.css");
-include("src/editor/ui/theme/Theme.js");
-include("src/editor/ui/theme/ThemeDark.js");
-include("src/editor/ui/theme/ThemeLight.js");
+include("src/editor/files/style/editor.css")
+include("src/editor/ui/theme/Theme.js")
+include("src/editor/ui/theme/ThemeDark.js")
+include("src/editor/ui/theme/ThemeLight.js")
 
-include("src/editor/ui/tab/ScriptEditor.js");
-include("src/editor/ui/tab/SceneEditor.js");
-include("src/editor/ui/tab/SettingsTab.js");
-include("src/editor/ui/tab/ParticleEditor.js");
-include("src/editor/ui/tab/AboutTab.js");
-include("src/editor/ui/tab/MaterialEditor.js");
-include("src/editor/ui/tab/BlockEditor.js");
-include("src/editor/ui/tab/ShaderMaterialEditor.js");
+include("src/editor/ui/tab/ScriptEditor.js")
+include("src/editor/ui/tab/SceneEditor.js")
+include("src/editor/ui/tab/SettingsTab.js")
+include("src/editor/ui/tab/ParticleEditor.js")
+include("src/editor/ui/tab/AboutTab.js")
+include("src/editor/ui/tab/MaterialEditor.js")
+include("src/editor/ui/tab/BlockEditor.js")
+include("src/editor/ui/tab/ShaderMaterialEditor.js")
 
-include("src/editor/ui/input/Graph.js");
-include("src/editor/ui/input/CodeEditor.js");
-include("src/editor/ui/input/CheckBox.js");
-include("src/editor/ui/input/TextBox.js");
-include("src/editor/ui/input/ColorChooser.js");
-include("src/editor/ui/input/Slider.js");
-include("src/editor/ui/input/DropdownList.js");
-include("src/editor/ui/input/NumberBox.js");
-include("src/editor/ui/input/CoordinatesBox.js");
-include("src/editor/ui/input/ImageChooser.js");
-include("src/editor/ui/input/TextureBox.js");
+include("src/editor/ui/input/Graph.js")
+include("src/editor/ui/input/CodeEditor.js")
+include("src/editor/ui/input/CheckBox.js")
+include("src/editor/ui/input/TextBox.js")
+include("src/editor/ui/input/ColorChooser.js")
+include("src/editor/ui/input/Slider.js")
+include("src/editor/ui/input/DropdownList.js")
+include("src/editor/ui/input/NumberBox.js")
+include("src/editor/ui/input/CoordinatesBox.js")
+include("src/editor/ui/input/ImageChooser.js")
+include("src/editor/ui/input/TextureBox.js")
 
 include("src/editor/tools/TransformControls.js")
 include("src/editor/tools/GizmoMaterial.js")
@@ -102,16 +103,16 @@ include("src/editor/tools/TransformGizmoRotate.js")
 include("src/editor/tools/TransformGizmoScale.js")
 include("src/editor/tools/TransformGizmoTranslate.js")
 
-include("src/editor/helpers/ParticleEmitterHelper.js");
-include("src/editor/helpers/ObjectIconHelper.js");
-include("src/editor/helpers/PhysicsObjectHelper.js");
+include("src/editor/helpers/ParticleEmitterHelper.js")
+include("src/editor/helpers/ObjectIconHelper.js")
+include("src/editor/helpers/PhysicsObjectHelper.js")
 include("src/editor/helpers/WireframeHelper.js")
 
-include("src/editor/utils/MaterialRenderer.js");
-include("src/editor/utils/ObjectIcons.js");
+include("src/editor/utils/MaterialRenderer.js")
+include("src/editor/utils/ObjectIcons.js")
 
-include("src/editor/Interface.js");
-include("src/editor/Settings.js");
+include("src/editor/Interface.js")
+include("src/editor/Settings.js")
 
 function Editor(){}
 
