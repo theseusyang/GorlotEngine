@@ -11,16 +11,17 @@ JSONNode.prototype.onGetInputs = function() {
 }
 JSONNode.prototype.onExecute = function () {
         var j = {}
-        if(this.inputs) {
+        if(this.inputs.length > 0) {
                 // TODO: Clean this code
                 for(var i = 0; i < this.inputs.length; i++) {
                         var input = this.getInputData(i)
                         var name = input[0]
-                                
-                        if(name !== undefined) {
-                                var value = input[1]
-                                j[name] = value
-                        }
+                        
+                        if (name === undefined) 
+                                continue
+
+                        var value = input[1]
+                        j[name] = value
                 }
 
                 this.setOutputData(0, JSON.stringify(j))
@@ -44,9 +45,11 @@ JSONElementNode.prototype.onExecute = function() {
         var n = this.getInputData(0)
         var v = this.getInputData(1)
 
-        if(n === undefined) {
+        if (n === undefined) 
                 n = this.properties.name
-        }
+
+        if (v === undefined) 
+                return
 
         var val = [n, v]
         this.setOutputData(0, val)
@@ -63,9 +66,10 @@ JSONParseNode.title = "Parse"
 JSONParseNode.prototype.onExecute = function() {
         var j = this.getInputData(0)
 
-        if (j !== undefined) {
-                this.setOutputData(0, JSON.parse(j))
-        }
+        if (j === undefined)
+                return
+
+        this.setOutputData(0, JSON.parse(j))
 }
 
 function registerJSONNodes() {

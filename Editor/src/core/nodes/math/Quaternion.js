@@ -60,9 +60,10 @@ QuaternionGetXNode.title = "Get X"
 QuaternionGetXNode.prototype.onExecute = function() {
 	var q = this.getInputData(0)
 
-	if (q !== undefined) {
-		this.setOutputData(0, q.x)
-	}
+	if (q === undefined) 
+		return
+
+	this.setOutputData(0, q.x)
 }
 
 function QuaternionGetYNode() {
@@ -77,9 +78,10 @@ QuaternionGetYNode.title = "Get Y"
 QuaternionGetYNode.prototype.onExecute = function() {
 	var q = this.getInputData(0)
 
-	if (q !== undefined) {
-		this.setOutputData(0, q.y)
-	}
+	if (q === undefined) 
+		return
+
+	this.setOutputData(0, q.y)
 }
 
 function QuaternionGetZNode() {
@@ -93,9 +95,11 @@ QuaternionGetZNode.title_text_color = NodesHelper.title_colours.white
 QuaternionGetZNode.title = "Get Z"
 QuaternionGetZNode.prototype.onExecute = function() {
 	var q = this.getInputData(0)
-	if (q !== undefined) {
-		this.setOutputData(0, q.z)
-	}
+
+	if (q === undefined) 
+		return
+
+	this.setOutputData(0, q.z)
 }
 
 function QuaternionGetWNode() {
@@ -109,9 +113,11 @@ QuaternionGetWNode.title_text_color = NodesHelper.title_colours.white
 QuaternionGetWNode.title = "Get W"
 QuaternionGetWNode.prototype.onExecute = function() {
 	var q = this.getInputData(0)
-	if (q !== undefined) {
-		this.setOutputData(0, q.w)
-	}
+
+	if (q === undefined) 
+		return
+
+	this.setOutputData(0, q.w)
 }
 
 function QuaternionAngleToNode() {
@@ -128,10 +134,11 @@ QuaternionAngleToNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var q = this.getInputData(1)
 
-	if (i !== undefined && q !== undefined) {
-		var d = i.angleTo(q)
-		this.setOutputData(0, d)
-	}
+	if (i === undefined || q === undefined) 
+		return
+
+	var d = i.angleTo(q)
+	this.setOutputData(0, d)
 }
 
 function QuaternionCloneNode() {
@@ -146,9 +153,10 @@ QuaternionCloneNode.title = "Clone"
 QuaternionCloneNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 
-	if (i !== undefined) {
-		this.setOutputData(0, i.clone())
-	}
+	if (i === undefined) 
+		return
+
+	this.setOutputData(0, i.clone())
 }
 
 function QuaternionConjugateNode() {
@@ -162,10 +170,12 @@ QuaternionConjugateNode.title_text_color = NodesHelper.title_colours.white
 QuaternionConjugateNode.title = "Conjugate"
 QuaternionConjugateNode.prototype.onExecute = function() {
 	var q = this.getInputData(0)
-	if (q !== undefined) {
-		var c = q.conjugate()
-		this.setOutputData(0, c)
-	}
+
+	if (q === undefined) 
+		return
+
+	var c = q.conjugate()
+	this.setOutputData(0, c)
 }
 
 function QuaternionCopyNode() {
@@ -182,10 +192,11 @@ QuaternionCopyNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var q = this.getInputData(1)
 
-	if (i !== undefined && q !== undefined) {
-		var c = i.copy(q)
-		this.setOutputData(0, c)
-	}
+	if (i === undefined || q === undefined) 
+		return
+
+	var c = i.copy(q)
+	this.setOutputData(0, c)
 }
 
 function QuaternionEqualsNode() {
@@ -201,9 +212,11 @@ QuaternionEqualsNode.title = "Equals"
 QuaternionEqualsNode.prototype.onExecute = function() {
 	var q1 = this.getInputData(0)
 	var q2 = this.getInputData(0)
-	if (q1 !== undefined && q2 !== undefined) {
-		this.setOutputData(0, q1.equals(q2))
-	}
+
+	if (q1 === undefined || q2 === undefined) 
+		return
+
+	this.setOutputData(0, q1.equals(q2))
 }
 
 function QuaternionDotNode() {
@@ -220,9 +233,10 @@ QuaternionDotNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var q = this.getInputData(1)
 
-	if (i !== undefined && q !== undefined) {
-		this.setOutputData(0, i.dot(q))
-	}
+	if (i === undefined || q === undefined) 
+		return
+
+	this.setOutputData(0, i.dot(q))
 }
 
 function QuaternionFromArrayNode() {
@@ -248,10 +262,11 @@ QuaternionFromArrayNode.prototype.onExecute = function() {
 		o = this.properties["offset"]
 	}
 
-	if (q !== undefined && a !== undefined) {
-		var q1 = q.fromArray(a, o)
-		this.setOutputData(0, q1)
-	}
+	if (q === undefined || a === undefined) 
+		return
+
+	var q1 = q.fromArray(a, o)
+	this.setOutputData(0, q1)
 }
 QuaternionFromArrayNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -270,10 +285,12 @@ QuaternionLengthNode.title_text_color = NodesHelper.title_colours.white
 QuaternionLengthNode.title = "Length"
 QuaternionLengthNode.prototype.onExecute = function() {
 	var q = this.getInputData(0)
-	if (q !== undefined) {
-		var l = q.length()
-		this.setOutputData(0, l)
-	}
+
+	if (q === undefined) 
+		return
+
+	var l = q.length()
+	this.setOutputData(0, l)
 }
 
 function QuaternionNormalizeNode() {
@@ -288,10 +305,11 @@ QuaternionNormalizeNode.title = "Normalize"
 QuaternionNormalizeNode.prototype.onExecute = function() {
 	var q = this.getInputData(0)
 
-	if (q !== undefined) {
-		var n = q.normalize()
-		this.setOutputData(0, n)
-	}
+	if (q === undefined) 
+		return
+
+	var n = q.normalize()
+	this.setOutputData(0, n)
 }
 
 function QuaternionMultiplyNode() {
@@ -308,9 +326,10 @@ QuaternionMultiplyNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var q = this.getInputData(1)
 
-	if (i !== undefined && q !== undefined) {
-		this.setOutputData(0, i.multiply(q))
-	}
+	if (i === undefined || q === undefined) 
+		return
+
+	this.setOutputData(0, i.multiply(q))
 }
 
 function QuaternionMultiplyQuaternionsNode() {
@@ -330,9 +349,10 @@ QuaternionMultiplyQuaternionsNode.prototype.onExecute = function() {
 	var a = this.getInputData(1)
 	var b = this.getInputData(2)
 
-	if (i !== undefined && a !== undefined && b !== undefined) {
-		this.setOutputData(0, i.multiplyQuaternions(a, b))
-	}
+	if (i === undefined || a === undefined || b === undefined) 
+		return
+
+	this.setOutputData(0, i.multiplyQuaternions(a, b))
 }
 
 function QuaternionPreMultiplyNode() {
@@ -349,9 +369,10 @@ QuaternionPreMultiplyNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var q = this.getInputData(1)
 
-	if (i !== undefined && q !== undefined) {
-		this.setOutputData(0, i.premultiply(q))
-	}
+	if (i === undefined || q === undefined) 
+		return
+
+	this.setOutputData(0, i.premultiply(q))
 }
 
 function QuaternionRotateTowardsNode() {
@@ -378,9 +399,10 @@ QuaternionRotateTowardsNode.prototype.onExecute = function() {
 		s = this.properties["step"]
 	}
 
-	if (i !== undefined && q !== undefined && s !== undefined) {
-		this.setOutputData(0, i.rotateTowards(q, s))
-	}
+	if (i === undefined || q === undefined || s === undefined) 
+		return
+
+	this.setOutputData(0, i.rotateTowards(q, s))
 }
 QuaternionRotateTowardsNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -412,9 +434,10 @@ QuaternionSlerpNode.prototype.onExecute = function() {
 		t = this.properties["interpolation"]
 	}
 
-	if (i !== undefined && q !== undefined && t !== undefined) {
-		i.slerp(q, t)
-	}
+	if (i === undefined || q === undefined || t === undefined) 
+		return
+
+	i.slerp(q, t)
 }
 QuaternionSlerpNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -505,9 +528,10 @@ QuaternionSetFromAxisAngleNode.prototype.onExecute = function() {
 		an = this.properties["angle"]
 	}
 
-	if (i !== undefined && ax !== undefined && an !== undefined) {
-		i.setFromAxisAngle(ax, an)
-	}
+	if (i === undefined || ax === undefined || an === undefined) 
+		return
+
+	i.setFromAxisAngle(ax, an)
 }
 QuaternionSetFromAxisAngleNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -529,10 +553,11 @@ QuaternionSetFromEulerNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var e = this.getInputData(1)
 
-	if (i !== undefined && e !== undefined) {
-		i.setFromEuler(e)
-		this.setOutputData(0, i)
-	}
+	if (i === undefined || e === undefined) 
+		return
+
+	i.setFromEuler(e)
+	this.setOutputData(0, i)
 }
 
 function registerQuaternionNodes() {

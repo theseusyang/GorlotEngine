@@ -142,9 +142,10 @@ ParticlesSetBlendingNode.prototype.onExecute = function() {
 	var p = this.getInputData(0)
 	var b = this.getInputData(1)
 
-	if (p !== undefined && b !== undefined) {
-		p.group.blending = b
-	}
+	if (p === undefined || b === undefined) 
+		return
+
+	p.group.blending = b
 }
 
 function ParticlesSetDirectionNode() {
@@ -160,14 +161,13 @@ ParticlesSetDirectionNode.prototype.onExecute = function() {
 	var p = this.getInputData(0)
 	var d = this.getInputData(1)
 
-	if (p !== undefined && d !== undefined) {
-		if (d !== "") {
-			if (d === "Forward") {
-				p.emitter.direction = 1
-			} else if (d === "Backward") {
-				p.emitter.direction = -1
-			}
-		}
+	if (p === undefined || d === undefined || d === "") 
+		return
+
+	if (d === "Forward") {
+		p.emitter.direction = 1
+	} else if (d === "Backward") {
+		p.emitter.direction = -1
 	}
 }
 
@@ -184,9 +184,10 @@ ParticlesSetCountNode.prototype.onExecute = function() {
 	var p = this.getInputData(0)
 	var c = this.getInputData(1)
 
-	if (p !== undefined && c !== undefined) {
-		p.group.maxParticleCount = c
-	}
+	if (p === undefined || c === undefined) 
+		return
+
+	p.group.maxParticleCount = c
 }
 
 function ParticlesSetRateNode() {
@@ -202,9 +203,10 @@ ParticlesSetRateNode.prototype.onExecute = function() {
 	var p = this.getInputData(0)
 	var c = this.getInputData(1)
 
-	if (p !== undefined && c !== undefined) {
-		p.emitter.particleCount = c
-	}
+	if (p === undefined || c === undefined) 
+		return
+
+	p.emitter.particleCount = c
 }
 
 function ParticlesSetDurationNode() {
@@ -220,12 +222,13 @@ ParticlesSetDurationNode.prototype.onExecute = function() {
 	var p = this.getInputData(0)
 	var d = this.getInputData(1)
 
-	if (p !== undefined && d !== undefined) {
-		if (d === 0) {
-			d = null
-		}
-		p.emitter.duration = d
+	if (p === undefined || d === undefined) 
+		return
+
+	if (d === 0) {
+		d = null
 	}
+	p.emitter.duration = d
 }
 
 function ParticlesSetEmitterTypeNode() {
@@ -241,9 +244,10 @@ ParticlesSetEmitterTypeNode.prototype.onExecute = function() {
 	var p = this.getInputData(0)
 	var t = this.getInputData(1)
 
-	if (p !== undefined && t !== undefined) {
-		p.emitter.type = t
-	}
+	if (p === undefined || t === undefined) 
+		return
+
+	p.emitter.type = t
 }
 
 function ParticlesSetMaxAgeNode() {
@@ -261,13 +265,14 @@ ParticlesSetMaxAgeNode.prototype.onExecute = function() {
 	var a = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined) {
-		if (a !== undefined) {
-			p.emitter.maxAge.value = a
-		}
-		if (s !== undefined) {
-			p.emitter.maxAge.spread = s
-		}
+	if (p === undefined) 
+		return
+
+	if (a !== undefined) {
+		p.emitter.maxAge.value = a
+	}
+	if (s !== undefined) {
+		p.emitter.maxAge.spread = s
 	}
 }
 
@@ -286,12 +291,13 @@ ParticlesSetPositionNode.prototype.onExecute = function() {
 	var v = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined && v !== undefined) {
-		p.emitter.position.value.copy(v)
+	if (p === undefined || v === undefined) 
+		return
 
-		if(s !== undefined) {
-			p.emitter.position.spread.copy(s)
-		}
+	p.emitter.position.value.copy(v)
+
+	if(s !== undefined) {
+		p.emitter.position.spread.copy(s)
 	}
 }
 
@@ -310,12 +316,13 @@ ParticlesSetVelocityNode.prototype.onExecute = function() {
 	var v = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined && v !== undefined) {
-		p.emitter.velocity.value.copy(v)
+	if (p === undefined || v === undefined) 
+		return
 
-		if (s !== undefined) {
-			p.emitter.velocity.spread.copy(v)
-		}
+	p.emitter.velocity.value.copy(v)
+
+	if (s !== undefined) {
+		p.emitter.velocity.spread.copy(v)
 	}
 }
 
@@ -334,12 +341,13 @@ ParticlesSetAccelerationNode.prototype.onExecute = function() {
 	var a = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined && a !== undefined) {
-		p.emitter.acceleration.value.copy(a)
+	if (p === undefined || a === undefined) 
+		return
 
-		if (s !== undefined) {
-			p.emitter.acceleration.spread.copy(s)
-		}
+	p.emitter.acceleration.value.copy(a)
+
+	if (s !== undefined) {
+		p.emitter.acceleration.spread.copy(s)
 	}
 }
 
@@ -358,12 +366,13 @@ ParticlesSetWiggleNode.prototype.onExecute = function() {
 	var w = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined && w !== undefined) {
-		p.emitter.wiggle.value = w
+	if (p === undefined || w === undefined) 
+		return
 
-		if (s !== undefined) {
-			p.emitter.wiggle.spread = s
-		}
+	p.emitter.wiggle.value = w
+
+	if (s !== undefined) {
+		p.emitter.wiggle.spread = s
 	}
 }
 
@@ -382,17 +391,18 @@ ParticlesSetOpacityNode.prototype.onExecute = function() {
 	var o = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined) {
-		if(o !== undefined) {
-			o.forEach((item, index) => {
-				p.emitter.opacity.value[index] = item
-			})
-		}
-		if (s !== undefined) {
-			s.forEach((item, index) => {
-				p.emitter.opacity.spread[index] = item
-			})
-		}
+	if (p === undefined) 
+		return
+
+	if(o !== undefined) {
+		o.forEach((item, index) => {
+			p.emitter.opacity.value[index] = item
+		})
+	}
+	if (s !== undefined) {
+		s.forEach((item, index) => {
+			p.emitter.opacity.spread[index] = item
+		})
 	}
 }
 
@@ -411,17 +421,18 @@ ParticlesSetScaleNode.prototype.onExecute = function() {
 	var size = this.getInputData(1)
 	var spread = this.getInputData(2)
 
-	if (particles !== undefined) {
-		if (size !== undefined) {
-			size.forEach((item, index) => {
-				particles.emitter.size.value[index] = item
-			})
-		}
-		if (spread !== undefined) {
-			spread.forEach((item, index) => {
-				particles.emitter.size.spread[index] = item
-			})
-		}
+	if (particles === undefined) 
+		return
+
+	if (size !== undefined) {
+		size.forEach((item, index) => {
+			particles.emitter.size.value[index] = item
+		})
+	}
+	if (spread !== undefined) {
+		spread.forEach((item, index) => {
+			particles.emitter.size.spread[index] = item
+		})
 	}
 }
 
@@ -440,17 +451,18 @@ ParticlesSetRotationNode.prototype.onExecute = function() {
 	var r = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined) {
-		if (r !== undefined) {
-			r.forEach((item, index) => {
-				p.emitter.angle.value[index] = item
-			})
-		}
-		if (s !== undefined) {
-			s.forEach((item, index) => {
-				p.emitter.angle.spread[index] = item
-			})
-		}
+	if (p === undefined) 
+		return
+
+	if (r !== undefined) {
+		r.forEach((item, index) => {
+			p.emitter.angle.value[index] = item
+		})
+	}
+	if (s !== undefined) {
+		s.forEach((item, index) => {
+			p.emitter.angle.spread[index] = item
+		})
 	}
 }
 
@@ -469,25 +481,26 @@ ParticlesSetColourNode.prototype.onExecute = function() {
 	var c = this.getInputData(1)
 	var s = this.getInputData(2)
 
-	if (p !== undefined) {
-		if (c !== undefined) {
-			c.forEach((item, index) => {
-				if (item instanceof THREE.Color) {
-					p.emitter.color.value[index].r = item.r
-					p.emitter.color.value[index].g = item.g
-					p.emitter.color.value[index].b = item.b
-				}
-			})
-		}
-		if (s !== undefined) {
-			s.forEach((item, index) => {
-				if (item instanceof THREE.Color) {
-					p.emitter.color.spread[index].x = item.r
-					p.emitter.color.spread[index].y = item.g
-					p.emitter.color.spread[index].z = item.b
-				}
-			})
-		}
+	if (p === undefined) 
+		return
+
+	if (c !== undefined) {
+		c.forEach((item, index) => {
+			if (item instanceof THREE.Color) {
+				p.emitter.color.value[index].r = item.r
+				p.emitter.color.value[index].g = item.g
+				p.emitter.color.value[index].b = item.b
+			}
+		})
+	}
+	if (s !== undefined) {
+		s.forEach((item, index) => {
+			if (item instanceof THREE.Color) {
+				p.emitter.color.spread[index].x = item.r
+				p.emitter.color.spread[index].y = item.g
+				p.emitter.color.spread[index].z = item.b
+			}
+		})
 	}
 }
 

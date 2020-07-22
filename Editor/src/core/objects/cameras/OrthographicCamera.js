@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 
 //Orthographic Camera constructor aspect is in x/y mode
 function OrthographicCamera(size, aspect, mode, near, far)
@@ -11,13 +11,13 @@ function OrthographicCamera(size, aspect, mode, near, far)
 		far = 100000
 	}
 
-	THREE.OrthographicCamera.call(this, -1.0, 1.0, 1.0, -1.0, near, far);
+	THREE.OrthographicCamera.call(this, -1.0, 1.0, 1.0, -1.0, near, far)
 
-	this.name = "camera";
+	this.name = "camera"
 	
-	this.size = size;
-	this.aspect = aspect;
-	this.mode = (mode !== undefined) ? mode : OrthographicCamera.FIXED_VERTICAL;
+	this.size = size
+	this.aspect = aspect
+	this.mode = (mode !== undefined) ? mode : OrthographicCamera.FIXED_VERTICAL
 
 	this.components = []
 	this.defaultComponents = []
@@ -27,21 +27,21 @@ function OrthographicCamera(size, aspect, mode, near, far)
 	this.defaultComponents.push(new CameraComponent())
 }
 
-OrthographicCamera.prototype = Object.create(THREE.OrthographicCamera.prototype);
+OrthographicCamera.prototype = Object.create(THREE.OrthographicCamera.prototype)
 
 //Camera scale mode
-OrthographicCamera.FIXED_VERTICAL = 0;
-OrthographicCamera.FIXED_HORIZONTAL = 1;
+OrthographicCamera.FIXED_VERTICAL = 0
+OrthographicCamera.FIXED_HORIZONTAL = 1
 
 //Initialize
 OrthographicCamera.prototype.initialize = function()
 {
-	this.getWorldScale(this.scale);
-	this.scale.set(1.0 / this.scale.x, 1.0 / this.scale.y, 1.0 / this.scale.z);
+	this.getWorldScale(this.scale)
+	this.scale.set(1.0 / this.scale.x, 1.0 / this.scale.y, 1.0 / this.scale.z)
 	
 	for(var i = 0; i < this.children.length; i++)
 	{
-		this.children[i].initialize();
+		this.children[i].initialize()
 	}
 }
 
@@ -51,34 +51,26 @@ OrthographicCamera.prototype.updateProjectionMatrix = function()
 	//Update left right, top and bottom values from aspect and size
 	if(this.mode === OrthographicCamera.FIXED_VERTICAL)
 	{
-		this.top = this.size/2;
-		this.bottom = -this.top;
-		this.right = this.top * this.aspect;
-		this.left = -this.right;
+		this.top = this.size/2
+		this.bottom = -this.top
+		this.right = this.top * this.aspect
+		this.left = -this.right
 	}
 	else if(this.mode === OrthographicCamera.FIXED_HORIZONTAL)
 	{
-		this.right = this.size/2;
-		this.left = -this.right;
-		this.top = this.right / this.aspect;
-		this.bottom = -this.top;
+		this.right = this.size/2
+		this.left = -this.right
+		this.top = this.right / this.aspect
+		this.bottom = -this.top
 	}
 
-	THREE.OrthographicCamera.prototype.updateProjectionMatrix.call(this);
+	THREE.OrthographicCamera.prototype.updateProjectionMatrix.call(this)
 }
 
 //Create JSON for object
 OrthographicCamera.prototype.toJSON = function(meta)
 {
-	var data = THREE.Object3D.prototype.toJSON.call(this, meta);
-
-	data.object.zoom = this.zoom;
-	data.object.left = this.left;
-	data.object.right = this.right;
-	data.object.top = this.top;
-	data.object.bottom = this.bottom;
-	data.object.near = this.near;
-	data.object.far = this.far;
+	var data = THREE.OrthographicCamera.prototype.toJSON.call(this, meta)
 
 	data.object.size = this.size;
 	data.object.aspect = this.aspect;

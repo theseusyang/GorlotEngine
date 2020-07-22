@@ -193,9 +193,10 @@ SetMaterialColorNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var c = this.getInputData(0)
 
-	if (m !== undefined && c !== undefined) {
-		m.color = c
-	}
+	if (m === undefined || c === undefined)
+		return
+
+	m.color = c
 }
 
 function SetMaterialDepthWriteNode() {
@@ -210,9 +211,10 @@ SetMaterialDepthWriteNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var d = this.getInputData(0)
 
-	if (m !== undefined && d !== undefined) {
-		m.depthWrite = d
-	}
+	if (m === undefined || d === undefined) 
+		return
+
+	m.depthWrite = d
 }
 
 function SetMaterialTransparentNode() {
@@ -227,9 +229,10 @@ SetMaterialTransparentNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var t = this.getInputData(0)
 
-	if (m !== undefined && t !== undefined) {
-		m.transparent = t
-	}
+	if (m === undefined || t === undefined) 
+		return
+
+	m.transparent = t
 }
 
 function SetMaterialOpacityNode() {
@@ -251,9 +254,10 @@ SetMaterialOpacityNode.prototype.onExecute = function() {
 		o = this.properties["opacity"]
 	}
 
-	if (m !== undefined) {
-		m.opacity = o
-	}
+	if (m === undefined) 
+		return
+
+	m.opacity = o
 }
 SetMaterialOpacityNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -273,9 +277,10 @@ SetBlendingModeMaterialNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var b = this.getInputData(0)
 
-	if (m !== undefined && b !== undefined) {
-		m.blending = b
-	}
+	if (m === undefined || b === undefined) 
+		return
+
+	m.blending = b
 }
 
 function SetBlendingSourceNode() {
@@ -290,9 +295,10 @@ SetBlendingSourceNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var bs = this.getInputData(0)
 
-	if (m !== undefined && bs !== undefined) {
-		m.blendSrc = bs
-	}
+	if (m === undefined || bs === undefined) 
+		return
+
+	m.blendSrc = bs
 }
 
 function SetBlendingSourceAlphaNode() {
@@ -307,9 +313,10 @@ SetBlendingSourceAlphaNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var a = this.getInputData(0)
 
-	if (m !== undefined && a !== undefined) {
-		m.blendSrcAlpha = a
-	}
+	if (m === undefined || a === undefined) 
+		return
+
+	m.blendSrcAlpha = a
 }
 
 function SetBlendingDestinationNode() {
@@ -324,9 +331,10 @@ SetBlendingDestinationNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var bdst = this.getInputData(0)
 
-	if (m !== undefined && bdst !== undefined) {
-		m.blendDst = bdst
-	}
+	if (m === undefined || bdst === undefined) 
+		return
+
+	m.blendDst = bdst
 }
 
 function SetBlendingDestinationAlphaNode() {
@@ -341,9 +349,10 @@ SetBlendingDestinationAlphaNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var a = this.getInputData(0)
 
-	if (m !== undefined && a !== undefined) {
-		m.blendDst = a
-	}
+	if (m === undefined || a === undefined) 
+		return
+
+	m.blendDst = a
 }
 
 function SetBlendEquationNode() {
@@ -358,9 +367,10 @@ SetBlendEquationNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var e = this.getInputData(0)
 
-	if (m !== undefined && e !== undefined) {
-		m.blendEquation = e
-	}
+	if (m === undefined || e === undefined) 
+		return
+
+	m.blendEquation = e
 }
 
 function SetBlendEquationAlphaNode() {
@@ -375,9 +385,10 @@ SetBlendEquationAlphaNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var a = this.getInputData(0)
 
-	if (m !== undefined && a !== undefined) {
-		m.blendEquationAlpha = a
-	}
+	if (m === undefined || a === undefined) 
+		return
+
+	m.blendEquationAlpha = a
 }
 
 function SetAlphaTestNode() {
@@ -392,9 +403,10 @@ SetAlphaTestNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var a = this.getInputData(0)
 
-	if (m !== undefined && a !== undefined) {
-		m.alphaTest = a
-	}
+	if (m === undefined || a === undefined) 
+		return
+
+	m.alphaTest = a
 }
 
 function TestDepthNode() {
@@ -409,9 +421,10 @@ TestDepthNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var t = this.getInputData(0)
 
-	if (m !== undefined && t !== undefined) {
-		m.depthTest = t
-	}
+	if (m === undefined || t === undefined) 
+		return
+
+	m.depthTest = t
 }
 
 function ShadingNode() {
@@ -426,10 +439,11 @@ ShadingNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var s = this.getInputData(0)
 
-	if (m !== undefined && s !== undefined) {
-		m.shading = s
-		m.needsUpdate = true
-	}
+	if (m === undefined || s === undefined) 
+		return
+
+	m.shading = s
+	m.needsUpdate = true
 }
 
 function AffectedByFogNode() {
@@ -444,9 +458,10 @@ AffectedByFogNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var v = this.getInputData(0)
 
-	if (m !== undefined && v !== undefined) {
-		m.fog = v
-	}
+	if (m === undefined || v === undefined) 
+		return
+
+	m.fog = v
 }
 
 function SetPrecisionNode() {
@@ -461,9 +476,10 @@ SetPrecisionNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var p = this.getInputData(0)
 
-	if (m !== undefined && p !== undefined) {
-		m.precision = p
-	}
+	if (m === undefined || p === undefined) 
+		return
+
+	m.precision = p
 }
 
 function ShadowSideNode() {
@@ -478,9 +494,10 @@ ShadowSideNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var s = this.getInputData(0)
 
-	if (m !== undefined && s !== undefined) {
-		m.shadowSide = s
-	}
+	if (m === undefined || s === undefined) 
+		return
+
+	m.shadowSide = s
 }
 
 function CombineNode() {
@@ -496,9 +513,10 @@ CombineNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var mode = this.getInputData(0)
 
-	if (m !== undefined && mode !== undefined) {
-		m.combine = mode
-	}
+	if (m === undefined || mode === undefined) 
+		return
+
+	m.combine = mode
 }
 
 function MaterialSetSkinningNode() {
@@ -513,9 +531,10 @@ MaterialSetSkinningNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var s = this.getInputData(0)
 
-	if (m !== undefined && s !== undefined) {
-		m.skinning = s
-	}
+	if (m === undefined || s === undefined) 
+		return
+
+	m.skinning = s
 }
 
 function MaterialSetRefractionRatioNode() {
@@ -530,9 +549,10 @@ MaterialSetRefractionRatioNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var r = this.getInputData(0)
 
-	if (m !== undefined && r !== undefined) {
-		m.refractionRatio = r
-	}
+	if (m === undefined || r === undefined) 
+		return
+
+	m.refractionRatio = r
 }
 
 function MaterialSetTextureMapNode() {
@@ -547,9 +567,10 @@ MaterialSetTextureMapNode.prototype.onExecute = function() {
 	var m = this.graph.extra.material
 	var t = this.getInputData(0)
 
-	if (m !== undefined && t !== undefined) {
-		m.map = t
-	}
+	if (m === undefined || t === undefined) 
+		return
+
+	m.map = t
 }
 
 function registerMaterialNodeNodes() {

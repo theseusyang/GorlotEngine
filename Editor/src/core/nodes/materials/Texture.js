@@ -43,10 +43,11 @@ TextureWrapHorNode.prototype.onExecute = function() {
 	var t = this.getInputData(0)
 	var w = this.getInputData(1)
 
-	if (t !== undefined && t !== undefined) {
-		t.wrapS = t
-		t.needsUpdate = true
-	}
+	if (t === undefined) 
+		return
+
+	t.wrapS = t
+	t.needsUpdate = true
 }
 
 function TextureWrapVertNode() {
@@ -62,11 +63,11 @@ TextureWrapVertNode.prototype.onExecute = function() {
 	var t = this.getInputData(0)
 	var w = this.getInputData(1)
 
-	if (t !== undefined && t !== undefined) {
-		t.wrapT = t
-		t.needsUpdate = true
-	}
+	if (t === undefined) 
+		return
 
+	t.wrapT = t
+	t.needsUpdate = true
 }
 
 function TextureRepeatNode() {
@@ -82,10 +83,11 @@ TextureRepeatNode.prototype.onExecute = function() {
 	var t = this.getInputData(0)
 	var r = this.getInputData(1)
 
-	if (t !== undefined && r !== undefined) {
-		t.repeat.copy(r)
-		t.needsUpdate = true
-	}
+	if (t === undefined) 
+		return
+
+	t.repeat.copy(r)
+	t.needsUpdate = true
 }
 
 function registerMaterialNodeTexture() {

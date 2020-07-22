@@ -52,9 +52,10 @@ ColourGetRedNode.title = "Get Red"
 ColourGetRedNode.prototype.onExecute = function() {
 	var c = this.getInputData(0)
 
-	if (c !== undefined) {
-		this.setOutputData(0, c.r)
-	}
+	if (c === undefined) 
+		return
+
+	this.setOutputData(0, c.r)
 }
 
 function ColourGetGreenNode() {
@@ -69,9 +70,10 @@ ColourGetGreenNode.title = "Get Green"
 ColourGetGreenNode.prototype.onExecute = function() {
 	var c = this.getInputData(0)
 
-	if (c !== undefined) {
-		this.setOutputData(0, c.g)
-	}
+	if (c === undefined) 
+		return
+
+	this.setOutputData(0, c.g)
 }
 
 function ColourGetBlueNode() {
@@ -86,9 +88,10 @@ ColourGetBlueNode.title = "Get Blue"
 ColourGetBlueNode.prototype.onExecute = function() {
 	var c = this.getInputData(0)
 
-	if (c !== undefined) {
-		this.setOutputData(0, c.b)
-	}
+	if (c === undefined) 
+		return
+
+	this.setOutputData(0, c.b)
 }
 
 function ColourAddNode() {
@@ -104,9 +107,10 @@ ColourAddNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var c = this.getInputData(1)
 
-	if (i !== undefined && c !== undefined) {
-		i.add(c)
-	}
+	if (i === undefined || c === undefined) 
+		return
+
+	i.add(c)
 }
 
 function ColourAddColoursNode() {
@@ -124,9 +128,10 @@ ColourAddColoursNode.prototype.onExecute = function() {
 	var c1 = this.getInputData(1)
 	var c2 = this.getInputData(2)
 
-	if (i !== undefined && c1 !== undefined && c2 !== undefined) {
-		i.addColors(c1, c2)
-	}
+	if (i === undefined || c1 === undefined || c2 === undefined) 
+		return
+
+	i.addColors(c1, c2)
 }
 
 function ColourAddScalarNode() {
@@ -149,9 +154,10 @@ ColourAddScalarNode.prototype.onExecute = function() {
 		s = parseInt(this.properties["scalar"])
 	}
 
-	if (i !== undefined) {
-		i.addScalar(s)
-	}
+	if (i === undefined) 
+		return
+
+	i.addScalar(s)
 }
 ColourAddScalarNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -170,9 +176,12 @@ ColourCloneNode.title_text_color = NodesHelper.title_colours.white
 ColourCloneNode.title = "Clone"
 ColourCloneNode.prototype.onExecute = function() {
 	var c = this.getInputData(0)
-	if (c !== undefined) {
-		this.setOutputData(0, c.clone())
+
+	if (c === undefined) {
+		return
 	}
+
+	this.setOutputData(0, c.clone())
 }
 
 function ColourCopyNode() {
@@ -188,9 +197,10 @@ ColourCopyNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var c = this.getInputData(1)
 
-	if (i !== undefined && c !== undefined) {
-		i.copy(c)
-	}
+	if (i === undefined || c === undefined) 
+		return
+
+	i.copy(c)
 }
 
 function ColourEqualsNode() {
@@ -207,9 +217,10 @@ ColourEqualsNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var c = this.getInputData(1)
 
-	if (i !== undefined && c !== undefined) {
-		this.setOutputData(0, i.equals(c))
-	}
+	if (i === undefined || c === undefined) 
+		return
+
+	this.setOutputData(0, i.equals(c))
 }
 
 function ColourMultiplyNode() {
@@ -225,9 +236,10 @@ ColourMultiplyNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var c = this.getInputData(1)
 
-	if (i !== undefined && c !== undefined) {
-		i.multiply(c)
-	}
+	if (i === undefined || c === undefined) 
+		return
+
+	i.multiply(c)
 }
 
 function ColourMultiplyScalarNode() {
@@ -250,9 +262,10 @@ ColourMultiplyScalarNode.prototype.onExecute = function() {
 		s = parseInt(this.properties["scalar"])
 	}
 
-	if (i !== undefined) {
-		i.multiplyScalar(s)
-	}
+	if (i === undefined) 
+		return null
+
+	i.multiplyScalar(s)
 }
 ColourMultiplyScalarNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -368,9 +381,10 @@ ColourSetScalarNode.prototype.onExecute = function() {
 		s = this.properties["scalar"]
 	}
 
-	if (i !== undefined) {
-		i.setScalar(s)
-	}
+	if (i === undefined) 
+		return 
+
+	i.setScalar(s)
 }
 ColourSetScalarNode.prototype.onPropertyChanged = function() {
 	if (this.graph && this.graph.onNodeConnectionChange) {
@@ -398,9 +412,10 @@ ColourSetColourNameNode.prototype.onExecute = function() {
 		n = this.properties["name"]
 	}
 
-	if (i !== undefined) {
-		i.setColorName(n)
-	}
+	if (i === undefined) 
+		return
+
+	i.setColorName(n)
 }
 
 function ColourSubNode() {
@@ -416,9 +431,10 @@ ColourSubNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var c = this.getInputData(1)
 
-	if (i !== undefined && c !== undefined) {
-		i.sub(c)
-	}
+	if (i === undefined || c === undefined) 
+		return
+
+	i.sub(c)
 }
 
 function registerMaterialNodeColor() {

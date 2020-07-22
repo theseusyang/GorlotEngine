@@ -70,7 +70,7 @@ Subgraph.prototype.updateInput = function(n, v) {
 }
 Subgraph.prototype.onExecute = function() {
     this.input = this.getInputData(0)
-    if ((this.input == false) && this.properties.type === "if") {
+    if (!this.input && this.properties.type === "if") {
         return
     } else if (this.input && this.properties.type === "ifnot") {
         return
@@ -521,9 +521,10 @@ IfEqualsNode.prototype.onExecute = function() {
 	var i1 = this.getInputData(0)
 	var i2 = this.getInputData(1)
 
-	if(i1 !== undefined && i2 !== undefined) {
-		this.setOutputData(0, i1 === i2)
-	}
+    if (i1 === undefined || i2 === undefined) 
+        return
+
+    this.setOutputData(0, i1 === i2)
 }
 
 function IfNotEqualsNode() {
@@ -541,9 +542,10 @@ IfNotEqualsNode.prototype.onExecute = function() {
 	var i1 = this.getInputData(0)
 	var i2 = this.getInputData(1)
 
-	if (i1 !== undefined && i2 !== undefined) {
-		this.setOutputData(0, i1 !== i2)
-	}
+    if (i1 === undefined || i2 === undefined) 
+        return
+
+	this.setOutputData(0, i1 !== i2)
 }
 
 function IfGreaterThanNode() {
@@ -560,9 +562,10 @@ IfGreaterThanNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var v = this.getInputData(1)
 
-	if (i !== undefined && v !== undefined) {
-		this.setOutputData(0, i > v)
-	}
+    if (i === undefined || v === undefined)
+        return
+
+	this.setOutputData(0, i > v)
 }
 
 function IfLessThanNode() {
@@ -579,9 +582,10 @@ IfLessThanNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var v = this.getInputData(1)
 
-	if (i !== undefined && v !== undefined) {
-		this.setOutputData(0, i < v)
-	}
+    if (i === undefined || v === undefined)
+        return
+
+	this.setOutputData(0, i < v)
 }
 
 function registerLogicNodes() {

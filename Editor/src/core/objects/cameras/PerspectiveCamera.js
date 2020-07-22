@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 
 //Perspective camera from fov, aspect ration and near and far planes
 function PerspectiveCamera(fov, aspect, near, far)
@@ -11,9 +11,9 @@ function PerspectiveCamera(fov, aspect, near, far)
 		far = 100000
 	}
 
-	THREE.PerspectiveCamera.call(this, fov, aspect, near, far);
+	THREE.PerspectiveCamera.call(this, fov, aspect, near, far)
 
-	this.name = "camera";
+	this.name = "camera"
 
 	this.components = []
 	this.defaultComponents = []
@@ -23,25 +23,15 @@ function PerspectiveCamera(fov, aspect, near, far)
 	this.defaultComponents.push(new CameraComponent())
 }
 
-PerspectiveCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype);
+PerspectiveCamera.prototype = Object.create(THREE.PerspectiveCamera.prototype)
 
-//Initialize
 PerspectiveCamera.prototype.initialize = function()
 {
-	this.getWorldScale(this.scale);
-	this.scale.set(1.0 / this.scale.x, 1.0 / this.scale.y, 1.0 / this.scale.z);
+	this.getWorldScale(this.scale)
+	this.scale.set(1.0 / this.scale.x, 1.0 / this.scale.y, 1.0 / this.scale.z)
 
 	for(var i = 0; i < this.children.length; i++)
 	{
-		this.children[i].initialize();
-	}
-}
-
-//Update State
-PerspectiveCamera.prototype.update = function()
-{
-	for(var i = 0; i < this.children.length; i++)
-	{
-		this.children[i].update();
+		this.children[i].initialize()
 	}
 }

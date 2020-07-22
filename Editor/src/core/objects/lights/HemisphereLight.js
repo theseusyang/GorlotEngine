@@ -14,5 +14,4 @@ function HemisphereLight(skyColor, groundColor, intensity)
 	this.defaultComponents.push(new LightComponent())
 }
 
-//Function Prototype
 HemisphereLight.prototype = Object.create(THREE.HemisphereLight.prototype);

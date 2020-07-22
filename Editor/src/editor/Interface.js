@@ -203,6 +203,23 @@ Interface.initialize = function()
 		}, ".fbx");
 	});
 
+	// Load Spine Animation
+	Interface.asset_file.addOption("Spine Animation", () => {
+		App.chooseFile((files) => {
+			var file = files[0].path
+
+			var json = FileSystem.readFile(file)
+			var atlas = FileSystem.readFile(file.replace("json", "atlas"))
+			var path = file.substring(0, file.lastIndexOf("/"))
+
+			var animation = new SpineAnimation(json, atlas, path)
+			animation.setAnimation(0, "walk")
+
+			Editor.addToScene(animation)
+			Editor.updateObjectViews()
+		}, ".json")
+	}, Interface.file_dir + "icons/animation/spine.png")
+
 	//Load Image texture
 	Interface.asset_file.addOption("Texture", function()
 	{

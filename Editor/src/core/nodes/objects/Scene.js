@@ -10,10 +10,11 @@ GetRunningScene.title = "Get Running Scene"
 GetRunningScene.prototype.onExecute = function() {
 	var obj = this.getInputData(0)	
 
-	if(obj !== undefined && obj instanceof THREE.Object3D) {
-		var scene = ObjectUtils.getScene(obj)
-		this.setOutputData(0, scene)
-	}
+	if (obj == undefined || !(obj instanceof THREE.Object3D))
+		return
+
+	var scene = ObjectUtils.getScene(obj)
+	this.setOutputData(0, scene)
 }
 
 function addObjectToScene() {
@@ -36,6 +37,7 @@ addObjectToScene.prototype.onExecute = function() {
 	if (object3d === undefined) {
 		return
 	}
+	
 	if (scene === undefined) {
 		return
 	}

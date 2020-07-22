@@ -7,21 +7,23 @@ ThisNode.title_color2 = NodesHelper.colours.red[1]
 ThisNode.title_text_color = NodesHelper.title_colours.white
 ThisNode.title = "this"
 ThisNode.prototype.onExecute = function() {
-	if (this.graph !== undefined) {
-		if (this.graph.config.attachedTo !== undefined) {
-			var u = this.graph.config.attachedTo
 
-			if (Editor.program_running === undefined || Editor.program_running === null) {
-				if (Main.program === null || Main.program === undefined) {
-					return
-				} else {
-					this.setOutputData(0, Main.program.scene.getObjectByProperty("uuid", u))
-				}
+	if (this.graph === undefined) 
+		return
+
+	if (this.graph.config.attachedTo !== undefined) {
+		var u = this.graph.config.attachedTo
+
+		if (Editor.program_running === undefined || Editor.program_running === null) {
+			if (Main.program === null || Main.program === undefined) {
+				return
 			} else {
-				this.setOutputData(0, Editor.program_running.scene.getObjectByProperty("uuid", u))
+				this.setOutputData(0, Main.program.scene.getObjectByProperty("uuid", u))
 			}
-
+		} else {
+			this.setOutputData(0, Editor.program_running.scene.getObjectByProperty("uuid", u))
 		}
+
 	}
 }
 
@@ -52,16 +54,18 @@ ElementNode.prototype.onExecute = function() {
 		r = this.getInputData(2)
 		s = this.getInputData(3)
 	
-		if (p === undefined || p === null && o !== undefined) {
+		if (o === undefined) 
+			return
+
+		if (p === undefined) {
 			p = o.position
 		}
 		// TODO: r = euler
-		if (s === undefined || s === null && o !== undefined) {
+		if (s === undefined) {
 			s = o.scale
 		}
 	
 		o.position.set(p.x, p.y, p.z)
-	
 		o.scale.set(s.x, s.y, s.z)
 	
 		this.setOutputData(0, o.position)
@@ -72,9 +76,9 @@ ElementNode.prototype.onExecute = function() {
 }
 
 function GetObjectByNameNode() {
+	this.addInput("Name", "Text")
 	this.addProperty("name", "")
 	this.widget = this.addWidget("text", "Name", "", "name")
-	this.widgets_up = true
 
 	this.addOutput("Object", "Object3D")
 }
@@ -85,25 +89,29 @@ GetObjectByNameNode.title_text_color = NodesHelper.title_colours.white
 GetObjectByNameNode.title = "Object By Name"
 GetObjectByNameNode.prototype.onExecute = function() {
 
-	var n = this.properties.name
+	var n = this.getInputData(0)
 
-	if(n !== "") {
-		if (Editor.program_running === undefined || Editor.program_running === null) {
-			if (Main.program === null || Main.program === undefined) {
-				return
-			} else {
-				this.setOutputData(0, Main.program.scene.getObjectByName(n))
-			}
+	if (n === undefined) 
+		n = this.properties.name
+
+	if (n === "") 
+		return
+
+	if (Editor.program_running === undefined || Editor.program_running === null) {
+		if (Main.program === null || Main.program === undefined) {
+			return
 		} else {
-			this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
+			this.setOutputData(0, Main.program.scene.getObjectByName(n))
 		}
+	} else {
+		this.setOutputData(0, Editor.program_running.scene.getObjectByName(n))
 	}
 }
 
 function GetObjectByUUIDNode() {
+	this.addInput("UUID", "Text")
 	this.addProperty("uuid", "")
 	this.widget = this.addWidget("text", "UUID", "", "uuid")
-	this.widgets_up = true
 
 	this.addOutput("Object", "Object3D")
 }
@@ -114,20 +122,24 @@ GetObjectByUUIDNode.title_text_color = NodesHelper.title_colours.white
 GetObjectByUUIDNode.title = "Get Object By UUID"
 GetObjectByUUIDNode.prototype.onExecute = function() {
 
-	var uuid = this.properties.uuid
+	var uuid = this.getInputData(0)
 
-	if (uuid !== undefined || uuid !== "") {
-		if (Editor.program_running === undefined || Editor.program_running === null) {
-			if (Main.program === null || Main.program === undefined) {
-				return
-			} else {
-				var obj = Main.program.getObjectByProperty("uuid", uuid)
-			}
+	if (uuid === undefined) 
+		uuid = this.properties.UUID
+
+	if (uuid === "") 
+		return
+
+	if (Editor.program_running === undefined || Editor.program_running === null) {
+		if (Main.program === null || Main.program === undefined) {
+			return
 		} else {
-			var obj = Editor.program_running.getObjectByProperty("uuid", uuid)
+			var obj = Main.program.getObjectByProperty("uuid", uuid)
 		}
-		this.setOutputData(0, obj)
+	} else {
+		var obj = Editor.program_running.getObjectByProperty("uuid", uuid)
 	}
+	this.setOutputData(0, obj)
 }
 
 function GetObjectPositionNode() {
@@ -142,9 +154,10 @@ GetObjectPositionNode.title = "Get Position"
 GetObjectPositionNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 
-	if (o !== undefined || o !== null) {
-		this.setOutputData(0, o.position)
-	}
+	if (o === undefined || o === null) 
+		return
+
+	this.setOutputData(0, o.position)
 }
 
 function GetObjectRotationNode() {
@@ -159,9 +172,10 @@ GetObjectRotationNode.title = "Get Rotation"
 GetObjectRotationNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 
-	if (o !== undefined || o !== null) {
-		this.setOutputData(0, o.rotation)
-	}
+	if (o === undefined || o === null) 
+		return
+
+	this.setOutputData(0, o.rotation)
 }
 
 function GetObjectScaleNode() {
@@ -176,9 +190,10 @@ GetObjectScaleNode.title = "Get Scale"
 GetObjectScaleNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 
-	if (o !== undefined || o !== null) {
-		this.setOutputData(0, o.scale)
-	}
+	if (o === undefined || o === null) 
+		return
+
+	this.setOutputData(0, o.scale)
 }
 
 function SetObjectPositionNode() {
@@ -194,11 +209,10 @@ SetObjectPositionNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 	var p = this.getInputData(1)
 
-	if (o !== undefined || o !== null) {
-		if(p !== undefined) {
-			o.position.copy(p)
-		}
-	}
+	if (p === undefined || o === null || p === undefined) 
+		return
+
+	o.position.copy(p)
 }
 
 function SetObjectRotationNode() {
@@ -214,11 +228,10 @@ SetObjectRotationNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 	var r = this.getInputData(1)
 
-	if (o !== undefined || o !== null) {
-		if (r !== undefined) {
-			o.rotation.copy(r)
-		}
-	}
+	if (o === undefined || o === null || r === undefined) 
+		return
+
+	o.rotation.copy(r)
 }
 
 function SetObjectScaleNode() {
@@ -234,11 +247,10 @@ SetObjectScaleNode.prototype.onExecute = function() {
 	var o = this.getInputData(0)
 	var s = this.getInputData(1)
 
-	if (o !== undefined || o !== null) {
-		if (s !== undefined) {
-			o.scale.copy(s)
-		}
-	}
+	if (o === undefined || o == null || s === undefined) 
+		return
+
+	o.scale.copy(s)
 }
 
 function registerObjectNodes() {

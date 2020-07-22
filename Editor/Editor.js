@@ -129,7 +129,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Jul 21 2020 21:54:02 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Wed Jul 22 2020 18:46:40 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -813,7 +813,7 @@ Editor.selectTool = function(tool)
 		else if (tool === Editor.MODE_ROTATE) {
 			Editor.tool = new TransformControls()
 			Editor.tool.setMode("rotate")
-			Editor.tool.setSpace(Settigns.editor.transformation_space)
+			Editor.tool.setSpace(Settings.editor.transformation_space)
 		}
 
 		Editor.tool.attach(Editor.selected_object)

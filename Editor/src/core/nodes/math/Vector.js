@@ -42,9 +42,11 @@ Vector2ToVector3Node.title_text_color = NodesHelper.title_colours.white
 Vector2ToVector3Node.title = "Vector2 To Vector3"
 Vector2ToVector3Node.prototype.onExecute = function() {
 	var Vec2 = this.getInputData(0)
+
 	if (Vec2 === undefined) {
 		Vec2 = new THREE.Vector2()
 	}
+
 	this.setOutputData(0, new THREE.Vector3(Vec2.x, Vec2.y, 0))
 }
 
@@ -124,9 +126,12 @@ VectorSetNode.prototype.onExecute = function() {
 		Z = this.properties["z"]
 	}
 
-	if (Vec !== undefined && Vec instanceof THREE.Vector2) {
+	if (Vec === undefined) 
+		return
+
+	if (Vec instanceof THREE.Vector2) {
 		var vec = Vec.set(X, Y)
-	} else if (Vec !== undefined && Vec instanceof THREE.Vector3) {
+	} else if (Vec instanceof THREE.Vector3) {
 		var vec = Vec.set(X, Y, Z)
 	}
 
@@ -153,9 +158,10 @@ VectorAddNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 	var vec= this.getInputData(1)
 
-	if (input !== undefined && vec !== undefined) {
-		input.add(vec)
-	}
+	if (input === undefined || vec === undefined) 
+		return
+
+	input.add(vec)
 
 	this.setOutputData(0, input)
 }
@@ -182,9 +188,10 @@ VectorAddScalarNode.prototype.onExecute = function() {
 		scalar = this.properties["scalar"]
 	}
 
-	if (vec !== undefined) {
-		vec.addScalar(scalar)
-	}
+	if (vec === undefined) 
+		return
+
+	vec.addScalar(scalar)
 
 	this.setOutputData(0, vec)
 }
@@ -218,9 +225,10 @@ VectorAddScaledVectorNode.prototype.onExecute = function() {
 		scalar = this.properties["scalar"]
 	}
 
-	if (input !== undefined && vector !== undefined) {
-		input.addScaledVector(vector, scalar)
-	}
+	if (input === undefined || vector === undefined) 
+		return
+
+	input.addScaledVector(vector, scalar)
 
 	this.setOutputData(0, input)
 }
@@ -249,9 +257,10 @@ VectorAddVectorsNode.prototype.onExecute = function() {
 	var vector1 = this.getInputData(1)
 	var vector2 = this.getInputData(2)
 
-	if (input !== undefined && vector1 !== undefined && vector2 !== undefined) {
-		input.addVectors(vector1, vector2)
-	}
+	if (input === undefined || vector1 === undefined || vector2 === undefined) 
+		return
+
+	input.addVectors(vector1, vector2)
 
 	this.setOutputData(0, input)
 }
@@ -282,9 +291,10 @@ VectorApplyAxisAngleNode.prototype.onExecute = function() {
 		angle = this.properties["angle"]
 	}
 
-	if (input !== undefined && axis !== undefined) {
-		input.applyAxisAngle(axis, angle)
-	}
+	if (input === undefined || axis === undefined) 
+		return
+
+	input.applyAxisAngle(axis, angle)
 
 	this.setOutputData(0, input)
 }
@@ -307,12 +317,12 @@ VectorApplyEulerNode.title_text_color = NodesHelper.title_colours.white
 VectorApplyEulerNode.title = "Apply Euler"
 VectorApplyEulerNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
-
 	var euler = this.getInputData(1)
 
-	if (input !== undefined && euler !== undefined) {
-		input.applyEuler(euler)
-	}
+	if (input === undefined || euler === undefined) 
+		return
+
+	input.applyEuler(euler)
 
 	this.setOutputData(0, input)
 }
@@ -329,9 +339,10 @@ VectorCeilNode.title = "Ceil"
 VectorCeilNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 
-	if (input !== undefined) {
-		input.ceil()
-	}
+	if (input === undefined) 
+		return
+
+	input.ceil()
 
 	this.setOutputData(0, input)
 }
@@ -353,9 +364,10 @@ VectorClampNode.prototype.onExecute = function() {
 	var min = this.getInputData(1)
 	var max = this.getInputData(2)
 
-	if (input !== undefined && min !== undefined && max !== undefined) {
-		input.clamp(min, max)
-	}
+	if (input === undefined || min === undefined || max === undefined) 
+		return
+
+	input.clamp(min, max)
 
 	this.setOutputData(0, input)
 }
@@ -392,9 +404,10 @@ VectorClampLengthNode.prototype.onExecute = function() {
 		max = this.properties["max"]
 	}
 
-	if (input !== undefined) {
-		input.clampLength(min, max)
-	}
+	if (input === undefined) 
+		return
+
+	input.clampLength(min, max)
 
 	this.setOutputData(0, input)
 }
@@ -436,9 +449,10 @@ VectorClampScalarNode.prototype.onExecute = function() {
 		max = this.properties["max"]
 	}
 
-	if (input !== undefined) {
-		input.clampScalar(min, max)
-	}
+	if (input === undefined) 
+		return
+
+	input.clampScalar(min, max)
 
 	this.setOutputData(0, input)
 }
@@ -459,10 +473,12 @@ VectorCloneNode.title_text_color = NodesHelper.title_colours.white
 VectorCloneNode.title = "Clone"
 VectorCloneNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
-	if (input !== undefined) {
-		var vec = input.clone()
-		this.setOutputData(0, vec)
-	}
+
+	if (input === undefined) 
+		return
+
+	var vec = input.clone()
+	this.setOutputData(0, vec)
 }
 
 function VectorCopyNode() {
@@ -480,9 +496,10 @@ VectorCopyNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 	var vector = this.getInputData(1)
 
-	if (input !== undefined && vector !== undefined) {
-		input.copy(vector)
-	}
+	if (input === undefined || vector === undefined) 
+		return
+
+	input.copy(vector)
 
 	this.setOutputData(0, input)
 }
@@ -502,9 +519,10 @@ VectorCrossNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 	var vector= this.getInputData(1)
 
-	if (input !== undefined && vector !== undefined) {
-		input.cross(vector)
-	}
+	if (input === undefined || vector === undefined) 
+		return
+
+	input.cross(vector)
 
 	this.setOutputData(0, input)
 }
@@ -528,9 +546,10 @@ VectorCrossVectorsNode.prototype.onExecute = function() {
 	var vec1 = this.getInputData(1)
 	var vec2 = this.getInputData(2)
 
-	if (input !== undefined && vec1 !== undefined && vec2 !== undefined) {
-		input.crossVectors(vec1, vec2)
-	}
+	if (input === undefined || vec1 === undefined || vec2 === undefined) 
+		return
+
+	input.crossVectors(vec1, vec2)
 
 	this.setOutputData(0, input)
 }
@@ -549,10 +568,11 @@ VectorDistanceToNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 	var vector = this.getInputData(1)
 
-	if (input !== undefined && vector !== undefined) {
-		var dis = input.distanceTo(vector)
-		this.setOutputData(dis)
-	}
+	if (input === undefined || vector === undefined) 
+		return
+
+	var dis = input.distanceTo(vector)
+	this.setOutputData(dis)
 }
 
 function VectorManhattanDistanceToNode() {
@@ -569,11 +589,11 @@ VectorManhattanDistanceToNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 	var vector = this.getInputData(1)
 
-	if (input !== undefined && vector !== undefined) {
-		var dis = input.manhattanDistanceTo(vector)
-		this.setOutputData(0, dis)
-	}
+	if (input === undefined || vector === undefined) 
+		return
 
+	var dis = input.manhattanDistanceTo(vector)
+	this.setOutputData(0, dis)
 }
 
 function VectorDistanceToSquaredNode() {
@@ -590,10 +610,11 @@ VectorDistanceToSquaredNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 	var vector = this.getInputData(1)
 
-	if (input !== undefined && vector !== undefined) {
-		var dis = input.distanceToSquared(vector)
-		this.setOutputData(0, dis)
-	}
+	if (input === undefined || vector === undefined) 
+		return
+
+	var dis = input.distanceToSquared(vector)
+	this.setOutputData(0, dis)
 }
 
 function VectorDivideNode() {
@@ -611,10 +632,10 @@ VectorDivideNode.prototype.onExecute = function() {
 	var input = this.getInputData(0)
 	var v = this.getInputData(1)
 
-	if (input !== undefined && v !== undefined) {
-		input.divide(v)
-	}
+	if (input === undefined || v === undefined) 
+		return
 
+	input.divide(v)
 	this.setOutputData(0, input)
 }
 
@@ -633,10 +654,10 @@ VectorDivideScalarNode.prototype.onExecute = function() {
 	var v = this.getInputData(0)
 	var s = this.getInputData(1)
 
-	if (v !== undefined && s !== undefined) {
-		v.divideScalar(s)
-	}
+	if (v === undefined || s === undefined) 
+		return
 
+	v.divideScalar(s)
 	this.setOutputData(0, v)
 }
 
@@ -655,10 +676,11 @@ VectorDotNode.prototype.onExecute = function() {
 	var v = this.getInputData(0)
 	var v1 = this.getInputData(1)
 
-	if(v !== undefined && v1 !== undefined) {
-		var d = v.dot(v1)
-		this.setOutputData(0, d)
-	}
+	if (v === undefined || v1 === undefined) 
+		return
+
+	var d = v.dot(v1)
+	this.setOutputData(0, d)
 }
 
 function VectorFloorNode() {
@@ -673,9 +695,10 @@ VectorFloorNode.title = "Floor"
 VectorFloorNode.prototype.onExecute = function() {
 	var v = this.getInputData(0)
 
-	if (v !== undefined) {
-		v.floor()
-	}
+	if (v === undefined) 
+		return
+
+	v.floor()
 
 	this.setOutputData(0, v)
 }
@@ -695,10 +718,11 @@ VectorGetComponentNode.prototype.onExecute = function() {
 	var v = this.getInputData(0)
 	var i = this.getInputData(1)
 
-	if (v !== undefined && i !== undefined) {
-		var comp = v.getComponent(i)
-		this.setOutputData(0, comp)
-	}
+	if (v === undefined || i === undefined) 
+		return
+
+	var comp = v.getComponent(i)
+	this.setOutputData(0, comp)
 }
 
 function VectorLengthNode() {
@@ -712,10 +736,12 @@ VectorLengthNode.title_text_color = NodesHelper.title_colours.white
 VectorLengthNode.title = "Length"
 VectorLengthNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
-	if (i !== undefined) {
-		var l = i.length()
-		this.setOutputData(l)
-	}
+
+	if (i === undefined) 
+		return
+
+	var l = i.length()
+	this.setOutputData(l)
 }
 
 function VectorManhattanLengthNode() {
@@ -730,10 +756,11 @@ VectorManhattanLengthNode.title = "Manhattan Length"
 VectorManhattanLengthNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 
-	if (i !== undefined) {
-		var l = i.manhattanLength()
-		this.setOutputData(0, l)
-	}
+	if (i === undefined) 
+		return
+
+	var l = i.manhattanLength()
+	this.setOutputData(0, l)
 }
 
 function VectorLengthSqNode(argument) {
@@ -747,10 +774,12 @@ VectorLengthSqNode.title_text_color = NodesHelper.title_colours.white
 VectorLengthSqNode.title = "Length Sq"
 VectorLengthSqNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
-	if (i !== undefined) {
-		var l = i.lengthSq()
-		this.setOutputData(0, l)
-	}
+
+	if (i === undefined) 
+		return
+
+	var l = i.lengthSq()
+	this.setOutputData(0, l)
 }
 
 function VectorLerpNode() {
@@ -777,10 +806,10 @@ VectorLerpNode.prototype.onExecute = function() {
 		a = this.properties["alpha"]
 	}
 
-	if (i !== undefined && v !== undefined) {
-		i.lerp(v, a)
-	}
+	if (i === undefined || v === undefined) 
+		return
 
+	i.lerp(v, a)
 	this.setOutputData(i)
 }
 VectorLerpNode.prototype.onPropertyChanged = function() {
@@ -815,10 +844,10 @@ VectorLerpVectorsNode.prototype.onExecute = function() {
 		a = this.properties["alpha"]
 	}
 
-	if (i !== undefined && v1 !== undefined && v2 !== undefined) {
-		i.lerpVectors(v1, v2, a)
-	}
+	if (i === undefined || v1 === undefined || v2 === undefined) 
+		return
 
+	i.lerpVectors(v1, v2, a)
 	this.setOutputData(0, i)
 }
 VectorLerpVectorsNode.prototype.onPropertyChanged = function() {
@@ -842,9 +871,10 @@ VectorMaxNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var v = this.getInputData(1)
 
-	if (i !== undefined && v !== undefined) {
-		i.max(v)
-	}
+	if (i === undefined || v === undefined) 
+		return
+
+	i.max(v)
 
 	this.setOutputData(0, i)
 }
@@ -864,10 +894,10 @@ VectorMinNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var v = this.getInputData(1)
 
-	if (i !== undefined && v !== undefined) {
-		i.min(v)
-	}
+	if (i === undefined || v === undefined) 
+		return
 
+	i.min(v)
 	this.setOutputData(0, i)
 }
 
@@ -886,10 +916,10 @@ VectorMultiplyNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var v = this.getInputData(1)
 
-	if (i !== undefined && v !== undefined) {
-		i.multiply(v)
-	}
+	if (i === undefined || v === undefined) 
+		return
 
+	i.multiply(v)
 	this.setOutputData(0, i)
 }
 
@@ -915,10 +945,10 @@ VectorMultiplyScalarNode.prototype.onExecute = function() {
 		s = this.properties["scalar"]
 	}
 
-	if (i !== undefined) {
-		i.multiplyScalar(s)
-	}
+	if (i === undefined) 
+		return
 
+	i.multiplyScalar(s)
 	this.setOutputData(0, i)
 }
 VectorMultiplyScalarNode.prototype.onPropertyChanged = function() {
@@ -944,10 +974,10 @@ VectorMultiplyVectorsNode.prototype.onExecute = function() {
 	var v1 = this.getInputData(1)
 	var v2 = this.getInputData(2)
 
-	if (i !== undefined && v1 !== undefined && v2 !== undefined) {
-		i.multiplyVectors(v1, v2)
-	}
+	if (i === undefined || v1 === undefined || v2 === undefined) 
+		return
 
+	i.multiplyVectors(v1, v2)
 	this.setOutputData(0, i)
 }
 
@@ -962,9 +992,11 @@ VectorNegateNode.title_text_color = NodesHelper.title_colours.white
 VectorNegateNode.title = "Negate"
 VectorNegateNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
-	if (i !== undefined) {
-		i.negate()
-	}
+
+	if (i === undefined) 
+		return
+
+	i.negate()
 	this.setOutputData(0, i)
 }
 
@@ -979,9 +1011,11 @@ VectorGetXNode.title_text_color = NodesHelper.title_colours.white
 VectorGetXNode.title = "Get X"
 VectorGetXNode.prototype.onExecute = function() {
 	var vec = this.getInputData(0)
-	if (vec !== undefined) {
-		this.setOutputData(0, vec.x)
-	}
+
+	if (vec === undefined) 
+		return
+
+	this.setOutputData(0, vec.x)
 }
 
 function VectorGetYNode() {
@@ -995,9 +1029,11 @@ VectorGetYNode.title_text_color = NodesHelper.title_colours.white
 VectorGetYNode.title = "Get Y"
 VectorGetYNode.prototype.onExecute = function() {
 	var vec = this.getInputData(0)
-	if (vec !== undefined) {
-		this.setOutputData(0, vec.y)
-	}
+
+	if (vec === undefined) 
+		return
+
+	this.setOutputData(0, vec.y)
 }
 
 function VectorGetZNode() {
@@ -1011,9 +1047,11 @@ VectorGetZNode.title_text_color = NodesHelper.title_colours.white
 VectorGetZNode.title = "Get Z"
 VectorGetZNode.prototype.onExecute = function() {
 	var vec = this.getInputData(0)
-	if (vec !== undefined) {
-		this.setOutputData(0, vec.z)
-	}
+
+	if (vec === undefined) 
+		return
+
+	this.setOutputData(0, vec.z)
 }
 
 function VectorSetXNode() {
@@ -1030,9 +1068,10 @@ VectorSetXNode.prototype.onExecute = function() {
 	var vec = this.getInputData(0)
 	var x = this.getInputData(1)
 
-	if (vec !== undefined) {
-		vec.x = x
-	}
+	if (vec === undefined) 
+		return
+
+	vec.x = x
 }
 
 function VectorSetYNode() {
@@ -1049,9 +1088,10 @@ VectorSetYNode.prototype.onExecute = function() {
 	var vec = this.getInputData(0)
 	var y = this.getInputData(1)
 
-	if (vec !== undefined) {
-		vec.y = y
-	}
+	if (vec === undefined) 
+		return
+
+	vec.y = y
 }
 
 function VectorSetZNode() {
@@ -1068,9 +1108,10 @@ VectorSetZNode.prototype.onExecute = function() {
 	var vec = this.getInputData(0)
 	var z = this.getInputData(1)
 
-	if (vec !== undefined) {
-		vec.z = z
-	}
+	if (vec === undefined) 
+		return
+
+	vec.z = z
 }
 
 function registerVectorNodes() {

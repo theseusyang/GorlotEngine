@@ -50,10 +50,12 @@ RemoveFirstNode.title_text_color = NodesHelper.title_colours.white
 RemoveFirstNode.title = "Remove First"
 RemoveFirstNode.prototype.onExecute = function() {
 	var a = this.getInputData(0)
-	if (a !== undefined) {
-		a.shift()
-		this.setOutputData(0, a)
-	}
+
+	if (a === undefined) 
+		return
+
+	a.shift()
+	this.setOutputData(0, a)
 }
 
 function RemoveLastNode() {
@@ -68,10 +70,11 @@ RemoveLastNode.title = "Remove Last"
 RemoveLastNode.prototype.onExecute = function() {
 	var a = this.getInputData(0)
 
-	if (a !== undefined) {
-		a.pop()
-		this.setOutputData(0, a)
-	}
+	if (a === undefined) 
+		return
+
+	a.pop()
+	this.setOutputData(0, a)
 }
 
 function GetArrayLengthNode() {
@@ -85,9 +88,11 @@ GetArrayLengthNode.title_text_color = NodesHelper.title_colours.white
 GetArrayLengthNode.title = "Length"
 GetArrayLengthNode.prototype.onExecute = function() {
 	var ar = this.getInputData(0)
-	if (ar instanceof Array) {
-		this.setOutputData(0, ar.length)
-	}
+
+	if (!(ar instanceof Array)) 
+		return
+
+	this.setOutputData(0, ar.length)
 }
 
 function GetArrayPositionItemNode() {
@@ -104,9 +109,10 @@ GetArrayPositionItemNode.prototype.onExecute = function() {
 	var ar = this.getInputData(0)
 	var pos = this.getInputData(1)
 
-	if (ar !== undefined && ar instanceof Array && pos !== undefined) {
-		this.setOutputData(0, ar[pos])
-	}
+	if (ar === undefined || pos === undefined || !(ar instanceof Array))
+		return
+
+	this.setOutputData(0, ar[pos])
 }
 
 function GetLastItemNode() {
@@ -120,9 +126,11 @@ GetLastItemNode.title_text_color = NodesHelper.title_colours.white
 GetLastItemNode.title = "Get Last Item"
 GetLastItemNode.prototype.onExecute = function() {
 	var a = this.getInputData(0)
-	if (a !== undefined && a.length > 0) {
-		this.setOutputData(0, a[a.length - 1])
-	}
+
+	if (a === undefined) 
+		return
+
+	this.setOutputData(0, a[a.length - 1])
 }
 
 function SetValueAtPositionNode() {
@@ -140,13 +148,10 @@ SetValueAtPositionNode.prototype.onExecute = function() {
 	var p = this.getInputData(1)
 	var v = this.getInputData(2)
 
-	if (a !== undefined && p !== undefined && v !== undefined) {
-		if (a.length > p) {
-			a[p] = v
-		} else {
-			return
-		}
-	}
+	if (a === undefined || p === undefined || v === undefined)
+		return
+
+	a[p] = v
 }
 
 function IsArrayNode() {
@@ -174,9 +179,11 @@ ToStringNode.title_text_color = NodesHelper.title_colours.white
 ToStringNode.title = "To String"
 ToStringNode.prototype.onExecute = function() {
 	var a = this.getInputData(0)
-	if (a !== undefined) {
-		this.setOutputData(0, a.toString())
-	}
+
+	if (a === undefined) 
+		return
+
+	this.setOutputData(0, a.toString())
 }
 
 function JoinNode() {
@@ -193,9 +200,10 @@ JoinNode.prototype.onExecute = function() {
 	var a = this.getInputData(0)
 	var s = this.getInputData(1)
 
-	if (a !== undefined && s !== undefined) {
-		this.setOutputData(0, a.join(s))
-	}
+	if (a === undefined || s === undefined) 
+		return
+
+	this.setOutputData(0, a.join(s))
 }
 
 function MergeNode() {
@@ -211,10 +219,12 @@ MergeNode.title = "Merge"
 MergeNode.prototype.onExecute = function() {
 	var a1 = this.getInputData(0)
 	var a2 = this.getInputData(1)
-	if (a1 !== undefined && a2 !== undefined) {
-		var n = a1.concat(a2)
-		this.setOutputData(0, n)
-	}
+
+	if (a1 === undefined || a2 === undefined)
+		return
+
+	var n = a1.concat(a2)
+	this.setOutputData(0, n)
 }
 
 function registerArrayNodes() {

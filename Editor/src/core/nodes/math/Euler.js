@@ -60,9 +60,10 @@ EulerGetXNode.title = "Get X"
 EulerGetXNode.prototype.onExecute = function() {
 	var e = this.getInputData(0)
 
-	if (e !== undefined) {
-		this.setOutputData(0, e.x)
-	}
+	if (e === undefined) 
+		return
+
+	this.setOutputData(0, e.x)
 }
 
 function EulerGetYNode() {
@@ -77,9 +78,10 @@ EulerGetYNode.title = "Get Y"
 EulerGetYNode.prototype.onExecute = function() {
 	var e = this.getInputData(0)
 
-	if (e !== undefined) {
-		this.setOutputData(0, e.y)
-	}
+	if (e === undefined) 
+		return
+
+	this.setOutputData(0, e.y)
 }
 
 function EulerGetZNode() {
@@ -94,9 +96,10 @@ EulerGetZNode.title = "Get Z"
 EulerGetZNode.prototype.onExecute = function() {
 	var e = this.getInputData(0)
 
-	if (e !== undefined) {
-		this.setOutputData(0, e.z)
-	}
+	if (e === undefined) 
+		return
+
+	this.setOutputData(0, e.z)
 }
 
 function EulerGetOrderNode() {
@@ -111,9 +114,10 @@ EulerGetOrderNode.title = "Get Order"
 EulerGetOrderNode.prototype.onExecute = function() {
 	var e = this.getInputData(0)
 
-	if (e !== undefined) {
-		this.setOutputData(0, e.order)
-	}
+	if (e === undefined) 
+		return
+
+	this.setOutputData(0, e.order)
 }
 
 function EulerCopyNode() {
@@ -129,9 +133,10 @@ EulerCopyNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var e = this.getInputData(1)
 
-	if (i !== undefined && e !== undefined) {
-		i.copy(e)
-	}
+	if (i === undefined || e === undefined) 
+		return
+
+	i.copy(e)
 }
 
 function EulerCloneNode() {
@@ -146,9 +151,10 @@ EulerCloneNode.title = "Clone"
 EulerCloneNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 
-	if (i !== undefined) {
-		this.setOutputData(0, i.clone())
-	}
+	if (i === undefined) 
+		return
+
+	this.setOutputData(0, i.clone())
 }
 
 function EulerEqualsNode() {
@@ -166,10 +172,11 @@ EulerEqualsNode.prototype.onExecute = function() {
 	var i = this.getInputData(0)
 	var e = this.getInputData(1)
 
-	if (i !== undefined && e !== undefined) {
-		var eq = i.equals(e)
-		this.setOutputData(0, eq)
-	}
+	if (i === undefined || e === undefined) 
+		return
+
+	var eq = i.equals(e)
+	this.setOutputData(0, eq)
 }
 
 function EulerReorderNode() {
@@ -185,9 +192,10 @@ EulerReorderNode.prototype.onExecute = function() {
 	var e = this.getInputData(0)
 	var o = this.getInputData(1)
 
-	if (e !== undefined && o !== undefined) {
-		e.reorder(o)
-	}
+	if (e === undefined || o === undefined) 
+		return
+
+	e.reorder(o)
 }
 
 function EulerSetNode() {
@@ -256,9 +264,10 @@ EulerSetFromQuaternionNode.prototype.onExecute = function() {
 	var q = this.getInputData(1)
 	var o = this.getInputData(2)
 
-	if (q !== undefined) {
-		e.setFromQuaternion(q, o)
-	}
+	if (q === undefined) 
+		return
+
+	e.setFromQuaternion(q, o)
 }
 
 function EulerSetFromVector3Node() {
@@ -276,9 +285,10 @@ EulerSetFromVector3Node.prototype.onExecute = function() {
 	var v = this.getInputData(1)
 	var o = this.getInputData(2)
 
-	if (v !== undefined) {
-		e.setFromVector3(v, o)
-	}
+	if (v === undefined) 
+		return
+
+	e.setFromVector3(v, o)
 }
 
 function registerEulerNodes() {

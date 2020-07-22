@@ -2021,7 +2021,7 @@
                 var link_data = data.links[i];
 				if(!link_data) //weird bug
 				{
-					console.warn("serialized graph link data contains errors, skipping.");
+					//console.warn("serialized graph link data contains errors, skipping.");
 					continue;
 				}
                 var link = new LLink();
