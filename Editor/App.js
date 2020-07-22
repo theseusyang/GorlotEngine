@@ -52,6 +52,8 @@ include("src/core/objects/mesh/Mesh.js")
 include("src/core/objects/mesh/SkinnedMesh.js")
 include("src/core/objects/mesh/Text3D.js")
 
+include("src/core/objects/sprite/Sprite.js")
+
 include("src/core/objects/lights/PointLight.js");
 include("src/core/objects/lights/SpotLight.js");
 include("src/core/objects/lights/AmbientLight.js");
@@ -73,7 +75,6 @@ include("src/core/objects/spine/SpineAnimation.js")
 
 include("src/core/objects/Bone.js");
 include("src/core/objects/Container.js");
-include("src/core/objects/Sprite.js");
 include("src/core/objects/ParticleEmitter.js");
 include("src/core/objects/Program.js");
 include("src/core/objects/Scene.js");
