@@ -16,21 +16,21 @@ ScriptComponent.prototype = Object.create(Component.prototype)
 ScriptComponent.prototype.initUI = function(pos, obj) {
         // Clear the element
         this.clearElement()
-
+    
         this.widgetsPos = pos
-
+    
         // Self pointer
         var self = this
         this.obj = obj
-
+    
         // Form
         this.form = new Form(this.element)
         this.form.spacing.set(5, 5)
-
+    
         // Displays this component name
         this.form.addText(this.component_name)
         this.form.nextRow()
-
+    
         // Execution mode
         this.form.addText("Mode")
         this.mode = new DropdownList(this.form.element)

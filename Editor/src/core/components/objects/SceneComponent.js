@@ -17,7 +17,7 @@ function SceneComponent() {
 SceneComponent.prototype = Object.create(Component.prototype)
 
 SceneComponent.prototype.initUI = function(pos, obj) {
-	// Clear element
+	// Clear the element
 	this.clearElement()
 
 	this.widgetsPos = pos

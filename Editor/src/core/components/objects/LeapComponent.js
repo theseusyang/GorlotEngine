@@ -30,7 +30,7 @@ LeapComponent.prototype.initUI = function(pos, obj) {
 	this.form = new Form(this.element)
 	this.form.spacing.set(5, 5)
 
-	// Display this component name
+	// Displays this component name
 	this.form.addText(this.component_name)
 	this.form.nextRow()
 

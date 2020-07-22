@@ -39,10 +39,7 @@ BlocksComponent.prototype.initUI = function(pos, obj) {
 
 	// Self pointer
 	var self = this
-
-	if (this.obj === null) {
-		this.obj = obj
-	}
+	this.obj = obj
 
 	// Form
 	this.form = new Form(this.element)

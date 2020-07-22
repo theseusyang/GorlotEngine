@@ -22,7 +22,7 @@ function PhysicsComponent() {
 PhysicsComponent.prototype = Object.create(Component.prototype)
 
 PhysicsComponent.prototype.initUI = function(pos, obj) {
-	// Clear element
+	// Clear the element
 	this.clearElement()
 
 	this.widgetsPos = pos

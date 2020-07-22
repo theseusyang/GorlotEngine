@@ -32,7 +32,7 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 	this.form = new Form(this.element)
 	this.form.spacing.set(5, 5)
 
-	// Displays the component name
+	// Displays this component name
 	this.form.addText(this.component_name)
 	this.form.nextRow()
 

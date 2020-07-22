@@ -17,7 +17,6 @@ function ElementComponent() {
 ElementComponent.prototype = Object.create(Component.prototype)
 
 ElementComponent.prototype.initUI = function(pos, obj) {
-
 	// Clear the element
 	this.clearElement()
 

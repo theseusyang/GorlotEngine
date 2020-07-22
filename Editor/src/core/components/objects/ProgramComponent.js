@@ -21,6 +21,7 @@ ProgramComponent.prototype = Object.create(Component.prototype)
 ProgramComponent.prototype.initUI = function(pos, obj) {
 	// Clear the element
 	this.clearElement()
+
 	this.widgetsPos = pos
 
 	// Self pointer
@@ -30,6 +31,10 @@ ProgramComponent.prototype.initUI = function(pos, obj) {
 	// Form
 	this.form = new Form(this.element)
 	this.form.spacing.set(5, 5)
+
+	// Displays this component name
+	this.form.addText(this.component_name)
+	this.form.nextRow()
 
 	// Displays this component name
 	this.form.addText(this.component_name)

@@ -45,6 +45,14 @@ Component.prototype.onCreate = function() {
 	
 }
 
+Component.prototype.initialize = function() {
+
+}
+
+Component.prototype.update = function() {
+
+}
+
 Component.prototype.updateInterface = function() {
 	this.element.style.width = this.form.size.x + "px"
 	this.form.updateInterface()
