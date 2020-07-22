@@ -11,7 +11,11 @@ function SpineAnimation(json, atlas, path) {
 		element.width = 1024
 		element.height = 1024
 
-		return new spine.threejs.ThreeJsTexture(element)
+		var texture = new spine.threejs.ThreeJsTexture(element)
+		texture.texture = new Texture(new Image(element.src))
+		texture.texture.flipY = false
+
+		return texture
 	})
 
 	var loader = new spine.TextureAtlasAttachmentLoader(texture_atlas)
@@ -31,6 +35,7 @@ function SpineAnimation(json, atlas, path) {
 	var material = new THREE.MeshBasicMaterial()
 	material.side = THREE.DoubleSide
 	material.transparent = true
+	material.name = "spine"
 	this.material = material
 
 	this.json = json
@@ -111,9 +116,9 @@ SpineAnimation.prototype.updateGeometry = function() {
 
 		if (texture !== null) {
 			if (!this.material.map) {
-				var mat = this.material
-				mat.map = texture.texture
-				mat.needsUpdate = true
+				var material = this.material
+				material.map = texture.texture
+				material.needsUpdate = true
 			}
 			this.batcher.batch(vertices, triangles, z)
 			z += zOffset
