@@ -145,8 +145,9 @@ function SceneEditor(parent)
 	};
 
 	//Button
-	this.show_buttons_vr = false;
-	this.show_buttons_fullscreen = false;
+	this.show_buttons_fullscreen = false
+	this.show_buttons_tools = false
+	this.show_buttons_vr = false
 
 	//Fullscreen button
 	this.fullscreen_button = new ButtonImage(this.element);
@@ -169,6 +170,116 @@ function SceneEditor(parent)
 		self.setFullscreen(fullscreen);
 		fullscreen = !fullscreen;
 	});
+
+	// Select tool
+	this.tool_select_button = new ButtonImage(this.element)
+	this.tool_select_button.size.set(15, 15)
+	this.tool_select_button.setImage("src/editor/files/icons/tools/select.png")
+	this.tool_select_button.visible = false
+	this.tool_select_button.updateInterface()
+
+	this.tool_select_button.element.onmouseenter = function() {
+		self.tool_select_button.img.style.opacity = 0.5
+	}
+	this.tool_select_button.element.onmouseleave = function() {
+		self.tool_select_button.img.style.opacity = 1
+	}
+
+	this.tool_select_button.setCallback(() => {
+		Editor.selectTool(Editor.MODE_SELECT)
+		self.tool_select_button.img.style.filter = "contrast(100%)"
+		self.tool_move_button.img.style.filter = "contrast(0%)"
+		self.tool_rotate_button.img.style.filter = "contrast(0%)"
+		self.tool_scale_button.img.style.filter = "contrast(0%)"
+		self.tool_select_button.updateInterface()
+		self.tool_move_button.updateInterface()
+		self.tool_rotate_button.updateInterface()
+		self.tool_scale_button.updateInterface()
+	})
+
+	// Move tool
+	this.tool_move_button = new ButtonImage(this.element)
+	this.tool_move_button.size.set(15, 15)
+	this.tool_move_button.setImage("src/editor/files/icons/tools/move.png")
+	this.tool_move_button.visible = false
+	this.tool_move_button.updateInterface()
+	this.tool_move_button.img.style.filter = "contrast(0%)"
+
+	this.tool_move_button.element.onmouseenter = function() {
+		self.tool_move_button.img.style.opacity = 0.5
+	}
+
+	this.tool_move_button.element.onmouseleave = function() {
+		self.tool_move_button.img.style.opacity = 1
+	}
+
+	this.tool_move_button.setCallback(() => {
+		Editor.selectTool(Editor.MODE_MOVE)
+		self.tool_select_button.img.style.filter = "contrast(0%)"
+		self.tool_move_button.img.style.filter = "contrast(100%)"
+		self.tool_rotate_button.img.style.filter = "contrast(0%)"
+		self.tool_scale_button.img.style.filter = "contrast(0%)"
+		self.tool_select_button.updateInterface()
+		self.tool_move_button.updateInterface()
+		self.tool_rotate_button.updateInterface()
+		self.tool_scale_button.updateInterface()
+	})
+
+	// Rotate tool
+	this.tool_rotate_button = new ButtonImage(this.element)
+	this.tool_rotate_button.size.set(15, 15)
+	this.tool_rotate_button.setImage("src/editor/files/icons/tools/rotate.png")
+	this.tool_rotate_button.visible = false
+	this.tool_rotate_button.updateInterface()
+	this.tool_rotate_button.img.style.filter = "contrast(0%)"
+
+	this.tool_rotate_button.element.onmouseenter = function() {
+		self.tool_rotate_button.img.style.opacity = 0.5
+	}
+
+	this.tool_rotate_button.element.onmouseleave = function() {
+		self.tool_rotate_button.img.style.opacity = 1
+	}
+
+	this.tool_rotate_button.setCallback(() => {
+		Editor.selectTool(Editor.MODE_ROTATE)
+		self.tool_select_button.img.style.filter = "contrast(0%)"
+		self.tool_move_button.img.style.filter = "contrast(0%)"
+		self.tool_rotate_button.img.style.filter = "contrast(100%)"
+		self.tool_scale_button.img.style.filter = "contrast(0%)"
+		self.tool_select_button.updateInterface()
+		self.tool_move_button.updateInterface()
+		self.tool_rotate_button.updateInterface()
+		self.tool_scale_button.updateInterface()
+	})
+
+	// Scale tool
+	this.tool_scale_button = new ButtonImage(this.element)
+	this.tool_scale_button.size.set(15, 15)
+	this.tool_scale_button.setImage("src/editor/files/icons/tools/resize.png")
+	this.tool_scale_button.visible = false
+	this.tool_scale_button.updateInterface()
+	this.tool_scale_button.img.style.filter = "contrast(0%)"
+
+	this.tool_scale_button.element.onmouseenter = function() {
+		self.tool_scale_button.img.style.opacity = 0.5
+	}
+
+	this.tool_scale_button.element.onmouseleave = function() {
+		self.tool_scale_button.img.style.opacity = 1
+	}
+
+	this.tool_scale_button.setCallback(() => {
+		Editor.selectTool(Editor.MODE_SCALE)
+		self.tool_select_button.img.style.filter = "contrast(0%)"
+		self.tool_move_button.img.style.filter = "contrast(0%)"
+		self.tool_rotate_button.img.style.filter = "contrast(0%)"
+		self.tool_scale_button.img.style.filter = "contrast(100%)"
+		self.tool_select_button.updateInterface()
+		self.tool_move_button.updateInterface()
+		self.tool_rotate_button.updateInterface()
+		self.tool_scale_button.updateInterface()
+	})
 
 	//VR button
 	this.vr_button = new ButtonImage(this.element);
@@ -322,6 +433,27 @@ SceneEditor.prototype.updateInterface = function()
 	this.fullscreen_button.position.y = this.position.y + this.size.y - this.fullscreen_button.size.y - 5;
 	this.fullscreen_button.visible = this.visible && this.show_buttons_fullscreen;
 	this.fullscreen_button.updateInterface();
+
+	// Tools buttons
+	this.tool_select_button.position.x = this.position.x + this.size.x - this.tool_select_button.size.x - (this.tool_move_button.size.x + this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 40
+	this.tool_select_button.position.y = this.position.y - this.tool_select_button.size.y + 30
+	this.tool_select_button.visible = this.visible && this.show_buttons_tools
+	this.tool_select_button.updateInterface()
+
+	this.tool_move_button.position.x =  this.position.x + this.size.x - this.tool_move_button.size.x - (this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 30 
+	this.tool_move_button.position.y = this.tool_select_button.position.y
+	this.tool_move_button.visible = this.visible && this.show_buttons_tools
+	this.tool_move_button.updateInterface()
+
+	this.tool_rotate_button.position.x = this.position.x + this.size.x - this.tool_rotate_button.size.x - this.tool_scale_button.size.x - 20
+	this.tool_rotate_button.position.y = this.tool_select_button.position.y
+	this.tool_rotate_button.visible = this.visible && this.show_buttons_tools
+	this.tool_rotate_button.updateInterface()
+
+	this.tool_scale_button.position.x = this.position.x + this.size.x - this.tool_scale_button.size.x - 10
+	this.tool_scale_button.position.y = this.tool_select_button.position.y
+	this.tool_scale_button.visible = this.visible && this.show_buttons_tools
+	this.tool_scale_button.updateInterface()
 
 	//VR button
 	this.vr_button.position.x = this.fullscreen_button.position.x - this.vr_button.size.x - 10;

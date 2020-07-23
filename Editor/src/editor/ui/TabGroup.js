@@ -91,7 +91,6 @@ TabGroup.prototype.closeActual = function()
 		if(this.options[this.options_selected].closeable)
 		{
 			this.options[this.options_selected].close()
-			//this.removeOption(this.options_selected);
 		}
 	}
 }

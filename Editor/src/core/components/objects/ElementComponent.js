@@ -103,7 +103,7 @@ ElementComponent.prototype.initUI = function(pos, obj) {
 						shape.halfExtents.y = scale.y / 2.0
 						shape.halfExtents.z = scale.z / 2.0
 					} else if (shape.type === CANNON.Shape.types.SPHERE) {
-						shape.radious = scale.x
+						shape.radius = scale.x
 					}
 				}
 			}

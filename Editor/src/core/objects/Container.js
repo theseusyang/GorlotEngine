@@ -5,7 +5,7 @@ function Container()
 {
 	THREE.Object3D.call(this);
 
-	this.name = "container";
+	this.name = "empty";
 	this.type = "Group";
 
 	this.components = []

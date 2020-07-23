@@ -22,7 +22,7 @@ ObjectIcons.icons["DirectionalLight"] = "src/editor/files/icons/lights/direction
 ObjectIcons.icons["AmbientLight"] = "src/editor/files/icons/lights/ambient.png"
 
 //Cameras
-ObjectIcons.icons["PerspectiveCamera"] = "src/editor/files/icons/camera/prespective.png"
+ObjectIcons.icons["PerspectiveCamera"] = "src/editor/files/icons/camera/perspective.png"
 ObjectIcons.icons["OrthographicCamera"] = "src/editor/files/icons/camera/orthographic.png"
 
 //Objects

@@ -207,12 +207,12 @@ TabElement.prototype.updateInterface = function()
 	//Update button
 	if(this.isSelected())
 	{
-		this.button.element.style.cursor = "pointer";
+		this.button.element.style.cursor = "default";
 		this.button.element.style.backgroundColor = Editor.theme.button_over_color;
 	}
 	else
 	{
-		this.button.element.style.cursor = "default";
+		this.button.element.style.cursor = "painter";
 		this.button.element.style.backgroundColor = Editor.theme.button_color;
 	}
 

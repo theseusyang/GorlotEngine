@@ -130,7 +130,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Wed Jul 22 2020 22:55:16 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Thu Jul 23 2020 21:40:22 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -1020,22 +1020,22 @@ Editor.loadProgram = function(fname)
 Editor.exportWebProject = function(dir)
 {
 	FileSystem.copyFolder("runtime", dir);
-	FileSystem.copyFolder("core", dir + "/core");
-	FileSystem.copyFolder("input", dir + "/input");
-	FileSystem.copyFile("App.js", dir + "/App.js");
+	FileSystem.copyFolder("src/core", dir + "/core");
+	FileSystem.copyFolder("src/input", dir + "/input");
+	FileSystem.copyFile("src/App.js", dir + "/App.js");
 
 	FileSystem.makeDirectory(dir + "/lib");
-	FileSystem.copyFile("lib/leap.min.js", dir + "/lib/leap.min.js");
-	FileSystem.copyFile("lib/SPE.min.js", dir + "/lib/SPE.min.js");
-	FileSystem.copyFile("lib/leap.min.js", dir + "/lib/leap.min.js");
-	FileSystem.copyFile("lib/stats.min.js", dir + "/lib/stats.min.js");
-	FileSystem.copyFile("lib/cannon.min.js", dir + "/lib/cannon.min.js");
-	FileSystem.copyFile("lib/spine.min.js", dir + "/lib/spine.min.js");
-	FileSystem.copyFile("lib/base64.min.js", dir + "/lib/base64.min.js");
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "/lib/leap.min.js");
+	FileSystem.copyFile("src/lib/SPE.min.js", dir + "/lib/SPE.min.js");
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "/lib/leap.min.js");
+	FileSystem.copyFile("src/lib/stats.min.js", dir + "/lib/stats.min.js");
+	FileSystem.copyFile("src/lib/cannon.min.js", dir + "/lib/cannon.min.js");
+	FileSystem.copyFile("src/lib/spine.min.js", dir + "/lib/spine.min.js");
+	FileSystem.copyFile("src/lib/base64.min.js", dir + "/lib/base64.min.js");
 	FileSystem.makeDirectory(dir + "/lib/three");
-	FileSystem.copyFile("lib/three/three.min.js", dir + "/lib/three/three.min.js");
+	FileSystem.copyFile("src/lib/three/three.min.js", dir + "/lib/three/three.min.js");
 	FileSystem.makeDirectory(dir + "/lib/three/effects");
-	FileSystem.copyFile("lib/three/effects/VREffect.js", dir + "/lib/three/effects/VREffect.js");
+	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "/lib/three/effects/VREffect.js");
 
 	Editor.saveProgram(dir + "/app.isp");
 }
@@ -1083,6 +1083,7 @@ Editor.setState = function(state)
 		var tab = Interface.tab.getActual();
 		if(tab instanceof SceneEditor)
 		{
+			tab.show_buttons_tools = true
 			tab.show_buttons_fullscreen = false;
 			tab.show_buttons_vr = false;
 			tab.updateInterface();
@@ -1104,6 +1105,7 @@ Editor.setState = function(state)
 		//Show full screen and VR buttons
 		var tab = Interface.tab.getActual();
 		tab.show_buttons_fullscreen = true;
+		tab.show_buttons_tools = false
 
 		//If program uses VR set button
 		if(Editor.program_running.vr)
