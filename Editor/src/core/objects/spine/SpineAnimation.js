@@ -58,11 +58,19 @@ function SpineAnimation(json, atlas, path, textures) {
 	this.name = "spine"
 	this.type = "SpineAnimation"
 
+	this.scale.set(0.005, 0.005, 0.005)
+
 	this.frustumCulled = false
 	this.receiveShadow = true
 	this.castShadow = true
 
 	this.clock = new THREE.Clock()
+
+	this.components = []
+	this.defaultComponents = []
+
+	this.defaultComponents.push(new ElementComponent())
+	this.defaultComponents.push(new ObjectComponent())
 }
 
 SpineAnimation.prototype = Object.create(THREE.Mesh.prototype)

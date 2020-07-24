@@ -76,7 +76,6 @@ include("src/editor/ui/TreeView.js")
 include("src/editor/ui/TreeElement.js")
 include("src/editor/ui/TabButton.js")
 include("src/editor/ui/ContextMenu.js")
-include("src/editor/ui/DragBuffer.js")
 include("src/editor/ui/AssetExplorer.js")
 
 include("src/editor/ui/asset/Asset.js")
@@ -114,6 +113,7 @@ include("src/editor/helpers/WireframeHelper.js")
 include("src/editor/utils/MaterialRenderer.js")
 include("src/editor/utils/ObjectIcons.js")
 
+include("src/editor/DragBuffer.js")
 include("src/editor/Interface.js")
 include("src/editor/Settings.js")
 
@@ -133,7 +133,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 24 2020 18:46:42 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 24 2020 20:56:08 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)

@@ -39,6 +39,35 @@ function TabGroup(parent)
 	this.buttons.style.position = "absolute"
 	this.element.appendChild(this.buttons)
 
+	// Next tab
+	var buttons = this.buttons
+	this.next = document.createElement("img")
+	this.next.style.position = "absolute"
+	this.next.style.top = "8px"
+	this.next.style.right = "0px"
+	this.next.style.width = "15px"
+	this.next.style.height = "15px"
+	this.next.style.zIndex = "10"
+	this.next.src = "src/editor/files/icons/misc/arrow_right.png"
+	this.next.onclick = function() {
+		buttons.scrollLeft += 150
+	}
+	//this.buttons.appendChild(this.next)
+
+	// Previous tab
+	this.previous = document.createElement("img")
+	this.previous.style.position = "absolute"
+	this.previous.style.top = "8px"
+	this.previous.style.right = "25px"
+	this.previous.style.width = "15px"
+	this.previous.style.height = "15px"
+	this.previous.style.zIndex = "10"
+	this.previous.src = "src/editor/files/icons/misc/arrow_left.png"
+	this.previous.onclick = function() {
+		buttons.scrollLeft -= 150
+	}
+	//this.buttons.appendChild(this.previous)
+
 	// Tab
 	this.tab = document.createElement("div")
 	this.tab.style.position = "absolute"
