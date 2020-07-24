@@ -155,8 +155,8 @@ TabGroup.prototype.selectTab = function(index)
 		var tab_min = this.buttons.scrollLeft
 		var tab_max = this.buttons.scrollLeft + (this.size.x - (this.size.x % this.buttons.scrollLeft))
 
-		console.log("Button position: " + but)
-		console.log("Tab Position: " + tab_min + ", " + tab_max)
+		//console.log("Button position: " + but)
+		//console.log("Tab Position: " + tab_min + ", " + tab_max)
 
 		this.selected = index
 		this.options[index].activate()
