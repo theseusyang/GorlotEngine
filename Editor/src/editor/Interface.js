@@ -195,6 +195,18 @@ Interface.initialize = function() {
 	})
 
 	// AWD File Loader
+	import_models.addOption("AWD", () => {
+		App.chooseFile((files) => {
+			if (files.length > 0) {
+				var file = files[0].path
+				var loader = new THREE.AWDLoader()
+				var awd = loader.parse(FileSystem.readFileArrayBuffer(file))
+				Editor.addToScene(awd)
+			}
+		}, ".awd")
+	})
+
+	// PLY File Loader
 	import_models.addOption("PLY", () => {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
@@ -589,6 +601,22 @@ Interface.initialize = function() {
 	Interface.lights_form.add(spot)
 	Interface.lights_form.nextRow()
 
+	// Directional
+	var directional = new Button(Interface.lights_form.element)
+	directional.size.set(sizex, 45)
+	directional.setText("Directional")
+	directional.setCallback(() => {
+		Editor.addToScene(new DirectionalLight(0x444444))
+	})
+
+	var directionalIcon = new ImageBox(directional.element)
+	directionalIcon.size.set(40, 40)
+	directionalIcon.setImage(Interface.file_dir + "icons/lights/directional.png")
+	directionalIcon.updateInterface()
+
+	Interface.lights_form.add(directional)
+	Interface.lights_form.nextRow()
+
 	// Hemisphere
 	var hemisphere = new Button(Interface.lights_form.element)
 	hemisphere.size.set(sizex, 45)
@@ -668,6 +696,23 @@ Interface.initialize = function() {
 	Interface.effects_form.position.set(0, 0)
 	Interface.effects_form.spacing.set(0, 0)
 	Interface.effects_tab.attachComponent(Interface.effects_form)
+
+	// Level blocks
+	var blocks = new Button(Interface.effects_form.element)
+	blocks.size.set(sizex, 45)
+	blocks.setText("Level Blocks")
+	blocks.setCallback(() => {
+		Editor.addToScene(new BlockScript())
+	})
+
+	var blocksIcon = new ImageBox(blocks.element)
+	blocksIcon.size.set(40, 40)
+	blocksIcon.position.set(5, 2)
+	blocksIcon.setImage(Interface.file_dir + "icons/script/blocks.png")
+	blocksIcon.updateInterface()
+
+	Interface.effects_form.add(blocks)
+	Interface.effects_form.nextRow()
 
 	// Script
 	var script = new Button(Interface.effects_form.element)
@@ -919,17 +964,17 @@ Interface.initialize = function() {
 	Interface.file.position.set(0, 0)
 
 	// New Project
-	Interface.file.addOption("New Project", () => {
+	Interface.file.addOption("New", () => {
 		Interface.newProgram()
 	}, Interface.file_dir + "icons/misc/new.png")
 
 	// Save Project
-	Interface.file.addOption("Save Project", () => {
+	Interface.file.addOption("Save", () => {
 		Interface.saveProgram()
 	}, Interface.file_dir + "icons/misc/save.png")
 
 	// Load Project
-	Interface.file.addOption("Load Project", () => {
+	Interface.file.addOption("Load", () => {
 		Interface.loadProgram()
 	})
 

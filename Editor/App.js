@@ -116,9 +116,6 @@ include("src/core/components/cameras/CameraComponent.js")
 include("src/core/components/lights/LightComponent.js")
 include("src/core/components/objects/ScriptComponent.js")
 
-// Addable components
-include("src/core/components/scripts/BlocksComponent.js")
-
 // Nodes
 include("src/core/nodes/NodesHelper.js")
 

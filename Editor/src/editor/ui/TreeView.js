@@ -27,7 +27,7 @@ function TreeView(parent)
 	//Label
 	this.label = new Text(this.element);
 	this.label.position.set(5, 10);
-	this.label.setText("Object Explorer");
+	this.label.setText("Hierarchy");
 	this.label.setAlignment(Text.LEFT);
 	this.label.updateInterface();
 
