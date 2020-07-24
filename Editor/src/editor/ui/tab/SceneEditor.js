@@ -124,8 +124,7 @@ function SceneEditor(parent)
 			// Create an object caller
 			else if (dragged_object !== null) {
 				var obj = new ObjectCaller()
-				obj.name = dragged_object.name
-				obj.setObject(uuid)
+				obj.setObject(dragged_object)
 				Editor.addToScene(obj)
 			}
 

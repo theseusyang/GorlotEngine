@@ -9,6 +9,7 @@ function ObjectCaller(obj_uuid) {
 
 	this.obj = null
 	this.obj_uuid = (obj_uuid === undefined) ? null : obj_uuid
+	this.obj_type = null
 	this.program = null
 
 	this.components = []
@@ -47,14 +48,17 @@ ObjectCaller.prototype.update = function() {
 	}
 }
 
-ObjectCaller.prototype.setObject = function(uuid) {
-	this.obj_uuid = uuid
+ObjectCaller.prototype.setObject = function(object) {
+	this.obj_uuid = object.uuid
+	this.name = object.name
+	this.obj_type = object.type
 }
 
 ObjectCaller.prototype.toJSON = function(meta) {
 	var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
 	data.object.obj_uuid = this.obj_uuid
+	data.object.obj_type = this.obj_type
 
 	return data
 }

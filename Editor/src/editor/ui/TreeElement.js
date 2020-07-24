@@ -313,7 +313,7 @@ TreeElement.id = 0
 // Set object attached to element
 TreeElement.prototype.setObject = function(obj) {
 	this.obj = obj
-	this.icon.setImage(ObjectIcons.get(obj.type))
+	this.icon.setImage(ObjectIcons.get((obj.obj_type !== undefined) ? obj.obj_type : obj.type))
 	this.label.setText(obj.name)
 	this.folded = obj.folded
 	if(obj.folded) {

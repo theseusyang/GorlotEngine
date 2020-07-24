@@ -30,8 +30,8 @@ Video.prototype.toJSON = function(meta) {
 	data.uuid = this.uuid
 	data.type = this.type
 	data.encoding = this.encoding
-        data.format = this.format
-        data.data = this.data
+    data.format = this.format
+    data.data = this.data
 
 	meta.videos[this.uuid] = data
 

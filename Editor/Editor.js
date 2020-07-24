@@ -133,7 +133,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 24 2020 18:18:10 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 24 2020 18:45:20 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -907,6 +907,11 @@ Editor.selectObjectHelper = function()
 		else if (Editor.selected_object instanceof THREE.Mesh) {
 			Editor.object_helper.add(new THREE.BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
 			Editor.object_helper.add(new WireframeHelper(Editor.selected_object))
+		}
+		// Object Caller
+		else if (Editor.selected_object instanceof ObjectCaller) {
+			// By default, the object caller will only have the ObjectIconHelper
+			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, ObjectIcons.get(Editor.selected_object.obj_type)))
 		}
 		//Object 3D
 		else if(Editor.selected_object instanceof THREE.Object3D)
