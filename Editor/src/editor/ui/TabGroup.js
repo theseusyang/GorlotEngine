@@ -165,12 +165,17 @@ TabGroup.prototype.selectTab = function(index)
 // Select next tab
 TabGroup.prototype.selectNextTab = function() {
 	if (this.options.length > 0) {
-		var index = this.selected + 1
+		this.selectTab((this.selected + 1) % this.options.length)
+	}
+}
 
-		if (index < this.options.length) {
-			this.selectTab(index)
+// Select previous tab
+TabGroup.prototype.selectPreviousTab = function() {
+	if(this.options.length > 0) {
+		if (this.selected === 0) {
+			this.selectTab(this.options.length - 1)
 		} else {
-			this.selectTab(0)
+			this.selectTab(this.selected - 1)
 		}
 	}
 }
