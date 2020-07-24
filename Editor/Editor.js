@@ -133,7 +133,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 24 2020 21:08:08 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 24 2020 21:12:10 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -273,7 +273,7 @@ Editor.update = function()
 			{
 				Interface.loadProgram();
 			}
-			else if(Keyboard.keyJustPressed(Keyboard.W))
+			else if(Keyboard.keyJustPressed(Keyboard.W) || Keyboard.keyJustPressed(Keyboard.F4))
 			{
 				Interface.tab.closeActual();
 			} else if (Keyboard.keyJustPressed(Keyboard.TAB) || Keyboard.keyJustPressed(Keyboard.PAGE_DOWN)) {

@@ -75,7 +75,7 @@ ObjectLoader.prototype.parseGeometries = function(json)
 		var geometryLoader = new THREE.JSONLoader();
 		var bufferGeometryLoader = new THREE.BufferGeometryLoader();
 
-		for(var i = 0, l = json.length; i < l; i++)
+		for(var i = 0; i < json.length; i++)
 		{
 			var geometry;
 			var data = json[i];
@@ -254,7 +254,7 @@ ObjectLoader.prototype.parseMaterials = function(json, textures)
 
 	if(json !== undefined)
 	{
-		for(var i = 0, l = json.length; i < l; i++)
+		for(var i = 0; i < json.length; i++)
 		{
 			var material = loader.parse(json[i]);
 			materials[material.uuid] = material;
@@ -286,7 +286,7 @@ ObjectLoader.prototype.parseImages = function(json)
 
 	if(json !== undefined)
 	{
-		for(var i = 0, l = json.length; i < l; i++)
+		for(var i = 0; i < json.length; i++)
 		{
 			images[json[i].uuid] = loader.parse(json[i]);
 		}
@@ -303,7 +303,7 @@ ObjectLoader.prototype.parseVideos = function(json)
 
 	if(json !== undefined)
 	{
-		for(var i = 0, l = json.length; i < l;i++) {
+		for(var i = 0; i < json.length; i++) {
 			videos[json[i].uuid] = loader.parse(json[i])
 		}
 	}
@@ -318,7 +318,7 @@ ObjectLoader.prototype.parseAudio = function(json) {
 	var audio = []
 
 	if (json !== undefined) {
-		for(var i = 0, l = json.length; i < l; i++) {
+		for(var i = 0; i < json.length; i++) {
 			audio[json[i].uuid] = loader.parse(json[i])
 		}
 	}
@@ -332,7 +332,7 @@ ObjectLoader.prototype.parseFonts = function(json) {
 	var fonts = []
 
 	if (json !== undefined) {
-		for(var i = 0, l = json.length; i < l; i++) {
+		for(var i = 0; i < json.length; i++) {
 			fonts[json[i].uuid] = loader.parse(json[i])
 		}
 	}
@@ -350,7 +350,7 @@ ObjectLoader.prototype.parseTextures = function(json, images, videos) {
 
 	if(json !== undefined)
 	{
-		for(var i = 0, l = json.length; i < l; i++)
+		for(var i = 0; i < json.length; i++)
 		{
 			var texture = loader.parse(json[i])
 			textures[texture.uuid] = texture
@@ -366,7 +366,7 @@ ObjectLoader.prototype.parseAssetObjects = function(json) {
 	var asset_objects = []
 
 	if (json !== undefined) {
-		for(var i = 0, l = json.length; i < l; i++) {
+		for(var i = 0; i < json.length; i++) {
 			var object = loader.parse(json[i])
 			asset_objects[object.uuid] = object
 		}
