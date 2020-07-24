@@ -8,7 +8,6 @@ function BlockEditor(parent) {
 		this.parent = parent
 	}
 
-	this.registerNodes()
 
 	// ID
 	var id = "block_editor" + BlockEditor.id
@@ -64,31 +63,13 @@ BlockEditor.prototype.attachBlocks = function(blocks) {
 // Initialise node editor
 BlockEditor.prototype.initNodeEditor = function() {
 	this.graph = new LGraph(this.nodes)
-	this.registerNodes()
 
 	this.graphCanvas = new LGraphCanvas(this.canvas.element, this.graph)
-	//this.graphCanvas.use_gradients = true
-}
-
-BlockEditor.prototype.registerNodes = function() {
-	unregisterNodes()
-	registerBlueprintsNodes()
-
-	if (this.blocks !== undefined) {
-		if (this.blocks.blocks_type === "light") {
-			// TODO: Register light nodes
-		} else if (this.blocks.blocks_type === "camera") {
-			// TODO: Register camera nodes
-		} else if (this.blocks.blocks_type === "physics") {
-			// TODO: Register physics nodes
-		}
-	}
+	this.graphCanvas.use_gradients = true
 }
 
 // Activate code editor
 BlockEditor.prototype.activate = function() {
-	this.registerNodes()
-	
 	Editor.setState(Editor.STATE_IDLE)
 	Editor.resetEditingFlags()
 }

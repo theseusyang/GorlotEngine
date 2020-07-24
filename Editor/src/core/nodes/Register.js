@@ -1,7 +1,3 @@
-function unregisterNodes() {
-	LiteGraph.clearRegisteredTypes()
-}
-
 // -- Helpers --
 function baseRegisterBaseNodes() {
 	registerBaseNodes()

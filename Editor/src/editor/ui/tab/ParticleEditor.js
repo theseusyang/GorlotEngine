@@ -8,8 +8,6 @@ function ParticleEditor(parent) {
 		this.parent = parent
 	}
 
-	this.registerNodes()
-
 	// ID
 	var id = "particle_editor" + ParticleEditor.id
 	ParticleEditor.id++
@@ -164,16 +162,8 @@ ParticleEditor.prototype.updateCamera = function() {
 	this.camera.lookAt(new THREE.Vector3(0, 0, 0))
 }
 
-ParticleEditor.prototype.registerNodes = function() {
-	unregisterNodes()
-	registerBaseNodes()
-	registerParticleNodes()
-}
-
 // Activate code editor
 ParticleEditor.prototype.activate = function() {
-	this.registerNodes()	
-
 	// Set editor state
 	Editor.setState(Editor.STATE_IDLE)
 	Editor.resetEditingFlags()

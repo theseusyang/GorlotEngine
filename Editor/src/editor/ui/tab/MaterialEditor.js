@@ -11,8 +11,6 @@ function MaterialEditor(parent)
 	{
 		this.parent = parent;
 	}
-	
-	this.registerNodes()
 
 	//ID
 	var id = "material_editor" + MaterialEditor.id;
@@ -186,18 +184,9 @@ MaterialEditor.prototype.initNodeEditor = function() {
 	this.graph.start(1000/60)
 }
 
-// Register material nodes
-MaterialEditor.prototype.registerNodes = function() {
-	unregisterNodes()
-	registerBaseNodes()
-	registerMaterialNodes()
-}
-
 //Activate code editor
 MaterialEditor.prototype.activate = function()
-{	
-	this.registerNodes()
-
+{
 	Editor.setState(Editor.STATE_IDLE);
 	Editor.resetEditingFlags();
 	Mouse.setCanvas(this.canvas.element);
