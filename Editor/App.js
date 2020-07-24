@@ -83,6 +83,8 @@ include("src/core/objects/ParticleEmitter.js");
 include("src/core/objects/Program.js");
 include("src/core/objects/Scene.js");
 
+include("src/core/objects/special/ObjectCaller.js")
+
 include("src/core/utils/Base64Utils.js")
 include("src/core/utils/ArraybufferUtils.js")
 include("src/core/utils/MathUtils.js")

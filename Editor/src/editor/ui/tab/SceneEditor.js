@@ -121,6 +121,12 @@ function SceneEditor(parent)
 					}
 				}
 			}
+			// Create an object caller
+			else if (dragged_object !== null) {
+				var obj = new ObjectCaller()
+				obj.setObject(uuid)
+				Editor.addToScene(obj)
+			}
 
 			// Dragged file into window
 			if (event.dataTransfer.files.length > 0) {

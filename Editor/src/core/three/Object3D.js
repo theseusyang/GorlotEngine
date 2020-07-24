@@ -72,7 +72,8 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 			audio: {},
 			geometries: {},
 			materials: {},
-			textures: {}
+			textures: {},
+			asset_objects: {}
 		}
 
 		output.metadata =
@@ -158,6 +159,7 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess)
 		output.videos = extractFromCache(meta.videos)
 		output.audio = extractFromCache(meta.audio)
 		output.fonts = extractFromCache(meta.fonts)
+		output.asset_objects = extractFromCache(meta.asset_objects)
 	}
 
 	output.object = object

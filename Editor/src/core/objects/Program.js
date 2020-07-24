@@ -30,13 +30,14 @@ function Program(name)
 	this.shadows_type = THREE.PCFSoftShadowMap;
 
 	//Resources
-	this.images = [];
-	this.videos = [];
-	this.audio = [];
-	this.fonts = [];
-	this.materials = [];
-	this.textures = [];
-	this.geometries = [];
+	this.images = []
+	this.videos = []
+	this.audio = []
+	this.fonts = []
+	this.materials = []
+	this.textures = []
+	this.geometries = []
+	this.asset_objects = []
 
 	//Initial values
 	this.default_scene = null;
@@ -95,6 +96,11 @@ Program.prototype.removeMaterial = function(material, default_material, default_
 Program.prototype.addTexture = function(texture)
 {
  	this.textures[texture.uuid] = texture;
+}
+
+// Add an object to objects list
+Program.prototype.addObject = function(object) {
+	this.asset_objects[object.uuid] = object
 }
 
 //Set actual scene (to be used in runtime)
@@ -307,6 +313,15 @@ Program.prototype.toJSON = function(meta)
 			var material = materials[i]
 			if (meta.materials[material.uuid] === undefined) {
 				meta.materials[material.uuid] = material.toJSON(meta)
+			}
+		}
+
+		// Objects
+		var objects = self.asset_objects
+		for(var i in objects) {
+			var object = objects[i]
+			if (meta.asset_objects[object.uuid] === undefined) {
+				meta.asset_objects[object.uuid] = object.toJSON(meta)
 			}
 		}
 	});

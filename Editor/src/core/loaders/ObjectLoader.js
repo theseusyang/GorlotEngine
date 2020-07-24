@@ -34,7 +34,8 @@ ObjectLoader.prototype.parse = function(json, onLoad)
 	var fonts = this.parseFonts(json.fonts)
 	var textures = this.parseTextures(json.textures, images, videos);
 	var materials = this.parseMaterials(json.materials, textures);
-	var object = this.parseObject(json.object, geometries, materials, textures, audio, fonts);
+	var asset_objects = this.parseAssetObjects(json.asset_objects)
+	var object = this.parseObject(json.object, geometries, materials, textures, audio, fonts, asset_objects);
 
 	if(json.animations)
 	{
@@ -359,8 +360,23 @@ ObjectLoader.prototype.parseTextures = function(json, images, videos) {
 	return textures;
 }
 
+// Parse asset objects
+ObjectLoader.prototype.parseAssetObjects = function(json) {
+	var loader = new ObjectLoader()
+	var asset_objects = []
+
+	if (json !== undefined) {
+		for(var i = 0, l = json.length; i < l; i++) {
+			var object = loader.parse(json[i])
+			asset_objects[object.uuid] = object
+		}
+	}
+
+	return asset_objects
+}
+
 //Parse objects
-ObjectLoader.prototype.parseObject = function(data, geometries, materials, textures, audio, fonts)
+ObjectLoader.prototype.parseObject = function(data, geometries, materials, textures, audio, fonts, asset_objects)
 {
 	var matrix = new THREE.Matrix4();
 	var object;
@@ -643,6 +659,10 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 			object = new Container();
 			break;
 
+		case "ObjectCaller":
+			object = new ObjectCaller(data.obj_uuid)
+			break
+
 		case "Script":
 			object = new Script(data.code, data.mode);
 			break;
@@ -799,6 +819,7 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 		// object.video = videos
 		object.fonts = fonts
 		object.audio = audio
+		object.asset_objects = asset_objects
 	}
 	else if(data.type === "LOD")
 	{

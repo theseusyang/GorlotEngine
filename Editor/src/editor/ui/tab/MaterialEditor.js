@@ -220,7 +220,6 @@ MaterialEditor.prototype.close = function() {
 		delete this.graph.extra
 
 		this.material.updateNodes(this.graph.serialize())
-		console.log(this.material.nodes)
 	}
 }
 

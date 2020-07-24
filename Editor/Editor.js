@@ -82,6 +82,7 @@ include("src/editor/ui/AssetExplorer.js")
 include("src/editor/ui/asset/Asset.js")
 include("src/editor/ui/asset/MaterialAsset.js")
 include("src/editor/ui/asset/TextureAsset.js")
+include("src/editor/ui/asset/BlockAsset.js")
 
 include("src/editor/files/style/editor.css")
 include("src/editor/ui/theme/Theme.js")
@@ -132,7 +133,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 24 2020 16:17:06 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 24 2020 18:18:10 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -753,6 +754,15 @@ Editor.updateAssetExplorer = function()
 		var file = new MaterialAsset(Interface.asset_explorer.element);
 		file.setMaterial(materials[i]);
 		Interface.asset_explorer.add(file);
+	}
+
+	// Objects
+	var objects = Editor.program.asset_objects
+
+	for(var i in objects) {
+		var file = new BlockAsset(Interface.asset_explorer.element)
+		file.setBlocks(objects[i])
+		Interface.asset_explorer.add(file)
 	}
 
 	// Textures

@@ -696,15 +696,36 @@ Interface.initialize = function() {
 	Interface.effects_form.spacing.set(0, 0)
 	Interface.effects_tab.attachComponent(Interface.effects_form)
 
-	// Level blocks
+	// Scene blocks
 	var blocks = new Button(Interface.effects_form.element)
 	blocks.size.set(sizex, 45)
-	blocks.setText("Level Blocks")
+	blocks.setText("Scene Blocks")
 	blocks.setCallback(() => {
 		Editor.addToScene(new BlockScript())
 	})
 
 	var blocksIcon = new ImageBox(blocks.element)
+	blocksIcon.size.set(40, 40)
+	blocksIcon.position.set(5, 2)
+	blocksIcon.setImage(Interface.file_dir + "icons/script/blocks.png")
+	blocksIcon.updateInterface()
+
+	Interface.effects_form.add(blocks)
+	Interface.effects_form.nextRow()
+
+	// Class blocks
+	blocks = new Button(Interface.effects_form.element)
+	blocks.size.set(sizex, 45)
+	blocks.setText("Class Blocks")
+	blocks.setCallback(() => {
+		//Editor.program.addObject(new BlockScript())
+		var obj = new BlockScript()
+		obj.name = "class"
+		Editor.program.addObject(obj)
+		Editor.updateAssetExplorer()
+	})
+
+	blocksIcon = new ImageBox(blocks.element)
 	blocksIcon.size.set(40, 40)
 	blocksIcon.position.set(5, 2)
 	blocksIcon.setImage(Interface.file_dir + "icons/script/blocks.png")
