@@ -1,225 +1,297 @@
-"use strict";
+"use strict"
 
 function TabGroup(parent)
 {
-	//Parent
+	// Parent
 	if(parent === undefined)
 	{
-		this.parent = document.body;
+		this.parent = document.body
 	}
 	else
 	{
-		this.parent = parent;
+		this.parent = parent
 	}
 	
 	//ID
-	var id = "tab_group" + TabGroup.id;
-	TabGroup.id++;
+	var id = "tab_group" + TabGroup.id
+	TabGroup.id++
 
-	//Create element
-	this.element = document.createElement("div");
-	this.element.id = id;
-	this.element.style.position = "absolute";
-	this.element.style.cursor = "default";
-	this.element.style.overflow = "hidden";
-	this.element.style.backgroundColor = Editor.theme.panel_color;
+	// Element
+	this.element = document.createElement("div")
+	this.element.id = id
+	this.element.style.position = "absolute"
+	this.element.style.overflow = "hidden"
+	this.element.style.backgroundColor = Editor.theme.panel_color
 	
-	//Prevent Drop event
 	this.element.ondrop = function(event)
 	{
-		event.preventDefault();
-	};
+		event.preventDefault()
+	}
 
-	//Prevent deafault when object dragged over
 	this.element.ondragover = function(event)
 	{
-		event.preventDefault();
-	};
+		event.preventDefault()
+	}
+
+	// Buttons
+	this.buttons = document.createElement("div")
+	this.buttons.style.overflow = "hidden"
+	this.buttons.style.position = "absolute"
+	this.element.appendChild(this.buttons)
+
+	// Tab
+	this.tab = document.createElement("div")
+	this.tab.style.position = "absolute"
+	this.element.appendChild(this.tab)
+
+	// Empty message
+	this.empty = document.createElement("div")
+	this.empty.style.position = "absolute"
+	this.empty.style.textAlign = "center"
+	this.empty.style.display = "flex"
+	this.empty.style.flexDirection = "column"
+	this.empty.style.justifyContent = "center"
+	this.empty.style.pointerEvents = "none"
+
+	this.empty.innerHTML = "Open new tab to edit content or create new project!"
+	this.tab.appendChild(this.empty)
 	
 	//Element atributes
-	this.size = new THREE.Vector2(0,0);
-	this.position = new THREE.Vector2(0,0);
-	this.visible = true;
-	
-	//Tab mode
-	this.mode = TabGroup.TOP;
+	this.size = new THREE.Vector2(0,0)
+	this.position = new THREE.Vector2(0,0)
+	this.visible = true
 
 	//Options
-	this.options_size = new THREE.Vector2(150, 30);
-	this.options_selected = -1;
-	this.options = [];
+	this.mode = TabGroup.TOP
+	this.button_size = new THREE.Vector2(150, 30)
+	this.selected = -1
+	this.options = []
 
 	//Add element to document
-	this.parent.appendChild(this.element);
+	this.parent.appendChild(this.element)
 }
 
-//TabGroup conter
-TabGroup.id = 0;
+// TabGroup counter
+TabGroup.id = 0
 
-//Tab button displacement mode
-TabGroup.TOP = 0;
-TabGroup.LEFT = 1;
+// Button alignment
+TabGroup.TOP = 0
+TabGroup.BOTTOM = 1
+TabGroup.LEFT = 2
+TabGroup.RIGHT = 3
 
-//Update all tabs object data
+// Update all tabs object data
 TabGroup.prototype.updateMetadata = function()
 {
 	for(var i = 0; i < this.options.length; i++)
 	{
-		this.options[i].updateMetadata();
+		this.options[i].updateMetadata()
 	}
 }
 
-//Get actual tab
+// Get actual tab
 TabGroup.prototype.getActual = function()
 {
-	if(this.options_selected > -1)
+	if(this.selected > -1)
 	{
-		if(this.options[this.options_selected].component !== null)
+		if(this.options[this.selected].component !== null)
 		{
-			return this.options[this.options_selected].component;
+			return this.options[this.selected].component
 		}
 	}
 
-	return null;
+	return null
 }
 
-//If actual tab is closeable close it
+// Close actual tab if it's closeable
 TabGroup.prototype.closeActual = function()
 {
-	if(this.options_selected > -1)
+	if(this.selected > -1)
 	{
-		if(this.options[this.options_selected].closeable)
+		if(this.options[this.selected].closeable)
 		{
 			this.options[this.options_selected].close()
+			this.removeTab(this.selected)
 		}
 	}
 }
 
-//Select option
-TabGroup.prototype.selectOption = function(index)
+// Select tab
+TabGroup.prototype.selectTab = function(index)
 {
 	if(index > -1 && index < this.options.length)
 	{
-		this.options_selected = index;
-		this.options[index].activate();
+		this.selected = index
+		this.options[index].activate()
+		this.updateInterface()
 	}
 	else
 	{
-		this.options_selected = -1;
-		Editor.setState(Editor.STATE_IDLE);
+		this.selected = -1
+		Editor.setState(Editor.STATE_IDLE)
 	}
-
-	this.updateInterface();
 }
 
-//Add new option to tab grounp
-TabGroup.prototype.addOption = function(name, image, closeable)
-{
-	var option = new TabElement(this.element, name, image, closeable, this, this.options.length);
+// Select next tab
+TabGroup.prototype.selectNextTab = function() {
+	if (this.options.length > 0) {
+		var index = this.selected + 1
 
-	this.options.push(option);
+		if (index < this.options.length) {
+			this.selectTab(index)
+		} else {
+			this.selectTab(0)
+		}
+	}
+}
+
+// Add new option to tab grounp
+TabGroup.prototype.addTab = function(name, image, closeable)
+{
+	var tab = new TabElement(this.tab, name, image, closeable, this, this.options.length)
+	var button = new TabButton(this.buttons, tab)
+	tab.button = button
+
+	this.options.push(tab)
 	if(this.options_selected === -1)
 	{
-		this.selectOption(0);
+		this.selectTab(0)
 	}
 
-	return option;
-}
-
-//Remove all tabs
-TabGroup.prototype.clear = function()
-{
-	while(this.options.length > 0)
-	{
-		this.options.pop().destroy();
-	}
-
-	this.selectOption(-1);
+	return tab
 }
 
 //Remove tab from group
-TabGroup.prototype.removeOption = function(index)
+TabGroup.prototype.removeTab = function(index)
 {
 	if(index > -1 && index < this.options.length)
 	{
-		//Remove option from list
-		this.options[index].destroy();
-		this.options.splice(index, 1);
+		// Remove option from list
+		this.options[index].destroy()
+		this.options.splice(index, 1)
 
-		//Update options index
-		this.updateOptionIndex();
+		// Update tabs index
+		this.updateOptionIndex()
 
 		//Select option
 		if(this.options.length > 0)
 		{
 			if(index !== 0)
 			{
-				this.selectOption(index - 1);
+				this.selectTab(index - 1)
 			}
 			else
 			{
-				this.selectOption(0);
+				this.selectTab(0)
 			}
 		}
 		else
 		{
-			this.selectOption(-1);
+			this.selectTab(-1)
 		}
 	}
 }
 
-//Update options index
+// Remove all tabs
+TabGroup.prototype.clear = function() {
+	while(this.options.length > 0) {
+		this.options.pop().destroy()
+	}
+
+	this.selectTab(-1)
+}
+
+// Update options index
 TabGroup.prototype.updateOptionIndex = function()
 {
 	for(var i = 0; i < this.options.length; i++)
 	{
-		this.options[i].index = i;
+		this.options[i].index = i
 	}
 }
 
-//Remove element
+// Remove element
 TabGroup.prototype.destroy = function()
 {
 	try
 	{
-		this.parent.removeChild(this.element);
+		this.parent.removeChild(this.element)
 	}
 	catch(e){}
 }
 
-//Update
+// Update
 TabGroup.prototype.update = function()
 {
-	if(this.options_selected > -1)
+	if(this.selected > -1)
 	{
-		this.options[this.options_selected].update();
+		this.options[this.selected].update()
 	}
 }
 
-//Update interface
+// Update interface
 TabGroup.prototype.updateInterface = function()
 {
-	//Update options
+	// Update tabs
 	for(var i = 0; i < this.options.length; i++)
 	{
-		this.options[i].visible = this.visible && (this.options_selected === i);
-		this.options[i].size.copy(this.size);
-		this.options[i].updateInterface();
+		var tab = this.options[i]
+		tab.visible = this.visible && (this.selected === i)
+		tab.size.copy(this.size)
+		tab.updateInterface()
+
+		var button = tab.button
+		button.visible = this.visible
+		button.size.copy(this.button_size)
+		if (this.mode === TabGroup.TOP || this.mode === TabGroup.BOTTOM) {
+			button.position.set(button.size.x * i, 0)
+		} else if (this.mode === TabGroup.LEFT || this.mode === TabGroup.RIGHT) {
+			button.position.set(0, button.size.y * i)
+		}
+		button.updateInterface()
 	}
 
-	//Set visibility
+	// Visibility
 	if(this.visible)
 	{
-		this.element.style.visibility = "visible";
+		this.tab.style.visibility = "visible"
+		this.buttons.style.visibility = "visible"
+		this.element.style.visibility = "visible"
 	}
 	else
 	{
-		this.element.style.visibility = "hidden";
+		this.tab.style.visibility = "hidden"
+		this.buttons.style.visibility = "hidden"
+		this.element.style.visibility = "hidden"
+	}
+
+	if (this.mode === TabGroup.TOP) {
+		this.buttons.style.top = "0px"
+		this.buttons.style.left = "0px"
+		this.buttons.style.width = this.size.x + "px"
+		this.buttons.style.height = this.button_size.y + "px"
+
+		this.tab.style.left = "0px"
+		this.tab.style.top = this.button_size.y + "px"
+		this.tab.style.width = this.size.x + "px"
+		this.tab.style.height = (this.size.y - this.button_size.y) + "px"
+	} else if (this.mode === TabGroup.LEFT) {
+		this.buttons.style.top = "0px"
+		this.buttons.style.left = "0px"
+		this.buttons.style.width = this.button_size.x + "px"
+		this.buttons.style.height = this.size.y + "px"
+
+		this.tab.style.left = this.button_size.x + "px"
+		this.tab.style.top = "0px"
+		this.tab.style.width = (this.size.x - this.button_size.x) + "px"
+		this.tab.style.height = this.size.y + "px"
 	}
 
 	//Update element
-	this.element.style.top = this.position.y + "px";
-	this.element.style.left = this.position.x + "px";
-	this.element.style.width = this.size.x + "px";
-	this.element.style.height = this.size.y + "px";
+	this.element.style.top = this.position.y + "px"
+	this.element.style.left = this.position.x + "px"
+	this.element.style.width = this.size.x + "px"
+	this.element.style.height = this.size.y + "px"
+	this.empty.style.width = this.size.x + "px"
+	this.empty.style.height = this.size.y + "px"
 }

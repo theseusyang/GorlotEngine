@@ -10,10 +10,6 @@ Interface.initialize = function() {
 	// ------------------------------------ Tab Container ------------------------------------
 	Interface.tab = new TabGroup()
 
-	Interface.empty_tab_text = new Text(Interface.tab.element)
-	Interface.empty_tab_text.fit_parent = true
-	Interface.empty_tab_text.setText("Open new tab to edit content or create a new project.")
-
 	// ------------------------------------ Asset Manager ------------------------------------
 	Interface.asset_explorer_div = new DivisionResizable()
 	Interface.asset_explorer_div.resizable_side = DivisionResizable.TOP
@@ -355,43 +351,46 @@ Interface.initialize = function() {
 	// ------------------------------------ Left Div ------------------------------------
 	Interface.left_div = new DivisionResizable()
 	Interface.left_div.resizable_side = DivisionResizable.RIGHT
-	Interface.left_div.size.x = 250
-	Interface.left_div.resize_size_min = 250
-	Interface.left_div.resize_size_max = 300
+	Interface.left_div.size.x = 350
+	Interface.left_div.resize_size_min = 300
+	Interface.left_div.resize_size_max = 400
 	Interface.left_div.element.style.pointerEvents = "auto"
 
 	Interface.left_tabs = new TabGroup(Interface.left_div.element)
-	Interface.left_tabs.options_size.set(120, 30)
+	Interface.left_tabs.button_size.set(120, 30)
 	Interface.left_tabs.element.style.cursor = "default"
 	Interface.left_tabs.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.left_tabs.mode = TabGroup.LEFT
 	Interface.left_tabs.updateInterface()
 
-	Interface.basic_tab = Interface.left_tabs.addOption("Basic", Interface.file_dir + "icons/models/models.png", false)
+	Interface.basic_tab = Interface.left_tabs.addTab("Basic", Interface.file_dir + "icons/models/models.png", false)
 	Interface.basic_tab.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.basic_tab.element.style.overflowY = "auto"
 
-	Interface.lights_tab = Interface.left_tabs.addOption("Lights", Interface.file_dir + "icons/lights/point.png", false)
+	Interface.lights_tab = Interface.left_tabs.addTab("Lights", Interface.file_dir + "icons/lights/point.png", false)
 	Interface.lights_tab.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.lights_tab.element.style.overflowY = "auto"
 
-	Interface.cinematic_tab = Interface.left_tabs.addOption("Cinematic", Interface.file_dir + "icons/camera/camera.png", false)
+	Interface.cinematic_tab = Interface.left_tabs.addTab("Cinematic", Interface.file_dir + "icons/camera/camera.png", false)
 	Interface.cinematic_tab.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.cinematic_tab.element.style.overflowY = "auto"
 
-	Interface.effects_tab = Interface.left_tabs.addOption("Effects", Interface.file_dir + "icons/effects/particles.png", false)
+	Interface.effects_tab = Interface.left_tabs.addTab("Effects", Interface.file_dir + "icons/effects/particles.png", false)
 	Interface.effects_tab.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.effects_tab.element.style.overflowY = "auto"
 
-	Interface.physics_tab = Interface.left_tabs.addOption("Physics", Interface.file_dir + "icons/physics/physics.png", false)
+	Interface.physics_tab = Interface.left_tabs.addTab("Physics", Interface.file_dir + "icons/physics/physics.png", false)
 	Interface.physics_tab.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.physics_tab.element.style.overflowY = "auto"
 
-	Interface.hw_tab = Interface.left_tabs.addOption("Device", Interface.file_dir + "icons/hw/hw.png", false)
+	Interface.hw_tab = Interface.left_tabs.addTab("Device", Interface.file_dir + "icons/hw/hw.png", false)
 	Interface.hw_tab.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.hw_tab.element.style.overflowY = "auto"
 
-	var sizex = (300 - Interface.left_tabs.options_size.x)//(Interface.left_div.size.x-Interface.left_tabs.options_size.x)
+
+	// By default the "basic" tab is selected
+	Interface.left_tabs.selectTab(0)
+	var sizex = 270 //Interface.left_tabs.options_size.x)//(Interface.left_div.size.x-Interface.left_tabs.options_size.x)
 
 	// ------------------------------------ Basic ------------------------------------
 	Interface.basic_form = new Form(Interface.basic_tab.element)
@@ -1020,6 +1019,14 @@ Interface.initialize = function() {
 	Interface.editor.size.set(100, Interface.top_bar.size.y)
 	Interface.editor.position.set(120, 0)
 
+	Interface.editor.addOption("Undo", () => {
+		Editor.undo()
+	}, Interface.file_dir + "icons/misc/undo.png")
+
+	Interface.editor.addOption("Redo", () => {
+		Editor.redo()
+	}, Interface.file_dir + "icons/misc/redo.png")
+
 	Interface.editor.addOption("Copy", () => {
 		Editor.copyObject()
 	}, Interface.file_dir + "icons/misc/copy.png")
@@ -1030,7 +1037,7 @@ Interface.initialize = function() {
 
 	Interface.editor.addOption("Paste", () => {
 		Editor.pasteObject()
-	})
+	}, Interface.file_dir + "icons/misc/paste.png")
 
 	Interface.editor.addOption("Delete", () => {
 		Editor.deleteObject()
@@ -1049,7 +1056,7 @@ Interface.initialize = function() {
 
 		// If not, create one
 		if (!found) {
-			var tab = Interface.tab.addOption("Settings", Interface.file_dir + "icons/tab/settings.png", true)
+			var tab = Interface.tab.addTab("Settings", Interface.file_dir + "icons/tab/settings.png", true)
 			var settings = new SettingsTab(tab.element)
 			tab.attachComponent(settings)
 			tab.select()
@@ -1100,7 +1107,7 @@ Interface.initialize = function() {
 
 		// If not, create one
 		if (!found) {
-			var tab = Interface.tab.addOption("About", Interface.file_dir + "icons/misc/about.png", true)
+			var tab = Interface.tab.addTab("About", Interface.file_dir + "icons/misc/about.png", true)
 			var about = new AboutTab(tab.element)
 			tab.attachComponent(about)
 			tab.select()
@@ -1183,8 +1190,6 @@ Interface.updateInterface = function() {
 	Interface.tab.size.x = (size.x - Interface.left_div.size.x - Interface.explorer.size.x)
 	Interface.tab.size.y = (size.y - Interface.top_bar.size.y - Interface.asset_explorer_div.size.y)
 	Interface.tab.updateInterface()
-
-	Interface.empty_tab_text.updateInterface()
 
 	// Resize editor camera
 	Editor.resizeCamera()

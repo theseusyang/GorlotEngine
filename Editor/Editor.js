@@ -44,24 +44,38 @@ include("lib/opentype.min.js")
 include("lib/jscolor.min.js")
 
 //Internal modules
-include("src/editor/ui/Bar.js")
-include("src/editor/ui/Button.js")
+include("src/editor/ui/element/Bar.js")
+include("src/editor/ui/element/Button.js")
+include("src/editor/ui/element/Text.js")
+include("src/editor/ui/element/Division.js")
+include("src/editor/ui/element/ImageBox.js")
+include("src/editor/ui/element/DivisionResizable.js")
+include("src/editor/ui/element/ButtonImage.js")
+include("src/editor/ui/element/ButtonDrawer.js")
+include("src/editor/ui/element/Canvas.js")
+include("src/editor/ui/element/DualDivisionResizable.js")
+include("src/editor/ui/element/ButtonImageToggle.js")
+include("src/editor/ui/element/Form.js")
+
+include("src/editor/ui/element/input/Graph.js")
+include("src/editor/ui/element/input/CodeEditor.js")
+include("src/editor/ui/element/input/CheckBox.js")
+include("src/editor/ui/element/input/TextBox.js")
+include("src/editor/ui/element/input/ColorChooser.js")
+include("src/editor/ui/element/input/Slider.js")
+include("src/editor/ui/element/input/DropdownList.js")
+include("src/editor/ui/element/input/NumberBox.js")
+include("src/editor/ui/element/input/CoordinatesBox.js")
+include("src/editor/ui/element/input/ImageChooser.js")
+include("src/editor/ui/element/input/TextureBox.js")
+
 include("src/editor/ui/DropdownMenu.js")
-include("src/editor/ui/Text.js")
-include("src/editor/ui/Division.js")
-include("src/editor/ui/ImageBox.js")
-include("src/editor/ui/DivisionResizable.js")
-include("src/editor/ui/ButtonImage.js")
-include("src/editor/ui/ButtonDrawer.js")
-include("src/editor/ui/Canvas.js")
 include("src/editor/ui/TabGroup.js")
 include("src/editor/ui/TabElement.js")
-include("src/editor/ui/DualDivisionResizable.js")
-include("src/editor/ui/ButtonImageToggle.js")
 include("src/editor/ui/TreeView.js")
 include("src/editor/ui/TreeElement.js")
+include("src/editor/ui/TabButton.js")
 include("src/editor/ui/ContextMenu.js")
-include("src/editor/ui/Form.js")
 include("src/editor/ui/DragBuffer.js")
 include("src/editor/ui/AssetExplorer.js")
 
@@ -82,18 +96,6 @@ include("src/editor/ui/tab/AboutTab.js")
 include("src/editor/ui/tab/MaterialEditor.js")
 include("src/editor/ui/tab/BlockEditor.js")
 include("src/editor/ui/tab/ShaderMaterialEditor.js")
-
-include("src/editor/ui/input/Graph.js")
-include("src/editor/ui/input/CodeEditor.js")
-include("src/editor/ui/input/CheckBox.js")
-include("src/editor/ui/input/TextBox.js")
-include("src/editor/ui/input/ColorChooser.js")
-include("src/editor/ui/input/Slider.js")
-include("src/editor/ui/input/DropdownList.js")
-include("src/editor/ui/input/NumberBox.js")
-include("src/editor/ui/input/CoordinatesBox.js")
-include("src/editor/ui/input/ImageChooser.js")
-include("src/editor/ui/input/TextureBox.js")
 
 include("src/editor/tools/TransformControls.js")
 include("src/editor/tools/GizmoMaterial.js")
@@ -130,7 +132,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Thu Jul 23 2020 21:40:22 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 24 2020 16:17:06 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -273,6 +275,8 @@ Editor.update = function()
 			else if(Keyboard.keyJustPressed(Keyboard.W))
 			{
 				Interface.tab.closeActual();
+			} else if (Keyboard.keyJustPressed(Keyboard.TAB)) {
+				Interface.tab.selectNextTab()
 			}
 		}
 	}
@@ -301,13 +305,11 @@ Editor.update = function()
 			}
 			else if(Keyboard.keyJustPressed(Keyboard.Y))
 			{
-				//TODO <ADD CODE HERE>
-				alert("Undo and redo not implemented!");
+				Editor.redo()
 			}
 			else if(Keyboard.keyJustPressed(Keyboard.Z))
 			{
-				//TODO <ADD CODE HERE>
-				alert("Undo and redo not implemented!");
+				Editor.undo()
 			}
 		}
 
@@ -474,7 +476,6 @@ Editor.draw = function()
 			camera.aspect = width/height
 			camera.updateProjectionMatrix()
 
-			// TODO: Hack
 			var background = Editor.program.scene.background
 			Editor.program.scene.background = null
 
@@ -482,7 +483,6 @@ Editor.draw = function()
 			Editor.renderer.setScissor(offset, 10, width, height)
 			Editor.renderer.render(Editor.program.scene, camera)
 
-			// TODO: Hack
 			Editor.program.scene.background = background
 		}
 	}
@@ -659,6 +659,16 @@ Editor.pasteObject = function(target)
 		Editor.updateObjectViews();
 	}
 	catch(e){}
+}
+
+// Redo action
+Editor.redo = function() {
+	// TODO: This
+}
+
+// Undo action
+Editor.undo = function() {
+	// TODO: This
 }
 
 //Update UI panel to match selected object
@@ -960,11 +970,11 @@ Editor.createNewProgram = function()
 	if(Interface.tab !== undefined)
 	{
 		Interface.tab.clear();
-		var scene = Interface.tab.addOption("scene", Interface.file_dir + "icons/tab/scene.png", true);
+		var scene = Interface.tab.addTab("scene", Interface.file_dir + "icons/tab/scene.png", true);
 		var canvas = new SceneEditor(scene.element);
 		canvas.setScene(Editor.program.scene);
 		scene.attachComponent(canvas);
-		Interface.tab.selectOption(0);
+		Interface.tab.selectTab(0);
 	}
 }
 
@@ -1008,11 +1018,11 @@ Editor.loadProgram = function(fname)
 	//Add new scene tab to interface
 	if(Editor.program.scene !== null)
 	{
-		var scene = Interface.tab.addOption("scene", Interface.file_dir + "icons/tab/scene.png", true);
+		var scene = Interface.tab.addTab("scene", Interface.file_dir + "icons/tab/scene.png", true);
 		var editor = new SceneEditor(scene.element);
 		editor.setScene(Editor.program.scene);
 		scene.attachComponent(editor);
-		Interface.tab.selectOption(0);
+		Interface.tab.selectTab(0);
 	}
 }
 
