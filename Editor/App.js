@@ -118,40 +118,6 @@ include("src/core/components/cameras/CameraComponent.js")
 include("src/core/components/lights/LightComponent.js")
 include("src/core/components/objects/ScriptComponent.js")
 
-// Nodes
-include("src/core/nodes/NodesHelper.js")
-
-// Blueprints
-// Base
-include("src/core/nodes/base/Arrays.js")
-include("src/core/nodes/base/Base.js")
-include("src/core/nodes/base/Logic.js")
-include("src/core/nodes/base/JSON.js")
-
-include("src/core/nodes/input/Keyboard.js")
-include("src/core/nodes/input/Mouse.js")
-
-// Math
-include("src/core/nodes/math/Math.js")
-include("src/core/nodes/math/Vector.js")
-include("src/core/nodes/math/Quaternion.js")
-include("src/core/nodes/math/Euler.js")
-
-// Objects
-include("src/core/nodes/objects/Objects.js")
-include("src/core/nodes/objects/Scene.js")
-
-// Particles Nodes
-include("src/core/nodes/particles/Particles.js")
-
-// Materials nodes
-include("src/core/nodes/materials/Material.js")
-include("src/core/nodes/materials/Color.js")
-include("src/core/nodes/materials/Texture.js")
-include("src/core/nodes/materials/Constants.js")
-
-include("src/core/nodes/Register.js")
-
 include("src/core/FileSystem.js")
 
 //App class
