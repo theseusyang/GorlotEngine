@@ -10,12 +10,61 @@ function BlockScript(nodes, uuid)
 		var uuid = this.uuid
 	}
 
-	this.nodes = {}
+	this.nodes = {
+		config: {},
+		extra: {},
+		groups: {},
+		last_link_id: 0,
+		last_node_id: 0,
+		links: [],
+		nodes: [
+			{
+				flags: {},
+				id: 1,
+				mode: 0,
+				order: 0,
+				outputs: [
+					{
+						name: "",
+						type: -1,
+						links: null,
+						...NodesHelper.outputs.event
+					}
+				],
+				pos: [100, 352],
+				properties: {},
+				size: [120, 26],
+				type: "Events/BeginPlay"
+			},
+			{
+				flags: {},
+				id: 2,
+				inputs: [],
+				mode: 0,
+				order: 1,
+				outputs: [
+					{
+						name: "",
+						type: -1,
+						links: null,
+						...NodesHelper.outputs.delegate
+					}
+				],
+				pos: [100, 429],
+				properties: {},
+				size: [120, 26],
+				type: "Events/EventTick"
+			}
+		],
+		version: 0.4
+	}
 
 	// Data
 	if (nodes !== undefined) {
 		this.nodes = nodes
 	}
+
+	this.graph = null
 
 	this.components = []
 	this.defaultComponents = []
@@ -28,7 +77,11 @@ BlockScript.prototype = Object.create(THREE.Object3D.prototype);
 //Initialize
 BlockScript.prototype.initialize = function()
 {
-	this.run(new LGraph(this.nodes))
+	this.graph = new LGraph(this.nodes)
+	this.graph.sendEventToAllNodes("onStart")
+	this.run(this.graph)
+
+	this.tick = this.graph.findNodesByType("Events/EventTick")
 
 	//Initialize children
 	for(var i = 0; i < this.children.length; i++)
@@ -61,6 +114,8 @@ BlockScript.prototype.update = function()
 	{
 		this.children[i].update();
 	}
+
+	this.tick[0].onExecute()
 }
 
 // Update nodes

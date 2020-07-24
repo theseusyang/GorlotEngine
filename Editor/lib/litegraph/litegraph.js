@@ -7500,7 +7500,6 @@ LGraphNode.prototype.executeAction = function(action)
                     //ctx.rect( node.size[0] - 14,i*14,10,10);
 
                     if (
-                        slot.type === LiteGraph.EVENT ||
                         slot.shape === LiteGraph.BOX_SHAPE
                     ) {
                         if (horizontal) {
@@ -7821,7 +7820,7 @@ LGraphNode.prototype.executeAction = function(action)
                     if (!grad) {
                         grad = LGraphCanvas.gradients[ title_color ] = ctx.createLinearGradient(0, 0, 400, 0);
                         grad.addColorStop(0, title_color);
-                        grad.addColorStop(1, "#000");
+                        grad.addColorStop(0.25, fgcolor);
                     }
                     ctx.fillStyle = grad;
                 } else {

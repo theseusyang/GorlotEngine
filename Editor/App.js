@@ -118,6 +118,11 @@ include("src/core/components/cameras/CameraComponent.js")
 include("src/core/components/lights/LightComponent.js")
 include("src/core/components/objects/ScriptComponent.js")
 
+// Nodes
+include("src/core/nodes/NodesHelper.js")
+
+include("src/core/nodes/base/Events.js")
+
 include("src/core/FileSystem.js")
 
 //App class
