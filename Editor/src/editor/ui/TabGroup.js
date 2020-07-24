@@ -150,6 +150,14 @@ TabGroup.prototype.selectTab = function(index)
 {
 	if(index > -1 && index < this.options.length)
 	{
+		// TODO: this
+		var but = index * this.button_size.x
+		var tab_min = this.buttons.scrollLeft
+		var tab_max = this.buttons.scrollLeft + (this.size.x - (this.size.x % this.buttons.scrollLeft))
+
+		console.log("Button position: " + but)
+		console.log("Tab Position: " + tab_min + ", " + tab_max)
+
 		this.selected = index
 		this.options[index].activate()
 		this.updateInterface()
@@ -157,8 +165,6 @@ TabGroup.prototype.selectTab = function(index)
 	else
 	{
 		this.selected = -1
-		Editor.setState(Editor.STATE_IDLE)
-		this.updateInterface()
 	}
 }
 
@@ -328,6 +334,26 @@ TabGroup.prototype.updateInterface = function()
 		this.tab.style.top = "0px"
 		this.tab.style.width = (this.size.x - this.button_size.x) + "px"
 		this.tab.style.height = this.size.y + "px"
+	} else if (this.mode === TabGroup.RIGHT) {
+		this.buttons.style.top = "0px"
+		this.buttons.style.left = (this.size.x - this.button_size.x) + "px"
+		this.buttons.style.width = this.button_size.x + "px"
+		this.buttons.style.height = this.size.y + "px"
+
+		this.tab.style.left = "0px"
+		this.tab.style.top = "0px"
+		this.tab.style.width = (this.size.x - this.button_size.x) + "px"
+		this.tab.style.height = this.size.y + "px"
+	} else if (this.mode === TabGroup.BOTTOM) {
+		this.buttons.style.top = (this.size.y - this.button_size.y) + "px"
+		this.buttons.style.left = "0px"
+		this.buttons.style.width = this.size.x + "px"
+		this.buttons.style.height = this.size.y + "px"
+
+		this.tab.style.left = "0px"
+		this.tab.style.top = "0px"
+		this.tab.style.width = this.size.x + "px"
+		this.tab.style.height = (this.size.y - this.button_size.y) + "px"
 	}
 
 	//Update element
