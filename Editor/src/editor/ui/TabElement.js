@@ -61,6 +61,10 @@ TabElement.id = 0
 TabElement.prototype.close = function()
 {
 	this.container.removeTab(this.index)
+
+	if (this.component !== null && this.component.close !== undefined) {
+		this.component.close()
+	}
 }
 
 // Dectivate tab

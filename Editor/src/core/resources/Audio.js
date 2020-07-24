@@ -11,14 +11,6 @@ function Audio(url) {
         this.data = null
 
 	if (url !== undefined) {
-		/*var file = new XMLHttpRequest()
-		file.open("GET", url, false)
-		file.overrideMimeType("text/plain; charset=x-user-defined")
-		file.send(null)
-
-		this.encoding = url.split(".").pop().toLowerCase()
-		this.format = "arraybuffer"
-		this.data = ArraybufferUtils.fromBinaryString(file.response)*/
 		this.data = FileSystem.readFileArrayBuffer(url)
 		this.encoding = url.split(".").pop().toLowerCase()
 		this.format = "arraybuffer"

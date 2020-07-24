@@ -17,31 +17,11 @@ function Image(url)
 
 		if(this.encoding === "gif")
 		{
-			/*
-				var file = new XMLHttpRequest()
-				file.open("GET", url, false)
-				file.overrideMimeType("text/plain; charset=x-user-defined")
-				file.send(null)
-	
-				this.data = "data:image/" + this.encoding + ";base64," + Base64Utils.fromBinaryString(file.response)
-				this.format = "base64"
-			*/
-
 			this.data = "data:image/" + this.encoding + ";base64," + FileSystem.readFileBase64(url)
 			this.format = "base64"
 		}
 		else if (this.encoding === "tga")
 		{
-			/*
-				var file = new XMLHttpRequest()
-				file.open("GET", url, false)
-				file.overrideMimeType("text/plain; charset=x-user-defined")
-				file.send(null)
-
-				var loader = new THREE.TGALoader()
-				var canvas = loader.parse(ArraybufferUtils.fromBinaryString(file.response))
-			*/
-
 			var canvas = new THREE.TGALoader().parse(FileSystem.readFileBase64(url))
 
 			this.encoding = "jpeg"
