@@ -122,6 +122,7 @@ include("src/core/components/objects/ScriptComponent.js")
 include("src/core/nodes/NodesHelper.js")
 
 include("src/core/nodes/base/Events.js")
+include("src/core/nodes/base/Inheritance.js")
 
 include("src/core/FileSystem.js")
 
@@ -299,8 +300,8 @@ function include(file, onload)
 	else if(file.endsWith(".css"))
 	{
 		var css = document.createElement("link");
-		css.href = file;
 		css.rel = "stylesheet";
+		css.href = file;
 		document.body.appendChild(css);
 	}
 	else if(file.endsWith("*"))

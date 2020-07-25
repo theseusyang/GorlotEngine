@@ -50,7 +50,7 @@ FileSystem.readFileArrayBuffer = function(fname) {
 		file.overrideMimeType("text/plain; charset=x-user-defined")
 		file.send(null)
 
-		return ArrayBufferUtils.fromBinaryString(file.response)
+		return ArraybufferUtils.fromBinaryString(file.response)
 	}
 }
 

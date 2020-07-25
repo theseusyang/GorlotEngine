@@ -17,6 +17,7 @@ function BlockEditor(parent) {
 	this.element = document.createElement("div")
 	this.element.id = id
 	this.element.style.position = "absolute"
+	this.element.style.pointerEvents = "auto"
 
 	// Prevent Drop event
 	this.element.ondrop = function(e) {

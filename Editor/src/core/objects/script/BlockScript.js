@@ -1,14 +1,15 @@
-function BlockScript(nodes, uuid, type)
+function BlockScript(nodes, uuid, obj_type)
 {
 	THREE.Object3D.call(this);
 	
 	this.type = "BlockScript";
-	this.name = "BlockScript";
-	this.blocks_type = (type !== undefined) ? type : "scene"
+	this.name = "blocks";
 	this.obj_uuid = (uuid !== undefined) ? uuid : this.uuid
+	this.blocks_type = (obj_type !== undefined) ? obj_type : "scene"
 
 	this.nodes = {
 		config: {
+			blocks: "Blocks",
 			type: this.blocks_type,
 			uuid: this.obj_uuid
 		},
@@ -28,8 +29,13 @@ function BlockScript(nodes, uuid, type)
 						name: "",
 						type: -1,
 						links: null,
-						...NodesHelper.slots.event,
-						...NodesHelper.slots.output
+						...NodesHelper.slots.output.passer,
+					},
+					{
+						name: "",
+						type: -1,
+						links: null,
+						...NodesHelper.slots.output.event
 					}
 				],
 				pos: [100, 352],
@@ -48,7 +54,7 @@ function BlockScript(nodes, uuid, type)
 						name: "",
 						type: -1,
 						links: null,
-						...NodesHelper.slots.delegate
+						...NodesHelper.slots.output.passer
 					}
 				],
 				pos: [100, 429],
@@ -137,7 +143,9 @@ BlockScript.prototype.update = function()
 }
 
 BlockScript.prototype.dispose = function() {
-	this.graph.sendEventToAllNodes("onDispose")
+
+	if(this.graph !== null)
+		this.graph.sendEventToAllNodes("onDispose")
 
 	// Dispose children
 	for(var i = 0; i < this.children.length; i++) {
@@ -159,7 +167,6 @@ BlockScript.prototype.toJSON = function(meta) {
 	delete this.nodes.config.scene
 
 	data.object.nodes = this.nodes
-	data.object.blocks_type = this.blocks_type
 
 	return data
 }
