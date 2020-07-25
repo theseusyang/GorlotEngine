@@ -1,17 +1,17 @@
-function BlockScript(nodes, uuid)
+function BlockScript(nodes, uuid, type)
 {
 	THREE.Object3D.call(this);
 	
 	this.type = "BlockScript";
 	this.name = "BlockScript";
-	this.blocks_type = "scene" // Scene and Class available
-
-	if (uuid === undefined) {
-		var uuid = this.uuid
-	}
+	this.blocks_type = (type !== undefined) ? type : "scene"
+	this.obj_uuid = (uuid !== undefined) ? uuid : this.uuid
 
 	this.nodes = {
-		config: {},
+		config: {
+			type: this.blocks_type,
+			uuid: this.obj_uuid
+		},
 		extra: {},
 		groups: {},
 		last_link_id: 0,
@@ -28,7 +28,8 @@ function BlockScript(nodes, uuid)
 						name: "",
 						type: -1,
 						links: null,
-						...NodesHelper.outputs.event
+						...NodesHelper.slots.event,
+						...NodesHelper.slots.output
 					}
 				],
 				pos: [100, 352],
@@ -47,7 +48,7 @@ function BlockScript(nodes, uuid)
 						name: "",
 						type: -1,
 						links: null,
-						...NodesHelper.outputs.delegate
+						...NodesHelper.slots.delegate
 					}
 				],
 				pos: [100, 429],
@@ -78,6 +79,23 @@ BlockScript.prototype = Object.create(THREE.Object3D.prototype);
 BlockScript.prototype.initialize = function()
 {
 	this.graph = new LGraph(this.nodes)
+
+	this.graph.config.scene = ObjectUtils.getScene(this)
+
+	if (this.graph.config.type === "scene") {
+		this.graph.config.self = this
+	} else if(this.graph.config.type === "class") {
+		var scene = (Editor.program_running !== undefined && Editor.program_running !== null) ? Editor.program_running.scene : Main.program.scene
+		this.graph.config.scene = scene
+		var self = this
+
+		scene.traverse((child) => {
+			if (child.obj_uuid !== undefined && child.obj_uuid === self.uuid) {
+				self.graph.config.self = child
+			}
+		})
+	}
+
 	this.graph.sendEventToAllNodes("onStart")
 	this.run(this.graph)
 
@@ -127,6 +145,9 @@ BlockScript.prototype.updateNodes = function(nodes) {
 // Serialise
 BlockScript.prototype.toJSON = function(meta) {
 	var data = THREE.Object3D.prototype.toJSON.call(this, meta)
+
+	delete this.nodes.config.self
+	delete this.nodes.config.scene
 
 	data.object.nodes = this.nodes
 	data.object.blocks_type = this.blocks_type

@@ -134,7 +134,9 @@
             }
 
             var prev = this.registered_node_types[type];
-			if(!prev)
+			if(prev)
+				console.log("replacing node type: " + type);
+			else
 			{
 				if( !Object.hasOwnProperty( base_class.prototype, "shape") )
 				Object.defineProperty(base_class.prototype, "shape", {
@@ -2021,7 +2023,7 @@
                 var link_data = data.links[i];
 				if(!link_data) //weird bug
 				{
-					//console.warn("serialized graph link data contains errors, skipping.");
+					console.warn("serialized graph link data contains errors, skipping.");
 					continue;
 				}
                 var link = new LLink();
@@ -6986,7 +6988,7 @@ LGraphNode.prototype.executeAction = function(action)
 			//input button clicked
 			if( this.drawButton( 20,y+2,w - 20, h - 2 ) )
 			{
-				var type = subnode.constructor.input_node_type || "Logic/GraphInput";
+				var type = subnode.constructor.input_node_type || "graph/input";
 				this.graph.beforeChange();
 				var newnode = LiteGraph.createNode( type );
 				if(newnode)
@@ -7022,10 +7024,10 @@ LGraphNode.prototype.executeAction = function(action)
 		}
 
 		//add + button
-		//if( this.drawButton( 20,y+2,w - 20, h - 2, "+", "#151515", "#222" ) )
-		//{
-		//	this.showSubgraphPropertiesDialog( subnode );
-		//}
+		if( this.drawButton( 20,y+2,w - 20, h - 2, "+", "#151515", "#222" ) )
+		{
+			this.showSubgraphPropertiesDialog( subnode );
+		}
 	}
 
 	//Draws a button into the canvas overlay and computes if it was clicked using the immediate gui paradigm
@@ -7500,6 +7502,7 @@ LGraphNode.prototype.executeAction = function(action)
                     //ctx.rect( node.size[0] - 14,i*14,10,10);
 
                     if (
+                        slot.type === LiteGraph.EVENT ||
                         slot.shape === LiteGraph.BOX_SHAPE
                     ) {
                         if (horizontal) {
@@ -7820,7 +7823,7 @@ LGraphNode.prototype.executeAction = function(action)
                     if (!grad) {
                         grad = LGraphCanvas.gradients[ title_color ] = ctx.createLinearGradient(0, 0, 400, 0);
                         grad.addColorStop(0, title_color);
-                        grad.addColorStop(0.25, fgcolor);
+                        grad.addColorStop(1, "#000");
                     }
                     ctx.fillStyle = grad;
                 } else {
@@ -8925,6 +8928,8 @@ LGraphNode.prototype.executeAction = function(action)
 			//value changed
 			if( old_value != w.value )
 			{
+				if(node.onWidgetChanged)
+					node.onWidgetChanged( w.name,w.value,old_value,w );
                 node.graph._version++;
 			}
 
@@ -9134,7 +9139,10 @@ LGraphNode.prototype.executeAction = function(action)
         var entries = [];
         for (var i in values) {
             if (values[i]) {
-                entries.push({ value: values[i], content: values[i], has_submenu: true });
+				var name = values[i];
+				if(name.indexOf("::") != -1) //in case it has a namespace like "shader::math/rand" it hides the namespace
+					name = name.split("::")[1];
+                entries.push({ value: values[i], content: name, has_submenu: true });
             }
         }
 
@@ -10184,6 +10192,7 @@ LGraphNode.prototype.executeAction = function(action)
 		{
 			options = options || {};
 			var str_value = String(value);
+			type = type.toLowerCase();
 			if(type == "number")
 				str_value = value.toFixed(3);
 
@@ -10772,7 +10781,7 @@ LGraphNode.prototype.executeAction = function(action)
         }
 
         if (node.getExtraMenuOptions) {
-            var extra = node.getExtraMenuOptions(this);
+            var extra = node.getExtraMenuOptions(this, options);
             if (extra) {
                 extra.push(null);
                 options = extra.concat(options);

@@ -718,9 +718,8 @@ Interface.initialize = function() {
 	blocks.size.set(sizex, 45)
 	blocks.setText("Class Blocks")
 	blocks.setCallback(() => {
-		var obj = new BlockScript()
+		var obj = new BlockScript(undefined, undefined, "class")
 		obj.name = "class"
-		obj.blocks_type = "class"
 		Editor.program.addObject(obj)
 		Editor.updateAssetExplorer()
 	})
