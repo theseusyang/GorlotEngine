@@ -48,6 +48,17 @@ ObjectCaller.prototype.update = function() {
 	}
 }
 
+ObjectCaller.prototype.dispose = function() {
+	if (this.obj === null) 
+		return
+
+	this.obj.dispose()
+
+	for(var i = 0; i < this.children.length; i++) {
+		this.children[i].dispose()
+	}	
+}
+
 ObjectCaller.prototype.setObject = function(object) {
 	this.obj_uuid = object.uuid
 	this.name = object.name

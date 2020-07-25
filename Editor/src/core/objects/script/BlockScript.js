@@ -136,6 +136,15 @@ BlockScript.prototype.update = function()
 	this.tick[0].onExecute()
 }
 
+BlockScript.prototype.dispose = function() {
+	this.graph.sendEventToAllNodes("onDispose")
+
+	// Dispose children
+	for(var i = 0; i < this.children.length; i++) {
+		this.children[i].dispose()
+	}
+}
+
 // Update nodes
 BlockScript.prototype.updateNodes = function(nodes) {
 	this.nodes = {}

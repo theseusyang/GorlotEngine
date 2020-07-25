@@ -6,6 +6,7 @@ BeginPlayNode.title = "Begin Play"
 BeginPlayNode.title_color = NodesHelper.titles.event
 BeginPlayNode.skip_list = true
 BeginPlayNode.collapsable = false
+BeginPlayNode.type = "Blocks"
 BeginPlayNode.prototype.resizable = false
 BeginPlayNode.prototype.ignore_remove = true
 BeginPlayNode.prototype.clonable = false
@@ -23,6 +24,7 @@ EventTickNode.title = "Event Tick"
 EventTickNode.title_color = NodesHelper.titles.event
 EventTickNode.skip_list = true
 EventTickNode.collapsable = false
+EventTickNode.type = "Blocks"
 EventTickNode.prototype.resizable = false
 EventTickNode.prototype.ignore_remove = true
 EventTickNode.prototype.clonable = false
@@ -43,6 +45,7 @@ function EventDestroyedNode() {
 EventDestroyedNode.title = "On Destroyed"
 EventDestroyedNode.title_color = NodesHelper.titles.event
 EventDestroyedNode.collapsable = false
+EventDestroyedNode.type = "Blocks"
 EventDestroyedNode.prototype.resizable = false
 EventDestroyedNode.prototype.onStart = function() {
 	
@@ -58,6 +61,20 @@ EventDestroyedNode.prototype.onStart = function() {
 	})
 }
 
+// Event Dispose
+function EventDisposeNode() {
+	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.event, ...NodesHelper.slots.output})
+	this.size = NodesHelper.sizes.small
+}
+EventDisposeNode.title = "On Dispose"
+EventDisposeNode.title_color = NodesHelper.titles.event
+EventDisposeNode.collapsable = false
+EventDisposeNode.type = "Blocks"
+EventDisposeNode.prototype.resizable = false
+EventDisposeNode.prototype.onDispose = function() {
+	this.triggerSlot(0)
+}
+
 // Test Event
 function TestEvent() {
 	this.addInput("Event", LiteGraph.ACTION, NodesHelper.slots.event)
@@ -70,4 +87,5 @@ TestEvent.prototype.onAction = function(action, data) {
 LiteGraph.registerNodeType("Events/BeginPlay", BeginPlayNode)
 LiteGraph.registerNodeType("Events/EventTick", EventTickNode)
 LiteGraph.registerNodeType("Events/EventDestroyed", EventDestroyedNode)
+LiteGraph.registerNodeType("Events/EventDispose", EventDisposeNode)
 LiteGraph.registerNodeType("Events/TestEvent", TestEvent)
