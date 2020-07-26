@@ -19,6 +19,12 @@ BeginPlayNode.prototype.onExecute = function() {
 
 // Event Tick
 function EventTickNode() {
+	this.addInput("Delta", "number", {...NodesHelper.slots.number, ...NodesHelper.slots.input.position})
+
+	this.addProperty("delta", "1000")
+	this.delta_widget = this.addWidget("text", "", "", "delta")
+	this.delta_widget.width = 80
+
 	this.addOutput("", LiteGraph.EVENT, NodesHelper.slots.passer)
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, ...NodesHelper.slots.output.position})
 }
@@ -32,10 +38,38 @@ EventTickNode.prototype.ignore_remove = true
 EventTickNode.prototype.clonable = false
 EventTickNode.prototype.getMenuOptions = () => {return []}
 EventTickNode.prototype.onStart = function() {
-	this.triggerSlot(1)
+	var self = this
+
+	var delta = this.getInputData(0)
+
+	if (delta === undefined) 
+		delta = parseFloat(this.properties.delta) / 60
+
+	this.interval = setInterval(() => {self.tick()}, delta)
+
+	this.triggerSlot(1, "EventTickStarted")
 }
-EventTickNode.prototype.onExecute = function() {
-	this.triggerSlot(0, "EventTick")
+EventTickNode.prototype.tick = function() {
+	this.triggerSlot(0, "Tick")
+}
+EventTickNode.prototype.onDispose = function() {
+	clearInterval(this.interval)
+}
+
+// On Game Start
+function OnGameStartNode() {
+	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.passer, pos: [NodesHelper.slots.position.x1, NodesHelper.slots.output.title_pos["pos"][1]]})
+	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, ...NodesHelper.slots.output.position})
+	this.size = NodesHelper.sizes.small
+}
+OnGameStartNode.title = "On Game Start"
+OnGameStartNode.title_color = NodesHelper.titles.event
+OnGameStartNode.collapsable = false
+OnGameStartNode.blocks = "Blocks"
+OnGameStartNode.prototype.reiszable = false
+OnGameStartNode.prototype.onStart = function() {
+	this.triggerSlot(0, "GameStart")
+	this.triggerSlot(1)
 }
 
 // Event Destroy
@@ -79,6 +113,84 @@ EventDisposeNode.prototype.onDispose = function() {
 	this.triggerSlot(0)
 }
 
+// Create Event
+function EventListenerNode() {
+	this.addProperty("event", "event")
+
+	this.addInput("Object", "object", {...NodesHelper.slots.object, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.input.position["pos"][1]]})
+	this.addInput("Event", "string", {...NodesHelper.slots.string, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.input.position["pos"][1]+18]})
+
+	this.event_widget = this.addWidget("text", "", this.properties.event, "event")
+	this.event_widget.width = 110
+
+	this.addOutput("On Fired", LiteGraph.EVENT, {...NodesHelper.slots.output.event, pos: [NodesHelper.slots.output.position["pos"][0]+60, NodesHelper.slots.output.position["pos"][1]]})
+
+	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]+20]
+}
+EventListenerNode.title = "Event Listener"
+EventListenerNode.title_color = NodesHelper.titles.event
+EventListenerNode.collapsable = false
+EventListenerNode.blocks = "Blocks"
+EventListenerNode.prototype.resizable = false
+EventListenerNode.prototype.onStart = function() {
+	this.object = this.getInputData(0)
+	this.event = this.getInputData(1)
+
+	if (this.object === undefined) 
+		this.object = this.graph.config.self
+
+	if (this.event === undefined) 
+		this.event = this.properties.event
+
+	if (this.event !== "") {
+		var self = this
+		this.object.addEventListener(this.event, () => {self.listen()})
+	}
+}
+EventListenerNode.prototype.listen = function() {
+	// TODO: Add a new input called "data" and trigger this the "On Fired" slot with the content of that input
+	this.triggerSlot(0, (this.getInputData(0) !== undefined) ? this.getInputData(0) : this.properties.event)
+}
+EventListenerNode.prototype.onDispose = function() {
+	// When the object is disposed, the event listener is removed
+	if (this.object !== undefined) {
+		this.object.removeEventListener(this.event, this.listen)
+	}
+}
+
+// Fire Event
+function FireEventNode() {
+	this.addProperty("event", "event")
+
+	this.addInput("", LiteGraph.ACTION, NodesHelper.slots.input.event)
+	this.addInput("Object", "object", {...NodesHelper.slots.object, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.position["y_second"]]})
+	this.addInput("Event", "string", {...NodesHelper.slots.string, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.position["y_third"]]})
+
+	this.event_widget = this.addWidget("text", "", this.properties.event, "event")
+	this.event_widget.width = 110
+
+	this.size = [NodesHelper.sizes.medium[0]-40, NodesHelper.sizes.medium[1]+40]
+}
+FireEventNode.title = "Fire Event"
+FireEventNode.title_color = NodesHelper.titles.event
+FireEventNode.collapsable = false
+FireEventNode.blocks = "Blocks"
+FireEventNode.prototype.resizable = false
+FireEventNode.prototype.onAction = function(action, data) {
+	this.object = this.getInputData(1)
+	this.event = this.getInputData(2)
+
+	if (this.object === undefined) 
+		this.object = this.graph.config.self
+
+	if (this.event === undefined) 
+		this.event = this.properties.event
+
+	if(this.event !== "") {
+		this.object.dispatchEvent({type: this.event})
+	}
+}
+
 // Test Event
 function TestEvent() {
 	this.addInput("Event", LiteGraph.ACTION, NodesHelper.slots.input.event)
@@ -93,6 +205,9 @@ TestEvent.prototype.onAction = function(action, data) {
 
 LiteGraph.registerNodeType("Events/BeginPlay", BeginPlayNode)
 LiteGraph.registerNodeType("Events/EventTick", EventTickNode)
+LiteGraph.registerNodeType("Events/OnGameStart", OnGameStartNode)
 LiteGraph.registerNodeType("Events/EventDestroyed", EventDestroyedNode)
 LiteGraph.registerNodeType("Events/EventDispose", EventDisposeNode)
+LiteGraph.registerNodeType("Events/EventListener", EventListenerNode)
+LiteGraph.registerNodeType("Events/FireEvent", FireEventNode)
 LiteGraph.registerNodeType("Events/TestEvent", TestEvent)

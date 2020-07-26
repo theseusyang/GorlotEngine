@@ -37,6 +37,7 @@ NodesHelper.slots.colours.passer = "#FFC0CB"
 NodesHelper.slots.colours.element = "#00BFFF"
 NodesHelper.slots.colours.array = "#9400D3"
 NodesHelper.slots.colours.string = "#FF1493"
+NodesHelper.slots.colours.number = "#7ef48f"
 
 // Slots
 NodesHelper.slots.event = {color_on: NodesHelper.slots.colours.event, color_off: NodesHelper.slots.colours.event, shape: LiteGraph.ARROW_SHAPE}
@@ -44,6 +45,7 @@ NodesHelper.slots.passer = {color_on: NodesHelper.slots.colours.passer, color_of
 NodesHelper.slots.object = {color_on: NodesHelper.slots.colours.element, color_off: NodesHelper.slots.colours.element}
 NodesHelper.slots.array = {color_on: NodesHelper.slots.colours.array, color_off: NodesHelper.slots.colours.array}
 NodesHelper.slots.string = {color_on: NodesHelper.slots.colours.string, color_off: NodesHelper.slots.colours.string}
+NodesHelper.slots.number = {color_on: NodesHelper.slots.colours.number, color_off: NodesHelper.slots.colours.number}
 
 // Input slots
 NodesHelper.slots.input = {}
