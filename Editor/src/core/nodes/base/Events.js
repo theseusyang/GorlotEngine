@@ -117,15 +117,17 @@ EventDisposeNode.prototype.onDispose = function() {
 function EventListenerNode() {
 	this.addProperty("event", "event")
 
-	this.addInput("Object", "object", {...NodesHelper.slots.object, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.input.position["pos"][1]]})
-	this.addInput("Event", "string", {...NodesHelper.slots.string, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.input.position["pos"][1]+18]})
+	this.addInput("", LiteGraph.ACTION, {...NodesHelper.slots.event, pos: [NodesHelper.slots.position.x, NodesHelper.slots.position.y]})
+	this.addInput("Object", "object", {...NodesHelper.slots.object, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.input.position["pos"][1]+18]})
+	this.addInput("Data", "", {pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.input.position["pos"][1]+36]})
+	this.addInput("Event", "string", {...NodesHelper.slots.string, pos: [NodesHelper.slots.input.position["pos"][0], NodesHelper.slots.input.position["pos"][1]+54]})
 
 	this.event_widget = this.addWidget("text", "", this.properties.event, "event")
 	this.event_widget.width = 110
 
 	this.addOutput("On Fired", LiteGraph.EVENT, {...NodesHelper.slots.output.event, pos: [NodesHelper.slots.output.position["pos"][0]+60, NodesHelper.slots.output.position["pos"][1]]})
 
-	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]+20]
+	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]+56]
 }
 EventListenerNode.title = "Event Listener"
 EventListenerNode.title_color = NodesHelper.titles.event
@@ -133,11 +135,25 @@ EventListenerNode.collapsable = false
 EventListenerNode.blocks = "Blocks"
 EventListenerNode.prototype.resizable = false
 EventListenerNode.prototype.onStart = function() {
-	this.object = this.getInputData(0)
-	this.event = this.getInputData(1)
+	if (this.inputs[0].link === null) {
+		this.addListener()
+	}
+}
+EventListenerNode.prototype.onAction = function(action, data) {
+	this.addListener()
+}
+EventListenerNode.prototype.addListener = function() {
+	console.log(this.getInputData(0), this.getInputData(1), this.getInputData(2), this.getInputData(3))
+
+	this.object = this.getInputData(1)
+	this.data = this.getInputData(2)
+	this.event = this.getInputData(3)
 
 	if (this.object === undefined) 
 		this.object = this.graph.config.self
+
+	if (this.data === undefined) 
+		this.data = {}
 
 	if (this.event === undefined) 
 		this.event = this.properties.event
@@ -148,8 +164,7 @@ EventListenerNode.prototype.onStart = function() {
 	}
 }
 EventListenerNode.prototype.listen = function() {
-	// TODO: Add a new input called "data" and trigger this the "On Fired" slot with the content of that input
-	this.triggerSlot(0, (this.getInputData(0) !== undefined) ? this.getInputData(0) : this.properties.event)
+	this.triggerSlot(0, this.data)
 }
 EventListenerNode.prototype.onDispose = function() {
 	// When the object is disposed, the event listener is removed
