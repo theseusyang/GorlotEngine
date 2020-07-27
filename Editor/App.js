@@ -28,6 +28,8 @@ include("src/input/Mouse.js");
 
 include("src/core/webvr/VRControls.js");
 
+include("src/core/Namespace.js")
+
 include("src/core/resources/Font.js")
 include("src/core/resources/Video.js")
 include("src/core/resources/Audio.js")
@@ -123,6 +125,8 @@ include("src/core/nodes/NodesHelper.js")
 
 include("src/core/nodes/base/Events.js")
 include("src/core/nodes/base/Inheritance.js")
+
+include("src/core/nodes/input/Keyboard.js")
 
 include("src/core/FileSystem.js")
 

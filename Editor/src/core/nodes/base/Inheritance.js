@@ -79,7 +79,7 @@ GetChildByNameNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 // Get Parent
 function GetParentNode() {
 	this.addInput("", LiteGraph.ACTION, NodesHelper.slots.input.event)
-	this.addInput("Target", "object,scene", {...NodesHelper.slots.object, pos: [NodesHelper.slots.position.x, NodesHelper.slots.position.y_second]})
+	this.addInput("Target", "object", {...NodesHelper.slots.object, pos: [NodesHelper.slots.position.x, NodesHelper.slots.position.y_second]})
 
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.passer, pos: [NodesHelper.slots.position.x1 + 60, NodesHelper.slots.output.title_pos["pos"][1]]})
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, pos: [NodesHelper.slots.position.x1 + 60, NodesHelper.slots.position["y"]]})
@@ -108,7 +108,47 @@ GetParentNode.prototype.onAction = function(action, data) {
 	this.triggerSlot(0, parent)
 	this.triggerSlot(1)
 }
+GetParentNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
+
+// Is child
+function IsChildNode() {
+	this.addInput("", LiteGraph.ACTION, NodesHelper.slots.input.event)
+	this.addInput("Target", "object", {...NodesHelper.slots.object, pos: [NodesHelper.slots.position.x, NodesHelper.slots.position.y_second]})
+
+	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.passer, pos: [NodesHelper.slots.position.x1 + 60, NodesHelper.slots.output.title_pos["pos"][1]]})
+	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, pos: [NodesHelper.slots.position.x1 + 60, NodesHelper.slots.position["y"]]})
+	this.addOutput("Is Child?", "bool", {...NodesHelper.slots.bool, pos: [NodesHelper.slots.position.x1 + 60, NodesHelper.slots.position["y_second"]]})
+
+	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]]
+}
+IsChildNode.title = "Is Child"
+IsChildNode.title_color = NodesHelper.titles.inheritance
+IsChildNode.collapsable = false
+IsChildNode.blocks = "Blocks"
+IsChildNode.resizable = false
+IsChildNode.prototype.onAction = function(action, data) {
+	var target = this.getInputData(0)
+	var output = false
+
+	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D)) 
+		target = data
+
+	if (target === undefined) 
+		target = this.graph.config.self
+
+	var parent = target.parent
+
+	// If the parent ain't a scene, then the target object is a child
+	output = (parent instanceof THREE.Scene) ? false : true
+
+	this.setOutputData(1, output)
+
+	this.triggerSlot(0, output)
+	this.triggerSlot(1)
+}
+IsChildNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 
 LiteGraph.registerNodeType("Inheritance/GetAllChildNode", GetAllChildrenNode)
 LiteGraph.registerNodeType("Inheritance/GetChildByName", GetChildByNameNode)
 LiteGraph.registerNodeType("Inheritance/GetParent", GetParentNode)
+LiteGraph.registerNodeType("Inheritance/IsChild", IsChildNode)

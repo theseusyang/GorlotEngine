@@ -17,7 +17,7 @@
 	"render": {
 		"shadows": true,
 		"shadows_type": 0,
-		"antialiasing": false
+		"antialiasing": true
 	},
 	"code": {
 		"theme": "monokai",

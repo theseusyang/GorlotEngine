@@ -218,7 +218,7 @@ TextureBox.prototype.loadTexture = function(file) {
 	//Image
 	if(file.type.startsWith("image") || file.path.endsWith("tga"))
 	{
-		self.texture = new Texture(new Image(file.path));
+		self.texture = new Texture(new GORLOT.Image(file.path));
 		self.use_texture.setValue(true);
 	}
 	// Video

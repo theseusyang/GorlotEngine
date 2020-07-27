@@ -12,19 +12,13 @@ BeginPlayNode.prototype.resizable = false
 BeginPlayNode.prototype.ignore_remove = true
 BeginPlayNode.prototype.clonable = false
 BeginPlayNode.prototype.getMenuOptions = () => {return []}
-BeginPlayNode.prototype.onExecute = function() {
+BeginPlayNode.prototype.onStart = function() {
 	this.triggerSlot(0, "BeginPlay")
 	this.triggerSlot(1)
 }
 
 // Event Tick
 function EventTickNode() {
-	this.addInput("Delta", "number", {...NodesHelper.slots.number, ...NodesHelper.slots.input.position})
-
-	this.addProperty("delta", "1000")
-	this.delta_widget = this.addWidget("text", "", "", "delta")
-	this.delta_widget.width = 80
-
 	this.addOutput("", LiteGraph.EVENT, NodesHelper.slots.passer)
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, ...NodesHelper.slots.output.position})
 }
@@ -38,22 +32,10 @@ EventTickNode.prototype.ignore_remove = true
 EventTickNode.prototype.clonable = false
 EventTickNode.prototype.getMenuOptions = () => {return []}
 EventTickNode.prototype.onStart = function() {
-	var self = this
-
-	var delta = this.getInputData(0)
-
-	if (delta === undefined) 
-		delta = parseFloat(this.properties.delta) / 60
-
-	this.interval = setInterval(() => {self.tick()}, delta)
-
 	this.triggerSlot(1, "EventTickStarted")
 }
-EventTickNode.prototype.tick = function() {
+EventTickNode.prototype.onExecute = function() {
 	this.triggerSlot(0, "Tick")
-}
-EventTickNode.prototype.onDispose = function() {
-	clearInterval(this.interval)
 }
 
 // On Game Start

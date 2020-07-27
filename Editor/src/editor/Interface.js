@@ -277,7 +277,7 @@ Interface.initialize = function() {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
-				var texture = new Texture(new Image(file))
+				var texture = new Texture(new GORLOT.Image(file))
 				texture.name = "texture"
 				var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
 				material.name = "texture"

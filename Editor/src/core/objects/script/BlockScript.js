@@ -59,7 +59,7 @@ function BlockScript(nodes, uuid, obj_type)
 				],
 				pos: [100, 429],
 				properties: {},
-				size: [120, 48],
+				size: [120, 26],
 				type: "Events/EventTick"
 			}
 		],
@@ -103,8 +103,7 @@ BlockScript.prototype.initialize = function()
 	}
 
 	this.graph.sendEventToAllNodes("onStart")
-	this.run(this.graph)
-
+	
 	//Initialize children
 	for(var i = 0; i < this.children.length; i++)
 	{
@@ -136,6 +135,8 @@ BlockScript.prototype.update = function()
 	{
 		this.children[i].update();
 	}
+
+	this.run(this.graph)
 }
 
 BlockScript.prototype.dispose = function() {

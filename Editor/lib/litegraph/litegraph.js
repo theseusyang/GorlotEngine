@@ -7255,8 +7255,8 @@ LGraphNode.prototype.executeAction = function(action)
             }
 
             //DEBUG: show clipping area
-            //ctx.fillStyle = "red";
-            //ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - 20, this.visible_area[3] - 20);
+            // ctx.fillStyle = "red";
+            // ctx.fillRect( this.visible_area[0] + 10, this.visible_area[1] + 10, this.visible_area[2] - 20, this.visible_area[3] - 20);
 
             //bg
             if (this.render_canvas_border) {

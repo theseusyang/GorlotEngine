@@ -11,6 +11,7 @@ NodesHelper.sizes.large = [280, 86]
 NodesHelper.titles = {}
 NodesHelper.titles.event = "#FF0000"
 NodesHelper.titles.inheritance = "#556B2f"
+NodesHelper.titles.input = "#0080FF"
 
 // Nodes slots
 NodesHelper.slots = {}
@@ -24,6 +25,7 @@ NodesHelper.slots.position.y = 12
 
 NodesHelper.slots.position.y_second = 30 // For the second input
 NodesHelper.slots.position.y_third = 48 // For the third input
+NodesHelper.slots.position.y_fourth = 66 // For the fourth input
 
 // For outputs
 NodesHelper.slots.position.x1 = 105
@@ -38,6 +40,8 @@ NodesHelper.slots.colours.element = "#00BFFF"
 NodesHelper.slots.colours.array = "#9400D3"
 NodesHelper.slots.colours.string = "#FF1493"
 NodesHelper.slots.colours.number = "#7ef48f"
+NodesHelper.slots.colours.input = "#87ceeb"
+NodesHelper.slots.colours.bool = "#800000"
 
 // Slots
 NodesHelper.slots.event = {color_on: NodesHelper.slots.colours.event, color_off: NodesHelper.slots.colours.event, shape: LiteGraph.ARROW_SHAPE}
@@ -46,6 +50,8 @@ NodesHelper.slots.object = {color_on: NodesHelper.slots.colours.element, color_o
 NodesHelper.slots.array = {color_on: NodesHelper.slots.colours.array, color_off: NodesHelper.slots.colours.array}
 NodesHelper.slots.string = {color_on: NodesHelper.slots.colours.string, color_off: NodesHelper.slots.colours.string}
 NodesHelper.slots.number = {color_on: NodesHelper.slots.colours.number, color_off: NodesHelper.slots.colours.number}
+NodesHelper.slots.keyinput = {color_on: NodesHelper.slots.colours.input, color_off: NodesHelper.slots.colours.input}
+NodesHelper.slots.bool = {color_on: NodesHelper.slots.colours.bool, color_off: NodesHelper.slots.colours.bool}
 
 // Input slots
 NodesHelper.slots.input = {}

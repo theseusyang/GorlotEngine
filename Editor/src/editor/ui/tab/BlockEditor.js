@@ -65,11 +65,14 @@ BlockEditor.prototype.attachBlocks = function(blocks) {
 BlockEditor.prototype.initNodeEditor = function() {
 	this.graph = new LGraph(this.nodes)
 
+	var self = this
+
 	LiteGraph.NODE_TITLE_COLOR = "#FFF"
 
 	this.graphCanvas = new LGraphCanvas(this.canvas.element, this.graph)
 	this.graphCanvas.use_gradients = true
 	this.graphCanvas.title_text_font = "bold 10px Verdana,Arial,sans serif"
+
 	LiteGraph.NODE_TITLE_HEIGHT = 20
 	LiteGraph.NODE_TITLE_TEXT_Y = 15
 }
@@ -148,4 +151,6 @@ BlockEditor.prototype.updateInterface = function() {
 	this.canvas.visible = this.visible
 	this.canvas.size.set(this.size.x, this.size.y)
 	this.canvas.updateInterface()
+
+	this.graphCanvas.resize(this.size.x, this.size.y)
 }

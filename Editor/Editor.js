@@ -798,7 +798,7 @@ Editor.updateObjectPanel = function()
 
 // Create default resources to be used when creating new objects
 Editor.createDefaultResources = function() {
-	Editor.default_image = new Image("data/sample.png")
+	Editor.default_image = new GORLOT.Image("data/sample.png")
 	Editor.default_font = new Font("data/fonts/montserrat.json")
 	Editor.default_audio = new Audio("data/sample.ogg")
 	Editor.default_texture = new Texture(Editor.default_image)
@@ -1226,6 +1226,27 @@ Editor.initializeRenderer = function(canvas)
 	Editor.renderer.autoClear = false;
 	Editor.renderer.shadowMap.enabled = Settings.render.shadows;
 	Editor.renderer.shadowMap.type = Settings.render.shadows_type;
+}
+
+// Opens a different window
+Editor.openWindow = function(options) {
+	
+	var title = (options.title !== undefined) ? options.title : Editor.NAME
+	var w = (options.width !== undefined) ? options.width : 800
+	var h = (options.height !== undefined) ? options.height : 600
+
+	var wind = window.open("", "", "width="+w+", height="+h+", location=no, status=no, menubar=no, titlebar=no, fullscreen=yes")
+	wind.document.write(`<head><title>${title}</title></head><body oncontextmenu='return false'></body>`)
+
+	// transfer files
+	wind.document.write("<script src='App.js'></script>")
+	wind.document.write("<script src='Editor.js'></script>")
+
+	wind.document.close()
+
+	wind.window.editor = Editor
+
+	return wind
 }
 
 //Exit editor
