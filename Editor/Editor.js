@@ -86,7 +86,6 @@ include("src/editor/ui/asset/BlockAsset.js")
 include("src/editor/files/style/editor.css")
 include("src/editor/ui/theme/Theme.js")
 include("src/editor/ui/theme/ThemeDark.js")
-include("src/editor/ui/theme/ThemeLight.js")
 
 include("src/editor/ui/tab/ScriptEditor.js")
 include("src/editor/ui/tab/SceneEditor.js")

@@ -31,6 +31,21 @@ Interface.initialize = function() {
 	Interface.asset_new.setText("Add New")
 	Interface.asset_new.size.set(100, Interface.asset_explorer_bar.size.y)
 	Interface.asset_new.position.set(0, 0)
+	Interface.asset_new.element.style.backgroundColor = Editor.theme.special_color
+
+	Interface.asset_new.element.onmouseover = function() {
+		Interface.asset_new.expanded = true
+		Interface.asset_new.updateInterface()
+		Interface.asset_new.element.style.cursor = "pointer"
+		Interface.asset_new.element.style.backgroundColor = Editor.theme.special_over_color
+	}
+
+	Interface.asset_new.element.onmouseleave = function() {
+		Interface.asset_new.expanded = false
+		Interface.asset_new.updateInterface()
+		Interface.asset_new.element.style.cursor = "default"
+		Interface.asset_new.element.style.backgroundColor = Editor.theme.special_color
+	}
 
 	// Create materials
 	var asset_material = Interface.asset_new.addMenu("Materials", Interface.file_dir + "icons/misc/material.png")
@@ -97,7 +112,7 @@ Interface.initialize = function() {
 		obj.name = "class"
 		Editor.program.addObject(obj)
 		Editor.updateAssetExplorer()
-	})
+	}, Interface.file_dir + "icons/script/blocks.png")
 
 	// Import a file
 	Interface.asset_file = new DropdownMenu(Interface.asset_explorer_bar.element)

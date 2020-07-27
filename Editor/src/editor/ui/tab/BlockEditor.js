@@ -29,6 +29,44 @@ function BlockEditor(parent) {
 		e.preventDefault()
 	}
 
+	// Top bar
+	this.top_bar = new Bar(this.element)
+	this.top_bar.size.y = 50
+
+	this.add_var = new ButtonImage(this.element)
+	this.add_var.position.set(0, 0)
+	this.add_var.size.set(50, this.top_bar.size.y)
+	// TODO: Variable icon
+	this.add_var.setAltText("Variable")
+	this.add_var.updateInterface()
+
+	this.add_func = new ButtonImage(this.element)
+	this.add_func.position.set(50, 0)
+	this.add_func.size.set(50, this.top_bar.size.y)
+	// TODO: Function icon
+	this.add_func.setAltText("Function")
+	this.add_func.updateInterface()
+
+	this.obj_var = new ButtonImage(this.element)
+	this.obj_var.position.set(100, 0)
+	this.obj_var.size.set(50, this.top_bar.size.y)
+	// TODO: Function icon
+	this.obj_var.setAltText("Object to Variable")
+	this.obj_var.updateInterface()
+
+	// Node inspector
+
+	this.ins_elm = document.createElement("div")
+	this.ins_elm.style.position = "absolute"
+	this.ins_elm.style.backgroundColor = Editor.theme.bar_color
+	this.element.appendChild(this.ins_elm)
+
+	this.node_ins = new Form(this.ins_elm)
+	this.node_ins.spacing.set(5, 5)
+
+	this.node_ins.addText("Blocks Editor")
+	this.node_ins.nextRow()
+
 	// Canvas
 	this.canvas = new Canvas(this.element)
 	this.canvas.updateInterface()
@@ -147,10 +185,23 @@ BlockEditor.prototype.updateInterface = function() {
 		this.element.style.visibility = "hidden"
 	}
 
+	// Update elements
+	this.top_bar.size.x = this.size.x
+	this.top_bar.updateInterface()
+
+	// Node inspector
+	this.ins_elm.style.width = "200px"
+	this.ins_elm.style.height = this.size.y - this.top_bar.size.y + "px"
+	this.ins_elm.style.top = this.top_bar.size.y + "px"
+
+	this.node_ins.position.set(10, 10)
+	this.node_ins.updateInterface()
+
 	// Update canvas
 	this.canvas.visible = this.visible
-	this.canvas.size.set(this.size.x, this.size.y)
+	this.canvas.position.set(200, this.top_bar.size.y)
+	this.canvas.size.set(this.size.x - 200, this.size.y-this.top_bar.size.y)
 	this.canvas.updateInterface()
 
-	this.graphCanvas.resize(this.size.x, this.size.y)
+	this.graphCanvas.resize(this.size.x - 200, this.size.y)
 }
