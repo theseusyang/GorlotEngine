@@ -92,6 +92,13 @@ Interface.initialize = function() {
 		Editor.updateObjectViews()
 	})
 
+	Interface.asset_new.addOption("Class Blocks", () => {
+		var obj = new BlockScript(undefined, undefined, "class")
+		obj.name = "class"
+		Editor.program.addObject(obj)
+		Editor.updateAssetExplorer()
+	})
+
 	// Import a file
 	Interface.asset_file = new DropdownMenu(Interface.asset_explorer_bar.element)
 	Interface.asset_file.setText("Import")
@@ -714,24 +721,24 @@ Interface.initialize = function() {
 	Interface.effects_form.nextRow()
 
 	// Class blocks
-	blocks = new Button(Interface.effects_form.element)
-	blocks.size.set(sizex, 45)
-	blocks.setText("Class Blocks")
-	blocks.setCallback(() => {
-		var obj = new BlockScript(undefined, undefined, "class")
-		obj.name = "class"
-		Editor.program.addObject(obj)
-		Editor.updateAssetExplorer()
-	})
-
-	blocksIcon = new ImageBox(blocks.element)
-	blocksIcon.size.set(40, 40)
-	blocksIcon.position.set(5, 2)
-	blocksIcon.setImage(Interface.file_dir + "icons/script/blocks.png")
-	blocksIcon.updateInterface()
-
-	Interface.effects_form.add(blocks)
-	Interface.effects_form.nextRow()
+//	blocks = new Button(Interface.effects_form.element)
+//	blocks.size.set(sizex, 45)
+//	blocks.setText("Class Blocks")
+//	blocks.setCallback(() => {
+//		var obj = new BlockScript(undefined, undefined, "class")
+//		obj.name = "class"
+//		Editor.program.addObject(obj)
+//		Editor.updateAssetExplorer()
+//	})
+//
+//	blocksIcon = new ImageBox(blocks.element)
+//	blocksIcon.size.set(40, 40)
+//	blocksIcon.position.set(5, 2)
+//	blocksIcon.setImage(Interface.file_dir + "icons/script/blocks.png")
+//	blocksIcon.updateInterface()
+//
+//	Interface.effects_form.add(blocks)
+//	Interface.effects_form.nextRow()
 
 	// Script
 	var script = new Button(Interface.effects_form.element)
@@ -1220,7 +1227,7 @@ Interface.saveProgram = function() {
 	App.chooseFile((files) => {
 		try {
 			Editor.saveProgram(files[0].path)
-			alert("Program save")
+			alert("Program saved")
 		} catch(e) {
 			alert("Error saving file\n(" + e + ")")
 		}
@@ -1239,7 +1246,7 @@ Interface.loadProgram = function() {
 			} catch(e) {
 				alert("Error loading file\n(" + e + ")")
 			}
-		}, ".isp", true)
+		}, ".isp")
 	}
 }
 
