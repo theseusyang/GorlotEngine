@@ -14,7 +14,8 @@ NodesHelper.titles.hierarchy = "#556B2f"
 NodesHelper.titles.input = "#0080FF"
 NodesHelper.titles.object = "#DEB887"
 NodesHelper.titles.base = "#5F9EA0"
-NodesHelper.titles.color = "#032138"
+NodesHelper.titles.material = "#032138"
+NodesHelper.titles.texture = "#1d5e4a"
 
 // Nodes slots
 NodesHelper.slots = {}
@@ -54,6 +55,8 @@ NodesHelper.slots.colours.vector = "#D2691E"
 NodesHelper.slots.colours.variable = "#A52A2A"
 NodesHelper.slots.colours.euler = "#8bd613"
 NodesHelper.slots.colours.color = "#380333"
+NodesHelper.slots.colours.texture = "#1d5e4a"
+NodesHelper.slots.colours.json = "#1d395e"
 
 // Slots
 NodesHelper.slots.event = {color_on: NodesHelper.slots.colours.event, color_off: NodesHelper.slots.colours.event, shape: LiteGraph.ARROW_SHAPE}
@@ -68,6 +71,8 @@ NodesHelper.slots.vector = {color_on: NodesHelper.slots.colours.vector, color_of
 NodesHelper.slots.variable = {color_on: NodesHelper.slots.colours.variable, color_off: NodesHelper.slots.colours.variable}
 NodesHelper.slots.euler = {color_on: NodesHelper.slots.colours.euler, color_off: NodesHelper.slots.colours.euler}
 NodesHelper.slots.color = {color_on: NodesHelper.slots.colours.color, color_off: NodesHelper.slots.colours.color}
+NodesHelper.slots.texture = {color_on: NodesHelper.slots.colours.texture, color_off: NodesHelper.slots.colours.texture}
+NodesHelper.slots.json = {color_on: NodesHelper.slots.colours.json, color_off: NodesHelper.slots.colours.json}
 
 // Input slots
 NodesHelper.slots.input = {}
