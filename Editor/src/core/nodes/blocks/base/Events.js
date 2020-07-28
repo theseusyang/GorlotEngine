@@ -125,8 +125,6 @@ EventListenerNode.prototype.onAction = function(action, data) {
 	this.addListener()
 }
 EventListenerNode.prototype.addListener = function() {
-	console.log(this.getInputData(0), this.getInputData(1), this.getInputData(2), this.getInputData(3))
-
 	this.object = this.getInputData(1)
 	this.data = this.getInputData(2)
 	this.event = this.getInputData(3)
@@ -200,11 +198,13 @@ TestEvent.prototype.onAction = function(action, data) {
 	console.log(this.getInputData(1))
 }
 
-LiteGraph.registerNodeType("Events/BeginPlay", BeginPlayNode)
-LiteGraph.registerNodeType("Events/EventTick", EventTickNode)
-LiteGraph.registerNodeType("Events/OnGameStart", OnGameStartNode)
-LiteGraph.registerNodeType("Events/EventDestroyed", EventDestroyedNode)
-LiteGraph.registerNodeType("Events/EventDispose", EventDisposeNode)
-LiteGraph.registerNodeType("Events/EventListener", EventListenerNode)
-LiteGraph.registerNodeType("Events/FireEvent", FireEventNode)
-LiteGraph.registerNodeType("Events/TestEvent", TestEvent)
+function registerEvents() {
+	LiteGraph.registerNodeType("Events/BeginPlay", BeginPlayNode)
+	LiteGraph.registerNodeType("Events/EventTick", EventTickNode)
+	LiteGraph.registerNodeType("Events/OnGameStart", OnGameStartNode)
+	LiteGraph.registerNodeType("Events/EventDestroyed", EventDestroyedNode)
+	LiteGraph.registerNodeType("Events/EventDispose", EventDisposeNode)
+	LiteGraph.registerNodeType("Events/EventListener", EventListenerNode)
+	LiteGraph.registerNodeType("Events/FireEvent", FireEventNode)
+	LiteGraph.registerNodeType("Events/TestEvent", TestEvent)
+}

@@ -270,28 +270,32 @@ function TreeElement(container) {
 			}
 		}
 		else if (self.obj instanceof BlockScript) {
-			// Check if there is already a tab with this block script attached
-			var found = false
-			for(var i = 0; i < Interface.tab.options.length; i++) {
-				if (Interface.tab.options[i].component instanceof BlockEditor) {
-					if (Interface.tab.options[i].component.blocks === self.obj) {
-						found = true
-						Interface.tab.selectTab(i)
-						break
-					}
+			var wind = Editor.openWindow({title: "Blocks Editor", width: 1280, height: 720})
+			var blocks = new BlockEditor(wind.document.body)
+			blocks.fit_parent = true
+			blocks.attachBlocks(self.obj)
+
+			wind.window.component = blocks
+
+			wind.window.onload = function() {
+				wind.window.component.updateInterface()
+
+				wind.window.onresize = function() {
+					wind.window.component.updateInterface()
 				}
-			}
 
-			// If not found open new tab
-			if (!found) {
-				// Add new Block Script
-				var tab = Interface.tab.addTab(self.obj.name, Interface.file_dir + "icons/script/blocks.png", true)
-				var blocks = new BlockEditor()
-				blocks.attachBlocks(self.obj)
-				tab.attachComponent(blocks)
+				wind.window.onblur = function() {
+					wind.window.component.updateBlocks()
+				}
 
-				// Select added tab
-				tab.select()
+				wind.window.obfocus = function() {
+					Register.registerBlocksNodes()
+					wind.window.component.updateBlocks()
+				}
+
+				wind.window.onbeforeunload = function() {
+					wind.window.component.updateBlocks()
+				}
 			}
 		}
 	};

@@ -157,7 +157,9 @@ IsChildNode.prototype.onAction = function(action, data) {
 	this.triggerSlot(1)
 }
 
-LiteGraph.registerNodeType("Hierarchy/GetAllChildNode", GetAllChildrenNode)
-LiteGraph.registerNodeType("Hierarchy/GetChildByName", GetChildByNameNode)
-LiteGraph.registerNodeType("Hierarchy/GetParent", GetParentNode)
-LiteGraph.registerNodeType("Hierarchy/IsChild", IsChildNode)
+function registerHierarchy() {
+	LiteGraph.registerNodeType("Hierarchy/GetAllChildNode", GetAllChildrenNode)
+	LiteGraph.registerNodeType("Hierarchy/GetChildByName", GetChildByNameNode)
+	LiteGraph.registerNodeType("Hierarchy/GetParent", GetParentNode)
+	LiteGraph.registerNodeType("Hierarchy/IsChild", IsChildNode)
+}

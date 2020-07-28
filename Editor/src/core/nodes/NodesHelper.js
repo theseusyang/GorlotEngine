@@ -10,10 +10,11 @@ NodesHelper.sizes.large = [280, 86]
 // Nodes titles
 NodesHelper.titles = {}
 NodesHelper.titles.event = "#FF0000"
-NodesHelper.titles.object = "#DEB887"
 NodesHelper.titles.hierarchy = "#556B2f"
 NodesHelper.titles.input = "#0080FF"
+NodesHelper.titles.object = "#DEB887"
 NodesHelper.titles.base = "#5F9EA0"
+NodesHelper.titles.color = "#032138"
 
 // Nodes slots
 NodesHelper.slots = {}
@@ -25,9 +26,14 @@ NodesHelper.slots.position = {}
 NodesHelper.slots.position.x = 20
 NodesHelper.slots.position.y = 12
 
-NodesHelper.slots.position.y_second = 30 // For the second input
-NodesHelper.slots.position.y_third = 48 // For the third input
-NodesHelper.slots.position.y_fourth = 66 // For the fourth input
+NodesHelper.slots.position.y_second = 30 // For the second slot
+NodesHelper.slots.position.y_third = 48 // For the third slot
+NodesHelper.slots.position.y_fourth = 66 // For the fourth slot
+NodesHelper.slots.position.y_fifth = 84 // For the fifth slot
+NodesHelper.slots.position.y_sixth = 104 // For the sixth slot
+NodesHelper.slots.position.y_seventh = 122 // For the seventh slot
+NodesHelper.slots.position.y_eighth = 140
+NodesHelper.slots.position.y_ninth = 158
 
 // For outputs
 NodesHelper.slots.position.x1 = 105
@@ -46,6 +52,8 @@ NodesHelper.slots.colours.input = "#87ceeb"
 NodesHelper.slots.colours.bool = "#800000"
 NodesHelper.slots.colours.vector = "#D2691E"
 NodesHelper.slots.colours.variable = "#A52A2A"
+NodesHelper.slots.colours.euler = "#8bd613"
+NodesHelper.slots.colours.color = "#380333"
 
 // Slots
 NodesHelper.slots.event = {color_on: NodesHelper.slots.colours.event, color_off: NodesHelper.slots.colours.event, shape: LiteGraph.ARROW_SHAPE}
@@ -58,6 +66,8 @@ NodesHelper.slots.keyinput = {color_on: NodesHelper.slots.colours.input, color_o
 NodesHelper.slots.bool = {color_on: NodesHelper.slots.colours.bool, color_off: NodesHelper.slots.colours.bool}
 NodesHelper.slots.vector = {color_on: NodesHelper.slots.colours.vector, color_off: NodesHelper.slots.colours.vector}
 NodesHelper.slots.variable = {color_on: NodesHelper.slots.colours.variable, color_off: NodesHelper.slots.colours.variable}
+NodesHelper.slots.euler = {color_on: NodesHelper.slots.colours.euler, color_off: NodesHelper.slots.colours.euler}
+NodesHelper.slots.color = {color_on: NodesHelper.slots.colours.color, color_off: NodesHelper.slots.colours.color}
 
 // Input slots
 NodesHelper.slots.input = {}

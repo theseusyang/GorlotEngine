@@ -121,14 +121,18 @@ include("src/core/components/lights/LightComponent.js")
 include("src/core/components/objects/ScriptComponent.js")
 
 // Nodes
+include("src/core/nodes/Register.js")
 include("src/core/nodes/NodesHelper.js")
 
-include("src/core/nodes/base/Base.js")
-include("src/core/nodes/base/Events.js")
-include("src/core/nodes/base/Objects.js")
-include("src/core/nodes/base/Hierarchy.js")
+// Blocks
+include("src/core/nodes/blocks/base/Base.js")
+include("src/core/nodes/blocks/base/Events.js")
+include("src/core/nodes/blocks/base/Objects.js")
+include("src/core/nodes/blocks/base/Hierarchy.js")
+include("src/core/nodes/blocks/input/Keyboard.js")
 
-include("src/core/nodes/input/Keyboard.js")
+// Material
+include("src/core/nodes/material/MaterialNodes.js")
 
 include("src/core/FileSystem.js")
 

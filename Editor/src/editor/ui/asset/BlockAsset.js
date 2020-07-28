@@ -74,6 +74,7 @@ function BlockAsset(parent) {
 				}
 
 				wind.window.onfocus = function() {
+					Register.registerBlocksNodes()
 					wind.window.component.updateBlocks()
 				}
 

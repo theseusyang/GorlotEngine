@@ -102,8 +102,9 @@ BlockScript.prototype.initialize = function()
 		})
 	}
 
-	this.graph.runStep(1)
-	this.graph.start()
+	//this.graph.runStep(1)
+
+	setTimeout(() => {self.graph.start()}, 100)
 	
 	//Initialize children
 	for(var i = 0; i < this.children.length; i++)

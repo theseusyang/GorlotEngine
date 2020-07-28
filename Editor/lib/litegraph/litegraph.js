@@ -134,10 +134,8 @@
             }
 
             var prev = this.registered_node_types[type];
-			if(prev)
-				console.log("replacing node type: " + type);
-			else
-			{
+			if(prev) {
+            } else {
 				if( !Object.hasOwnProperty( base_class.prototype, "shape") )
 				Object.defineProperty(base_class.prototype, "shape", {
 					set: function(v) {
@@ -9174,7 +9172,7 @@ LGraphNode.prototype.executeAction = function(action)
             var node_types = LiteGraph.getNodeTypesInCategory( category, canvas.filter || graph.filter );
             var values = [];
             for (var i=0; i < node_types.length; i++) {
-                if (!node_types[i].skip_list && node_types[i].blocks === graph.config.blocks) {
+                if (!node_types[i].skip_list) {
                     values.push({
                         content: node_types[i].title,
                         value: node_types[i].type

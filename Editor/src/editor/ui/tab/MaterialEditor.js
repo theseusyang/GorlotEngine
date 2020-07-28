@@ -16,6 +16,9 @@ function MaterialEditor(parent)
 	var id = "material_editor" + MaterialEditor.id;
 	MaterialEditor.id++;
 
+	Register.unregisterAll()
+	Register.registerMaterialNodes()
+
 	//Create element
 	this.element = document.createElement("div");
 	this.element.id = id;
@@ -36,12 +39,10 @@ function MaterialEditor(parent)
 	// Graph canvas
 	this.graph_canvas = new Canvas(this.element)
 	this.graph_canvas.updateInterface()
-	this.graph_canvas.element.style.position = "absolute"
 
 	//Canvas
 	this.canvas = new Canvas(this.element);
 	this.canvas.updateInterface();
-	this.canvas.element.style.position = "relative"
 
 	this.graph = null
 
@@ -60,10 +61,8 @@ function MaterialEditor(parent)
 	this.nodes = null
 
 	//Material renderer and scene
-	this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.element, antialias: Settings.render.antialiasing, alpha: true});
+	this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.element, alpha: true});
 	this.renderer.setSize(this.canvas.size.x, this.canvas.size.y);
-	this.renderer.shadowMap.enabled = Settings.render.shadows;
-	this.renderer.shadowMap.type = Settings.render.shadows_type;
 
 	//Material camera
 	this.camera = new PerspectiveCamera(90, this.canvas.size.x/this.canvas.size.y);
@@ -94,25 +93,25 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 	//Check is if sprite material and ajust preview
 	if(material instanceof THREE.SpriteMaterial)
 	{
-		this.sprite.material = material;
-		this.sprite.visible = true;
-		this.obj.visible = false;
+		this.sprite.material = material
+		this.sprite.visible = true
+		this.obj.visible = false
 	}
 	else
 	{
-		this.obj.material = material;
-		this.obj.visible = true;
-		this.sprite.visible = false;
+		this.obj.material = material
+		this.obj.visible = true
+		this.sprite.visible = false
 	}
 
 	//Store material file pointer
 	if(material_file !== undefined)
 	{
-		this.material_file = material_file;
+		this.material_file = material_file
 	}
 
 	//Store material
-	this.material = material;
+	this.material = material
 
 	// The default material nodes
 	this.defaultNodes = {
@@ -139,7 +138,7 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 					abf: (this.material.fog !== undefined) ? this.material.fog : false
 				},
 				size: [210, 382],
-				type: "Material/MeshPhongMaterial"
+				type: "Material/Material"
 			}
 		],
 		version: 0.4
@@ -165,7 +164,6 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 		this.nodes = this.material.nodes
 	}
 
-
 	this.initNodeEditor()
 }
 
@@ -181,6 +179,8 @@ MaterialEditor.prototype.initNodeEditor = function() {
 	}
 
 	this.graphCanvas = new LGraphCanvas(this.graph_canvas.element, this.graph)
+	this.graphCanvas.use_gradients = true
+	this.graphCanvas.title_text_font = "bold 14px Verdana,Arial,sans serif"
 	this.graph.start(1000/60)
 }
 
@@ -188,8 +188,8 @@ MaterialEditor.prototype.initNodeEditor = function() {
 MaterialEditor.prototype.activate = function()
 {
 	Editor.setState(Editor.STATE_IDLE);
+	Mouse.setCanvas(this.canvas.element)
 	Editor.resetEditingFlags();
-	Mouse.setCanvas(this.canvas.element);
 }
 
 //Remove element

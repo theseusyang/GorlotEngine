@@ -1046,22 +1046,22 @@ Editor.loadProgram = function(fname)
 Editor.exportWebProject = function(dir)
 {
 	FileSystem.copyFolder("runtime", dir);
-	FileSystem.copyFolder("src/core", dir + "/core");
-	FileSystem.copyFolder("src/input", dir + "/input");
-	FileSystem.copyFile("src/App.js", dir + "/App.js");
+	FileSystem.copyFolder("src/core", dir + "src/core");
+	FileSystem.copyFolder("src/input", dir + "src/input");
+	FileSystem.copyFile("src/App.js", dir + "src/App.js");
 
-	FileSystem.makeDirectory(dir + "/lib");
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "/lib/leap.min.js");
-	FileSystem.copyFile("src/lib/SPE.min.js", dir + "/lib/SPE.min.js");
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "/lib/leap.min.js");
-	FileSystem.copyFile("src/lib/stats.min.js", dir + "/lib/stats.min.js");
-	FileSystem.copyFile("src/lib/cannon.min.js", dir + "/lib/cannon.min.js");
-	FileSystem.copyFile("src/lib/spine.min.js", dir + "/lib/spine.min.js");
-	FileSystem.copyFile("src/lib/base64.min.js", dir + "/lib/base64.min.js");
-	FileSystem.makeDirectory(dir + "/lib/three");
-	FileSystem.copyFile("src/lib/three/three.min.js", dir + "/lib/three/three.min.js");
-	FileSystem.makeDirectory(dir + "/lib/three/effects");
-	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "/lib/three/effects/VREffect.js");
+	FileSystem.makeDirectory(dir + "src/lib");
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js");
+	FileSystem.copyFile("src/lib/SPE.min.js", dir + "src/lib/SPE.min.js");
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js");
+	FileSystem.copyFile("src/lib/stats.min.js", dir + "src/lib/stats.min.js");
+	FileSystem.copyFile("src/lib/cannon.min.js", dir + "src/lib/cannon.min.js");
+	FileSystem.copyFile("src/lib/spine.min.js", dir + "src/lib/spine.min.js");
+	FileSystem.copyFile("src/lib/base64.min.js", dir + "src/lib/base64.min.js");
+	FileSystem.makeDirectory(dir + "src/lib/three");
+	FileSystem.copyFile("src/lib/three/three.min.js", dir + "src/lib/three/three.min.js");
+	FileSystem.makeDirectory(dir + "src/lib/three/effects");
+	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "src/lib/three/effects/VREffect.js");
 
 	Editor.saveProgram(dir + "/app.isp");
 }
