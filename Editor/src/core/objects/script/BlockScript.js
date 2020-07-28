@@ -84,6 +84,7 @@ BlockScript.prototype = Object.create(THREE.Object3D.prototype);
 //Initialize
 BlockScript.prototype.initialize = function()
 {
+	var self = this
 	this.graph = new LGraph(this.nodes)
 
 	this.graph.config.scene = ObjectUtils.getScene(this)
@@ -93,7 +94,6 @@ BlockScript.prototype.initialize = function()
 	} else if(this.graph.config.type === "class") {
 		var scene = (Editor.program_running !== undefined && Editor.program_running !== null) ? Editor.program_running.scene : Main.program.scene
 		this.graph.config.scene = scene
-		var self = this
 
 		scene.traverse((child) => {
 			if (child.obj_uuid !== undefined && child.obj_uuid === self.uuid) {
@@ -102,28 +102,13 @@ BlockScript.prototype.initialize = function()
 		})
 	}
 
-	this.graph.sendEventToAllNodes("onStart")
+	this.graph.runStep(1)
+	this.graph.start()
 	
 	//Initialize children
 	for(var i = 0; i < this.children.length; i++)
 	{
 		this.children[i].initialize();
-	}
-}
-
-BlockScript.prototype.run = function(graph) {
-	if (graph !== undefined) {
-		var nodes = graph._nodes_executable ? graph._nodes_executable : graph._nodes
-			
-		if(!nodes)
-			return
-
-		for(var j = 0, l = nodes.length; j < l; ++j) {
-			var node = nodes[j]
-			if (node.mode === LiteGraph.ALWAYS && node.onExecute) {
-				node.onExecute()
-			}
-		}
 	}
 }
 
@@ -136,13 +121,17 @@ BlockScript.prototype.update = function()
 		this.children[i].update();
 	}
 
-	this.run(this.graph)
+	//this.run(this.graph)
 }
 
 BlockScript.prototype.dispose = function() {
 
-	if(this.graph !== null)
+	if(this.graph !== null) {
 		this.graph.sendEventToAllNodes("onDispose")
+		this.graph.stop()
+
+		this.nodes.extra = {}
+	}
 
 	// Dispose children
 	for(var i = 0; i < this.children.length; i++) {

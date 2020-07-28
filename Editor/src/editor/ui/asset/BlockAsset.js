@@ -10,39 +10,6 @@ function BlockAsset(parent) {
 	// Self pointer
 	var self = this
 
-	// Double click
-	this.element.ondblclick = function() {
-		if (self.blocks instanceof BlockScript) {
-			var wind = Editor.openWindow({title: "Blocks Editor", width: 1280, height: 720})
-			var blocks = new BlockEditor(wind.document.body)
-			blocks.fit_parent = true
-			blocks.attachBlocks(self.blocks)
-
-			wind.window.component = blocks
-
-			wind.window.onload = function() {
-				wind.window.component.updateInterface()
-				
-				wind.window.onresize = function() {
-					wind.window.component.updateInterface()
-				}
-
-				wind.window.onblur = function() {
-					wind.window.component.updateBlocks()
-				}
-
-				wind.window.onfocus = function() {
-					wind.window.component.updateBlocks()
-				}
-
-				wind.window.onbeforeunload = function() {
-					wind.window.component.updateBlocks()		
-				}
-			}
-
-		}
-	}
-
 	// Context menu event
 	this.element.oncontextmenu = function(e) {
 		var context = new ContextMenu()
@@ -83,6 +50,39 @@ function BlockAsset(parent) {
 		// Try to remove blocks from drag buffer
 		var uuid = event.dataTransfer.getData("uuid")
 		var obj = DragBuffer.popDragElement(uuid)
+	}
+
+	// Double click
+	this.element.ondblclick = function() {
+		if (self.blocks instanceof BlockScript) {
+			var wind = Editor.openWindow({title: "Blocks Editor", width: 1280, height: 720})
+			var blocks = new BlockEditor(wind.document.body)
+			blocks.fit_parent = true
+			blocks.attachBlocks(self.blocks)
+
+			wind.window.component = blocks
+
+			wind.window.onload = function() {
+				wind.window.component.updateInterface()
+				
+				wind.window.onresize = function() {
+					wind.window.component.updateInterface()
+				}
+
+				wind.window.onblur = function() {
+					wind.window.component.updateBlocks()
+				}
+
+				wind.window.onfocus = function() {
+					wind.window.component.updateBlocks()
+				}
+
+				wind.window.onbeforeunload = function() {
+					wind.window.component.updateBlocks()		
+				}
+			}
+
+		}
 	}
 }
 

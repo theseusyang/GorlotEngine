@@ -15,7 +15,7 @@ ANode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 ANode.prototype.onStart = function() {
 	this.setOutputData(0, Keyboard.A)
 	this.setOutputData(1, Keyboard.A)
-	this.setOutputData(2, Keyboard.B)
+	this.setOutputData(2, Keyboard.A)
 }
 ANode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.A)) 

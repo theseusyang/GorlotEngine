@@ -36,21 +36,21 @@ function BlockEditor(parent) {
 	this.add_var = new ButtonImage(this.element)
 	this.add_var.position.set(0, 0)
 	this.add_var.size.set(50, this.top_bar.size.y)
-	// TODO: Variable icon
+	this.add_var.setImage(Interface.file_dir + "icons/blocks/newvar.png")
 	this.add_var.setAltText("Variable")
 	this.add_var.updateInterface()
 
 	this.add_func = new ButtonImage(this.element)
 	this.add_func.position.set(50, 0)
 	this.add_func.size.set(50, this.top_bar.size.y)
-	// TODO: Function icon
+	this.add_func.setImage(Interface.file_dir + "icons/blocks/newfunc.png")
 	this.add_func.setAltText("Function")
 	this.add_func.updateInterface()
 
 	this.obj_var = new ButtonImage(this.element)
 	this.obj_var.position.set(100, 0)
 	this.obj_var.size.set(50, this.top_bar.size.y)
-	// TODO: Function icon
+	this.obj_var.setImage(Interface.file_dir + "icons/models/models.png")
 	this.obj_var.setAltText("Object to Variable")
 	this.obj_var.updateInterface()
 
@@ -202,6 +202,4 @@ BlockEditor.prototype.updateInterface = function() {
 	this.canvas.position.set(200, this.top_bar.size.y)
 	this.canvas.size.set(this.size.x - 200, this.size.y-this.top_bar.size.y)
 	this.canvas.updateInterface()
-
-	this.graphCanvas.resize(this.size.x - 200, this.size.y)
 }

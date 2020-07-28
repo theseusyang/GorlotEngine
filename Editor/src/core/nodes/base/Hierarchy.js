@@ -10,10 +10,11 @@ function GetAllChildrenNode() {
 	this.size = NodesHelper.sizes.medium
 }
 GetAllChildrenNode.title = "Get All Children"
-GetAllChildrenNode.title_color = NodesHelper.titles.inheritance
+GetAllChildrenNode.title_color = NodesHelper.titles.hierarchy
 GetAllChildrenNode.collapsable = false
 GetAllChildrenNode.blocks = "Blocks"
 GetAllChildrenNode.prototype.resizable = false
+GetAllChildrenNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetAllChildrenNode.prototype.onAction = function(action, data) {
 	var target = this.getInputData(0)
 
@@ -24,11 +25,13 @@ GetAllChildrenNode.prototype.onAction = function(action, data) {
 		target = this.graph.config.self
 
 	var children = target.children
+
+	this.setOutputData(0, children)
 	this.setOutputData(1, children)
+	this.setOutputData(2, children)
 	this.triggerSlot(0, children)
 	this.triggerSlot(1)
 }
-GetAllChildrenNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 
 // Get Children Through Name
 function GetChildByNameNode() {
@@ -47,10 +50,11 @@ function GetChildByNameNode() {
 	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1] + 40]
 }
 GetChildByNameNode.title = "Get Child By Name"
-GetChildByNameNode.title_color = NodesHelper.titles.inheritance
+GetChildByNameNode.title_color = NodesHelper.titles.hierarchy
 GetChildByNameNode.collapsable = false
 GetChildByNameNode.blocks = "Blocks"
 GetChildByNameNode.prototype.resizable = false
+GetChildByNameNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetChildByNameNode.prototype.onAction = function(action, data) {
 	var target = this.getInputData(0)
 	var name = this.getInputData(1)
@@ -69,12 +73,13 @@ GetChildByNameNode.prototype.onAction = function(action, data) {
 
 	var child = target.getObjectByName(name)
 
+	this.setOutputData(0, child)
 	this.setOutputData(1, child)
+	this.setOutputData(2, child)
 
 	this.triggerSlot(0, child)
 	this.triggerSlot(1)
 }
-GetChildByNameNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 
 // Get Parent
 function GetParentNode() {
@@ -88,10 +93,11 @@ function GetParentNode() {
 	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]]
 }
 GetParentNode.title = "Get Parent"
-GetParentNode.title_color = NodesHelper.titles.inheritance
+GetParentNode.title_color = NodesHelper.titles.hierarchy
 GetParentNode.collapsable = false
 GetParentNode.blocks = "Blocks"
 GetParentNode.resizable = false
+GetParentNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetParentNode.prototype.onAction = function(action, data) {
 	var target = this.getInputData(0)
 
@@ -103,12 +109,13 @@ GetParentNode.prototype.onAction = function(action, data) {
 
 	var parent = target.parent
 
+	this.setOutputData(0, parent)
 	this.setOutputData(1, parent)
+	this.setOutputData(2, parent)
 
 	this.triggerSlot(0, parent)
 	this.triggerSlot(1)
 }
-GetParentNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 
 // Is child
 function IsChildNode() {
@@ -122,10 +129,11 @@ function IsChildNode() {
 	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]]
 }
 IsChildNode.title = "Is Child"
-IsChildNode.title_color = NodesHelper.titles.inheritance
+IsChildNode.title_color = NodesHelper.titles.hierarchy
 IsChildNode.collapsable = false
 IsChildNode.blocks = "Blocks"
 IsChildNode.resizable = false
+IsChildNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 IsChildNode.prototype.onAction = function(action, data) {
 	var target = this.getInputData(0)
 	var output = false
@@ -141,14 +149,15 @@ IsChildNode.prototype.onAction = function(action, data) {
 	// If the parent ain't a scene, then the target object is a child
 	output = (parent instanceof THREE.Scene) ? false : true
 
+	this.setOutputData(0, output)
 	this.setOutputData(1, output)
+	this.setOutputData(2, output)
 
 	this.triggerSlot(0, output)
 	this.triggerSlot(1)
 }
-IsChildNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 
-LiteGraph.registerNodeType("Inheritance/GetAllChildNode", GetAllChildrenNode)
-LiteGraph.registerNodeType("Inheritance/GetChildByName", GetChildByNameNode)
-LiteGraph.registerNodeType("Inheritance/GetParent", GetParentNode)
-LiteGraph.registerNodeType("Inheritance/IsChild", IsChildNode)
+LiteGraph.registerNodeType("Hierarchy/GetAllChildNode", GetAllChildrenNode)
+LiteGraph.registerNodeType("Hierarchy/GetChildByName", GetChildByNameNode)
+LiteGraph.registerNodeType("Hierarchy/GetParent", GetParentNode)
+LiteGraph.registerNodeType("Hierarchy/IsChild", IsChildNode)

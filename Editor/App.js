@@ -123,8 +123,10 @@ include("src/core/components/objects/ScriptComponent.js")
 // Nodes
 include("src/core/nodes/NodesHelper.js")
 
+include("src/core/nodes/base/Base.js")
 include("src/core/nodes/base/Events.js")
-include("src/core/nodes/base/Inheritance.js")
+include("src/core/nodes/base/Objects.js")
+include("src/core/nodes/base/Hierarchy.js")
 
 include("src/core/nodes/input/Keyboard.js")
 

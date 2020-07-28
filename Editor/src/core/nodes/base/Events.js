@@ -197,7 +197,7 @@ TestEvent.title = "Test"
 TestEvent.blocks = "Blocks"
 TestEvent.prototype.onAction = function(action, data) {
 	console.log(action, data)
-	console.log(this.getInputData(0))
+	console.log(this.getInputData(1))
 }
 
 LiteGraph.registerNodeType("Events/BeginPlay", BeginPlayNode)

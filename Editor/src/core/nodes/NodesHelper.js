@@ -10,8 +10,10 @@ NodesHelper.sizes.large = [280, 86]
 // Nodes titles
 NodesHelper.titles = {}
 NodesHelper.titles.event = "#FF0000"
-NodesHelper.titles.inheritance = "#556B2f"
+NodesHelper.titles.object = "#DEB887"
+NodesHelper.titles.hierarchy = "#556B2f"
 NodesHelper.titles.input = "#0080FF"
+NodesHelper.titles.base = "#5F9EA0"
 
 // Nodes slots
 NodesHelper.slots = {}
@@ -42,6 +44,8 @@ NodesHelper.slots.colours.string = "#FF1493"
 NodesHelper.slots.colours.number = "#7ef48f"
 NodesHelper.slots.colours.input = "#87ceeb"
 NodesHelper.slots.colours.bool = "#800000"
+NodesHelper.slots.colours.vector = "#D2691E"
+NodesHelper.slots.colours.variable = "#A52A2A"
 
 // Slots
 NodesHelper.slots.event = {color_on: NodesHelper.slots.colours.event, color_off: NodesHelper.slots.colours.event, shape: LiteGraph.ARROW_SHAPE}
@@ -52,6 +56,8 @@ NodesHelper.slots.string = {color_on: NodesHelper.slots.colours.string, color_of
 NodesHelper.slots.number = {color_on: NodesHelper.slots.colours.number, color_off: NodesHelper.slots.colours.number}
 NodesHelper.slots.keyinput = {color_on: NodesHelper.slots.colours.input, color_off: NodesHelper.slots.colours.input}
 NodesHelper.slots.bool = {color_on: NodesHelper.slots.colours.bool, color_off: NodesHelper.slots.colours.bool}
+NodesHelper.slots.vector = {color_on: NodesHelper.slots.colours.vector, color_off: NodesHelper.slots.colours.vector}
+NodesHelper.slots.variable = {color_on: NodesHelper.slots.colours.variable, color_off: NodesHelper.slots.colours.variable}
 
 // Input slots
 NodesHelper.slots.input = {}
@@ -70,15 +76,22 @@ NodesHelper.slots.output.passer = {...NodesHelper.slots.passer, shape: LiteGraph
 // Functions
 
 // The Slot Menu
-NodesHelper.getSlotMenuOptions = function(s, e) {
+NodesHelper.getSlotMenuOptions = function(s, n, e) {
 	if (s.output !== undefined) {
 		var c = new LiteGraph.ContextMenu([
 			{
 				title: "Convert to Variable",
 				callback: () => {
 					var graph = LGraphCanvas.active_canvas.graph
-					console.log(graph)
-				}	
+					var canvas = LGraphCanvas.active_canvas
+
+					var node_var = LiteGraph.createNode("Base/Variable")
+					node_var.pos = [n.pos[0]+150, n.pos[1]]
+					graph.add(node_var)
+
+					n.connect(0, node_var, 0)
+					n.connect(s.slot, node_var, 1)
+				}
 			}
 		], {title: s.output.name, event: e})
 	}

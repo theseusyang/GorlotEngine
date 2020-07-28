@@ -10881,7 +10881,7 @@ LGraphNode.prototype.executeAction = function(action)
             //on slot
             menu_info = [];
             if (node.getSlotMenuOptions) {
-                menu_info = node.getSlotMenuOptions(slot, event);
+                menu_info = node.getSlotMenuOptions(slot, node, event);
             } else {
                 if (
                     slot &&
