@@ -3,6 +3,7 @@ function Register() {}
 Register.registerBlocksNodes = function() {
 	registerBase()
 	registerEvents()
+	registerArray()
 	registerObjects()
 	registerHierarchy()
 	registerKeyboardNodes()
@@ -13,7 +14,8 @@ Register.registerMaterialNodes = function() {
 }
 
 Register.registerParticlesNodes = function() {
-	// TODO: This
+	registerParticlesNodes()
+	registerArray()
 }
 
 Register.unregisterAll = function() {

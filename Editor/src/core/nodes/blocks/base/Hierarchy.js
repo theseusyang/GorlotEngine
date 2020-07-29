@@ -16,7 +16,7 @@ GetAllChildrenNode.blocks = "Blocks"
 GetAllChildrenNode.prototype.resizable = false
 GetAllChildrenNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetAllChildrenNode.prototype.onAction = function(action, data) {
-	var target = this.getInputData(0)
+	var target = this.getInputData(1)
 
 	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D)) 
 		target = data
@@ -26,9 +26,8 @@ GetAllChildrenNode.prototype.onAction = function(action, data) {
 
 	var children = target.children
 
-	this.setOutputData(0, children)
-	this.setOutputData(1, children)
 	this.setOutputData(2, children)
+
 	this.triggerSlot(0, children)
 	this.triggerSlot(1)
 }
@@ -56,8 +55,8 @@ GetChildByNameNode.blocks = "Blocks"
 GetChildByNameNode.prototype.resizable = false
 GetChildByNameNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetChildByNameNode.prototype.onAction = function(action, data) {
-	var target = this.getInputData(0)
-	var name = this.getInputData(1)
+	var target = this.getInputData(1)
+	var name = this.getInputData(2)
 
 	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D)) 
 		target = data
@@ -73,8 +72,6 @@ GetChildByNameNode.prototype.onAction = function(action, data) {
 
 	var child = target.getObjectByName(name)
 
-	this.setOutputData(0, child)
-	this.setOutputData(1, child)
 	this.setOutputData(2, child)
 
 	this.triggerSlot(0, child)
@@ -99,7 +96,7 @@ GetParentNode.blocks = "Blocks"
 GetParentNode.resizable = false
 GetParentNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetParentNode.prototype.onAction = function(action, data) {
-	var target = this.getInputData(0)
+	var target = this.getInputData(1)
 
 	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D)) 
 		target = data
@@ -109,8 +106,6 @@ GetParentNode.prototype.onAction = function(action, data) {
 
 	var parent = target.parent
 
-	this.setOutputData(0, parent)
-	this.setOutputData(1, parent)
 	this.setOutputData(2, parent)
 
 	this.triggerSlot(0, parent)
@@ -135,7 +130,7 @@ IsChildNode.blocks = "Blocks"
 IsChildNode.resizable = false
 IsChildNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 IsChildNode.prototype.onAction = function(action, data) {
-	var target = this.getInputData(0)
+	var target = this.getInputData(1)
 	var output = false
 
 	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D)) 
@@ -149,8 +144,6 @@ IsChildNode.prototype.onAction = function(action, data) {
 	// If the parent ain't a scene, then the target object is a child
 	output = (parent instanceof THREE.Scene) ? false : true
 
-	this.setOutputData(0, output)
-	this.setOutputData(1, output)
 	this.setOutputData(2, output)
 
 	this.triggerSlot(0, output)

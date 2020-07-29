@@ -13,9 +13,7 @@ ANode.blocks = "Blocks"
 ANode.prototype.resizable = false
 ANode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 ANode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.A)
-	this.setOutputData(1, Keyboard.A)
-	this.setOutputData(2, Keyboard.A)
+	this.setOutputData(3, Keyboard.A)
 }
 ANode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.A)) 
@@ -41,9 +39,7 @@ AltNode.blocks = "Blocks"
 AltNode.prototype.resizable = false
 AltNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 AltNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.ALT)
-	this.setOutputData(1, Keyboard.ALT)
-	this.setOutputData(2, Keyboard.ALT)
+	this.setOutputData(3, Keyboard.ALT)
 }
 AltNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.ALT)) 
@@ -69,9 +65,7 @@ BNode.blocks = "Blocks"
 BNode.prototype.resizable = false
 BNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 BNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.B)
-	this.setOutputData(1, Keyboard.B)
-	this.setOutputData(2, Keyboard.B)
+	this.setOutputData(3, Keyboard.B)
 }
 BNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.B)) 
@@ -97,9 +91,7 @@ BackspaceNode.blocks = "Blocks"
 BackspaceNode.prototype.resizable = false
 BackspaceNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 BackspaceNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.BACKSPACE)
-	this.setOutputData(1, Keyboard.BACKSPACE)
-	this.setOutputData(2, Keyboard.BACKSPACE)
+	this.setOutputData(3, Keyboard.BACKSPACE)
 }
 BackspaceNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.BACKSPACE))
@@ -125,9 +117,7 @@ CNode.blocks = "Blocks"
 CNode.prototype.resizable = false
 CNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 CNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.C)
-	this.setOutputData(1, Keyboard.C)
-	this.setOutputData(2, Keyboard.C)
+	this.setOutputData(3, Keyboard.C)
 }
 CNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.C))
@@ -153,9 +143,7 @@ CapsLockNode.blocks = "Blocks"
 CapsLockNode.prototype.resizable = false
 CapsLockNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 CapsLockNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.CAPS_LOCK)
-	this.setOutputData(1, Keyboard.CAPS_LOCK)
-	this.setOutputData(2, Keyboard.CAPS_LOCK)
+	this.setOutputData(3, Keyboard.CAPS_LOCK)
 }
 CapsLockNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.CAPS_LOCK))
@@ -181,9 +169,7 @@ CtrlNode.blocks = "Blocks"
 CtrlNode.prototype.resizable = false
 CtrlNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 CtrlNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.CTRL)
-	this.setOutputData(1, Keyboard.CTRL)
-	this.setOutputData(2, Keyboard.CTRL)
+	this.setOutputData(3, Keyboard.CTRL)
 }
 CtrlNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.CTRL))
@@ -209,9 +195,7 @@ DNode.blocks = "Blocks"
 DNode.prototype.resizable = false
 DNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 DNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.D)
-	this.setOutputData(1, Keyboard.D)
-	this.setOutputData(2, Keyboard.D)
+	this.setOutputData(3, Keyboard.D)
 }
 DNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.D))
@@ -237,9 +221,7 @@ DelNode.blocks = "Blocks"
 DelNode.prototype.resizable = false
 DelNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 DelNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.DEL)
-	this.setOutputData(1, Keyboard.DEL)
-	this.setOutputData(2, Keyboard.DEL)
+	this.setOutputData(3, Keyboard.DEL)
 }
 DelNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.DEL))
@@ -265,9 +247,7 @@ DownNode.blocks = "Blocks"
 DownNode.prototype.resizable = false
 DownNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 DownNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.DOWN)
-	this.setOutputData(1, Keyboard.DOWN)
-	this.setOutputData(2, Keyboard.DOWN)
+	this.setOutputData(3, Keyboard.DOWN)
 }
 DownNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.DOWN))
@@ -293,9 +273,7 @@ ENode.blocks = "Blocks"
 ENode.prototype.resizable = false
 ENode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 ENode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.E)
-	this.setOutputData(1, Keyboard.E)
-	this.setOutputData(2, Keyboard.E)
+	this.setOutputData(3, Keyboard.E)
 }
 ENode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.E))
@@ -321,9 +299,7 @@ EndNode.blocks = "Blocks"
 EndNode.prototype.resizable = false
 EndNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 EndNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.END)
-	this.setOutputData(1, Keyboard.END)
-	this.setOutputData(2, Keyboard.END)
+	this.setOutputData(3, Keyboard.END)
 }
 EndNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.END))
@@ -349,9 +325,7 @@ EnterNode.blocks = "Blocks"
 EnterNode.prototype.resizable = false
 EnterNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 EnterNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.ENTER)
-	this.setOutputData(1, Keyboard.ENTER)
-	this.setOutputData(2, Keyboard.ENTER)
+	this.setOutputData(3, Keyboard.ENTER)
 }
 EnterNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.ENTER))
@@ -377,9 +351,7 @@ EscNode.blocks = "Blocks"
 EscNode.prototype.resizable = false
 EscNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 EscNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.ESC)
-	this.setOutputData(1, Keyboard.ESC)
-	this.setOutputData(2, Keyboard.ESC)
+	this.setOutputData(3, Keyboard.ESC)
 }
 EscNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.ESC))
@@ -405,9 +377,7 @@ FNode.blocks = "Blocks"
 FNode.prototype.resizable = false
 FNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 FNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F)
-	this.setOutputData(1, Keyboard.F)
-	this.setOutputData(2, Keyboard.F)
+	this.setOutputData(3, Keyboard.F)
 }
 FNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F))
@@ -433,9 +403,7 @@ F1Node.blocks = "Blocks"
 F1Node.prototype.resizable = false
 F1Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F1Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F1)
-	this.setOutputData(1, Keyboard.F1)
-	this.setOutputData(2, Keyboard.F1)
+	this.setOutputData(3, Keyboard.F1)
 }
 F1Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F1))
@@ -461,9 +429,7 @@ F2Node.blocks = "Blocks"
 F2Node.prototype.resizable = false
 F2Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F2Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F2)
-	this.setOutputData(1, Keyboard.F2)
-	this.setOutputData(2, Keyboard.F2)
+	this.setOutputData(3, Keyboard.F2)
 }
 F2Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F2))
@@ -489,9 +455,7 @@ F3Node.blocks = "Blocks"
 F3Node.prototype.resizable = false
 F3Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F3Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F3)
-	this.setOutputData(1, Keyboard.F3)
-	this.setOutputData(2, Keyboard.F3)
+	this.setOutputData(3, Keyboard.F3)
 }
 F3Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F3))
@@ -517,9 +481,7 @@ F4Node.blocks = "Blocks"
 F4Node.prototype.resizable = false
 F4Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F4Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F4)
-	this.setOutputData(1, Keyboard.F4)
-	this.setOutputData(2, Keyboard.F4)
+	this.setOutputData(3, Keyboard.F4)
 }
 F4Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F4))
@@ -545,9 +507,7 @@ F5Node.blocks = "Blocks"
 F5Node.prototype.resizable = false
 F5Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F5Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F5)
-	this.setOutputData(1, Keyboard.F5)
-	this.setOutputData(2, Keyboard.F5)
+	this.setOutputData(3, Keyboard.F5)
 }
 F5Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F5))
@@ -573,9 +533,7 @@ F6Node.blocks = "Blocks"
 F6Node.prototype.resizable = false
 F6Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F6Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F6)
-	this.setOutputData(1, Keyboard.F6)
-	this.setOutputData(2, Keyboard.F6)
+	this.setOutputData(3, Keyboard.F6)
 }
 F6Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F6))
@@ -601,9 +559,7 @@ F7Node.blocks = "Blocks"
 F7Node.prototype.resizable = false
 F7Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F7Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F7)
-	this.setOutputData(1, Keyboard.F7)
-	this.setOutputData(2, Keyboard.F7)
+	this.setOutputData(3, Keyboard.F7)
 }
 F7Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F7))
@@ -629,9 +585,7 @@ F8Node.blocks = "Blocks"
 F8Node.prototype.resizable = false
 F8Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F8Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F8)
-	this.setOutputData(1, Keyboard.F8)
-	this.setOutputData(2, Keyboard.F8)
+	this.setOutputData(3, Keyboard.F8)
 }
 F8Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F8))
@@ -657,9 +611,7 @@ F9Node.blocks = "Blocks"
 F9Node.prototype.resizable = false
 F9Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F9Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F9)
-	this.setOutputData(1, Keyboard.F9)
-	this.setOutputData(2, Keyboard.F9)
+	this.setOutputData(3, Keyboard.F9)
 }
 F9Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F9))
@@ -685,9 +637,7 @@ F10Node.blocks = "Blocks"
 F10Node.prototype.resizable = false
 F10Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F10Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F10)
-	this.setOutputData(1, Keyboard.F10)
-	this.setOutputData(2, Keyboard.F10)
+	this.setOutputData(3, Keyboard.F10)
 }
 F10Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F10))
@@ -713,9 +663,7 @@ F11Node.blocks = "Blocks"
 F11Node.prototype.resizable = false
 F11Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F11Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F11)
-	this.setOutputData(1, Keyboard.F11)
-	this.setOutputData(2, Keyboard.F11)
+	this.setOutputData(3, Keyboard.F11)
 }
 F11Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F11))
@@ -741,9 +689,7 @@ F12Node.blocks = "Blocks"
 F12Node.prototype.resizable = false
 F12Node.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 F12Node.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.F12)
-	this.setOutputData(1, Keyboard.F12)
-	this.setOutputData(2, Keyboard.F12)
+	this.setOutputData(3, Keyboard.F12)
 }
 F12Node.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.F12))
@@ -769,9 +715,7 @@ GNode.blocks = "Blocks"
 GNode.prototype.resizable = false
 GNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.G)
-	this.setOutputData(1, Keyboard.G)
-	this.setOutputData(2, Keyboard.G)
+	this.setOutputData(3, Keyboard.G)
 }
 GNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.G))
@@ -797,9 +741,7 @@ HNode.blocks = "Blocks"
 HNode.prototype.resizable = false
 HNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 HNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.H)
-	this.setOutputData(1, Keyboard.H)
-	this.setOutputData(2, Keyboard.H)
+	this.setOutputData(3, Keyboard.H)
 }
 HNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.H))
@@ -825,9 +767,7 @@ HomeNode.blocks = "Blocks"
 HomeNode.prototype.resizable = false
 HomeNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 HomeNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.HOME)
-	this.setOutputData(1, Keyboard.HOME)
-	this.setOutputData(2, Keyboard.HOME)
+	this.setOutputData(3, Keyboard.HOME)
 }
 HomeNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.HOME))
@@ -853,9 +793,7 @@ INode.blocks = "Blocks"
 INode.prototype.resizable = false
 INode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 INode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.I)
-	this.setOutputData(1, Keyboard.I)
-	this.setOutputData(2, Keyboard.I)
+	this.setOutputData(3, Keyboard.I)
 }
 INode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.I))
@@ -881,9 +819,7 @@ InsertNode.blocks = "Blocks"
 InsertNode.prototype.resizable = false
 InsertNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 InsertNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.INSERT)
-	this.setOutputData(1, Keyboard.INSERT)
-	this.setOutputData(2, Keyboard.INSERT)
+	this.setOutputData(3, Keyboard.INSERT)
 }
 InsertNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.INSERT))
@@ -909,9 +845,7 @@ JNode.blocks = "Blocks"
 JNode.prototype.resizable = false
 JNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 JNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.J)
-	this.setOutputData(1, Keyboard.J)
-	this.setOutputData(2, Keyboard.J)
+	this.setOutputData(3, Keyboard.J)
 }
 JNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.J))
@@ -937,9 +871,7 @@ KNode.blocks = "Blocks"
 KNode.prototype.resizable = false
 KNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 KNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.K)
-	this.setOutputData(1, Keyboard.K)
-	this.setOutputData(2, Keyboard.K)
+	this.setOutputData(3, Keyboard.K)
 }
 KNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.K))
@@ -965,9 +897,7 @@ LNode.blocks = "Blocks"
 LNode.prototype.resizable = false
 LNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 LNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.L)
-	this.setOutputData(1, Keyboard.L)
-	this.setOutputData(2, Keyboard.L)
+	this.setOutputData(3, Keyboard.L)
 }
 LNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.L))
@@ -993,9 +923,7 @@ LeftNode.blocks = "Blocks"
 LeftNode.prototype.resizable = false
 LeftNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 LeftNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.LEFT)
-	this.setOutputData(1, Keyboard.LEFT)
-	this.setOutputData(2, Keyboard.LEFT)
+	this.setOutputData(3, Keyboard.LEFT)
 }
 LeftNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.LEFT))
@@ -1021,9 +949,7 @@ MNode.blocks = "Blocks"
 MNode.prototype.resizable = false
 MNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 MNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.M)
-	this.setOutputData(1, Keyboard.M)
-	this.setOutputData(2, Keyboard.M)
+	this.setOutputData(3, Keyboard.M)
 }
 MNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.M))
@@ -1049,9 +975,7 @@ NNode.blocks = "Blocks"
 NNode.prototype.resizable = false
 NNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 NNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.N)
-	this.setOutputData(1, Keyboard.N)
-	this.setOutputData(2, Keyboard.N)
+	this.setOutputData(3, Keyboard.N)
 }
 NNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.N))
@@ -1077,9 +1001,7 @@ ONode.blocks = "Blocks"
 ONode.prototype.resizable = false
 ONode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 ONode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.O)
-	this.setOutputData(1, Keyboard.O)
-	this.setOutputData(2, Keyboard.O)
+	this.setOutputData(3, Keyboard.O)
 }
 ONode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.O))
@@ -1105,9 +1027,7 @@ PNode.blocks = "Blocks"
 PNode.prototype.resizable = false
 PNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 PNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.P)
-	this.setOutputData(1, Keyboard.P)
-	this.setOutputData(2, Keyboard.P)
+	this.setOutputData(3, Keyboard.P)
 }
 PNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.P))
@@ -1133,9 +1053,7 @@ PageUpNode.blocks = "Blocks"
 PageUpNode.prototype.resizable = false
 PageUpNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 PageUpNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.PAGE_UP)
-	this.setOutputData(1, Keyboard.PAGE_UP)
-	this.setOutputData(2, Keyboard.PAGE_UP)
+	this.setOutputData(3, Keyboard.PAGE_UP)
 }
 PageUpNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.PAGE_UP))
@@ -1161,9 +1079,7 @@ PageDownNode.blocks = "Blocks"
 PageDownNode.prototype.resizable = false
 PageDownNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 PageDownNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.PAGE_DOWN)
-	this.setOutputData(1, Keyboard.PAGE_DOWN)
-	this.setOutputData(2, Keyboard.PAGE_DOWN)
+	this.setOutputData(3, Keyboard.PAGE_DOWN)
 }
 PageDownNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.PAGE_DOWN))
@@ -1189,9 +1105,7 @@ QNode.blocks = "Blocks"
 QNode.prototype.resizable = false
 QNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 QNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.Q)
-	this.setOutputData(1, Keyboard.Q)
-	this.setOutputData(2, Keyboard.Q)
+	this.setOutputData(3, Keyboard.Q)
 }
 QNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.Q))
@@ -1217,9 +1131,7 @@ RNode.blocks = "Blocks"
 RNode.prototype.resizable = false
 RNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 RNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.R)
-	this.setOutputData(1, Keyboard.R)
-	this.setOutputData(2, Keyboard.R)
+	this.setOutputData(3, Keyboard.R)
 }
 RNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.R))
@@ -1245,9 +1157,7 @@ RightNode.blocks = "Blocks"
 RightNode.prototype.resizable = false
 RightNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 RightNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.RIGHT)
-	this.setOutputData(1, Keyboard.RIGHT)
-	this.setOutputData(2, Keyboard.RIGHT)
+	this.setOutputData(3, Keyboard.RIGHT)
 }
 RightNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.RIGHT))
@@ -1273,9 +1183,7 @@ SNode.blocks = "Blocks"
 SNode.prototype.resizable = false
 SNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 SNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.S)
-	this.setOutputData(1, Keyboard.S)
-	this.setOutputData(2, Keyboard.S)
+	this.setOutputData(3, Keyboard.S)
 }
 SNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.S))
@@ -1301,9 +1209,7 @@ ShiftNode.blocks = "Blocks"
 ShiftNode.prototype.resizable = false
 ShiftNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 ShiftNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.SHIFT)
-	this.setOutputData(1, Keyboard.SHIFT)
-	this.setOutputData(2, Keyboard.SHIFT)
+	this.setOutputData(3, Keyboard.SHIFT)
 }
 ShiftNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.SHIFT))
@@ -1329,9 +1235,7 @@ SpacebarNode.blocks = "Blocks"
 SpacebarNode.prototype.resizable = false
 SpacebarNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 SpacebarNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.SPACEBAR)
-	this.setOutputData(1, Keyboard.SPACEBAR)
-	this.setOutputData(2, Keyboard.SPACEBAR)
+	this.setOutputData(3, Keyboard.SPACEBAR)
 }
 SpacebarNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.SPACEBAR))
@@ -1357,9 +1261,7 @@ TNode.blocks = "Blocks"
 TNode.prototype.resizable = false
 TNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 TNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.T)
-	this.setOutputData(1, Keyboard.T)
-	this.setOutputData(2, Keyboard.T)
+	this.setOutputData(3, Keyboard.T)
 }
 TNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.T))
@@ -1385,9 +1287,7 @@ TabNode.blocks = "Blocks"
 TabNode.prototype.resizable = false
 TabNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 TabNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.TAB)
-	this.setOutputData(1, Keyboard.TAB)
-	this.setOutputData(2, Keyboard.TAB)
+	this.setOutputData(3, Keyboard.TAB)
 }
 TabNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.TAB))
@@ -1413,9 +1313,7 @@ UNode.blocks = "Blocks"
 UNode.prototype.resizable = false
 UNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 UNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.U)
-	this.setOutputData(1, Keyboard.U)
-	this.setOutputData(2, Keyboard.U)
+	this.setOutputData(3, Keyboard.U)
 }
 UNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.U))
@@ -1441,9 +1339,7 @@ UpNode.blocks = "Blocks"
 UpNode.prototype.resizable = false
 UpNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 UpNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.UP)
-	this.setOutputData(1, Keyboard.UP)
-	this.setOutputData(2, Keyboard.UP)
+	this.setOutputData(3, Keyboard.UP)
 }
 UpNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.UP))
@@ -1469,9 +1365,7 @@ VNode.blocks = "Blocks"
 VNode.prototype.resizable = false
 VNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 VNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.V)
-	this.setOutputData(1, Keyboard.V)
-	this.setOutputData(2, Keyboard.V)
+	this.setOutputData(3, Keyboard.V)
 }
 VNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.V))
@@ -1497,9 +1391,7 @@ WNode.blocks = "Blocks"
 WNode.prototype.resizable = false
 WNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 WNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.W)
-	this.setOutputData(1, Keyboard.W)
-	this.setOutputData(2, Keyboard.W)
+	this.setOutputData(3, Keyboard.W)
 }
 WNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.W))
@@ -1525,9 +1417,7 @@ XNode.blocks = "Blocks"
 XNode.prototype.resizable = false
 XNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 XNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.X)
-	this.setOutputData(1, Keyboard.X)
-	this.setOutputData(2, Keyboard.X)
+	this.setOutputData(3, Keyboard.X)
 }
 XNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.X))
@@ -1553,9 +1443,7 @@ YNode.blocks = "Blocks"
 YNode.prototype.resizable = false
 YNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 YNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.Y)
-	this.setOutputData(1, Keyboard.Y)
-	this.setOutputData(2, Keyboard.Y)
+	this.setOutputData(3, Keyboard.Y)
 }
 YNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.Y))
@@ -1581,9 +1469,7 @@ ZNode.blocks = "Blocks"
 ZNode.prototype.resizable = false
 ZNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 ZNode.prototype.onStart = function() {
-	this.setOutputData(0, Keyboard.Z)
-	this.setOutputData(1, Keyboard.Z)
-	this.setOutputData(2, Keyboard.Z)
+	this.setOutputData(3, Keyboard.Z)
 }
 ZNode.prototype.onExecute = function() {
 	if (Keyboard.keyPressed(Keyboard.Z))

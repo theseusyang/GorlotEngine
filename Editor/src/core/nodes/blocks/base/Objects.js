@@ -11,8 +11,6 @@ ThisNode.blocks = "Blocks"
 ThisNode.prototype.resizable = false
 ThisNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 ThisNode.prototype.onStart = function() {
-	this.setOutputData(0, this.graph.config.self)
-	this.setOutputData(1, this.graph.config.self)
 	this.setOutputData(2, this.graph.config.self)
 
 	this.triggerSlot(0, this.graph.config.self)
@@ -36,7 +34,7 @@ GetPositionNode.blocks = "Blocks"
 GetPositionNode.prototype.resizable = false
 GetPositionNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetPositionNode.prototype.onAction = function(action, data) {
-	var target = (this.getInputData(0) !== undefined) ? this.getInputData(0) : this.getInputData(1)
+	var target = this.getInputData(1)
 
 	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D)) 
 		target = data
@@ -46,8 +44,6 @@ GetPositionNode.prototype.onAction = function(action, data) {
 
 	var pos = target.position
 
-	this.setOutputData(0, pos)
-	this.setOutputData(1, pos)
 	this.setOutputData(2, pos)
 
 	this.triggerSlot(0, pos)
@@ -71,7 +67,7 @@ GetRotationNode.blocks = "Blocks"
 GetRotationNode.prototype.resizable = false
 GetRotationNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetRotationNode.prototype.onAction = function(action, data) {
-	var target = (this.getInputData(0) !== undefined) ? this.getInputData(0) : this.getInputData(1)
+	var target = this.getInputData(1)
 
 	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D))
 		target = data
@@ -81,8 +77,6 @@ GetRotationNode.prototype.onAction = function(action, data) {
 
 	var rot = target.rotation
 
-	this.setOutputData(0, rot)
-	this.setOutputData(1, rot)
 	this.setOutputData(2, rot)
 
 	this.triggerSlot(0, rot)
@@ -106,7 +100,7 @@ GetScaleNode.blocks = "Blocks"
 GetScaleNode.prototype.resizable = false
 GetScaleNode.prototype.getSlotMenuOptions = NodesHelper.getSlotMenuOptions
 GetScaleNode.prototype.onAction = function(action, data) {
-	var target = (this.getInputData(0) !== undefined) ? this.getInputData(0) : this.getInputData(1)
+	var target = this.getInputData(1)
 
 	if (target === undefined && (data !== undefined && data instanceof THREE.Object3D))
 		target = data
@@ -116,8 +110,6 @@ GetScaleNode.prototype.onAction = function(action, data) {
 
 	var scale = target.scale
 
-	this.setOutputData(0, scale)
-	this.setOutputData(1, scale)
 	this.setOutputData(2, scale)
 
 	this.triggerSlot(0, scale)

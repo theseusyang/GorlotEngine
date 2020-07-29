@@ -16,6 +16,8 @@ NodesHelper.titles.object = "#DEB887"
 NodesHelper.titles.base = "#5F9EA0"
 NodesHelper.titles.material = "#032138"
 NodesHelper.titles.texture = "#1d5e4a"
+NodesHelper.titles.particles = "#bf7f3b"
+NodesHelper.titles.array = NodesHelper.titles.event
 
 // Nodes slots
 NodesHelper.slots = {}

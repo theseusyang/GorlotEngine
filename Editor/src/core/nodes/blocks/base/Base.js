@@ -8,7 +8,7 @@ function VariableNode() {
 	this.name_widget = this.addWidget("string", "", this.properties.name, "name")
 	this.name_widget.width = 100
 
-	this.addOutput("Variable", "", {...NodesHelper.slots.variable, pos: [NodesHelper.slots.position.x1+10, NodesHelper.slots.position.y]})
+	this.addOutput("Value", "", {...NodesHelper.slots.variable, pos: [NodesHelper.slots.position.x1+10, NodesHelper.slots.position.y]})
 
 	this.size[0] = 130
 }
