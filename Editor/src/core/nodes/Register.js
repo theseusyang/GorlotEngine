@@ -6,6 +6,7 @@ Register.registerBlocksNodes = function() {
 	registerArray()
 	registerWidgets()
 	registerColour()
+	registerVectorNode()
 	registerObjects()
 	registerHierarchy()
 	registerKeyboardNodes()
