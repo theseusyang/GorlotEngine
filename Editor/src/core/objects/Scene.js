@@ -7,13 +7,12 @@ function Scene()
 
 	this.name = "scene"
 	
-	//Matrix auto update
 	this.matrixAutoUpdate = false
 
 	//Clock
 	this.clock = new THREE.Clock()
 
-	//Create cannon world
+	// Cannon world
 	this.world = new CANNON.World()
 	this.world.defaultContactMaterial.contactEquationStiffness = 1e9
 	this.world.defaultContactMaterial.contactEquationRelaxation = 4
@@ -25,12 +24,11 @@ function Scene()
 	this.world.solver.tolerance = 0.1
 	this.world.solver.iterations = 7
 
-	//Initialization variables
+	// Camera
 	this.initial_camera = null
 
 	//Runtime variables
 	this.camera = null
-	this.listener = new THREE.AudioListener()
 
 	this.components = []
 	this.defaultComponents = []

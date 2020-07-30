@@ -1,31 +1,27 @@
 "use strict";
 
 //Text texture constructor
-function TextTexture()
+function TextTexture(text, font, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding)
 {
-	//Text canvas
-	this.canvas = document.createElement("canvas");
-	this.canvas.width = 512;
-	this.canvas.height = 512;
+	THREE.Texture.call(this, document.createElement("canvas"), mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, encoding)
 
-	//Draw text to canvas
-	this.context = this.canvas.getContext("2d");
-	this.context.font = "Normal 60px Arial";
-	this.context.textAlign = "center";
-	this.context.fillStyle = "#FFFFFF";
-	this.context.fillText("text", this.canvas.width/2, this.canvas.height/2);
+	this.image.width = 2048
+	this.image.height = 2048
 
-	// Super constructor
-	THREE.CanvasTexture.call(this, this.canvas);
+	this.context = this.image.getContext("2d")
+	this.context.font = "Normal 500px Arial"
+	this.context.textAlign = "center"
+	this.context.fillStyle = "#FFFFFF"
+	this.context.fillText("text", this.image.width/2, this.image.height/2)
 
-	// Name
 	this.name = "text"
-	this.category = "TextTexture"
+	this.category = "Text"
 
-	// Texture text
-	this.text = "text";
-	this.needsUpdate = true;
+	this.text = "text"
+	this.font = font
+
+	this.needsUpdate = true
 }
 
 // Super prototypes
-TextTexture.prototype = Object.create(THREE.CanvasTexture.prototype);
+TextTexture.prototype = Object.create(THREE.Texture.prototype)

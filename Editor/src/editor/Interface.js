@@ -281,12 +281,14 @@ Interface.initialize = function() {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
+				var name = file.substring(file.lastIndexOf("/") + 1, file.lastIndexOf("."))
 
 				var json = FileSystem.readFile(file)
 				var atlas = FileSystem.readFile(file.replace("json", "atlas"))
 				var path = file.substring(0, file.lastIndexOf("/"))
 
 				var animation = new SpineAnimation(json, atlas, path)
+				animation.name = name
 
 				Editor.addToScene(animation)
 				Editor.updateObjectViews()
@@ -299,14 +301,25 @@ Interface.initialize = function() {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
+				var name = FileSystem.getFileName(file)
+
 				var texture = new Texture(new GORLOT.Image(file))
-				texture.name = "texture"
-				var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
-				material.name = "texture"
+				texture.name = name
+				var material = new MeshStandardMaterial({map: texture, roughness: 0.6, metalness: 0.2})
+				material.name = name
 				Editor.program.addMaterial(material)
 				Editor.updateObjectViews()
 			}
 		}, "image/*")
+	}, Interface.file_dir + "icons/assets/image.png")
+
+	// Create Text Texture
+	Interface.asset_file.addOption("Text Texture", () => {
+		var texture = new TextTexture("abcdef", Editor.default_font)
+		var material = new MeshStandardMaterial({map: texture, roughness: 0.6, metalness: 0.2})
+		material.name = "text"
+		Editor.program.addMaterial(material)
+		Editor.updateObjectViews()
 	}, Interface.file_dir + "icons/assets/image.png")
 
 	// Video Texture
@@ -314,9 +327,12 @@ Interface.initialize = function() {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
+				var name = FileSystem.getFileName(file)
+
 				var texture = new VideoTexture(new Video(file))
-				var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
-				material.name = "video"
+				texture.name = name
+				var material = new MeshPhongMaterial({map: texture, roughness: 0.6, metalness: 0.2})
+				material.name = name
 				Editor.program.addMaterial(material)
 				Editor.updateObjectViews()
 			}
@@ -326,7 +342,8 @@ Interface.initialize = function() {
 	// Webcam Texture
 	Interface.asset_file.addOption("Webcam Texture", () => {
 		var texture = new WebcamTexture()
-		var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
+		texture.name = "webcam"
+		var material = new MeshPhongMaterial({map: texture, roughness: 0.6, metalness: 0.2})
 		material.name = "webcam"
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
@@ -337,7 +354,11 @@ Interface.initialize = function() {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
-				Editor.addToScene(new Text3D("Text", Editor.default_material, new Font(file)))
+
+				var font = new Font(file)
+				font.name = FileSystem.getFileName(file)
+
+				Editor.addToScene(new Text3D("Text", Editor.default_material, font))
 				Editor.updateObjectViews()
 			}
 		}, ".json, ttf, .otf")
@@ -348,7 +369,10 @@ Interface.initialize = function() {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
+
 				var audio = new AudioEmitter(new Audio(file))
+				audio.name = FileSystem.getFileName(file)
+
 				Editor.addToScene(audio)
 				Editor.updateObjectViews()
 			}
