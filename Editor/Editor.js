@@ -86,7 +86,6 @@ include("src/editor/ui/asset/BlockAsset.js")
 include("src/editor/files/style/editor.css")
 include("src/editor/ui/theme/Theme.js")
 include("src/editor/ui/theme/ThemeDark.js")
-include("src/editor/ui/theme/ThemeLight.js")
 
 include("src/editor/ui/tab/ScriptEditor.js")
 include("src/editor/ui/tab/SceneEditor.js")
@@ -798,7 +797,7 @@ Editor.updateObjectPanel = function()
 
 // Create default resources to be used when creating new objects
 Editor.createDefaultResources = function() {
-	Editor.default_image = new Image("data/sample.png")
+	Editor.default_image = new GORLOT.Image("data/sample.png")
 	Editor.default_font = new Font("data/fonts/montserrat.json")
 	Editor.default_audio = new Audio("data/sample.ogg")
 	Editor.default_texture = new Texture(Editor.default_image)
@@ -1047,22 +1046,22 @@ Editor.loadProgram = function(fname)
 Editor.exportWebProject = function(dir)
 {
 	FileSystem.copyFolder("runtime", dir);
-	FileSystem.copyFolder("src/core", dir + "/core");
-	FileSystem.copyFolder("src/input", dir + "/input");
-	FileSystem.copyFile("src/App.js", dir + "/App.js");
+	FileSystem.copyFolder("src/core", dir + "src/core");
+	FileSystem.copyFolder("src/input", dir + "src/input");
+	FileSystem.copyFile("src/App.js", dir + "src/App.js");
 
-	FileSystem.makeDirectory(dir + "/lib");
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "/lib/leap.min.js");
-	FileSystem.copyFile("src/lib/SPE.min.js", dir + "/lib/SPE.min.js");
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "/lib/leap.min.js");
-	FileSystem.copyFile("src/lib/stats.min.js", dir + "/lib/stats.min.js");
-	FileSystem.copyFile("src/lib/cannon.min.js", dir + "/lib/cannon.min.js");
-	FileSystem.copyFile("src/lib/spine.min.js", dir + "/lib/spine.min.js");
-	FileSystem.copyFile("src/lib/base64.min.js", dir + "/lib/base64.min.js");
-	FileSystem.makeDirectory(dir + "/lib/three");
-	FileSystem.copyFile("src/lib/three/three.min.js", dir + "/lib/three/three.min.js");
-	FileSystem.makeDirectory(dir + "/lib/three/effects");
-	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "/lib/three/effects/VREffect.js");
+	FileSystem.makeDirectory(dir + "src/lib");
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js");
+	FileSystem.copyFile("src/lib/SPE.min.js", dir + "src/lib/SPE.min.js");
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js");
+	FileSystem.copyFile("src/lib/stats.min.js", dir + "src/lib/stats.min.js");
+	FileSystem.copyFile("src/lib/cannon.min.js", dir + "src/lib/cannon.min.js");
+	FileSystem.copyFile("src/lib/spine.min.js", dir + "src/lib/spine.min.js");
+	FileSystem.copyFile("src/lib/base64.min.js", dir + "src/lib/base64.min.js");
+	FileSystem.makeDirectory(dir + "src/lib/three");
+	FileSystem.copyFile("src/lib/three/three.min.js", dir + "src/lib/three/three.min.js");
+	FileSystem.makeDirectory(dir + "src/lib/three/effects");
+	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "src/lib/three/effects/VREffect.js");
 
 	Editor.saveProgram(dir + "/app.isp");
 }
@@ -1118,6 +1117,9 @@ Editor.setState = function(state)
 	}
 	else if(state === Editor.STATE_TESTING)
 	{
+		// Register all the nodes
+		Register.registerAll()
+
 		//Copy program
 		Editor.program_running = Editor.program.clone();
 
@@ -1226,6 +1228,27 @@ Editor.initializeRenderer = function(canvas)
 	Editor.renderer.autoClear = false;
 	Editor.renderer.shadowMap.enabled = Settings.render.shadows;
 	Editor.renderer.shadowMap.type = Settings.render.shadows_type;
+}
+
+// Opens a different window
+Editor.openWindow = function(options) {
+	
+	var title = (options.title !== undefined) ? options.title : Editor.NAME
+	var w = (options.width !== undefined) ? options.width : 800
+	var h = (options.height !== undefined) ? options.height : 600
+
+	var wind = window.open("", "", "width="+w+", height="+h+", location=no, status=no, menubar=no, titlebar=no, fullscreen=yes")
+	wind.document.write(`<head><title>${title}</title></head><body oncontextmenu='return false'></body>`)
+
+	// transfer files
+	wind.document.write("<script src='App.js'></script>")
+	wind.document.write("<script src='Editor.js'></script>")
+
+	wind.document.close()
+
+	wind.window.editor = Editor
+
+	return wind
 }
 
 //Exit editor

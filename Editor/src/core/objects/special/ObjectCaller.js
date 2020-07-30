@@ -1,7 +1,7 @@
 "use strict"
 
 //Container constructor
-function ObjectCaller(obj_uuid) {
+function ObjectCaller(obj_uuid, obj_type) {
 	THREE.Object3D.call(this)
 
 	this.name = "caller"
@@ -9,7 +9,7 @@ function ObjectCaller(obj_uuid) {
 
 	this.obj = null
 	this.obj_uuid = (obj_uuid === undefined) ? null : obj_uuid
-	this.obj_type = null
+	this.obj_type = (obj_type === undefined) ? null : obj_type
 	this.program = null
 
 	this.components = []
@@ -46,6 +46,17 @@ ObjectCaller.prototype.update = function() {
 	for(var i = 0; i < this.children.length; i++) {
 		this.children[i].update()
 	}
+}
+
+ObjectCaller.prototype.dispose = function() {
+	if (this.obj === null) 
+		return
+
+	this.obj.dispose()
+
+	for(var i = 0; i < this.children.length; i++) {
+		this.children[i].dispose()
+	}	
 }
 
 ObjectCaller.prototype.setObject = function(object) {

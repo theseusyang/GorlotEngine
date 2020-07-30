@@ -16,6 +16,9 @@ function MaterialEditor(parent)
 	var id = "material_editor" + MaterialEditor.id;
 	MaterialEditor.id++;
 
+	Register.unregisterAll()
+	Register.registerMaterialNodes()
+
 	//Create element
 	this.element = document.createElement("div");
 	this.element.id = id;
@@ -36,12 +39,10 @@ function MaterialEditor(parent)
 	// Graph canvas
 	this.graph_canvas = new Canvas(this.element)
 	this.graph_canvas.updateInterface()
-	this.graph_canvas.element.style.position = "absolute"
 
 	//Canvas
 	this.canvas = new Canvas(this.element);
 	this.canvas.updateInterface();
-	this.canvas.element.style.position = "relative"
 
 	this.graph = null
 
@@ -60,10 +61,8 @@ function MaterialEditor(parent)
 	this.nodes = null
 
 	//Material renderer and scene
-	this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.element, antialias: Settings.render.antialiasing, alpha: true});
+	this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.element, alpha: true});
 	this.renderer.setSize(this.canvas.size.x, this.canvas.size.y);
-	this.renderer.shadowMap.enabled = Settings.render.shadows;
-	this.renderer.shadowMap.type = Settings.render.shadows_type;
 
 	//Material camera
 	this.camera = new PerspectiveCamera(90, this.canvas.size.x/this.canvas.size.y);
@@ -94,25 +93,25 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 	//Check is if sprite material and ajust preview
 	if(material instanceof THREE.SpriteMaterial)
 	{
-		this.sprite.material = material;
-		this.sprite.visible = true;
-		this.obj.visible = false;
+		this.sprite.material = material
+		this.sprite.visible = true
+		this.obj.visible = false
 	}
 	else
 	{
-		this.obj.material = material;
-		this.obj.visible = true;
-		this.sprite.visible = false;
+		this.obj.material = material
+		this.obj.visible = true
+		this.sprite.visible = false
 	}
 
 	//Store material file pointer
 	if(material_file !== undefined)
 	{
-		this.material_file = material_file;
+		this.material_file = material_file
 	}
 
 	//Store material
-	this.material = material;
+	this.material = material
 
 	// The default material nodes
 	this.defaultNodes = {
@@ -139,7 +138,7 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 					abf: (this.material.fog !== undefined) ? this.material.fog : false
 				},
 				size: [210, 382],
-				type: "Material/MeshPhongMaterial"
+				type: "Material/Material"
 			}
 		],
 		version: 0.4
@@ -165,22 +164,30 @@ MaterialEditor.prototype.attachMaterial = function(material, material_file)
 		this.nodes = this.material.nodes
 	}
 
-
 	this.initNodeEditor()
 }
 
 // Initialise node editor
 MaterialEditor.prototype.initNodeEditor = function() {
+
+	this.nodes.extra = {}
+	this.nodes.extra.material = this.material
+	this.nodes.extra.file = this.material_file
+
 	this.graph = new LGraph(this.nodes)
-	this.graph.extra = {}
-	this.graph.extra.material = this.material
 
 	var self = this
 	this.graph.onNodeConnectionChange = function() {
 		self.material.needsUpdate = true
 	}
 
+	LiteGraph.NODE_TITLE_COLOR = "#FFF"
+	LiteGraph.NODE_TITLE_HEIGHT = 20
+	LiteGraph.NODE_TITLE_TEXT_Y = 15
+	
 	this.graphCanvas = new LGraphCanvas(this.graph_canvas.element, this.graph)
+	this.graphCanvas.use_gradients = true
+	this.graphCanvas.title_text_font = "bold 10px Verdana,Arial,sans serif"
 	this.graph.start(1000/60)
 }
 
@@ -188,8 +195,8 @@ MaterialEditor.prototype.initNodeEditor = function() {
 MaterialEditor.prototype.activate = function()
 {
 	Editor.setState(Editor.STATE_IDLE);
+	Mouse.setCanvas(this.canvas.element)
 	Editor.resetEditingFlags();
-	Mouse.setCanvas(this.canvas.element);
 }
 
 //Remove element
@@ -258,6 +265,8 @@ MaterialEditor.prototype.updateMaterial = function() {
 		}
 	}
 
+	this.obj.material = this.material
+
 	this.material.updateNodes(this.graph.serialize())
 }
 
@@ -284,6 +293,18 @@ MaterialEditor.prototype.update = function()
 			var delta = new THREE.Quaternion();
 			delta.setFromEuler(new THREE.Euler(Mouse.delta.y * 0.005, Mouse.delta.x * 0.005, 0, 'XYZ'));
 			this.obj.quaternion.multiplyQuaternions(delta, this.obj.quaternion);
+		}
+
+		// Change Geometry
+		if (Mouse.buttonJustPressed(Mouse.RIGHT)) {
+			if (this.obj.geometry instanceof THREE.SphereBufferGeometry)
+				this.obj.geometry = new THREE.TorusBufferGeometry(0.8, 0.4, 32, 64)
+			else if (this.obj.geometry instanceof THREE.TorusBufferGeometry)
+				this.obj.geometry = new THREE.BoxBufferGeometry(1, 1, 1, 64, 64, 64)
+			else if (this.obj.geometry instanceof THREE.BoxBufferGeometry)
+				this.obj.geometry = new THREE.TorusKnotBufferGeometry(0.7, 0.3, 128, 64)
+			else if (this.obj.geometry instanceof THREE.TorusKnotBufferGeometry)
+				this.obj.geometry = new THREE.SphereBufferGeometry(1, 64, 64)
 		}
 
 		//Zoom

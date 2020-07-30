@@ -17,6 +17,7 @@ function BlockEditor(parent) {
 	this.element = document.createElement("div")
 	this.element.id = id
 	this.element.style.position = "absolute"
+	this.element.style.pointerEvents = "auto"
 
 	// Prevent Drop event
 	this.element.ondrop = function(e) {
@@ -27,6 +28,31 @@ function BlockEditor(parent) {
 	this.element.ondragover = function(e) {
 		e.preventDefault()
 	}
+
+	// Top bar
+	this.top_bar = new Bar(this.element)
+	this.top_bar.size.y = 50
+
+	this.add_var = new ButtonImage(this.element)
+	this.add_var.position.set(0, 0)
+	this.add_var.size.set(50, this.top_bar.size.y)
+	this.add_var.setImage(Interface.file_dir + "icons/blocks/newvar.png")
+	this.add_var.setAltText("Variable")
+	this.add_var.updateInterface()
+
+	this.add_func = new ButtonImage(this.element)
+	this.add_func.position.set(50, 0)
+	this.add_func.size.set(50, this.top_bar.size.y)
+	this.add_func.setImage(Interface.file_dir + "icons/blocks/newfunc.png")
+	this.add_func.setAltText("Function")
+	this.add_func.updateInterface()
+
+	this.obj_var = new ButtonImage(this.element)
+	this.obj_var.position.set(100, 0)
+	this.obj_var.size.set(50, this.top_bar.size.y)
+	this.obj_var.setImage(Interface.file_dir + "icons/models/models.png")
+	this.obj_var.setAltText("Object to Variable")
+	this.obj_var.updateInterface()
 
 	// Canvas
 	this.canvas = new Canvas(this.element)
@@ -53,6 +79,10 @@ BlockEditor.id = 0
 
 // Attach Blocks to the editor
 BlockEditor.prototype.attachBlocks = function(blocks) {
+
+	Register.unregisterAll()
+	Register.registerBlocksNodes()
+
 	// Store Blocks
 	this.blocks = blocks
 	this.nodes = this.blocks.nodes
@@ -64,8 +94,15 @@ BlockEditor.prototype.attachBlocks = function(blocks) {
 BlockEditor.prototype.initNodeEditor = function() {
 	this.graph = new LGraph(this.nodes)
 
+	var self = this
+
+	LiteGraph.NODE_TITLE_COLOR = "#FFF"
+	LiteGraph.NODE_TITLE_HEIGHT = 20
+	LiteGraph.NODE_TITLE_TEXT_Y = 15
+	
 	this.graphCanvas = new LGraphCanvas(this.canvas.element, this.graph)
 	this.graphCanvas.use_gradients = true
+	this.graphCanvas.title_text_font = "bold 10px Verdana,Arial,sans serif"
 }
 
 // Activate code editor
@@ -138,8 +175,13 @@ BlockEditor.prototype.updateInterface = function() {
 		this.element.style.visibility = "hidden"
 	}
 
+	// Update elements
+	this.top_bar.size.x = this.size.x
+	this.top_bar.updateInterface()
+
 	// Update canvas
 	this.canvas.visible = this.visible
-	this.canvas.size.set(this.size.x, this.size.y)
+	this.canvas.position.set(0, this.top_bar.size.y)
+	this.canvas.size.set(this.size.x, this.size.y-this.top_bar.size.y)
 	this.canvas.updateInterface()
 }

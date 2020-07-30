@@ -660,7 +660,7 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 			break;
 
 		case "ObjectCaller":
-			object = new ObjectCaller(data.obj_uuid)
+			object = new ObjectCaller(data.obj_uuid, data.obj_type)
 			break
 
 		case "Script":

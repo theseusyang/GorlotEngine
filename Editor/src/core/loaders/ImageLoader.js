@@ -17,7 +17,7 @@ ImageLoader.prototype.load = function(url, onLoad, onProgress, onError)
 
 ImageLoader.prototype.parse = function(json, onLoad)
 {
-	var image = new Image();
+	var image = new GORLOT.Image();
 	
 	image.name = json.name;
 	image.uuid = json.uuid;

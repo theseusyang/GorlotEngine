@@ -12,6 +12,9 @@ function ParticleEditor(parent) {
 	var id = "particle_editor" + ParticleEditor.id
 	ParticleEditor.id++
 
+	Register.unregisterAll()
+	Register.registerParticlesNodes()
+
 	// Create Element
 	this.element = document.createElement("div")
 	this.element.id = id
@@ -124,6 +127,11 @@ ParticleEditor.prototype.attachParticle = function(particle) {
 
 // Initialiase node editor
 ParticleEditor.prototype.initNodeEditor = function() {
+	this.nodes.extra = {}
+	this.nodes.extra.particles = this.particle
+
+	console.log(this.particle)
+
 	this.graph = new LGraph(this.nodes)
 
 	var self = this
@@ -133,7 +141,13 @@ ParticleEditor.prototype.initNodeEditor = function() {
 		}, 100)
 	}
 
+	LiteGraph.NODE_TITLE_COLOR = "#FFF"
+	LiteGraph.NODE_TITLE_HEIGHT = 20
+	LiteGraph.NODE_TITLE_TEXT_Y = 15
+
 	this.graphCanvas = new LGraphCanvas(this.graphEditor.element, this.graph)
+	this.graphCanvas.use_gradients = true
+	this.graphCanvas.title_text_font = "bold 10px Verdana,Arial,sans serif"
 	this.graph.start(1000/60)
 }
 
@@ -164,6 +178,7 @@ ParticleEditor.prototype.updateCamera = function() {
 
 // Activate code editor
 ParticleEditor.prototype.activate = function() {
+
 	// Set editor state
 	Editor.setState(Editor.STATE_IDLE)
 	Editor.resetEditingFlags()
@@ -183,6 +198,9 @@ ParticleEditor.prototype.destroy = function() {
 ParticleEditor.prototype.close = function() {
 	if (this.graph !== null) {
 		this.graph.stop()
+
+		this.nodes.extra = {}
+
 		this.particle.updateNodes(this.graph.serialize())
 	}
 }

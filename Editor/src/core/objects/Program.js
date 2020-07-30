@@ -103,6 +103,13 @@ Program.prototype.addObject = function(object) {
 	this.asset_objects[object.uuid] = object
 }
 
+// Remove object from objects list
+Program.prototype.removeObject = function(object) {
+	if (object instanceof THREE.Object3D) {
+		delete this.asset_objects[object.uuid]
+	}
+}
+
 //Set actual scene (to be used in runtime)
 Program.prototype.setScene = function(scene)
 {

@@ -19,7 +19,7 @@ function SpineAnimation(json, atlas, path, textures) {
 		textures = []
 
 		var texture_atlas = new spine.TextureAtlas(atlas, (file) => {
-			var texture = new SpineTexture(new Texture(new Image(path + "/" + file)))
+			var texture = new SpineTexture(new Texture(new GORLOT.Image(path + "/" + file)))
 			var image = new texture.texture.image
 			image.width = 1024
 			image.height = 1024

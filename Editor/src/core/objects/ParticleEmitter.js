@@ -20,17 +20,10 @@ function ParticleEmitter(group, emitter)
 				id: 1,
 				mode: 0,
 				order: 0,
-				outputs: [
-					{
-						links: null,
-						name: "Particles",
-						type: "Particles"
-					}
-				],
+				outputs: [],
 				pos: [130, 130],
-				properties: {
-					uuid: this.uuid
-				},
+				properties: {},
+				extra: {},
 				size: [210, 234],
 				type: "Particles/Particles"
 			}
@@ -51,7 +44,7 @@ function ParticleEmitter(group, emitter)
 		{
 			texture:
 			{
-				value: new Texture(new Image("data/particle.png"))
+				value: new Texture(new GORLOT.Image("data/particle.png"))
 			},
 			maxParticleCount: 2000,
 			blending: THREE.AdditiveBlending,

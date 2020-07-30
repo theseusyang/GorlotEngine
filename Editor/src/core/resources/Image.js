@@ -1,7 +1,7 @@
 "use strict"
 
 //Image constructor
-function Image(url)
+GORLOT.Image = function(url)
 {
 	this.name = "image"
 	this.uuid = THREE.Math.generateUUID()
@@ -35,7 +35,7 @@ function Image(url)
 }
 
 //Encode image data to jpeg or png in base64 format
-Image.prototype.encodeData = function()
+GORLOT.Image.prototype.encodeData = function()
 {
 	var image = document.createElement("img")
 	image.src = this.data
@@ -73,7 +73,7 @@ Image.prototype.encodeData = function()
 }
 
 //JSON serialization
-Image.prototype.toJSON = function(meta)
+GORLOT.Image.prototype.toJSON = function(meta)
 {
 	if(meta.images[this.uuid] !== undefined)
 	{

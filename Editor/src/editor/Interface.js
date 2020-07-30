@@ -31,6 +31,21 @@ Interface.initialize = function() {
 	Interface.asset_new.setText("Add New")
 	Interface.asset_new.size.set(100, Interface.asset_explorer_bar.size.y)
 	Interface.asset_new.position.set(0, 0)
+	Interface.asset_new.element.style.backgroundColor = Editor.theme.special_color
+
+	Interface.asset_new.element.onmouseover = function() {
+		Interface.asset_new.expanded = true
+		Interface.asset_new.updateInterface()
+		Interface.asset_new.element.style.cursor = "pointer"
+		Interface.asset_new.element.style.backgroundColor = Editor.theme.special_over_color
+	}
+
+	Interface.asset_new.element.onmouseleave = function() {
+		Interface.asset_new.expanded = false
+		Interface.asset_new.updateInterface()
+		Interface.asset_new.element.style.cursor = "default"
+		Interface.asset_new.element.style.backgroundColor = Editor.theme.special_color
+	}
 
 	// Create materials
 	var asset_material = Interface.asset_new.addMenu("Materials", Interface.file_dir + "icons/misc/material.png")
@@ -91,6 +106,13 @@ Interface.initialize = function() {
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
+
+	Interface.asset_new.addOption("Class Blocks", () => {
+		var obj = new BlockScript(undefined, undefined, "class")
+		obj.name = "class"
+		Editor.program.addObject(obj)
+		Editor.updateAssetExplorer()
+	}, Interface.file_dir + "icons/script/blocks.png")
 
 	// Import a file
 	Interface.asset_file = new DropdownMenu(Interface.asset_explorer_bar.element)
@@ -277,7 +299,7 @@ Interface.initialize = function() {
 		App.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
-				var texture = new Texture(new Image(file))
+				var texture = new Texture(new GORLOT.Image(file))
 				texture.name = "texture"
 				var material = new MeshPhongMaterial({map: texture, color: 0xffffff})
 				material.name = "texture"
@@ -714,25 +736,24 @@ Interface.initialize = function() {
 	Interface.effects_form.nextRow()
 
 	// Class blocks
-	blocks = new Button(Interface.effects_form.element)
-	blocks.size.set(sizex, 45)
-	blocks.setText("Class Blocks")
-	blocks.setCallback(() => {
-		var obj = new BlockScript()
-		obj.name = "class"
-		obj.blocks_type = "class"
-		Editor.program.addObject(obj)
-		Editor.updateAssetExplorer()
-	})
-
-	blocksIcon = new ImageBox(blocks.element)
-	blocksIcon.size.set(40, 40)
-	blocksIcon.position.set(5, 2)
-	blocksIcon.setImage(Interface.file_dir + "icons/script/blocks.png")
-	blocksIcon.updateInterface()
-
-	Interface.effects_form.add(blocks)
-	Interface.effects_form.nextRow()
+//	blocks = new Button(Interface.effects_form.element)
+//	blocks.size.set(sizex, 45)
+//	blocks.setText("Class Blocks")
+//	blocks.setCallback(() => {
+//		var obj = new BlockScript(undefined, undefined, "class")
+//		obj.name = "class"
+//		Editor.program.addObject(obj)
+//		Editor.updateAssetExplorer()
+//	})
+//
+//	blocksIcon = new ImageBox(blocks.element)
+//	blocksIcon.size.set(40, 40)
+//	blocksIcon.position.set(5, 2)
+//	blocksIcon.setImage(Interface.file_dir + "icons/script/blocks.png")
+//	blocksIcon.updateInterface()
+//
+//	Interface.effects_form.add(blocks)
+//	Interface.effects_form.nextRow()
 
 	// Script
 	var script = new Button(Interface.effects_form.element)
@@ -1221,7 +1242,7 @@ Interface.saveProgram = function() {
 	App.chooseFile((files) => {
 		try {
 			Editor.saveProgram(files[0].path)
-			alert("Program save")
+			alert("Program saved")
 		} catch(e) {
 			alert("Error saving file\n(" + e + ")")
 		}
@@ -1240,7 +1261,7 @@ Interface.loadProgram = function() {
 			} catch(e) {
 				alert("Error loading file\n(" + e + ")")
 			}
-		}, ".isp", true)
+		}, ".isp")
 	}
 }
 

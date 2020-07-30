@@ -10,32 +10,27 @@ function BlockAsset(parent) {
 	// Self pointer
 	var self = this
 
-	// Double click
-	this.element.ondblclick = function() {
-		if (self.blocks instanceof BlockScript) {
-			// Check if there's already a tab with these blocks attached to
-			var found = false
-			for(var i = 0; i < Interface.tab.options.length; i++) {
-				if (Interface.tab.options[i].component instanceof BlockEditor) {
-					if (Interface.tab.options[i].component.blocks === self.blocks) {
-						found = true
-						Interface.tab.selectTab()
-						break
-					}
+	// Context menu event
+	this.element.oncontextmenu = function(e) {
+		var context = new ContextMenu()
+		context.size.set(130, 20)
+		context.position.set(event.clientX - 5, event.clientY - 5)
+
+		context.addOption("Rename", () => {
+			if (self.blocks !== null) {
+				self.blocks.name = prompt("Rename blocks", self.blocks.name)
+				self.updateMetadata()
+			}
+		})
+
+		context.addOption("Delete", () => {
+			if (self.blocks !== null) {
+				if (confirm("Delete Blocks?")) {
+					Editor.program.removeObject(self.blocks)
+					Editor.updateObjectViews()
 				}
 			}
-
-			// If not found, open new tab
-			if (!found) {
-				var tab = Interface.tab.addTab(self.blocks.name, Interface.file_dir + "icons/script/blocks.png", true)
-				
-				var blocks_editor = new BlockEditor()
-				blocks_editor.attachBlocks(self.blocks)
-				
-				tab.attachComponent(blocks_editor)
-				tab.select()
-			}
-		}
+		})
 	}
 
 	// Drag start
@@ -55,6 +50,40 @@ function BlockAsset(parent) {
 		// Try to remove blocks from drag buffer
 		var uuid = event.dataTransfer.getData("uuid")
 		var obj = DragBuffer.popDragElement(uuid)
+	}
+
+	// Double click
+	this.element.ondblclick = function() {
+		if (self.blocks instanceof BlockScript) {
+			var wind = Editor.openWindow({title: "Blocks Editor", width: 1280, height: 720})
+			var blocks = new BlockEditor(wind.document.body)
+			blocks.fit_parent = true
+			blocks.attachBlocks(self.blocks)
+
+			wind.window.component = blocks
+
+			wind.window.onload = function() {
+				wind.window.component.updateInterface()
+				
+				wind.window.onresize = function() {
+					wind.window.component.updateInterface()
+				}
+
+				wind.window.onblur = function() {
+					wind.window.component.updateBlocks()
+				}
+
+				wind.window.onfocus = function() {
+					Register.registerBlocksNodes()
+					wind.window.component.updateBlocks()
+				}
+
+				wind.window.onbeforeunload = function() {
+					wind.window.component.updateBlocks()		
+				}
+			}
+
+		}
 	}
 }
 
@@ -77,6 +106,6 @@ BlockAsset.prototype.setBlocks = function(blocks) {
 // Update metadata
 BlockAsset.prototype.updateMetadata = function() {
 	if (this.blocks !== null) {
-		this.setText(this.material.name)
+		this.setText(this.blocks.name)
 	}
 }

@@ -28,6 +28,8 @@ include("src/input/Mouse.js");
 
 include("src/core/webvr/VRControls.js");
 
+include("src/core/Namespace.js")
+
 include("src/core/resources/Font.js")
 include("src/core/resources/Video.js")
 include("src/core/resources/Audio.js")
@@ -117,6 +119,28 @@ include("src/core/components/cameras/CameraComponent.js")
 
 include("src/core/components/lights/LightComponent.js")
 include("src/core/components/objects/ScriptComponent.js")
+
+// Nodes
+include("src/core/nodes/Register.js")
+include("src/core/nodes/NodesHelper.js")
+
+// Blocks
+include("src/core/nodes/blocks/base/Base.js")
+include("src/core/nodes/blocks/base/Events.js")
+include("src/core/nodes/blocks/base/Lists.js")
+include("src/core/nodes/blocks/base/Widgets.js")
+include("src/core/nodes/blocks/base/Objects.js")
+include("src/core/nodes/blocks/base/Hierarchy.js")
+include("src/core/nodes/blocks/math/Colour.js")
+include("src/core/nodes/blocks/math/Vector.js")
+include("src/core/nodes/blocks/math/Euler.js")
+include("src/core/nodes/blocks/input/Keyboard.js")
+
+// Material
+include("src/core/nodes/material/MaterialNodes.js")
+
+// Particles
+include("src/core/nodes/particles/ParticlesNodes.js")
 
 include("src/core/FileSystem.js")
 
@@ -294,8 +318,8 @@ function include(file, onload)
 	else if(file.endsWith(".css"))
 	{
 		var css = document.createElement("link");
-		css.href = file;
 		css.rel = "stylesheet";
+		css.href = file;
 		document.body.appendChild(css);
 	}
 	else if(file.endsWith("*"))
