@@ -373,13 +373,13 @@ Interface.initialize = function() {
 	// ------------------------------------ Left Div ------------------------------------
 	Interface.left_div = new DivisionResizable()
 	Interface.left_div.resizable_side = DivisionResizable.RIGHT
-	Interface.left_div.size.x = 350
+	Interface.left_div.size.x = 300
 	Interface.left_div.resize_size_min = 300
-	Interface.left_div.resize_size_max = 400
+	Interface.left_div.resize_size_max = 305
 	Interface.left_div.element.style.pointerEvents = "auto"
 
 	Interface.left_tabs = new TabGroup(Interface.left_div.element)
-	Interface.left_tabs.button_size.set(120, 30)
+	Interface.left_tabs.button_size.set(100, 30)
 	Interface.left_tabs.element.style.cursor = "default"
 	Interface.left_tabs.element.style.backgroundColor = Editor.theme.bar_color
 	Interface.left_tabs.mode = TabGroup.LEFT
@@ -412,7 +412,7 @@ Interface.initialize = function() {
 
 	// By default the "basic" tab is selected
 	Interface.left_tabs.selectTab(0)
-	var sizex = 270 //Interface.left_tabs.options_size.x)//(Interface.left_div.size.x-Interface.left_tabs.options_size.x)
+	var sizex = (Interface.left_div.size.x-Interface.left_tabs.button_size.x)
 
 	// ------------------------------------ Basic ------------------------------------
 	Interface.basic_form = new Form(Interface.basic_tab.element)
