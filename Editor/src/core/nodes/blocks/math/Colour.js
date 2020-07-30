@@ -7,7 +7,7 @@ function ColourNode() {
 
 	this.addOutput("Colour", "color", {...NodesHelper.slots.color, pos: [NodesHelper.slots.position.x1+60, NodesHelper.slots.position.y]})
 
-	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]]
+	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]+52]
 }
 ColourNode.title = "Colour"
 ColourNode.title_color = NodesHelper.titles.color
@@ -32,5 +32,5 @@ ColourNode.prototype.onPropertyChanged = function() {
 }
 
 function registerColour() {
-	LiteGraph.registerNodeType("Colour/Colour", ColourNode)
+	LiteGraph.registerNodeType("Math/Colour/Colour", ColourNode)
 }

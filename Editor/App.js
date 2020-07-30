@@ -127,7 +127,7 @@ include("src/core/nodes/NodesHelper.js")
 // Blocks
 include("src/core/nodes/blocks/base/Base.js")
 include("src/core/nodes/blocks/base/Events.js")
-include("src/core/nodes/blocks/base/Arrays.js")
+include("src/core/nodes/blocks/base/Lists.js")
 include("src/core/nodes/blocks/base/Widgets.js")
 include("src/core/nodes/blocks/base/Objects.js")
 include("src/core/nodes/blocks/base/Hierarchy.js")

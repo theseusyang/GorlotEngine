@@ -20,5 +20,5 @@ WidgetFloatNode.prototype.onPropertyChanged = function() {
 }
 
 function registerWidgets() {
-	LiteGraph.registerNodeType("Widgets/Float", WidgetFloatNode)
+	LiteGraph.registerNodeType("Base/Widgets/Float", WidgetFloatNode)
 }

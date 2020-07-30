@@ -76,6 +76,6 @@ ArrayPushNode.prototype.onAction = function() {
 }
 
 function registerArray() {
-	LiteGraph.registerNodeType("Arrays/Array", ArrayNode)
-	LiteGraph.registerNodeType("Arrays/Push", ArrayPushNode)
+	LiteGraph.registerNodeType("Lists/Arrays/Array", ArrayNode)
+	LiteGraph.registerNodeType("Lists/Arrays/Push", ArrayPushNode)
 }
