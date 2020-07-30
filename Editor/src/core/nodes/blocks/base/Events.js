@@ -42,7 +42,7 @@ EventTickNode.prototype.onExecute = function() {
 function OnGameStartNode() {
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.passer, pos: [NodesHelper.slots.position.x1, NodesHelper.slots.output.title_pos["pos"][1]]})
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, ...NodesHelper.slots.output.position})
-	this.size = NodesHelper.sizes.small
+	this.size = [NodesHelper.sizes.small[0], NodesHelper.sizes.small[1]]
 }
 OnGameStartNode.title = "On Game Start"
 OnGameStartNode.title_color = NodesHelper.titles.event
@@ -59,7 +59,7 @@ function EventDestroyedNode() {
 	this.addInput("Target", "object", {...NodesHelper.slots.object})
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.passer, pos: [NodesHelper.slots.position.x1, NodesHelper.slots.output.title_pos["pos"][1]]})
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, ...NodesHelper.slots.output.position})
-	this.size = NodesHelper.sizes.small
+	this.size = [NodesHelper.sizes.small[0], NodesHelper.sizes.small[1]]
 }
 EventDestroyedNode.title = "On Destroyed"
 EventDestroyedNode.title_color = NodesHelper.titles.event
@@ -84,7 +84,7 @@ EventDestroyedNode.prototype.onStart = function() {
 // Event Dispose
 function EventDisposeNode() {
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, ...NodesHelper.slots.output.position})
-	this.size = NodesHelper.sizes.small
+	this.size = [NodesHelper.sizes.small[0], NodesHelper.sizes.small[1]]
 }
 EventDisposeNode.title = "On Dispose"
 EventDisposeNode.title_color = NodesHelper.titles.event

@@ -128,8 +128,10 @@ include("src/core/nodes/NodesHelper.js")
 include("src/core/nodes/blocks/base/Base.js")
 include("src/core/nodes/blocks/base/Events.js")
 include("src/core/nodes/blocks/base/Arrays.js")
+include("src/core/nodes/blocks/base/Widgets.js")
 include("src/core/nodes/blocks/base/Objects.js")
 include("src/core/nodes/blocks/base/Hierarchy.js")
+include("src/core/nodes/blocks/math/Colour.js")
 include("src/core/nodes/blocks/input/Keyboard.js")
 
 // Material

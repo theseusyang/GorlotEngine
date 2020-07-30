@@ -1117,6 +1117,9 @@ Editor.setState = function(state)
 	}
 	else if(state === Editor.STATE_TESTING)
 	{
+		// Register all the nodes
+		Register.registerAll()
+
 		//Copy program
 		Editor.program_running = Editor.program.clone();
 

@@ -26,16 +26,12 @@ ArrayNode.prototype.onOutputRemoved = function() {
 ArrayNode.prototype.onExecute = function() {
 	if (this.isInputConnected(0))
 		return
-	if (this.isInputConnected(1))
-		return
 
 	this.setOutputData(2, this.createArray())
 }
 ArrayNode.prototype.onAction = function() {
 	var arr = this.createArray()
 
-	this.setOutputData(0, arr)
-	this.setOutputData(1, arr)
 	this.setOutputData(2, arr)
 	
 	this.triggerSlot(0, arr)

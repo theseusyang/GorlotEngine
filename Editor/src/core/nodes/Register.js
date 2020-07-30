@@ -4,18 +4,25 @@ Register.registerBlocksNodes = function() {
 	registerBase()
 	registerEvents()
 	registerArray()
+	registerWidgets()
+	registerColour()
 	registerObjects()
 	registerHierarchy()
 	registerKeyboardNodes()
 }
 
 Register.registerMaterialNodes = function() {
+	registerArray()
+	registerWidgets()
+	registerColour()
 	registerMaterialNodes()
 }
 
 Register.registerParticlesNodes = function() {
-	registerParticlesNodes()
 	registerArray()
+	registerWidgets()
+	registerColour()
+	registerParticlesNodes()
 }
 
 Register.unregisterAll = function() {

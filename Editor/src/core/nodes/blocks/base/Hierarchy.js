@@ -7,7 +7,7 @@ function GetAllChildrenNode() {
 	this.addOutput("", LiteGraph.EVENT, {...NodesHelper.slots.output.event, pos: [NodesHelper.slots.position.x1+60, NodesHelper.slots.position["y"]]})
 	this.addOutput("Children", "array", {...NodesHelper.slots.array, pos: [NodesHelper.slots.output.position["pos"][0]+60, NodesHelper.slots.position["y_second"]]})
 
-	this.size = NodesHelper.sizes.medium
+	this.size = [NodesHelper.sizes.medium[0], NodesHelper.sizes.medium[1]]
 }
 GetAllChildrenNode.title = "Get All Children"
 GetAllChildrenNode.title_color = NodesHelper.titles.hierarchy
