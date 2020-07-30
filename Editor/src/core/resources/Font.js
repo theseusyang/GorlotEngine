@@ -23,7 +23,7 @@ function Font(url) {
 				this.data = JSON.parse(FileSystem.readFile(url))
 				this.name = this.data.original_font_information.fullName
 				this.format = "json"
-			} else if (this.encoding === "ttf") {
+			} else if (this.encoding === "ttf" || this.encoding === "otf" || this.encoding === "ttc" || this.encoding === "otc") {
 				this.data = new TTFLoader().parse(FileSystem.readFileArrayBuffer(url))
 				this.name = this.data.original_font_information.fullName
 				this.format = "json"
