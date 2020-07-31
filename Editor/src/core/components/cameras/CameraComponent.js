@@ -115,16 +115,19 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 
 	// Select camera as scene default
 	this.default = new CheckBox(this.form.element)
-	this.default.setText("Default camera")
+	this.default.setText("Use camera")
 	this.default.size.set(200, 15)
 	this.default.setOnChange(() => {
 		if (self.obj !== null) {
 			var scene = ObjectUtils.getScene(self.obj)
 			if (scene !== null) {
 				if (self.default.getValue()) {
-					scene.initial_camera = self.obj.uuid
+					scene.cameras.push(self.obj)
 				} else {
-					scene.initial_camera = null
+					var index = scene.cameras.indexOf(self.obj)
+					if (index > -1) {
+						scene.cameras.splice(index, 1)
+					}
 				}
 			}
 		}
@@ -152,12 +155,7 @@ CameraComponent.prototype.updateData = function() {
 	this.near.setValue(this.obj.near)
 	this.far.setValue(this.obj.far)
 
-	var scene = ObjectUtils.getScene(this.obj)
-	if (scene !== null) {
-		this.default.setValue(scene.initial_camera === this.obj.uuid)
-	} else {
-		this.default.setValue(false)
-	}
+	this.default.setValue(ObjectUtils.getScene(this.obj).cameras.indexOf(this.obj) !== -1)
 }
 
 CameraComponent.prototype.onReset = function() {
@@ -174,7 +172,10 @@ CameraComponent.prototype.onReset = function() {
 	var scene = ObjectUtils.getScene(this.obj)
 	if (scene !== null) {
 		// By default there is no initial camera
-		scene.initial_camera = null
+		var index = scene.cameras.indexOf(this.obj)
+		if (index > -1) {
+			scene.cameras.splice(index, 1)
+		}
 	}
 
 	Editor.updateObjectViews()

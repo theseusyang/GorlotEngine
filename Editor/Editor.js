@@ -467,54 +467,66 @@ Editor.draw = function()
 		renderer.clearDepth()
 		renderer.render(Editor.tool_scene_top, Editor.camera)
 
-		if(Settings.editor.camera_preview_enabled && Editor.selected_object instanceof THREE.Camera)
+		if(Settings.editor.camera_preview_enabled)
 		{
 			var width = Settings.editor.camera_preview_percentage * Editor.canvas.width
 			var height = Settings.editor.camera_preview_percentage * Editor.canvas.height
 			var offset = Editor.canvas.width - width - 10
-
-			var camera = Editor.selected_object;
-			camera.aspect = width/height
-			camera.updateProjectionMatrix()
+			renderer.setViewport(offset, 10, width, height)
+			renderer.setScissor(offset, 10, width, height)
 
 			var background = Editor.program.scene.background
 			Editor.program.scene.background = null
 
-			Editor.renderer.setViewport(offset, 10, width, height)
-			Editor.renderer.setScissor(offset, 10, width, height)
-			Editor.renderer.render(Editor.program.scene, camera)
+			if (Editor.selected_object instanceof THREE.Camera) {
+				var camera = Editor.selected_object
+				camera.aspect = width / height
+				camera.updateProjectionMatrix()
+				renderer.render(Editor.program.scene, camera)
+			} else {
+				var scene = Editor.program.scene
+				for(var i = 0; i < scene.cameras.length; i++) {
+					scene.cameras[i].aspect = width / height
+					scene.cameras[i].updateProjectionMatrix()
+					renderer.render(scene, scene.cameras[i])
+				}
+			}
 
 			Editor.program.scene.background = background
 		}
 	}
 	else if(Editor.state === Editor.STATE_TESTING)
 	{
-		//If VR is enabled
 		if(Editor.vr_effect !== null)
 		{
-			//Update VR controls
 			Editor.vr_controls.scale = Editor.program_running.vr_scale
 			Editor.vr_controls.update()
 
-			//Backup camera atributes
-			var camera = Editor.program_running.scene.camera
-			var position = camera.position.clone()
-			var quaternion = camera.quaternion.clone()
+			var scene = Editor.program_running.scene
+			for(var i = 0; i < scene.cameras.length; i++) {
+				var camera = scene.cameras[i]
 
-			//Apply VR controller offsets to actual camera
-			camera.position.add(Editor.vr_controls.position)
-			camera.quaternion.multiply(Editor.vr_controls.quaternion)
+				// Apply VR Controller offsets to camera
+				var position = camera.position.clone()
+				var quaternion = camera.quaternion.clone()
 
-			//Render scene
-			Editor.vr_effect.render(Editor.program_running.scene, camera)
+				camera.position.add(Editor.vr_controls.position)
+				camera.quaternion.multiply(Editor.vr_controls.quaternion)
 
-			//Backup camera atributes
-			camera.position.copy(position)
-			camera.quaternion.copy(quaternion)
+				// Render scene
+				Editor.vr_effect.render(scene, camera)
+
+				// Restore camera attributes
+				camera.position.copy(position)
+				camera.quaternion.copy(quaternion)
+			}
 		}
 		else
 		{
-			renderer.render(Editor.program_running.scene, Editor.program_running.scene.camera)
+			var scene = Editor.program_running.scene
+			for(var i = 0; i < scene.cameras.length; i++) {
+				renderer.render(scene, scene.cameras[i])
+			}
 		}
 	}
 
