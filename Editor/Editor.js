@@ -134,7 +134,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 31 2020 17:01:10 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 31 2020 18:22:50 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
@@ -182,6 +182,7 @@ Editor.initialize = function()
 
 	//Renderer and canvas
 	Editor.renderer = null
+	Editor.gl = null
 	Editor.canvas = null
 
 	//Material renderer for material previews
@@ -462,24 +463,27 @@ Editor.render = function()
 
 	if(Editor.state === Editor.STATE_EDITING)
 	{
+		// Render scene
 		renderer.setViewport(0, 0, Editor.canvas.width, Editor.canvas.height)
 		renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height)
 		renderer.render(Editor.program.scene, Editor.camera)
 
+		// Render tools
 		renderer.render(Editor.tool_scene, Editor.camera)
 		renderer.clearDepth()
 		renderer.render(Editor.tool_scene_top, Editor.camera)
 
+		// Render camera preview
 		if(Settings.editor.camera_preview_enabled && (Editor.selected_object instanceof THREE.Camera || Editor.program.scene.cameras.length > 0))
 		{
 			var width = Settings.editor.camera_preview_percentage * Editor.canvas.width
 			var height = Settings.editor.camera_preview_percentage * Editor.canvas.height
+
 			var offset = Editor.canvas.width - width - 10
 			renderer.setViewport(offset, 10, width, height)
 			renderer.setScissor(offset, 10, width, height)
-
-			var background = Editor.program.scene.background
-			Editor.program.scene.background = null
+			renderer.setScissorTest(true)
+			renderer.clear()
 
 			if (Editor.selected_object instanceof THREE.Camera) {
 				var camera = Editor.selected_object
@@ -495,7 +499,7 @@ Editor.render = function()
 				}
 			}
 
-			Editor.program.scene.background = background
+			renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height)
 		}
 	}
 	else if(Editor.state === Editor.STATE_TESTING)
@@ -1239,6 +1243,7 @@ Editor.initializeRenderer = function(canvas)
 	Editor.renderer.autoClear = false;
 	Editor.renderer.shadowMap.enabled = Settings.render.shadows;
 	Editor.renderer.shadowMap.type = Settings.render.shadows_type;
+	Editor.gl = Editor.renderer.context
 }
 
 // Opens a different window

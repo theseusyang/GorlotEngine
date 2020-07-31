@@ -83,9 +83,10 @@ OrthographicCamera.prototype.toJSON = function(meta)
 {
 	var data = THREE.OrthographicCamera.prototype.toJSON.call(this, meta)
 
-	data.object.size = this.size;
-	data.object.aspect = this.aspect;
-	data.object.mode = this.mode;
+	data.object.size = this.size
+	data.object.aspect = this.aspect
+	data.object.mode = this.mode
+	data.object.viewport = this.viewport.toJSON()
 
 	return data;
 }
