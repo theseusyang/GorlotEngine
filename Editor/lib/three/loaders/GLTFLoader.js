@@ -188,7 +188,7 @@ THREE.GLTFLoader.prototype = {
 
 			var material = materials[ materialId ];
 
-			var _material = new MeshPhongMaterial();
+			var _material = new THREE.MeshPhongMaterial();
 			_material.name = material.name;
 
 			var values = material.values;
@@ -200,6 +200,12 @@ THREE.GLTFLoader.prototype = {
 			} else if ( typeof( values.diffuse ) === 'string' ) {
 
 					_material.map = library.textures[ values.diffuse ];
+
+			}
+
+			if ( typeof( values.bump ) === 'string' ) {
+
+					_material.bumpMap = library.textures[ values.bump ];
 
 			}
 
