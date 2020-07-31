@@ -1,121 +1,122 @@
 "use strict";
 
 //Codemirror
-include("lib/codemirror/codemirror.min.js")
-include("lib/codemirror/codemirror.css")
-include("lib/codemirror/keymap/sublime.js")
-include("lib/codemirror/keymap/emacs.js")
-include("lib/codemirror/keymap/vim.js")
-include("lib/codemirror/addon/edit/closebrackets.js")
-include("lib/codemirror/addon/edit/matchbrackets.js")
-include("lib/codemirror/addon/search/search.js")
-include("lib/codemirror/addon/search/searchcursor.js")
-include("lib/codemirror/addon/search/jump-to-line.js")
-include("lib/codemirror/addon/hint/show-hint.js")
-include("lib/codemirror/addon/hint/show-hint.css")
-include("lib/codemirror/addon/hint/anyword-hint.js")
-include("lib/codemirror/addon/dialog/dialog.js")
-include("lib/codemirror/addon/dialog/dialog.css")
-include("lib/codemirror/addon/selection/active-line.js")
-include("lib/codemirror/mode/javascript.js")
-include("lib/codemirror/mode/glsl.js")
-include("lib/codemirror/theme/*")
+include("Libraries/codemirror/codemirror.min.js")
+include("Libraries/codemirror/codemirror.css")
+include("Libraries/codemirror/keymap/sublime.js")
+include("Libraries/codemirror/keymap/emacs.js")
+include("Libraries/codemirror/keymap/vim.js")
+include("Libraries/codemirror/addon/edit/closebrackets.js")
+include("Libraries/codemirror/addon/edit/matchbrackets.js")
+include("Libraries/codemirror/addon/search/search.js")
+include("Libraries/codemirror/addon/search/searchcursor.js")
+include("Libraries/codemirror/addon/search/jump-to-line.js")
+include("Libraries/codemirror/addon/hint/show-hint.js")
+include("Libraries/codemirror/addon/hint/show-hint.css")
+include("Libraries/codemirror/addon/hint/anyword-hint.js")
+include("Libraries/codemirror/addon/dialog/dialog.js")
+include("Libraries/codemirror/addon/dialog/dialog.css")
+include("Libraries/codemirror/addon/selection/active-line.js")
+include("Libraries/codemirror/mode/javascript.js")
+include("Libraries/codemirror/mode/glsl.js")
+include("Libraries/codemirror/theme/*")
 
-include("lib/jscolor.min.js")
-include("lib/opentype.min.js")
+include("Libraries/jscolor.min.js")
+include("Libraries/opentype.min.js")
 
-include("lib/litegraph/litegraph.css")
-include("lib/litegraph/litegui.css")
+include("Libraries/litegraph/litegraph.css")
+include("Libraries/litegraph/litegui.css")
 
 //Threejs
-include("lib/three/loaders/OBJLoader.js")
-include("lib/three/loaders/MTLLoader.js")
-include("lib/three/loaders/VRMLLoader.js")
-include("lib/three/loaders/FBXLoader.js")
-include("lib/three/loaders/GLTFLoader.js")
-include("lib/three/loaders/ColladaLoader.js")
-include("lib/three/loaders/PLYLoader.js")
-include("lib/three/loaders/VTKLoader.js")
-include("lib/three/loaders/AWDLoader.js")
-include("lib/three/loaders/TGALoader.js")
+include("Libraries/three/loaders/OBJLoader.js")
+include("Libraries/three/loaders/MTLLoader.js")
+include("Libraries/three/loaders/VRMLLoader.js")
+include("Libraries/three/loaders/FBXLoader.js")
+include("Libraries/three/loaders/GLTFLoader.js")
+include("Libraries/three/loaders/ColladaLoader.js")
+include("Libraries/three/loaders/PLYLoader.js")
+include("Libraries/three/loaders/VTKLoader.js")
+include("Libraries/three/loaders/AWDLoader.js")
+include("Libraries/three/loaders/TGALoader.js")
 
-include("lib/three/animation/Animation.js")
-include("lib/three/animation/AnimationHandler.js")
-include("lib/three/animation/KeyFrameAnimation.js")
+include("Libraries/three/animation/Animation.js")
+include("Libraries/three/animation/AnimationHandler.js")
+include("Libraries/three/animation/KeyFrameAnimation.js")
 
 //Internal modules
-include("src/editor/ui/element/Bar.js")
-include("src/editor/ui/element/Button.js")
-include("src/editor/ui/element/Text.js")
-include("src/editor/ui/element/Division.js")
-include("src/editor/ui/element/ImageBox.js")
-include("src/editor/ui/element/DivisionResizable.js")
-include("src/editor/ui/element/ButtonImage.js")
-include("src/editor/ui/element/ButtonDrawer.js")
-include("src/editor/ui/element/Canvas.js")
-include("src/editor/ui/element/DualDivisionResizable.js")
-include("src/editor/ui/element/ButtonImageToggle.js")
-include("src/editor/ui/element/Form.js")
+include("Editor/UI/Element/Bar.js")
+include("Editor/UI/Element/Button.js")
+include("Editor/UI/Element/Text.js")
+include("Editor/UI/Element/Division.js")
+include("Editor/UI/Element/ImageBox.js")
+include("Editor/UI/Element/DivisionResizable.js")
+include("Editor/UI/Element/ButtonImage.js")
+include("Editor/UI/Element/ButtonDrawer.js")
+include("Editor/UI/Element/Canvas.js")
+include("Editor/UI/Element/DualDivisionResizable.js")
+include("Editor/UI/Element/ButtonImageToggle.js")
+include("Editor/UI/Element/Form.js")
 
-include("src/editor/ui/element/input/Graph.js")
-include("src/editor/ui/element/input/CodeEditor.js")
-include("src/editor/ui/element/input/CheckBox.js")
-include("src/editor/ui/element/input/TextBox.js")
-include("src/editor/ui/element/input/ColorChooser.js")
-include("src/editor/ui/element/input/Slider.js")
-include("src/editor/ui/element/input/DropdownList.js")
-include("src/editor/ui/element/input/NumberBox.js")
-include("src/editor/ui/element/input/CoordinatesBox.js")
-include("src/editor/ui/element/input/ImageChooser.js")
-include("src/editor/ui/element/input/TextureBox.js")
+include("Editor/UI/Element/Input/Graph.js")
+include("Editor/UI/Element/Input/CodeEditor.js")
+include("Editor/UI/Element/Input/CheckBox.js")
+include("Editor/UI/Element/Input/TextBox.js")
+include("Editor/UI/Element/Input/ColorChooser.js")
+include("Editor/UI/Element/Input/Slider.js")
+include("Editor/UI/Element/Input/DropdownList.js")
+include("Editor/UI/Element/Input/NumberBox.js")
+include("Editor/UI/Element/Input/CoordinatesBox.js")
+include("Editor/UI/Element/Input/ImageChooser.js")
+include("Editor/UI/Element/Input/TextureBox.js")
 
-include("src/editor/ui/DropdownMenu.js")
-include("src/editor/ui/TabGroup.js")
-include("src/editor/ui/TabElement.js")
-include("src/editor/ui/TreeView.js")
-include("src/editor/ui/TreeElement.js")
-include("src/editor/ui/TabButton.js")
-include("src/editor/ui/ContextMenu.js")
-include("src/editor/ui/AssetExplorer.js")
+include("Editor/UI/DropdownMenu.js")
+include("Editor/UI/TabGroup.js")
+include("Editor/UI/TabElement.js")
+include("Editor/UI/TreeView.js")
+include("Editor/UI/TreeElement.js")
+include("Editor/UI/TabButton.js")
+include("Editor/UI/ContextMenu.js")
+include("Editor/UI/AssetExplorer.js")
 
-include("src/editor/ui/asset/Asset.js")
-include("src/editor/ui/asset/MaterialAsset.js")
-include("src/editor/ui/asset/TextureAsset.js")
-include("src/editor/ui/asset/BlockAsset.js")
+include("Editor/UI/Asset/Asset.js")
+include("Editor/UI/Asset/MaterialAsset.js")
+include("Editor/UI/Asset/TextureAsset.js")
+include("Editor/UI/Asset/BlockAsset.js")
 
-include("src/editor/files/style/editor.css")
-include("src/editor/ui/theme/Theme.js")
-include("src/editor/ui/theme/ThemeDark.js")
+include("Editor/Files/Style/Editor.css")
 
-include("src/editor/ui/tab/ScriptEditor.js")
-include("src/editor/ui/tab/SceneEditor.js")
-include("src/editor/ui/tab/SettingsTab.js")
-include("src/editor/ui/tab/ParticleEditor.js")
-include("src/editor/ui/tab/AboutTab.js")
-include("src/editor/ui/tab/MaterialEditor.js")
-include("src/editor/ui/tab/BlockEditor.js")
-include("src/editor/ui/tab/ShaderMaterialEditor.js")
+include("Editor/UI/Theme/Theme.js")
+include("Editor/UI/Theme/ThemeDark.js")
 
-include("src/editor/tools/TransformControls.js")
-include("src/editor/tools/GizmoMaterial.js")
-include("src/editor/tools/GizmoLineMaterial.js")
-include("src/editor/tools/TransformGizmo.js")
-include("src/editor/tools/TransformGizmoRotate.js")
-include("src/editor/tools/TransformGizmoScale.js")
-include("src/editor/tools/TransformGizmoTranslate.js")
+include("Editor/UI/Tab/ScriptEditor.js")
+include("Editor/UI/Tab/SceneEditor.js")
+include("Editor/UI/Tab/SettingsTab.js")
+include("Editor/UI/Tab/ParticleEditor.js")
+include("Editor/UI/Tab/AboutTab.js")
+include("Editor/UI/Tab/MaterialEditor.js")
+include("Editor/UI/Tab/BlockEditor.js")
+include("Editor/UI/Tab/ShaderMaterialEditor.js")
 
-include("src/editor/helpers/ParticleEmitterHelper.js")
-include("src/editor/helpers/ObjectIconHelper.js")
-include("src/editor/helpers/PhysicsObjectHelper.js")
-include("src/editor/helpers/BoundingBoxHelper.js")
-include("src/editor/helpers/WireframeHelper.js")
+include("Editor/Tools/TransformControls.js")
+include("Editor/Tools/GizmoMaterial.js")
+include("Editor/Tools/GizmoLineMaterial.js")
+include("Editor/Tools/TransformGizmo.js")
+include("Editor/Tools/TransformGizmoRotate.js")
+include("Editor/Tools/TransformGizmoScale.js")
+include("Editor/Tools/TransformGizmoTranslate.js")
 
-include("src/editor/utils/MaterialRenderer.js")
-include("src/editor/utils/ObjectIcons.js")
+include("Editor/Helpers/ParticleEmitterHelper.js")
+include("Editor/Helpers/ObjectIconHelper.js")
+include("Editor/Helpers/PhysicsObjectHelper.js")
+include("Editor/Helpers/BoundingBoxHelper.js")
+include("Editor/Helpers/WireframeHelper.js")
 
-include("src/editor/DragBuffer.js")
-include("src/editor/Interface.js")
-include("src/editor/Settings.js")
+include("Editor/Utils/MaterialRenderer.js")
+include("Editor/Utils/ObjectIcons.js")
+
+include("Editor/DragBuffer.js")
+include("Editor/Interface.js")
+include("Editor/Settings.js")
 
 function Editor(){}
 
@@ -813,9 +814,9 @@ Editor.updateObjectPanel = function()
 
 // Create default resources to be used when creating new objects
 Editor.createDefaultResources = function() {
-	Editor.default_image = new GORLOT.Image("data/sample.png")
-	Editor.default_font = new Font("data/fonts/montserrat.json")
-	Editor.default_audio = new Audio("data/sample.ogg")
+	Editor.default_image = new GORLOT.Image("Data/sample.png")
+	Editor.default_font = new Font("Data/Fonts/montserrat.json")
+	Editor.default_audio = new Audio("Data/sample.ogg")
 	Editor.default_texture = new Texture(Editor.default_image)
 	Editor.default_material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2})
 	Editor.default_material.name = "default"
@@ -879,7 +880,7 @@ Editor.selectObjectHelper = function()
 		if(Editor.selected_object instanceof THREE.Camera)
 		{
 			Editor.object_helper.add(new THREE.CameraHelper(Editor.selected_object));
-			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Interface.file_dir + "icons/camera/camera.png"));
+			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Interface.file_dir + "Icons/Camera/Camera.png"));
 		}
 		//Directional light
 		else if(Editor.selected_object instanceof THREE.DirectionalLight)
@@ -1008,7 +1009,7 @@ Editor.createNewProgram = function()
 	if(Interface.tab !== undefined)
 	{
 		Interface.tab.clear();
-		var scene = Interface.tab.addTab("scene", Interface.file_dir + "icons/tab/scene.png", true);
+		var scene = Interface.tab.addTab("scene", Interface.file_dir + "Icons/Tab/Scene.png", true);
 		var canvas = new SceneEditor(scene.element);
 		canvas.setScene(Editor.program.scene);
 		scene.attachComponent(canvas);
@@ -1044,7 +1045,7 @@ Editor.loadProgram = function(fname)
 	//Add new scene tab to interface
 	if(Editor.program.scene !== null)
 	{
-		var scene = Interface.tab.addTab("scene", Interface.file_dir + "icons/tab/scene.png", true);
+		var scene = Interface.tab.addTab("scene", Interface.file_dir + "Icons/Tab/Scene.png", true);
 		var editor = new SceneEditor(scene.element);
 		editor.setScene(Editor.program.scene);
 		scene.attachComponent(editor);
@@ -1056,22 +1057,22 @@ Editor.loadProgram = function(fname)
 Editor.exportWebProject = function(dir)
 {
 	FileSystem.copyFolder("runtime", dir);
-	FileSystem.copyFolder("src/core", dir + "src/core");
-	FileSystem.copyFolder("src/input", dir + "src/input");
-	FileSystem.copyFile("src/App.js", dir + "src/App.js");
+	FileSystem.copyFolder("Engine/core", dir + "Engine/core");
+	FileSystem.copyFolder("Engine/input", dir + "Engine/input");
+	FileSystem.copyFile("Engine/App.js", dir + "Engine/App.js");
 
 	FileSystem.makeDirectory(dir + "src/lib");
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js")
-	FileSystem.copyFile("src/lib/SPE.min.js", dir + "src/lib/SPE.min.js")
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js")
-	FileSystem.copyFile("src/lib/stats.min.js", dir + "src/lib/stats.min.js")
-	FileSystem.copyFile("src/lib/cannon.min.js", dir + "src/lib/cannon.min.js")
-	FileSystem.copyFile("src/lib/spine.min.js", dir + "src/lib/spine.min.js")
-	FileSystem.copyFile("src/lib/base64.min.js", dir + "src/lib/base64.min.js")
-	FileSystem.makeDirectory(dir + "src/lib/three")
-	FileSystem.copyFile("src/lib/three/three.min.js", dir + "src/lib/three/three.min.js")
-	FileSystem.makeDirectory(dir + "src/lib/three/effects")
-	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "src/lib/three/effects/VREffect.js")
+	FileSystem.copyFile("Libraries/leap.min.js", dir + "Libraries/leap.min.js")
+	FileSystem.copyFile("Libraries/SPE.min.js", dir + "Libraries/SPE.min.js")
+	FileSystem.copyFile("Libraries/leap.min.js", dir + "Libraries/leap.min.js")
+	FileSystem.copyFile("Libraries/stats.min.js", dir + "Libraries/stats.min.js")
+	FileSystem.copyFile("Libraries/cannon.min.js", dir + "Libraries/cannon.min.js")
+	FileSystem.copyFile("Libraries/spine.min.js", dir + "Libraries/spine.min.js")
+	FileSystem.copyFile("Libraries/base64.min.js", dir + "Libraries/base64.min.js")
+	FileSystem.makeDirectory(dir + "Libraries/three")
+	FileSystem.copyFile("Libraries/three/three.min.js", dir + "Libraries/three/three.min.js")
+	FileSystem.makeDirectory(dir + "Libraries/three/effects")
+	FileSystem.copyFile("Libraries/three/effects/VREffect.js", dir + "Libraries/three/effects/VREffect.js")
 
 	Editor.saveProgram(dir + "/app.isp");
 }
@@ -1251,8 +1252,8 @@ Editor.openWindow = function(options) {
 	wind.document.write(`<head><title>${title}</title></head><body oncontextmenu='return false'></body>`)
 
 	// transfer files
-	wind.document.write("<script src='App.js'></script>")
-	wind.document.write("<script src='Editor.js'></script>")
+	wind.document.write("<script src='Engine/App.js'></script>")
+	wind.document.write("<script src='Editor/Editor.js'></script>")
 
 	wind.document.close()
 

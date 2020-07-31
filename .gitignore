@@ -1,6 +1,4 @@
 *.db
 *.log
-editor/nwjs
-editor/nwjs/*
 nwjs/
 nwjs/*
