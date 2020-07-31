@@ -106,6 +106,7 @@ include("src/editor/tools/TransformGizmoTranslate.js")
 include("src/editor/helpers/ParticleEmitterHelper.js")
 include("src/editor/helpers/ObjectIconHelper.js")
 include("src/editor/helpers/PhysicsObjectHelper.js")
+include("src/editor/helpers/BoundingBoxHelper.js")
 include("src/editor/helpers/WireframeHelper.js")
 
 include("src/editor/utils/MaterialRenderer.js")
@@ -467,7 +468,7 @@ Editor.draw = function()
 		renderer.clearDepth()
 		renderer.render(Editor.tool_scene_top, Editor.camera)
 
-		if(Settings.editor.camera_preview_enabled)
+		if(Settings.editor.camera_preview_enabled && (Editor.selected_object instanceof THREE.Camera || Editor.program.scene.cameras.length > 0))
 		{
 			var width = Settings.editor.camera_preview_percentage * Editor.canvas.width
 			var height = Settings.editor.camera_preview_percentage * Editor.canvas.height
@@ -912,12 +913,13 @@ Editor.selectObjectHelper = function()
 		}
 		// Animated Mesh
 		else if (Editor.selected_object instanceof THREE.SkinnedMesh) {
-			Editor.object_helper.add(new THREE.BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
+			Editor.object_helper.add(new BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
+			Editor.object_helper.add(new WireframeHelper(Editor.selected_object))
 			Editor.object_helper.add(new THREE.SkeletonHelper(Editor.selected_object))
 		}
 		// Mesh
 		else if (Editor.selected_object instanceof THREE.Mesh) {
-			Editor.object_helper.add(new THREE.BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
+			Editor.object_helper.add(new BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
 			Editor.object_helper.add(new WireframeHelper(Editor.selected_object))
 		}
 		// Object Caller
@@ -928,7 +930,7 @@ Editor.selectObjectHelper = function()
 		//Object 3D
 		else if(Editor.selected_object instanceof THREE.Object3D)
 		{
-			Editor.object_helper.add(new THREE.BoundingBoxHelper(Editor.selected_object, 0xFFFF00));
+			Editor.object_helper.add(new BoundingBoxHelper(Editor.selected_object, 0xFFFF00));
 		}
 	}
 }
@@ -1008,20 +1010,8 @@ Editor.createNewProgram = function()
 //Save program to file
 Editor.saveProgram = function(fname)
 {
-	var output = Editor.program.toJSON();
-	var json = null;
-	
-	try
-	{
-		json = JSON.stringify(output, null, "\t");
-		json = json.replace(/[\n\t]+([\d\.e\-\[\]]+)/g, "$1");
-	}
-	catch(e)
-	{
-		json = JSON.stringify(output);
-	}
-
-	FileSystem.writeFile(fname, json);
+	var output = Editor.program.toJSON()
+	FileSystem.writeFile(fname, json)
 }
 
 //Load program from file
