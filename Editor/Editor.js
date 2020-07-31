@@ -21,6 +21,9 @@ include("lib/codemirror/mode/javascript.js")
 include("lib/codemirror/mode/glsl.js")
 include("lib/codemirror/theme/*")
 
+include("lib/jscolor.min.js")
+include("lib/opentype.min.js")
+
 include("lib/litegraph/litegraph.css")
 include("lib/litegraph/litegui.css")
 
@@ -39,8 +42,6 @@ include("lib/three/loaders/TGALoader.js")
 include("lib/three/animation/Animation.js")
 include("lib/three/animation/AnimationHandler.js")
 include("lib/three/animation/KeyFrameAnimation.js")
-
-include("lib/jscolor.min.js")
 
 //Internal modules
 include("src/editor/ui/element/Bar.js")
@@ -132,7 +133,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 31 2020 14:20:40 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 31 2020 16:34:00 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function(canvas)
@@ -1052,18 +1053,17 @@ Editor.exportWebProject = function(dir)
 	FileSystem.copyFile("src/App.js", dir + "src/App.js");
 
 	FileSystem.makeDirectory(dir + "src/lib");
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js");
-	FileSystem.copyFile("src/lib/SPE.min.js", dir + "src/lib/SPE.min.js");
-	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js");
-	FileSystem.copyFile("src/lib/stats.min.js", dir + "src/lib/stats.min.js");
-	FileSystem.copyFile("src/lib/cannon.min.js", dir + "src/lib/cannon.min.js");
-	FileSystem.copyFile("src/lib/spine.min.js", dir + "src/lib/spine.min.js");
-	FileSystem.copyFile("src/lib/opentype.min.js", dir + "src/lib/opentype.min.js")
-	FileSystem.copyFile("src/lib/base64.min.js", dir + "src/lib/base64.min.js");
-	FileSystem.makeDirectory(dir + "src/lib/three");
-	FileSystem.copyFile("src/lib/three/three.min.js", dir + "src/lib/three/three.min.js");
-	FileSystem.makeDirectory(dir + "src/lib/three/effects");
-	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "src/lib/three/effects/VREffect.js");
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js")
+	FileSystem.copyFile("src/lib/SPE.min.js", dir + "src/lib/SPE.min.js")
+	FileSystem.copyFile("src/lib/leap.min.js", dir + "src/lib/leap.min.js")
+	FileSystem.copyFile("src/lib/stats.min.js", dir + "src/lib/stats.min.js")
+	FileSystem.copyFile("src/lib/cannon.min.js", dir + "src/lib/cannon.min.js")
+	FileSystem.copyFile("src/lib/spine.min.js", dir + "src/lib/spine.min.js")
+	FileSystem.copyFile("src/lib/base64.min.js", dir + "src/lib/base64.min.js")
+	FileSystem.makeDirectory(dir + "src/lib/three")
+	FileSystem.copyFile("src/lib/three/three.min.js", dir + "src/lib/three/three.min.js")
+	FileSystem.makeDirectory(dir + "src/lib/three/effects")
+	FileSystem.copyFile("src/lib/three/effects/VREffect.js", dir + "src/lib/three/effects/VREffect.js")
 
 	Editor.saveProgram(dir + "/app.isp");
 }
