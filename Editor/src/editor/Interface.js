@@ -1227,7 +1227,6 @@ Interface.updateInterface = function() {
 	Interface.explorer_resizable.updateInterface()
 
 	Interface.tree_view.updateInterface()
-	Interface.panel.updateInterface()
 
 	// ------------------------------------ Asset Explorer ------------------------------------
 	Interface.asset_explorer_div.size.x = size.x - Interface.explorer.size.x

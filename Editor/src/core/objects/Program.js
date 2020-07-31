@@ -1,33 +1,33 @@
-"use strict";
+"use strict"
 
 //Program constructor
 function Program(name)
 {
-	THREE.Object3D.call(this);
+	THREE.Object3D.call(this)
 
-	//Program Type
-	this.type = "Program";
+	// Program Type
+	this.type = "Program"
 
-	//Matrix auto update
-	this.matrixAutoUpdate = false;
+	// Matrix auto update
+	this.matrixAutoUpdate = false
 
-	//Program Info
-	this.name = (name !== undefined) ? name : "program";
-	this.description = "";
-	this.author = "";
-	this.version = "0";
+	// Program Info
+	this.name = (name !== undefined) ? name : "program"
+	this.description = ""
+	this.author = ""
+	this.version = "0"
 
-	//Hardware flags
-	this.lock_pointer = false;
+	// Hardware flags
+	this.lock_pointer = false
 	
-	//VR flags
-	this.vr = false;
-	this.vr_scale = 1;
+	// VR flags
+	this.vr = false
+	this.vr_scale = 1
 
-	//Rendering quality
-	this.antialiasing = false;
-	this.shadows = true;
-	this.shadows_type = THREE.PCFSoftShadowMap;
+	// Render quality
+	this.antialiasing = false
+	this.shadows = true
+	this.shadows_type = THREE.PCFSoftShadowMap
 
 	//Resources
 	this.images = []
@@ -40,13 +40,13 @@ function Program(name)
 	this.asset_objects = []
 
 	//Initial values
-	this.default_scene = null;
-	this.default_camera = null;
+	this.default_scene = null
+	this.default_camera = null
 
 	//Runtime variables
 	this.html = null
-	this.renderer = null;
-	this.scene = null;
+	this.renderer = null
+	this.scene = null
 
 	this.components = []
 	this.defaultComponents = []
@@ -54,14 +54,41 @@ function Program(name)
 	this.defaultComponents.push(new ProgramComponent())
 }
 
-Program.prototype = Object.create(THREE.Object3D.prototype);
+Program.prototype = Object.create(THREE.Object3D.prototype)
+
+// Select initial scene and initialise it
+Program.prototype.initialize = function() {
+	if (this.default_scene !== null) {
+		for(var i = 0; i < this.children.length; i++) {
+			if (this.children[i].uuid === this.default_scene) {
+				this.setScene(this.children[i])
+				break
+			}
+		}
+	} else {
+		this.setScene(this.children[0])
+	}
+}
+
+// Update program
+Program.prototype.update = function() {
+	this.scene.update()
+}
+
+// Screen resize
+Program.prototype.resize = function(x, y) {
+	for(var i = 0; i < this.scene.cameras.length; i++) {
+		this.scene.cameras[i].aspect = x / y
+		this.scene.cameras[i].updateProjectionMatrix()
+	}
+}
 
 //Add material to materials list
 Program.prototype.addMaterial = function(material)
 {
 	if(material instanceof THREE.Material)
 	{
- 		this.materials[material.uuid] = material;
+ 		this.materials[material.uuid] = material
  	}
 }
 
@@ -70,7 +97,7 @@ Program.prototype.removeMaterial = function(material, default_material, default_
 {
 	if(material instanceof THREE.Material)
 	{
-		delete this.materials[material.uuid];
+		delete this.materials[material.uuid]
 		
 		this.traverse(function(child)
 		{
@@ -80,11 +107,11 @@ Program.prototype.removeMaterial = function(material, default_material, default_
 				{
 					if(child instanceof THREE.Sprite)
 					{
-						child.material = default_material_sprite;
+						child.material = default_material_sprite
 					}
 					else
 					{
-						child.material = default_material;
+						child.material = default_material
 					}
 				}
 			}
@@ -95,7 +122,7 @@ Program.prototype.removeMaterial = function(material, default_material, default_
 //Add texture to texture list
 Program.prototype.addTexture = function(texture)
 {
- 	this.textures[texture.uuid] = texture;
+ 	this.textures[texture.uuid] = texture
 }
 
 // Add an object to objects list
@@ -131,52 +158,20 @@ Program.prototype.setScene = function(scene)
 	}
 }
 
-//Select initial scene and initialize that scene
-Program.prototype.initialize = function()
-{
-	if(this.default_scene !== null)
-	{
-		for(var i = 0; i < this.children.length; i++)
-		{
-			if(this.children[i].uuid === this.default_scene)
-			{
-				this.setScene(this.children[i]);
-				break;
-			}
-		}
-	}
-	else
-	{
-		this.setScene(this.children[0]);
-	}
-}
-
-//Screen resize
-Program.prototype.resize = function(x, y)
-{
-	if(this.scene !== null)
-	{
-		for(var i = 0; i < this.scene.cameras.length; i++) {
-			this.scene.cameras[i].aspect = x/y
-			this.scene.cameras[i].updateProjectionMatrix()
-		}
-	}
-}
-
 //Remove Scene from program
 Program.prototype.remove = function(scene)
 {
-	var index = this.children.indexOf(scene);
+	var index = this.children.indexOf(scene)
 	if(index > -1)
 	{
-		this.children.splice(index, 1);
-		scene.parent = null;
+		this.children.splice(index, 1)
+		scene.parent = null
 	}
 
 	//If no scene on program set actual scene to null
 	if(this.children.length === 0)
 	{
-		this.scene = null;
+		this.scene = null
 	}
 }
 
@@ -185,13 +180,13 @@ Program.prototype.add = function(scene)
 {
 	if(scene instanceof Scene)
 	{
-		this.children.push(scene);
-		scene.parent = this;
+		this.children.push(scene)
+		scene.parent = this
 
 		//If first scene set as actual scene
 		if(this.children.length === 1)
 		{
-			this.scene = this.children[0];
+			this.scene = this.children[0]
 		}
 	}
 }
@@ -199,13 +194,13 @@ Program.prototype.add = function(scene)
 //Clone program (keep uuid and everything else)
 Program.prototype.clone = function()
 {
-	return new ObjectLoader().parse(this.toJSON());
+	return new ObjectLoader().parse(this.toJSON())
 }
 
 //Set as initial scene (from uuid reference)
 Program.prototype.setInitialScene = function(scene)
 {
-	this.default_scene = scene.uuid;
+	this.default_scene = scene.uuid
 }
 
 //Create a default scene with sky
@@ -213,37 +208,39 @@ Program.prototype.addDefaultScene = function(material)
 {
 	if(material === undefined)
 	{
-		material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2});
-		material.name = "default";
+		material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2})
+		material.name = "default"
 	}
 
 	//Create new scene
-	var scene = new Scene();
+	var scene = new Scene()
 
 	//Sky
-	var sky = new Sky();
-	sky.auto_update = false;
-	scene.add(sky);
+	var sky = new Sky()
+	sky.auto_update = false
+	scene.add(sky)
 
 	//Box
-	var geometry = new THREE.BoxBufferGeometry(1, 1, 1);
-	var model = new Mesh(geometry, material);
-	model.receiveShadow = true;
-	model.castShadow = true;
-	model.name = "box";
-	scene.add(model);
+	var geometry = new THREE.BoxBufferGeometry(1, 1, 1)
+	var model = new Mesh(geometry, material)
+	model.scale.set(4, 4, 4)
+	model.position.set(0, 1.5, 0)
+	model.receiveShadow = true
+	model.castShadow = true
+	model.name = "box"
+	scene.add(model)
 
 	//Floor
-	model = new Mesh(geometry, material);
-	model.scale.set(20, 1, 20);
- 	model.position.set(0, -1, 0);
-	model.receiveShadow = true;
-	model.castShadow = true;
-	model.name = "ground";
-	scene.add(model);
+	model = new Mesh(geometry, material)
+	model.scale.set(40, 2, 40)
+ 	model.position.set(0, -1.5, 0)
+	model.receiveShadow = true
+	model.castShadow = true
+	model.name = "ground"
+	scene.add(model)
 
 	//Add scene to program
-	this.add(scene);
+	this.add(scene)
 }
 
 //Dispose program data (to avoid memory leaks)
@@ -252,26 +249,26 @@ Program.prototype.dispose = function()
 	//Dispose materials
 	for(var i = 0; i < this.materials.length; i++)
 	{
-		this.materials[i].dispose();
+		this.materials[i].dispose()
 	}
 
 	//Dispose textures
 	for(var i = 0; i < this.textures.length; i++)
 	{
-		this.textures[i].dispose();
+		this.textures[i].dispose()
 	}
 
 	//Dipose children
 	for(var i = 0; i < this.children.length; i++)
 	{
-		this.children[i].dispose();
+		this.children[i].dispose()
 	}
 }
 
 //Create JSON for object
 Program.prototype.toJSON = function(meta)
 {
-	var self = this;
+	var self = this
 
 	var data = THREE.Object3D.prototype.toJSON.call(this, meta, function(meta, object)
 	{
@@ -334,22 +331,22 @@ Program.prototype.toJSON = function(meta)
 	});
 
 	//Program info
-	data.object.author = this.author;
-	data.object.description = this.description;
-	data.object.version = this.version;
+	data.object.author = this.author
+	data.object.description = this.description
+	data.object.version = this.version
 
 	//Hardware flags
-	data.object.lock_pointer = this.lock_pointer;
+	data.object.lock_pointer = this.lock_pointer
 
 	//VR flags
-	data.object.vr = this.vr;
-	data.object.vr_scale = this.vr_scale;
+	data.object.vr = this.vr
+	data.object.vr_scale = this.vr_scale
 
 	//Initial scene
 	if(this.default_scene !== null)
 	{
-		data.object.default_scene = this.default_scene;
+		data.object.default_scene = this.default_scene
 	}
 
-	return data;
+	return data
 }

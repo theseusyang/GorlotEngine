@@ -751,7 +751,12 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 		//object.audio = audio
 	} else if (data.type === "Scene") {
 		for(var i = 0; i < object.cameras.length; i++) {
-			object.cameras[i] = object.getCamera(object.cameras[i])
+			var camera = object.getCamera(object.cameras[i])
+			if (camera !== null) {
+				object.cameras[i] = camera
+			} else {
+				object.cameras.splice(i, 1)
+			}
 		}
 	}
 	else if(data.type === "LOD")

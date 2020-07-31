@@ -122,12 +122,9 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 			var scene = ObjectUtils.getScene(self.obj)
 			if (scene !== null) {
 				if (self.default.getValue()) {
-					scene.cameras.push(self.obj)
+					scene.addCamera(self.obj)
 				} else {
-					var index = scene.cameras.indexOf(self.obj)
-					if (index > -1) {
-						scene.cameras.splice(index, 1)
-					}
+					scene.removeCamera(self.obj)
 				}
 			}
 		}

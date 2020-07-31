@@ -133,16 +133,16 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 31 2020 16:34:00 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Jul 31 2020 17:01:10 GMT+0000 (UTC)"
 
 //Initialize Main
-Editor.initialize = function(canvas)
+Editor.initialize = function()
 {
 	//Load settings
-	Settings.load();
+	Settings.load()
 
 	//Load interface theme
-	Editor.theme = Theme.get(Settings.general.theme);
+	Editor.theme = Theme.get(Settings.general.theme)
 
 	//Set windows close event
 	if(App.gui !== undefined)
@@ -152,95 +152,95 @@ Editor.initialize = function(canvas)
 		{
 			if(confirm("All unsaved changes to the project will be lost! Do you really wanna exit?"))
 			{
-				Editor.exit();
+				Editor.exit()
 			}
-		});
+		})
 	}
 
 	//Set window title
-	document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")";
+	document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")"
 
 	//Editor initial state
-	Editor.tool_mode = Editor.MODE_SELECT;
-	Editor.state = Editor.STATE_EDITING;
+	Editor.tool_mode = Editor.MODE_SELECT
+	Editor.state = Editor.STATE_EDITING
 
 	//Editor Selected object
-	Editor.selected_object = null;
-	Editor.is_editing_object = false;
+	Editor.selected_object = null
+	Editor.is_editing_object = false
 
 	//Performance meter
-	Editor.stats = null;
+	Editor.stats = null
 
 	//Editor program and scene
-	Editor.program = null;
-	Editor.program_running = null;
+	Editor.program = null
+	Editor.program_running = null
 
 	//VR effect and controls
-	Editor.vr_controls = new VRControls();
-	Editor.vr_effect = null;
+	Editor.vr_controls = new VRControls()
+	Editor.vr_effect = null
 
 	//Renderer and canvas
-	Editor.renderer = null;
-	Editor.canvas = null;
+	Editor.renderer = null
+	Editor.canvas = null
 
 	//Material renderer for material previews
-	Editor.material_renderer = new MaterialRenderer();
+	Editor.material_renderer = new MaterialRenderer()
 
 	//Default resources
 	Editor.createDefaultResources()
 
 	//Initialize User Interface
-	Interface.initialize();
+	Interface.initialize()
 
 	//Debug Elements
-	Editor.tool_scene = new THREE.Scene();
-	Editor.tool_scene_top = new THREE.Scene();
+	Editor.tool_scene = new THREE.Scene()
+	Editor.tool_scene_top = new THREE.Scene()
 
 	//Raycaster
-	Editor.raycaster = new THREE.Raycaster(); 
+	Editor.raycaster = new THREE.Raycaster();
 
 	//Editor Camera
-	Editor.default_camera = new PerspectiveCamera(60, 1);
-	Editor.default_camera.position.set(0, 5, 5);
-	Editor.camera = Editor.default_camera;
-	Editor.camera_rotation = new THREE.Vector2(3.14, 0);
-	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
+	Editor.default_camera = new PerspectiveCamera(60, 1)
+	Editor.default_camera.position.set(0, 5, 20)
+	Editor.camera = Editor.default_camera
+	Editor.camera_rotation = new THREE.Vector2(3.14, 0)
+	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
 
 	//Grid and axis helpers
-	Editor.grid_helper = new THREE.GridHelper(Settings.editor.grid_size, Math.round(Settings.editor.grid_size/Settings.editor.grid_spacing)*2, 0x888888, 0x888888);
-	Editor.grid_helper.material.depthWrite = false;
-	Editor.grid_helper.material.transparent = true;
-	Editor.grid_helper.material.opacity = 0.3;
-	Editor.grid_helper.visible = Settings.editor.grid_enabled;
-	Editor.tool_scene.add(Editor.grid_helper);
+	Editor.grid_helper = new THREE.GridHelper(Settings.editor.grid_size, Math.round(Settings.editor.grid_size/Settings.editor.grid_spacing)*2, 0x888888, 0x888888)
+	Editor.grid_helper.material.depthWrite = false
+	Editor.grid_helper.material.transparent = true
+	Editor.grid_helper.material.opacity = 0.3
+	Editor.grid_helper.visible = Settings.editor.grid_enabled
+	Editor.tool_scene.add(Editor.grid_helper)
 
-	Editor.axis_helper = new THREE.AxisHelper(Settings.editor.grid_size);
-	Editor.axis_helper.material.depthWrite = false;
-	Editor.axis_helper.material.transparent = true;
-	Editor.axis_helper.material.opacity = 1;
-	Editor.axis_helper.visible = Settings.editor.axis_enabled;
-	Editor.tool_scene.add(Editor.axis_helper);
+	Editor.axis_helper = new THREE.AxisHelper(Settings.editor.grid_size)
+	Editor.axis_helper.material.depthWrite = false
+	Editor.axis_helper.material.transparent = true
+	Editor.axis_helper.material.opacity = 1
+	Editor.axis_helper.visible = Settings.editor.axis_enabled
+	Editor.tool_scene.add(Editor.axis_helper)
 
 	//Object helper container
-	Editor.object_helper = new THREE.Scene();
-	Editor.tool_scene.add(Editor.object_helper);
+	Editor.object_helper = new THREE.Scene()
+	Editor.tool_scene.add(Editor.object_helper)
 
 	//Tool container
-	Editor.tool_container = new THREE.Scene();
-	Editor.tool_scene_top.add(Editor.tool_container);
-	Editor.tool = null;
+	Editor.tool_container = new THREE.Scene()
+	Editor.tool_scene_top.add(Editor.tool_container)
+	Editor.tool = null
 
 	// Check if some .isp is passed as argument
 	for(var i = 0; i < App.args.length; i++) {
 		if (App.args[i].endsWith(".isp")) {
 			Editor.loadProgram(App.args[i])
-			break;
+			break
 		}
 	}
 
 	//Create new program
 	if(Editor.program === null) {
-		Editor.createNewProgram();
+		Editor.createNewProgram()
 	}
 
 	Editor.updateObjectViews()
@@ -252,12 +252,12 @@ Editor.update = function()
 	//End performance measure
 	if(Editor.stats !== null)
 	{
-		Editor.stats.begin();
+		Editor.stats.begin()
 	}
 
 	//Update editor interface
-	Interface.update();
-	Editor.is_editing_object = false;
+	Interface.update()
+	Editor.is_editing_object = false
 
 	//If not on test mode
 	if(Editor.state !== Editor.STATE_TESTING)
@@ -267,15 +267,15 @@ Editor.update = function()
 		{
 			if(Keyboard.keyJustPressed(Keyboard.S))
 			{
-				Interface.saveProgram();
+				Interface.saveProgram()
 			}
 			else if(Keyboard.keyJustPressed(Keyboard.O))
 			{
-				Interface.loadProgram();
+				Interface.loadProgram()
 			}
 			else if(Keyboard.keyJustPressed(Keyboard.W) || Keyboard.keyJustPressed(Keyboard.F4))
 			{
-				Interface.tab.closeActual();
+				Interface.tab.closeActual()
 			} else if (Keyboard.keyJustPressed(Keyboard.TAB) || Keyboard.keyJustPressed(Keyboard.PAGE_DOWN)) {
 				Interface.tab.selectNextTab()
 			} else if (Keyboard.keyJustPressed(Keyboard.PAGE_UP)) {
@@ -449,12 +449,12 @@ Editor.update = function()
 	//Update Scene if on test mode
 	else if(Editor.state === Editor.STATE_TESTING)
 	{
-		Editor.program_running.scene.update();
+		Editor.program_running.update();
 	}
 }
 
-//Draw stuff into screen
-Editor.draw = function()
+// Render stuff into screen
+Editor.render = function()
 {
 	var renderer = Editor.renderer
 	renderer.clear()
@@ -554,7 +554,7 @@ Editor.selectObject = function(object)
 	if (object instanceof THREE.Object3D) {
 		Editor.selected_object = object
 
-		Editor.updateSelectedObjectUI()
+		Editor.selectObjectPanel()
 		Editor.selectObjectHelper()
 
 		if (Editor.tool !== null) {
@@ -579,23 +579,23 @@ Editor.isObjectSelected = function(obj)
 	return false
 }
 
-//Delete Selected Object
+// Delete Selected Object
 Editor.deleteObject = function(obj)
 {
-	if(obj !== undefined)
+	if(obj === undefined) {
+		obj = Editor.selected_object
+	}
+
+	if(obj instanceof THREE.Object3D)
 	{
-		obj.destroy()
-		Editor.updateObjectViews()
 		if(Editor.isObjectSelected(obj))
 		{
 			Editor.resetEditingFlags()
 		}
-	}
-	else if(Editor.selected_object !== null)
-	{
-		Editor.selected_object.destroy()
+
+		obj.destroy()
+
 		Editor.updateObjectViews()
-		Editor.resetEditingFlags()
 	}
 }
 
@@ -687,20 +687,23 @@ Editor.undo = function() {
 }
 
 //Update UI panel to match selected object
-Editor.updateSelectedObjectUI = function()
+Editor.selectObjectPanel = function()
 {
-	Interface.tree_view.updateSelectedObject(Editor.selected_object);
-	Interface.panel.destroy();
+	Interface.tree_view.updateSelectedObject(Editor.selected_object)
 
-	if(Editor.selected_object !== null)
+	if(Interface.panel !== null)
 	{
+		Interface.panel.destroy()
+	}
+
+	if(Editor.selected_object !== null) {
 		Interface.panel = new Panel(Interface.explorer_resizable.div_b)
-		Interface.panel.attachObject(Editor.selected_object);
-		Interface.panel.updateInterface();
+		Interface.panel.attachObject(Editor.selected_object)
+		Interface.panel.updateInterface()
 	}
 	else
 	{
-		Interface.panel = null;
+		Interface.panel = null
 	}
 }
 
@@ -979,11 +982,16 @@ Editor.updateRaycaster = function(x, y) {
 //Reset editing flags
 Editor.resetEditingFlags = function()
 {
-	Editor.selected_object = null;
-	Editor.is_editing_object = false;
+	Editor.selected_object = null
+	Editor.is_editing_object = false
 	
-	Editor.selectTool(Editor.MODE_SELECT);
-	Editor.selectObjectHelper();
+	if (Interface.panel !== null) {
+		Interface.panel.destroy()
+		Interface.panel = null
+	}
+
+	Editor.selectTool(Editor.MODE_SELECT)
+	Editor.selectObjectHelper()
 }
 
 //Craete new Program

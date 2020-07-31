@@ -82,6 +82,19 @@ Scene.prototype.getCamera = function(uuid, obj)
 	return null
 }
 
+// Add camera
+Scene.prototype.addCamera = function(camera) {
+	this.cameras.push(camera)
+}
+
+// Remove camera
+Scene.prototype.removeCamera = function(camera) {
+	var index = this.cameras.indexOf(camera)
+	if (index > -1) {
+		this.cameras.splice(index, 1)
+	}
+}
+
 //Set fog mode
 Scene.prototype.setFogMode = function(mode)
 {

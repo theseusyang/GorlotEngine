@@ -164,66 +164,64 @@ catch(e){
 //App initialization
 App.initialize = function(main)
 {
-	App.fullscreen = false;
+	App.fullscreen = false
 
-	//Init Input
-	Keyboard.initialize();
-	Mouse.initialize();
+	Keyboard.initialize()
+	Mouse.initialize()
 
 	//Create main program
-	App.main = main;
-	App.main.initialize(App.canvas);
+	App.main = main
+	App.main.initialize()
 
 	//Time control
-	App.delta_time = 0;
-	App.time = Date.now();
+	App.delta = 0
+	App.time = Date.now()
 
 	//Start Loop
-	App.loop();
+	App.loop()
 }
 
 //App loop
 App.loop = function()
 {
 	//Call loop again
-	requestAnimationFrame(App.loop);
+	requestAnimationFrame(App.loop)
 
-	//Update Mouse Values
-	Mouse.update();
-	Keyboard.update();
+	// Update input 
+	Mouse.update()
+	Keyboard.update()
 	
 	//Update time values
-	App.delta_time = Date.now() - App.time;
-	App.time += App.delta_time;
+	App.delta = Date.now() - App.time
+	App.time += App.delta
 
-	//Update and draw
-	App.main.update();
-	App.main.draw();
+	//Update and render
+	App.main.update()
+	App.main.render()
 }
 
-//Called every time page is resized
+// Resize page
 App.resize = function()
 {
-	App.main.resize();
+	App.main.resize()
 }
 
 //Leave fullscreen mode
 App.leaveFullscreen = function()
 {
-	//Set fullscreen flag
-	App.fullscreen = false;
+	App.fullscreen = false
 
 	if(document.exitFullscreen)
 	{
-		document.exitFullscreen();
+		document.exitFullscreen()
 	}
 	else if(document.mozCancelFullScreen)
 	{
-		document.mozCancelFullScreen();
+		document.mozCancelFullScreen()
 	}
 	else if(document.webkitExitFullscreen)
 	{
-		document.webkitExitFullscreen();
+		document.webkitExitFullscreen()
 	}
 }
 
@@ -233,59 +231,59 @@ App.enterFullscreen = function(element)
 	//If no element passed use full page
 	if(element === undefined)
 	{
-		element = document.body;
+		element = document.body
 	}
 
 	//Set fullscreen flag
-	App.fullscreen = true;
+	App.fullscreen = true
 
 	//Set element to fullscreen
 	if(element.requestFullscreen)
 	{
-		element.requestFullscreen();
+		element.requestFullscreen()
 	}
 	else if(element.mozRequestFullScreen)
 	{
-		element.mozRequestFullScreen();
+		element.mozRequestFullScreen()
 	}
 	else if(element.webkitRequestFullscreen)
 	{
-		element.webkitRequestFullscreen();
+		element.webkitRequestFullscreen()
 	}
 	else if(element.msRequestFullscreen)
 	{
-		element.msRequestFullscreen();
+		element.msRequestFullscreen()
 	}
 }
 
 //Load Main program
 App.loadMain = function(main)
 {
-	App.main = main;
-	App.main.initialize(App.canvas);
+	App.main = main
+	App.main.initialize(App.canvas)
 }
 
 //Check if webvr is available
 App.webvrAvailable = function()
 {
-	return (navigator.getVRDisplays !== undefined);
+	return (navigator.getVRDisplays !== undefined)
 }
 
 //Open file chooser dialog receives callback function, file filter and saveas
 App.chooseFile = function(callback, filter, saveas)
 {
-	var chooser = document.createElement("input");
-	chooser.type = "file";
+	var chooser = document.createElement("input")
+	chooser.type = "file"
 	chooser.accept = (filter !== undefined) ? filter : ""
 
 	if(saveas !== undefined)
 	{
-		chooser.accept = filter;
+		chooser.accept = filter
 
 		if (saveas !== true) {
 			chooser.nwsaveas = saveas
 		} else {
-			chooser.nwsaveas = "file";
+			chooser.nwsaveas = "file"
 		}
 	}
 
@@ -293,11 +291,11 @@ App.chooseFile = function(callback, filter, saveas)
 	{
 		if(callback !== undefined)
 		{
-			callback(chooser.files);
+			callback(chooser.files)
 		}
-	};
+	}
 
-	chooser.click();
+	chooser.click()
 }
 
 // Include javascript or css file in project
@@ -305,22 +303,22 @@ function include(file, onload)
 {
 	if(file.endsWith(".js"))
 	{
-		var js = document.createElement("script");
-		js.src = file;
-		js.type = "text/javascript";
-		js.async = false;
+		var js = document.createElement("script")
+		js.src = file
+		js.type = "text/javascript"
+		js.async = false
 		if(onload)
 		{
-			js.onload = onload;
+			js.onload = onload
 		}
-		document.body.appendChild(js);
+		document.body.appendChild(js)
 	}
 	else if(file.endsWith(".css"))
 	{
-		var css = document.createElement("link");
-		css.rel = "stylesheet";
-		css.href = file;
-		document.body.appendChild(css);
+		var css = document.createElement("link")
+		css.rel = "stylesheet"
+		css.href = file
+		document.body.appendChild(css)
 	}
 	else if(file.endsWith("*"))
 	{
