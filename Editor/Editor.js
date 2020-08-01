@@ -136,7 +136,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sat Aug 01 2020 21:56:30 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sat Aug 01 2020 22:06:00 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
@@ -1028,6 +1028,7 @@ Editor.createNewProgram = function()
 Editor.saveProgram = function(fname)
 {
 	var output = Editor.program.toJSON()
+	var json = JSON.stringify(output, null, "\t").replace(/[\n\t]+([\d\.e\-\[\]]+)/g, "$1")
 	FileSystem.writeFile(fname, json)
 }
 
