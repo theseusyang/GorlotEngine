@@ -134,7 +134,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Jul 31 2020 18:22:50 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sat Aug 01 2020 21:41:02 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
