@@ -753,7 +753,8 @@ Editor.updateTreeView = function()
 	// TODO: Remove test code
 	var start = Date.now()
 
-	Interface.tree_view.fromObject(Editor.program);
+	Interface.tree_view.attachObject(Editor.program);
+	Interface.tree_view.updateView()
 
 	// TODO: Remove test code
 	tree_delta = Date.now() - start

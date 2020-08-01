@@ -320,6 +320,7 @@ TreeElement.prototype.setObject = function(obj) {
 	this.icon.setImage(ObjectIcons.get((obj.obj_type !== undefined) ? obj.obj_type : obj.type))
 	this.label.setText(obj.name)
 	this.folded = obj.folded
+
 	if(obj.folded) {
 		this.arrow.setImage("Editor/Files/Icons/Misc/ArrowRight.png")
 	}
@@ -336,7 +337,7 @@ TreeElement.prototype.setLabel = function(label) {
 }
 
 // Add tree element from object
-TreeElement.prototype.addFromObject = function(obj) {
+TreeElement.prototype.addObject = function(obj) {
 	var element = new TreeElement(this.container)
 
 	element.setObject(obj)
@@ -394,7 +395,7 @@ TreeElement.prototype.updateFoldedState = function() {
 // Update parent tree element from scene data
 TreeElement.prototype.updateSceneData = function() {
 	if(this.container.scene !== null) {
-		this.container.fromObject(this.container.scene)
+		this.container.updateView()
 	}
 }
 

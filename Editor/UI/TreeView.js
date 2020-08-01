@@ -31,10 +31,12 @@ function TreeView(parent) {
 	this.size = new THREE.Vector2(0,0)
 	this.position = new THREE.Vector2(0,0)
 	this.visible = true
+
+	// Object
+	this.obj = null
 	
 	// Childs
 	this.up = null
-	this.scene = null
 	this.children = []
 
 	// Add element to document
@@ -45,19 +47,21 @@ function TreeView(parent) {
 TreeView.id = 0
 
 // Set data from object
-TreeView.prototype.fromObject = function(obj) {
+TreeView.prototype.attachObject = function(obj) {
+	this.obj = obj
+}
+
+TreeView.prototype.updateView = function() {
+	// Remove old elements
 	var children = this.children
 	for(var i = 0; i < children.length; i++) {
 		children[i].destroy()
 	}
 
 	this.children = []
-
-	// Set scene
-	this.scene = obj
 	
 	// Add element and update interface
-	TreeView.addSceneElement(this, obj)
+	TreeView.addSceneElement(this, this.obj)
 	this.updateChildPosition()
 	this.updateInterface()
 }
@@ -67,8 +71,8 @@ TreeView.prototype.updateSelectedObject = function(obj) {
 	TreeView.updateSelectedObject(this, obj)
 }
 
-// Add tree element from object
-TreeView.prototype.addFromObject = function(obj) {
+// Add object to tree view
+TreeView.prototype.addObject = function(obj) {
 	var element = new TreeElement(this)
 
 	element.setObject(obj)
@@ -79,7 +83,7 @@ TreeView.prototype.addFromObject = function(obj) {
 	return element
 }
 
-// Add element
+// Add entry to tree view
 TreeView.prototype.add = function(text, icon) {
 	var element = new TreeElement(this)
 	
@@ -192,7 +196,7 @@ TreeView.getElementFromObject = function(element, obj) {
 // Add object element to tree (recursive)
 TreeView.addSceneElement = function(tree, scene) {
 	if(!scene.hidden) {
-		var element = tree.addFromObject(scene)
+		var element = tree.addObject(scene)
 
 		for(var i = 0; i < scene.children.length; i++) {
 			TreeView.addSceneElement(element, scene.children[i])
