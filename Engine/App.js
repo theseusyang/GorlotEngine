@@ -1,15 +1,15 @@
 "use strict";
 
 //External libs
-include("Libraries/three/three.js");
-include("Libraries/three/effects/VREffect.js");
-include("Libraries/cannon.min.js");
-include("Libraries/leap.min.js");
-include("Libraries/stats.min.js");
-include("Libraries/SPE.min.js");
-include("Libraries/spine.min.js")
+include("Engine/Libraries/three/three.js");
+include("Engine/Libraries/three/effects/VREffect.js");
+include("Engine/Libraries/cannon.min.js");
+include("Engine/Libraries/leap.min.js");
+include("Engine/Libraries/stats.min.js");
+include("Engine/Libraries/SPE.min.js");
+include("Engine/Libraries/spine.min.js")
 
-include("Libraries/litegraph/litegraph.js")
+include("Engine/Libraries/litegraph/litegraph.js")
 
 //Internal modules
 include("Engine/Core/THREE/Three.js");
