@@ -91,6 +91,7 @@ include("Engine/Core/Utils/Base64Utils.js")
 include("Engine/Core/Utils/ArraybufferUtils.js")
 include("Engine/Core/Utils/MathUtils.js")
 include("Engine/Core/Utils/ObjectUtils.js")
+include("Engine/Core/Utils/Mesh2Shape.js")
 
 // Assets
 include("Engine/Core/Assets/Materials/MeshBasicMaterial.js")

@@ -530,14 +530,20 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 				object.view = Object.assign({}, data.view);
 			}
 			if (data.viewport !== undefined) {
-				object.viewport.set(data.viewport.x, data.viewport.y)
+				object.viewport.fromArray(data.viewport)
+			}
+			if (data.viewport !== undefined) {
+				object.offset.fromArray(data.offset)
 			}
 			break;
 
 		case "OrthographicCamera":
 			object = new OrthographicCamera(data.size, data.aspect, data.mode, data.near, data.far);
 			if (data.viewport !== undefined) {
-				object.viewport.set(data.viewport.x, data.viewport.y)
+				object.viewport.fromArray(data.viewport)
+			}
+			if (data.viewport !== undefined) {
+				object.offset.fromArray(data.offset)
 			}
 			break;
 

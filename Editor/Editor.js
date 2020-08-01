@@ -24,7 +24,6 @@ include("Engine/Libraries/codemirror/theme/*")
 include("Engine/Libraries/jscolor.min.js")
 include("Engine/Libraries/opentype.min.js")
 include("Engine/Libraries/quickhull.js")
-include("Engine/Libraries/mesh2shape.js")
 
 include("Engine/Libraries/litegraph/litegraph.css")
 include("Engine/Libraries/litegraph/litegui.css")
@@ -506,37 +505,7 @@ Editor.render = function()
 	}
 	else if(Editor.state === Editor.STATE_TESTING)
 	{
-		if(Editor.vr_effect !== null)
-		{
-			Editor.vr_controls.scale = Editor.program_running.vr_scale
-			Editor.vr_controls.update()
-
-			var scene = Editor.program_running.scene
-			for(var i = 0; i < scene.cameras.length; i++) {
-				var camera = scene.cameras[i]
-
-				// Apply VR Controller offsets to camera
-				var position = camera.position.clone()
-				var quaternion = camera.quaternion.clone()
-
-				camera.position.add(Editor.vr_controls.position)
-				camera.quaternion.multiply(Editor.vr_controls.quaternion)
-
-				// Render scene
-				Editor.vr_effect.render(scene, camera)
-
-				// Restore camera attributes
-				camera.position.copy(position)
-				camera.quaternion.copy(quaternion)
-			}
-		}
-		else
-		{
-			var scene = Editor.program_running.scene
-			for(var i = 0; i < scene.cameras.length; i++) {
-				renderer.render(scene, scene.cameras[i])
-			}
-		}
+		Editor.program_running.render(renderer, Editor.canvas.width, Editor.canvas.height)
 	}
 
 	//End performance measure

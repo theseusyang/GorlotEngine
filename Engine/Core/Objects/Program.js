@@ -75,6 +75,19 @@ Program.prototype.update = function() {
 	this.scene.update()
 }
 
+// Render program
+Program.prototype.render = function(renderer, x, y) {
+	renderer.setScissorTest(true)
+
+	for(var i = 0; i < this.scene.cameras.length; i++) {
+		var camera = this.scene.cameras[i]
+
+		renderer.render(this.scene, camera)
+	}
+
+	renderer.setScissorTest(false)
+}
+
 // Screen resize
 Program.prototype.resize = function(x, y) {
 	for(var i = 0; i < this.scene.cameras.length; i++) {
