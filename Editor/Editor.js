@@ -23,6 +23,8 @@ include("Libraries/codemirror/theme/*")
 
 include("Libraries/jscolor.min.js")
 include("Libraries/opentype.min.js")
+include("Libraries/quickhull.js")
+include("Libraries/mesh2shape.js")
 
 include("Libraries/litegraph/litegraph.css")
 include("Libraries/litegraph/litegui.css")
@@ -134,7 +136,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sat Aug 01 2020 21:41:02 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sat Aug 01 2020 21:56:30 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
