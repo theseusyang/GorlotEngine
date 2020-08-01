@@ -821,9 +821,9 @@ Editor.updateObjectPanel = function()
 
 // Create default resources to be used when creating new objects
 Editor.createDefaultResources = function() {
-	Editor.default_image = new GORLOT.Image("Data/sample.png")
-	Editor.default_font = new Font("Data/Fonts/montserrat.json")
-	Editor.default_audio = new Audio("Data/sample.ogg")
+	Editor.default_image = new GORLOT.Image("Engine/Data/sample.png")
+	Editor.default_font = new Font("Engine/Data/Fonts/montserrat.json")
+	Editor.default_audio = new Audio("Engine/Data/sample.ogg")
 	Editor.default_texture = new Texture(Editor.default_image)
 	Editor.default_material = new MeshStandardMaterial({roughness: 0.6, metalness: 0.2})
 	Editor.default_material.name = "default"
