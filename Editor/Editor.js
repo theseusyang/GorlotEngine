@@ -135,7 +135,7 @@ Editor.MODE_ROTATE = 3
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sat Aug 01 2020 22:06:00 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sat Aug 01 2020 22:42:10 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
@@ -480,23 +480,39 @@ Editor.render = function()
 			var width = Settings.editor.camera_preview_percentage * Editor.canvas.width
 			var height = Settings.editor.camera_preview_percentage * Editor.canvas.height
 
+			renderer.setScissorTest(true)
 			var offset = Editor.canvas.width - width - 10
 			renderer.setViewport(offset, 10, width, height)
 			renderer.setScissor(offset, 10, width, height)
-			renderer.setScissorTest(true)
 			renderer.clear()
 
 			if (Editor.selected_object instanceof THREE.Camera) {
 				var camera = Editor.selected_object
 				camera.aspect = width / height
 				camera.updateProjectionMatrix()
+
+				renderer.setViewport(offset + width * camera.offset.x, 10 + height * camera.offset.y, width * camera.viewport.x, height * camera.viewport.y)
+				renderer.setScissor(offset + width * camera.offset.x, 10 + height * camera.offset.y, width * camera.viewport.x, height * camera.viewport.y)
+
 				renderer.render(Editor.program.scene, camera)
 			} else {
 				var scene = Editor.program.scene
 				for(var i = 0; i < scene.cameras.length; i++) {
-					scene.cameras[i].aspect = width / height
-					scene.cameras[i].updateProjectionMatrix()
-					renderer.render(scene, scene.cameras[i])
+					var camera = scene.cameras[i]
+					camera.aspect = width / height
+					camera.updateProjectionMatrix()
+
+					if (camera.clear_color) {
+						renderer.clearColor()
+					}
+
+					if (camera.clear_depth) {
+						renderer.clearDepth()
+					}
+
+					renderer.setViewport(offset + width * camera.offset.x, 10 + height * camera.offset.y, width * camera.viewport.x, height * camera.viewport.y)
+					renderer.setScissor(offset + width * camera.offset.x, 10 + height * camera.offset.y, width * camera.viewport.x, height * camera.viewport.y)
+					renderer.render(scene, camera)
 				}
 			}
 
@@ -1035,7 +1051,6 @@ Editor.exportWebProject = function(dir)
 {
 	FileSystem.copyFolder("runtime", dir);
 	FileSystem.copyFolder("Engine/core", dir + "Engine/core");
-	FileSystem.copyFolder("Engine/input", dir + "Engine/input");
 	FileSystem.copyFile("Engine/App.js", dir + "Engine/App.js");
 
 	FileSystem.makeDirectory(dir + "src/lib");

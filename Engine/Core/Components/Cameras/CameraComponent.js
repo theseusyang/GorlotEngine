@@ -12,7 +12,11 @@ function CameraComponent() {
 		near: 0.1,
 		far: 100000,
 		size: 3,
-		mode: 0
+		mode: 0,
+		start: [0.0, 0.0],
+		size: [1.0, 1.0],
+		clearColor: false,
+		clearDepth: false
 	}
 }
 
@@ -83,7 +87,7 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 	}
 
 	// Rendering distance
-	this.form.addText("Distance")
+	this.form.addText("Clipping Planes")
 	this.form.nextRow()
 
 	// Near
@@ -111,6 +115,60 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 		}
 	})
 	this.form.add(this.far)
+	this.form.nextRow()
+
+	// Viewport
+	this.form.addText("Viewport")
+	this.form.nextRow()
+
+	// Offset
+	this.form.addText("Start")
+	this.offset = new CoordinatesBox(this.form.element)
+	this.offset.setMode(CoordinatesBox.VECTOR2)
+	this.offset.size.set(160, 20)
+	this.offset.setOnChange(() => {
+		if (self.obj !== null) {
+			self.obj.offset.copy(self.offset.getValue())
+		}
+	})
+	this.form.add(this.offset)
+	this.form.nextRow()
+
+	// Size
+	this.form.addText("Size")
+	this.viewport = new CoordinatesBox(this.form.element)
+	this.viewport.setMode(CoordinatesBox.VECTOR2)
+	this.viewport.size.set(160, 20)
+	this.viewport.setOnChange(() => {
+		if (self.obj !== null) {
+			self.obj.viewport.copy(self.viewport.getValue())
+		}
+	})
+	this.form.add(this.viewport)
+	this.form.nextRow()
+
+	// Clear color
+	this.clear_color = new CheckBox(this.form.element)
+	this.clear_color.setText("Clear colour")
+	this.clear_color.size.set(200, 15)
+	this.clear_color.setOnChange(() => {
+		if (self.obj !== null) {
+			self.obj.clear_color = self.clear_color.getValue()
+		}
+	})
+	this.form.add(this.clear_color)
+	this.form.nextRow()
+
+	// Clear depth
+	this.clear_depth = new CheckBox(this.form.element)
+	this.clear_depth.setText("Clear depth")
+	this.clear_depth.size.set(200, 15)
+	this.clear_depth.setOnChange(() => {
+		if (self.obj !== null) {
+			self.obj.clear_depth = self.clear_depth.getValue()
+		}
+	})
+	this.form.add(this.clear_depth)
 	this.form.nextRow()
 
 	// Select camera as scene default
@@ -152,19 +210,31 @@ CameraComponent.prototype.updateData = function() {
 	this.near.setValue(this.obj.near)
 	this.far.setValue(this.obj.far)
 
+	this.offset.setValue(this.obj.offset)
+	this.viewport.setValue(this.obj.viewport)
+
+	this.clear_color.setValue(this.obj.clear_color)
+	this.clear_depth.setValue(this.obj.clear_depth)
+
 	this.default.setValue(ObjectUtils.getScene(this.obj).cameras.indexOf(this.obj) !== -1)
 }
 
 CameraComponent.prototype.onReset = function() {
 	if (this.obj instanceof PerspectiveCamera) {
 		this.obj.fov = this.values.fov
-
-		this.obj.near = this.values.near
-		this.obj.far = this.values.far
 	} else if (this.obj instanceof OrthographicCamera) {
 		this.obj.size = this.values.size
 		this.obj.mode = this.values.mode
 	}
+
+	this.obj.near = this.values.near
+	this.obj.far = this.values.far
+
+	this.obj.offset = new THREE.Vector2(this.values.offset[0], this.values.offset[1])
+	this.obj.viewport = new THREE.Vector2(this.values.viewport[0], this.values.viewport[1])
+
+	this.obj.clear_color = this.values.clearColor
+	this.obj.clear_depth = this.values.clearDepth
 
 	var scene = ObjectUtils.getScene(this.obj)
 	if (scene !== null) {
