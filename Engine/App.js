@@ -119,7 +119,7 @@ include("Engine/Core/Components/Objects/ScriptComponent.js")
 include("Engine/Core/Components/Cameras/CameraComponent.js")
 
 include("Engine/Core/Components/Lights/LightComponent.js")
-include("Engine/Core/Components/Objects/LightsSkyComponent.js")
+include("Engine/Core/Components/Lights/SkyComponent.js")
 
 // Nodes
 include("Engine/Core/Nodes/Register.js")
