@@ -12,7 +12,12 @@ function Text3D(text, material, font)
 
 	this.font = font
 	this.text = text
-		
+
+	this.height = 50
+	this.bevel = false
+	this.bevel_thickness = false
+	this.bevel_size = 8
+
 	this.receiveShadow = true
 	this.castShadow = true
 
@@ -47,7 +52,16 @@ Text3D.prototype.setText = function(text)
 {
 	this.text = text
 	this.geometry.dispose()
-	this.geometry = new THREE.TextGeometry(this.text, {font: this.font})
+
+	var options = {
+		font: this.font,
+		height: this.height,
+		bevelEnabled: this.bevel,
+		bevelSize: this.bevel_size,
+		bevelThickness: this.bevel_thickness
+	}
+
+	this.geometry = new THREE.TextGeometry(this.text, options)
 }
 
 //Create JSON for object (need to backup geometry and set to undefined to avoid it from being stored)
@@ -63,6 +77,10 @@ Text3D.prototype.toJSON = function(meta)
 	
 	data.object.text = this.text
 	data.object.font = font.uuid
+	data.object.height = this.height
+	data.object.bevel = this.bevel
+	data.object.bevel_thickness = this.bevel_thickness
+	data.object.bevel_size = this.bevel_size
 
 	//Restore geometry
 	this.geometry = geometry
