@@ -124,7 +124,7 @@ Interface.initialize = function() {
 
 	// Import an OBJ file
 	import_models.addOption("Wavefront", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.OBJLoader()
@@ -136,7 +136,7 @@ Interface.initialize = function() {
 
 	// Import a collada file
 	import_models.addOption("Collada", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.ColladaLoader()
@@ -153,7 +153,7 @@ Interface.initialize = function() {
 
 	// ThreeJS Object Loader
 	import_models_three.addOption("Object Loader", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.ObjectLoader()
@@ -165,7 +165,7 @@ Interface.initialize = function() {
 
 	// ThreeJS JSON Loader
 	import_models_three.addOption("JSON Loader", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.JSONLoader()
@@ -199,7 +199,7 @@ Interface.initialize = function() {
 
 	// GLTF File Loader
 	import_models.addOption("GLTF", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.GLTFLoader()
@@ -214,7 +214,7 @@ Interface.initialize = function() {
 
 	// AWD File Loader
 	import_models.addOption("AWD", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.AWDLoader()
@@ -226,7 +226,7 @@ Interface.initialize = function() {
 
 	// PLY File Loader
 	import_models.addOption("PLY", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.PLYLoader()
@@ -238,7 +238,7 @@ Interface.initialize = function() {
 
 	// VTK File loader
 	import_models.addOption("VTK", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.VTKLoader()
@@ -250,7 +250,7 @@ Interface.initialize = function() {
 
 	// VRML File Loader
 	import_models.addOption("VRML", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.VRMLLoader()
@@ -266,7 +266,7 @@ Interface.initialize = function() {
 
 	// FBX
 	import_models.addOption("FBX", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var loader = new THREE.FBXLoader()
@@ -278,7 +278,7 @@ Interface.initialize = function() {
 
 	// Load Spine Animation
 	Interface.asset_file.addOption("Spine Animation", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var name = file.substring(file.lastIndexOf("/") + 1, file.lastIndexOf("."))
@@ -298,7 +298,7 @@ Interface.initialize = function() {
 
 	// Texture
 	Interface.asset_file.addOption("Texture", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var name = FileSystem.getFileName(file)
@@ -324,7 +324,7 @@ Interface.initialize = function() {
 
 	// Video Texture
 	Interface.asset_file.addOption("Video Texture", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 				var name = FileSystem.getFileName(file)
@@ -351,7 +351,7 @@ Interface.initialize = function() {
 
 	// Load font
 	Interface.asset_file.addOption("Font", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 
@@ -366,7 +366,7 @@ Interface.initialize = function() {
 
 	// Load audio file
 	Interface.asset_file.addOption("Audio", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
 
@@ -1046,7 +1046,7 @@ Interface.initialize = function() {
 	var publish = Interface.file.addMenu("Export")
 
 	publish.addOption("Web", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			try {
 				Editor.exportWebProject(files[0].path)
 			} catch(e) {
@@ -1056,7 +1056,7 @@ Interface.initialize = function() {
 	}, Interface.file_dir + "Icons/Platform/Web.png")
 
 	publish.addOption("Windows", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			try {
 				Editor.exportWindowsProject(files[0].path)
 			} catch(e) {
@@ -1141,7 +1141,7 @@ Interface.initialize = function() {
 	}, Interface.file_dir + "Icons/Misc/Add.png")
 
 	Interface.project.addOption("Execute Script", () => {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			try {
 				if (files.length > 0) {
 					var code = FileSystem.readFile(files[0].path)
@@ -1266,7 +1266,7 @@ Interface.updateInterface = function() {
 
 // Open the save program window
 Interface.saveProgram = function() {
-	App.chooseFile((files) => {
+	FileSystem.chooseFile((files) => {
 		try {
 			Editor.saveProgram(files[0].path)
 			alert("Program saved")
@@ -1279,7 +1279,7 @@ Interface.saveProgram = function() {
 // Open the load program window
 Interface.loadProgram = function() {
 	if (confirm("All unsaved changes to the project will be lost! Load file?")) {
-		App.chooseFile((files) => {
+		FileSystem.chooseFile((files) => {
 			try {
 				Editor.loadProgram(files[0].path)
 				Editor.resetEditingFlags()

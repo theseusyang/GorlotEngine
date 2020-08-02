@@ -272,33 +272,12 @@ App.webvrAvailable = function()
 	return (navigator.getVRDisplays !== undefined)
 }
 
-//Open file chooser dialog receives callback function, file filter and saveas
-App.chooseFile = function(callback, filter, saveas)
-{
-	var chooser = document.createElement("input")
-	chooser.type = "file"
-	chooser.accept = (filter !== undefined) ? filter : ""
-
-	if(saveas !== undefined)
-	{
-		chooser.accept = filter
-
-		if (saveas !== true) {
-			chooser.nwsaveas = saveas
-		} else {
-			chooser.nwsaveas = "file"
-		}
+// Exit from app
+App.exit = function() {
+	if (App.gui !== undefined) {
+		App.gui.App.closeAllWindows()
+		App.gui.App.quit()
 	}
-
-	chooser.onchange = function(event)
-	{
-		if(callback !== undefined)
-		{
-			callback(chooser.files)
-		}
-	}
-
-	chooser.click()
 }
 
 // Include javascript or css file in project

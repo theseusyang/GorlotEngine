@@ -132,10 +132,14 @@ Editor.MODE_MOVE = 1
 Editor.MODE_SCALE = 2
 Editor.MODE_ROTATE = 3
 
+// Editor camera mode
+Editor.CAMERA_ORTHOGRAPHIC = 20
+Editor.CAMERA_PERSPECTIVE = 21
+
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sat Aug 01 2020 22:42:10 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Sun Aug 02 2020 20:21:12 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
@@ -203,11 +207,7 @@ Editor.initialize = function()
 	Editor.raycaster = new THREE.Raycaster();
 
 	//Editor Camera
-	Editor.default_camera = new PerspectiveCamera(60, 1)
-	Editor.default_camera.position.set(0, 5, 20)
-	Editor.camera = Editor.default_camera
-	Editor.camera_rotation = new THREE.Vector2(3.14, 0)
-	Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
+	Editor.setCameraMode(Editor.CAMERA_PERSPECTIVE)
 
 	//Grid and axis helpers
 	Editor.grid_helper = new THREE.GridHelper(Settings.editor.grid_size, Math.round(Settings.editor.grid_size/Settings.editor.grid_spacing)*2, 0x888888, 0x888888)
@@ -948,6 +948,21 @@ Editor.resizeCamera = function()
 	}
 }
 
+// Set camera mode (orthographic/perspective)
+Editor.setCameraMode = function(mode) {
+	if (mode === Editor.CAMERA_ORTHOGRAPHIC) {
+		Editor.camera = new OrthographicCamera()
+		Editor.camera.position.set(0, 3, 5)
+		Editor.camera_rotation = new THREE.Vector2(0, 0)
+		Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
+	} else if (mode === Editor.CAMERA_PERSPECTIVE) {
+		Editor.camera = new PerspectiveCamera(60, 1)
+		Editor.camera.position.set(0, 10, 30)
+		Editor.camera_rotation = new THREE.Vector2(3.14, 0)
+		Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
+	}
+}
+
 //Set camera rotation
 Editor.setCameraRotation = function(camera_rotation, camera)
 {
@@ -1259,9 +1274,5 @@ Editor.openWindow = function(options) {
 Editor.exit = function()
 {
 	Settings.store();
-	if(App.gui !== undefined)
-	{
-		App.gui.App.closeAllWindows();
-		App.gui.App.quit();
-	}
+	App.exit()
 }
