@@ -113,13 +113,13 @@ include("Engine/Core/Components/Objects/ObjectComponent.js")
 include("Engine/Core/Components/Objects/PhysicsComponent.js")
 include("Engine/Core/Components/Objects/ProgramComponent.js")
 include("Engine/Core/Components/Objects/SceneComponent.js")
-include("Engine/Core/Components/Objects/SkyComponent.js")
 include("Engine/Core/Components/Objects/TextComponent.js")
+include("Engine/Core/Components/Objects/ScriptComponent.js")
 
 include("Engine/Core/Components/Cameras/CameraComponent.js")
 
 include("Engine/Core/Components/Lights/LightComponent.js")
-include("Engine/Core/Components/Objects/ScriptComponent.js")
+include("Engine/Core/Components/Objects/LightsSkyComponent.js")
 
 // Nodes
 include("Engine/Core/Nodes/Register.js")
