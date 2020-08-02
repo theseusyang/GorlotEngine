@@ -76,7 +76,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 		this.distance = new NumberBox(this.form.element)
 		this.distance.size.set(60, 18)
 		this.distance.setStep(0.1)
-		this.distance.setRange(0, Number.MAX_SAFE_INTEGER)
 		this.distance.setOnChange(() => {
 			if (self.obj !== null) {
 				self.obj.distance = self.distance.getValue()
@@ -189,7 +188,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 		this.shadow_near = new NumberBox(this.form.element)
 		this.shadow_near.size.set(60, 18)
 		this.shadow_near.setStep(0.1)
-		this.shadow_near.setRange(0, Number.MAX_SAFE_INTEGER)
 		this.shadow_near.setOnChange(() => {
 			if (self.obj !== null) {
 				self.obj.shadow.camera.near = self.shadow_near.getValue()
@@ -203,7 +201,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 		this.shadow_far = new NumberBox(this.form.element)
 		this.shadow_far.size.set(60, 18)
 		this.shadow_far.setStep(0.1)
-		this.shadow_far.setRange(0, Number.MAX_SAFE_INTEGER)
 		this.shadow_far.setOnChange(() => {
 			if (self.obj !== null) {
 				self.obj.shadow.camera.far = self.shadow_far.getValue()
@@ -219,7 +216,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 			this.shadow_left = new NumberBox(this.form.element)
 			this.shadow_left.size.set(60, 18)
 			this.shadow_left.setStep(0.1)
-			this.shadow_left.setRange(0, Number.MAX_SAFE_INTEGER)
 			this.shadow_left.setOnChange(() => {
 				if (self.obj !== null) {
 					self.obj.shadow.camera.left = self.shadow_left.getValue()
@@ -233,7 +229,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 			this.shadow_right = new NumberBox(this.form.element)
 			this.shadow_right.size.set(60, 18)
 			this.shadow_right.setStep(0.1)
-			this.shadow_right.setRange(0, Number.MAX_SAFE_INTEGER)
 			this.shadow_right.setOnChange(() => {
 				if (self.obj !== null) {
 					self.obj.shadow.camera.right = self.shadow_right.getValue()
@@ -248,7 +243,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 			this.shadow_top = new NumberBox(this.form.element)
 			this.shadow_top.size.set(60, 18)
 			this.shadow_top.setStep(0.1)
-			this.shadow_top.setRange(0, Number.MAX_SAFE_INTEGER)
 			this.shadow_top.setOnChange(() => {
 				if (self.obj !== null) {
 					self.obj.shadow.camera.top = self.shadow_top.getValue()
@@ -262,7 +256,6 @@ LightComponent.prototype.initUI = function(pos, obj) {
 			this.shadow_bottom = new NumberBox(this.form.element)
 			this.shadow_bottom.size.set(60, 18)
 			this.shadow_bottom.setStep(0.1)
-			this.shadow_bottom.setRange(0, Number.MAX_SAFE_INTEGER)
 			this.shadow_bottom.setOnChange(() => {
 				if (self.obj !== null) {
 					self.obj.shadow.camera.bottom = self.shadow_bottom.getValue()
