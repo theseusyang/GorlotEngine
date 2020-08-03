@@ -14,7 +14,7 @@ function CameraComponent() {
 		size: 3,
 		mode: 0,
 		start: [0.0, 0.0],
-		size: [1.0, 1.0],
+		camSize: [1.0, 1.0],
 		clearColor: false,
 		clearDepth: false
 	}
@@ -122,9 +122,10 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 	this.form.nextRow()
 
 	// Offset
-	this.form.addText("Start")
+	this.form.addText("Position")
 	this.offset = new CoordinatesBox(this.form.element)
 	this.offset.setMode(CoordinatesBox.VECTOR2)
+	this.offset.setStep(0.05)
 	this.offset.size.set(160, 20)
 	this.offset.setOnChange(() => {
 		if (self.obj !== null) {
@@ -138,6 +139,7 @@ CameraComponent.prototype.initUI = function(pos, obj) {
 	this.form.addText("Size")
 	this.viewport = new CoordinatesBox(this.form.element)
 	this.viewport.setMode(CoordinatesBox.VECTOR2)
+	this.viewport.setRange(0.05)
 	this.viewport.size.set(160, 20)
 	this.viewport.setOnChange(() => {
 		if (self.obj !== null) {
@@ -223,7 +225,7 @@ CameraComponent.prototype.onReset = function() {
 	if (this.obj instanceof PerspectiveCamera) {
 		this.obj.fov = this.values.fov
 	} else if (this.obj instanceof OrthographicCamera) {
-		this.obj.size = this.values.size
+		this.obj.size = this.values.camSize
 		this.obj.mode = this.values.mode
 	}
 

@@ -352,8 +352,8 @@ SceneEditor.prototype.setFullscreen = function(value)
 	//Apply fullscreen mode
 	if(value)
 	{
-		//Set to fullscreen mode
-		App.enterFullscreen(this.element);
+		// Set to fullscreen mode
+		App.setFullscreen(true, this.element);
 
 		this.element.style.zIndex = 10000;
 		this.position.set(0, 0);	
@@ -364,8 +364,8 @@ SceneEditor.prototype.setFullscreen = function(value)
 	}
 	else
 	{
-		//Leave fullscreen mode
-		App.leaveFullscreen();
+		// Leave fullscreen mode
+		App.setFullscreen(false);
 	
 		//Restore elements
 		this.element.style.zIndex = 0;

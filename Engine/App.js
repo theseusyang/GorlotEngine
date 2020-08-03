@@ -1,32 +1,32 @@
 "use strict";
 
 //External libs
-include("Engine/Libraries/three/three.js");
-include("Engine/Libraries/three/effects/VREffect.js");
-include("Engine/Libraries/cannon.min.js");
-include("Engine/Libraries/leap.min.js");
-include("Engine/Libraries/stats.min.js");
-include("Engine/Libraries/SPE.min.js");
+include("Engine/Libraries/three/three.js")
+include("Engine/Libraries/three/effects/VREffect.js")
+include("Engine/Libraries/cannon.min.js")
+include("Engine/Libraries/leap.min.js")
+include("Engine/Libraries/stats.min.js")
+include("Engine/Libraries/SPE.min.js")
 include("Engine/Libraries/spine.min.js")
 
 include("Engine/Libraries/litegraph/litegraph.js")
 
 //Internal modules
-include("Engine/Core/THREE/Three.js");
-include("Engine/Core/THREE/Object3D.js");
-include("Engine/Core/THREE/Vector3.js");
-include("Engine/Core/THREE/Vector2.js");
-include("Engine/Core/THREE/Color.js");
+include("Engine/Core/THREE/Three.js")
+include("Engine/Core/THREE/Object3D.js")
+include("Engine/Core/THREE/Vector3.js")
+include("Engine/Core/THREE/Vector2.js")
+include("Engine/Core/THREE/Color.js")
 include("Engine/Core/THREE/Texture.js")
 include("Engine/Core/THREE/LightShadow.js")
 include("Engine/Core/THREE/Fog.js")
 include("Engine/Core/THREE/Material.js")
 
-include("Engine/Input/Key.js");
-include("Engine/Input/Keyboard.js");
-include("Engine/Input/Mouse.js");
+include("Engine/Input/Key.js")
+include("Engine/Input/Keyboard.js")
+include("Engine/Input/Mouse.js")
 
-include("Engine/Core/WebVR/VRControls.js");
+include("Engine/Core/WebVR/VRControls.js")
 
 include("Engine/Core/Namespace.js")
 
@@ -35,12 +35,12 @@ include("Engine/Core/Resources/Video.js")
 include("Engine/Core/Resources/Audio.js")
 include("Engine/Core/Resources/Image.js")
 
-include("Engine/Core/Texture/TextTexture.js");
-include("Engine/Core/Texture/VideoTexture.js");
-include("Engine/Core/Texture/WebcamTexture.js");
-include("Engine/Core/Texture/Texture.js");
+include("Engine/Core/Texture/TextTexture.js")
+include("Engine/Core/Texture/VideoTexture.js")
+include("Engine/Core/Texture/WebcamTexture.js")
+include("Engine/Core/Texture/Texture.js")
 
-include("Engine/Core/Loaders/FontLoader.js");
+include("Engine/Core/Loaders/FontLoader.js")
 include("Engine/Core/Loaders/ImageLoader.js")
 include("Engine/Core/Loaders/VideoLoader.js")
 
@@ -50,8 +50,8 @@ include("Engine/Core/Loaders/ObjectLoader.js")
 include("Engine/Core/Loaders/MaterialLoader.js")
 include("Engine/Core/Loaders/TTFLoader.js")
 
-include("Engine/Core/Objects/Device/LeapMotion.js");
-include("Engine/Core/Objects/Device/KinectDevice.js");
+include("Engine/Core/Objects/Device/LeapMotion.js")
+include("Engine/Core/Objects/Device/KinectDevice.js")
 
 include("Engine/Core/Objects/Mesh/Mesh.js")
 include("Engine/Core/Objects/Mesh/SkinnedMesh.js")
@@ -59,31 +59,31 @@ include("Engine/Core/Objects/Mesh/Text3D.js")
 
 include("Engine/Core/Objects/Sprite/Sprite.js")
 
-include("Engine/Core/Objects/Lights/PointLight.js");
-include("Engine/Core/Objects/Lights/SpotLight.js");
-include("Engine/Core/Objects/Lights/AmbientLight.js");
-include("Engine/Core/Objects/Lights/DirectionalLight.js");
-include("Engine/Core/Objects/Lights/HemisphereLight.js");
-include("Engine/Core/Objects/Lights/Sky.js");
+include("Engine/Core/Objects/Lights/PointLight.js")
+include("Engine/Core/Objects/Lights/SpotLight.js")
+include("Engine/Core/Objects/Lights/AmbientLight.js")
+include("Engine/Core/Objects/Lights/DirectionalLight.js")
+include("Engine/Core/Objects/Lights/HemisphereLight.js")
+include("Engine/Core/Objects/Lights/Sky.js")
 
-include("Engine/Core/Objects/Cameras/PerspectiveCamera.js");
-include("Engine/Core/Objects/Cameras/OrthographicCamera.js");
+include("Engine/Core/Objects/Cameras/PerspectiveCamera.js")
+include("Engine/Core/Objects/Cameras/OrthographicCamera.js")
 
-include("Engine/Core/Objects/Audio/AudioEmitter.js");
+include("Engine/Core/Objects/Audio/AudioEmitter.js")
 
-include("Engine/Core/Objects/Script/Script.js");
-include("Engine/Core/Objects/Script/BlockScript.js");
+include("Engine/Core/Objects/Script/Script.js")
+include("Engine/Core/Objects/Script/BlockScript.js")
 
-include("Engine/Core/Objects/Physics/PhysicsObject.js");
+include("Engine/Core/Objects/Physics/PhysicsObject.js")
 
 include("Engine/Core/Objects/Spine/SpineAnimation.js")
 include("Engine/Core/Objects/Spine/SpineTexture.js")
 
-include("Engine/Core/Objects/Bone.js");
-include("Engine/Core/Objects/Container.js");
-include("Engine/Core/Objects/ParticleEmitter.js");
-include("Engine/Core/Objects/Program.js");
-include("Engine/Core/Objects/Scene.js");
+include("Engine/Core/Objects/Bone.js")
+include("Engine/Core/Objects/Container.js")
+include("Engine/Core/Objects/ParticleEmitter.js")
+include("Engine/Core/Objects/Program.js")
+include("Engine/Core/Objects/Scene.js")
 
 include("Engine/Core/Objects/Special/ObjectCaller.js")
 
@@ -209,53 +209,27 @@ App.resize = function()
 	App.main.resize()
 }
 
-//Leave fullscreen mode
-App.leaveFullscreen = function()
+// Set fullscreen mode
+App.setFullscreen = function(fullscreen, element)
 {
-	App.fullscreen = false
+	App.fullscreen = fullscreen
 
-	if(document.exitFullscreen)
-	{
-		document.exitFullscreen()
-	}
-	else if(document.mozCancelFullScreen)
-	{
-		document.mozCancelFullScreen()
-	}
-	else if(document.webkitExitFullscreen)
-	{
-		document.webkitExitFullscreen()
-	}
-}
+	if (fullscreen) {
+		if (element === undefined) {
+			element = document.body
+		}
 
-//Set an element to fullscreen mode
-App.enterFullscreen = function(element)
-{
-	//If no element passed use full page
-	if(element === undefined)
-	{
-		element = document.body
-	}
+		element.requestFullscreen = element.requestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen || element.msRequestFullscreen;
 
-	//Set fullscreen flag
-	App.fullscreen = true
+		if (element.requestFullscreen) {
+			element.requestFullscreen()
+		}
+	} else {
+		document.exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen
 
-	//Set element to fullscreen
-	if(element.requestFullscreen)
-	{
-		element.requestFullscreen()
-	}
-	else if(element.mozRequestFullScreen)
-	{
-		element.mozRequestFullScreen()
-	}
-	else if(element.webkitRequestFullscreen)
-	{
-		element.webkitRequestFullscreen()
-	}
-	else if(element.msRequestFullscreen)
-	{
-		element.msRequestFullscreen()
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		}
 	}
 }
 
@@ -272,8 +246,17 @@ App.webvrAvailable = function()
 	return (navigator.getVRDisplays !== undefined)
 }
 
+// Set on exit callback
+App.setOnExit = function(callback) {
+	App.onExit = callback
+}
+
 // Exit from app
 App.exit = function() {
+	if (App.onExit !== undefined) {
+		App.onExit()
+	}
+
 	if (App.gui !== undefined) {
 		App.gui.App.closeAllWindows()
 		App.gui.App.quit()

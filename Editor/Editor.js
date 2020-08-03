@@ -139,7 +139,7 @@ Editor.CAMERA_PERSPECTIVE = 21
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Sun Aug 02 2020 20:21:12 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Mon Aug 03 2020 16:35:56 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
