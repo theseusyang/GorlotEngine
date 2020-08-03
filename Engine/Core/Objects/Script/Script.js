@@ -71,7 +71,9 @@ Script.prototype.setCode = function(code)
 		this.code = code
 		this.script = new(new Function(this.code))()
 	}
-	catch(e){}
+	catch(e){
+		this.script = new(function(){})()
+	}
 }
 
 //Create JSON for object

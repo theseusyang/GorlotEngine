@@ -387,6 +387,9 @@ Interface.initialize = function() {
 	Interface.explorer_resizable = new DualDivisionResizable(Interface.explorer.element)
 	Interface.explorer_resizable.orientation = DualDivisionResizable.VERTICAL
 	Interface.explorer_resizable.tab_position = 0.4
+	Interface.explorer_resizable.setOnResize(() => {
+		console.log("Oniichan, you resized me nwn >w<")
+	})
 
 	// Project Explorer
 	Interface.tree_view = new TreeView(Interface.explorer_resizable.div_a)

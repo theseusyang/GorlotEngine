@@ -51,7 +51,31 @@ PerspectiveCamera.prototype.destroy = function() {
 	THREE.Object3D.prototype.destroy.call(this)
 }
 
-// Update camera projection matrix
+// Update world transformation matrix
+PerspectiveCamera.prototype.updateMatrixWorld = function(force) {
+	if (this.matrixAutoUpdate === true) {
+		this.updateMatrix()
+	}
+
+	if (this.matrixWorldNeedsUpdate === true || force === true) {
+		if (this.parent !== null) {
+			this.matrixWorld.multiplyMatrices(this.parent.matrixWorld, this.matrix)
+		} else {
+			this.matrixWorld = this.matrix
+		}
+
+		this.matrixWorldNeedsUpdate = false
+		force = true
+	}
+
+	// Update children
+	var children = this.children
+	for(var i = 0; i < this.children.length; i++) {
+		children[i].updateMatrixWorld(force)
+	}
+}
+
+// Update projection matrix
 PerspectiveCamera.prototype.updateProjectionMatrix = function() {
 	var top = this.near * Math.tan(THREE.Math.DEG2RAD * 0.5 * this.fov) / this.zoom
 	var height = 2 * top

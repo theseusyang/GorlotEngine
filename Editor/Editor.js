@@ -1159,41 +1159,35 @@ Editor.setState = function(state)
 		{
 			if(App.webvrAvailable())
 			{
-				Editor.vr_effect = new THREE.VREffect(Editor.renderer);
+				Editor.vr_effect = new THREE.VREffect(Editor.renderer)
 				
-				//Show VR button
-				tab.show_buttons_vr = true;
+				// Show VR button
+				tab.show_buttons_vr = true
 
-				//Create VR switch callback
-				var vr_state = true;
+				// Create VR switch callback
+				var vr_state = true
 				tab.vr_button.setCallback(function()
 				{
 					if(Editor.vr_effect !== null)
 					{
-						Editor.vr_effect.setFullScreen(vr_state);
-						vr_state = !vr_state;
+						Editor.vr_effect.setFullScreen(vr_state)
+						vr_state = !vr_state
 					}
-				});
+				})
 			}
 		}
 
-		//Set mouse lock
-		if(Editor.program_running.lock_pointer)
-		{
-			Mouse.setLock(true);
-		}
+		// Update tab to show buttons
+		tab.updateInterface()
 
-		//Update tab to show buttons
-		tab.updateInterface();
+		// Set renderer size
+		Editor.renderer.setViewport(0, 0, Editor.canvas.width, Editor.canvas.height)
+		Editor.renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height)
 
-		//Set renderer size
-		Editor.renderer.setViewport(0, 0, Editor.canvas.width, Editor.canvas.height);
-		Editor.renderer.setScissor(0, 0, Editor.canvas.width, Editor.canvas.height);
-
-		//Set run button text
-		Interface.run.setText("Stop");
-		Interface.run.visible = true;
-		Interface.run.updateInterface();
+		// Set run button text
+		Interface.run.setText("Stop")
+		Interface.run.visible = true
+		Interface.run.updateInterface()
 	}
 	else if(state === Editor.STATE_IDLE)
 	{

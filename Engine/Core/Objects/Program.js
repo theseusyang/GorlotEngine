@@ -39,14 +39,13 @@ function Program(name)
 	this.geometries = []
 	this.asset_objects = []
 
-	//Initial values
+	// Default value
 	this.default_scene = null
 	this.default_camera = null
 
 	//Runtime variables
-	this.html = null
-	this.renderer = null
 	this.scene = null
+	this.renderer = null
 
 	this.components = []
 	this.defaultComponents = []
@@ -58,6 +57,7 @@ Program.prototype = Object.create(THREE.Object3D.prototype)
 
 // Select initial scene and initialise it
 Program.prototype.initialize = function() {
+	// Get default scene
 	if (this.default_scene !== null) {
 		for(var i = 0; i < this.children.length; i++) {
 			if (this.children[i].uuid === this.default_scene) {
@@ -65,9 +65,12 @@ Program.prototype.initialize = function() {
 				break
 			}
 		}
-	} else {
+	} else if(this.children.length > 0) {
 		this.setScene(this.children[0])
 	}
+
+	// Set mouse lock
+	Mouse.setLock(this.lock_pointer)
 }
 
 // Update program
@@ -77,10 +80,10 @@ Program.prototype.update = function() {
 
 // Render program (renderer passed as argument)
 Program.prototype.render = function(renderer) {
-	renderer.setScissorTest(true)
-
 	var x = renderer.domElement.width
 	var y = renderer.domElement.height
+
+	renderer.setScissorTest(true)
 
 	for(var i = 0; i < this.scene.cameras.length; i++) {
 		var camera = this.scene.cameras[i]
