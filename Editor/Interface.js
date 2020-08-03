@@ -388,7 +388,9 @@ Interface.initialize = function() {
 	Interface.explorer_resizable.orientation = DualDivisionResizable.VERTICAL
 	Interface.explorer_resizable.tab_position = 0.4
 	Interface.explorer_resizable.setOnResize(() => {
-		console.log("Oniichan, you resized me nwn >w<")
+		Interface.explorer_resizable.updateInterface()
+		Interface.tree_view.updateInterface()
+		Interface.panel.updateInterface()
 	})
 
 	// Project Explorer
@@ -1052,6 +1054,7 @@ Interface.initialize = function() {
 		FileSystem.chooseFile((files) => {
 			try {
 				Editor.exportWebProject(files[0].path)
+				alert("Project exported")
 			} catch(e) {
 				alert("Error exporting project (" + e + ")")
 			}

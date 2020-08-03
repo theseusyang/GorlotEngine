@@ -139,7 +139,7 @@ Editor.CAMERA_PERSPECTIVE = 21
 //Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Mon Aug 03 2020 16:35:56 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Mon Aug 03 2020 22:22:10 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
@@ -1025,10 +1025,15 @@ Editor.createNewProgram = function()
 }
 
 //Save program to file
-Editor.saveProgram = function(fname)
+Editor.saveProgram = function(fname, compressed)
 {
-	var output = Editor.program.toJSON()
-	var json = JSON.stringify(output, null, "\t").replace(/[\n\t]+([\d\.e\-\[\]]+)/g, "$1")
+	if (compressed) {
+		var json = JSON.stringify(Editor.program.toJSON())
+	} else {
+		var output = Editor.program.toJSON()
+		var json = JSON.stringify(output, null, "\t").replace(/[\n\t]+([\d\.e\-\[\]]+)/g, "$1")
+	}
+
 	FileSystem.writeFile(fname, json)
 }
 
@@ -1064,6 +1069,7 @@ Editor.loadProgram = function(fname)
 //Export web project
 Editor.exportWebProject = function(dir)
 {
+	/*
 	FileSystem.copyFolder("runtime", dir);
 	FileSystem.copyFolder("Engine/core", dir + "Engine/core");
 	FileSystem.copyFile("Engine/App.js", dir + "Engine/App.js");
@@ -1082,6 +1088,14 @@ Editor.exportWebProject = function(dir)
 	FileSystem.copyFile("Engine/Libraries/three/effects/VREffect.js", dir + "Engine/Libraries/three/effects/VREffect.js")
 
 	Editor.saveProgram(dir + "/app.isp");
+	*/
+	FileSystem.makeDirectory(dir)
+	FileSystem.copyFile("Binaries/Runtime/vr.png", dir + "/vr.png")
+	FileSystem.copyFile("Binaries/Runtime/fullscreen.png", dir + "/fullscreen.png")
+	FileSystem.copyFile("Binaries/Runtime/index.html", dir + "/index.html")
+	FileSystem.copyFile("Binaries/Gorlot.js", dir + "/Gorlot.js")
+
+	Editor.saveProgram(dir + "/app.isp", true)
 }
 
 //Export windows project
@@ -1089,9 +1103,8 @@ Editor.exportWindowsProject = function(dir)
 {
 	Editor.exportWebProject(dir);
 
-	FileSystem.copyFolder("nwjs", dir + "/nwjs");
-	FileSystem.writeFile(dir + "/package.json", JSON.stringify({name: Editor.program.name,main: "index.html",window:{frame: true}}));
-	Editor.saveProgram(dir + "/app.isp");
+	FileSystem.copyFolder("nwjs", dir + "/nwjs")
+	FileSystem.writeFile(dir + "/package.json", JSON.stringify({name: Editor.program.name,main: "index.html",window:{frame: true}}))
 }
 
 // Get an asset through its UUID

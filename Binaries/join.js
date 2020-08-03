@@ -3,8 +3,16 @@
 var path = "../"
 var code = ""
 
-// App
-include("Engine/App.js")
+// External Libraries
+include("Engine/Libraries/three/three.js")
+include("Engine/Libraries/three/effects/VREffect.js")
+include("Engine/Libraries/cannon.min.js")
+include("Engine/Libraries/leap.min.js")
+include("Engine/Libraries/stats.min.js")
+include("Engine/Libraries/SPE.min.js")
+include("Engine/Libraries/spine.min.js")
+
+include("Engine/Libraries/litegraph/litegraph.js")
 
 //Internal modules
 include("Engine/Core/THREE/Three.js");
@@ -142,7 +150,10 @@ include("Engine/Core/Nodes/Particles/ParticlesNodes.js")
 
 include("Engine/Core/FileSystem.js")
 
-writeFile("out.js", "\"use strict\"\n" + code.replace(/"use strict"/gi, "").replace(/include\(".*"\)/gi, ""))
+include("Engine/App.js")
+include("Binaries/Runtime/Main.js")
+
+writeFile("out.js", code.replace(/"use strict"/gi, "").replace(/include\(".*"\)/gi, ""))
 
 function include(file) {
 	code += "\n" + readFile(path + file)

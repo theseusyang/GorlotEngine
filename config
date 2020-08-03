@@ -16,8 +16,8 @@
 	},
 	"render": {
 		"shadows": true,
-		"shadows_type": 2,
-		"antialiasing": true
+		"shadows_type": 0,
+		"antialiasing": false
 	},
 	"code": {
 		"theme": "monokai",

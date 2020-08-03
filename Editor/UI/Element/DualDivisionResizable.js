@@ -142,6 +142,7 @@ DualDivisionResizable.prototype.update = function()
 				this.tab_position = this.tab_position_min;
 			}
 
+			// onResize callback
 			this.onResize()
 		}
 		else

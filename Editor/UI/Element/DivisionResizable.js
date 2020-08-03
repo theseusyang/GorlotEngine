@@ -153,7 +153,7 @@ DivisionResizable.prototype.update = function()
 				}	
 			}
 
-			// On resize callback
+			// onResize callback
 			this.onResize()
 		}
 		else
