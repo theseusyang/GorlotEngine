@@ -5,7 +5,7 @@ function Editor(){}
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Aug 04 2020 19:35 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Aug 04 2020 19:50 GMT+0000 (UTC)"
 
 // NWJS Modules
 try {
