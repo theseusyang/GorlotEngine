@@ -1,4 +1,151 @@
-"use strict";
+"use strict"
+
+//External libs
+include("Engine/Libraries/three/three.js")
+include("Engine/Libraries/three/effects/VREffect.js")
+include("Engine/Libraries/cannon.min.js")
+include("Engine/Libraries/leap.min.js")
+include("Engine/Libraries/stats.min.js")
+include("Engine/Libraries/SPE.min.js")
+include("Engine/Libraries/spine.min.js")
+
+include("Engine/Libraries/litegraph/litegraph.js")
+
+//Internal modules
+include("Engine/Core/THREE/Three.js")
+include("Engine/Core/THREE/Object3D.js")
+include("Engine/Core/THREE/Vector3.js")
+include("Engine/Core/THREE/Vector2.js")
+include("Engine/Core/THREE/Color.js")
+include("Engine/Core/THREE/Texture.js")
+include("Engine/Core/THREE/LightShadow.js")
+include("Engine/Core/THREE/Fog.js")
+include("Engine/Core/THREE/Material.js")
+
+include("Engine/Input/Key.js")
+include("Engine/Input/Keyboard.js")
+include("Engine/Input/Mouse.js")
+
+include("Engine/Core/WebVR/VRControls.js")
+
+include("Engine/Core/Namespace.js")
+
+include("Engine/Core/Resources/Font.js")
+include("Engine/Core/Resources/Video.js")
+include("Engine/Core/Resources/Audio.js")
+include("Engine/Core/Resources/Image.js")
+
+include("Engine/Core/Texture/TextTexture.js")
+include("Engine/Core/Texture/VideoTexture.js")
+include("Engine/Core/Texture/WebcamTexture.js")
+include("Engine/Core/Texture/Texture.js")
+
+include("Engine/Core/Loaders/FontLoader.js")
+include("Engine/Core/Loaders/ImageLoader.js")
+include("Engine/Core/Loaders/VideoLoader.js")
+
+include("Engine/Core/Loaders/AudioLoader.js")
+include("Engine/Core/Loaders/TextureLoader.js")
+include("Engine/Core/Loaders/ObjectLoader.js")
+include("Engine/Core/Loaders/MaterialLoader.js")
+include("Engine/Core/Loaders/TTFLoader.js")
+
+include("Engine/Core/Objects/Device/LeapMotion.js")
+include("Engine/Core/Objects/Device/KinectDevice.js")
+
+include("Engine/Core/Objects/Mesh/Mesh.js")
+include("Engine/Core/Objects/Mesh/SkinnedMesh.js")
+include("Engine/Core/Objects/Mesh/Text3D.js")
+
+include("Engine/Core/Objects/Sprite/Sprite.js")
+
+include("Engine/Core/Objects/Lights/PointLight.js")
+include("Engine/Core/Objects/Lights/SpotLight.js")
+include("Engine/Core/Objects/Lights/AmbientLight.js")
+include("Engine/Core/Objects/Lights/DirectionalLight.js")
+include("Engine/Core/Objects/Lights/HemisphereLight.js")
+include("Engine/Core/Objects/Lights/Sky.js")
+
+include("Engine/Core/Objects/Cameras/PerspectiveCamera.js")
+include("Engine/Core/Objects/Cameras/OrthographicCamera.js")
+
+include("Engine/Core/Objects/Audio/AudioEmitter.js")
+
+include("Engine/Core/Objects/Script/Script.js")
+include("Engine/Core/Objects/Script/BlockScript.js")
+
+include("Engine/Core/Objects/Physics/PhysicsObject.js")
+
+include("Engine/Core/Objects/Spine/SpineAnimation.js")
+include("Engine/Core/Objects/Spine/SpineTexture.js")
+
+include("Engine/Core/Objects/Bone.js")
+include("Engine/Core/Objects/Container.js")
+include("Engine/Core/Objects/ParticleEmitter.js")
+include("Engine/Core/Objects/Program.js")
+include("Engine/Core/Objects/Scene.js")
+
+include("Engine/Core/Objects/Special/ObjectCaller.js")
+
+include("Engine/Core/Utils/Base64Utils.js")
+include("Engine/Core/Utils/ArraybufferUtils.js")
+include("Engine/Core/Utils/MathUtils.js")
+include("Engine/Core/Utils/ObjectUtils.js")
+include("Engine/Core/Utils/Mesh2Shape.js")
+
+// Assets
+include("Engine/Core/Assets/Materials/MeshBasicMaterial.js")
+include("Engine/Core/Assets/Materials/MeshLambertMaterial.js")
+include("Engine/Core/Assets/Materials/MeshNormalMaterial.js")
+include("Engine/Core/Assets/Materials/MeshPhongMaterial.js")
+include("Engine/Core/Assets/Materials/MeshShaderMaterial.js")
+include("Engine/Core/Assets/Materials/MeshStandardMaterial.js")
+
+// Default Components
+include("Engine/Core/Components/Panel.js")
+include("Engine/Core/Components/Component.js")
+
+include("Engine/Core/Components/Objects/AudioComponent.js")
+include("Engine/Core/Components/Objects/ElementComponent.js")
+include("Engine/Core/Components/Objects/KinectComponent.js")
+include("Engine/Core/Components/Objects/LeapComponent.js")
+include("Engine/Core/Components/Objects/ObjectComponent.js")
+include("Engine/Core/Components/Objects/PhysicsComponent.js")
+include("Engine/Core/Components/Objects/ProgramComponent.js")
+include("Engine/Core/Components/Objects/SceneComponent.js")
+include("Engine/Core/Components/Objects/TextComponent.js")
+include("Engine/Core/Components/Objects/ScriptComponent.js")
+
+include("Engine/Core/Components/Cameras/CameraComponent.js")
+
+include("Engine/Core/Components/Lights/LightComponent.js")
+include("Engine/Core/Components/Lights/SkyComponent.js")
+
+// Nodes
+include("Engine/Core/Nodes/Register.js")
+include("Engine/Core/Nodes/NodesHelper.js")
+
+// Blocks
+include("Engine/Core/Nodes/Blocks/Base/Base.js")
+include("Engine/Core/Nodes/Blocks/Base/Events.js")
+include("Engine/Core/Nodes/Blocks/Base/Lists.js")
+include("Engine/Core/Nodes/Blocks/Base/Widgets.js")
+include("Engine/Core/Nodes/Blocks/Base/Objects.js")
+include("Engine/Core/Nodes/Blocks/Base/Hierarchy.js")
+
+include("Engine/Core/Nodes/Blocks/Math/Colour.js")
+include("Engine/Core/Nodes/Blocks/Math/Vector.js")
+include("Engine/Core/Nodes/Blocks/Math/Euler.js")
+
+include("Engine/Core/Nodes/Blocks/Input/Keyboard.js")
+
+// Material
+include("Engine/Core/Nodes/Material/MaterialNodes.js")
+
+// Particles
+include("Engine/Core/Nodes/Particles/ParticlesNodes.js")
+
+include("Engine/Core/FileSystem.js")
 
 //Codemirror
 include("Engine/Libraries/codemirror/codemirror.min.js")
@@ -121,6 +268,16 @@ include("Editor/Settings.js")
 
 function Editor(){}
 
+// NWJS Modules
+try {
+	Editor.fs = require("fs")
+	Editor.gui = require("nw.gui")
+	Editor.clipboard = Editor.gui.Clipboard.get()
+	Editor.args = Editor.gui.App.argv
+} catch(e) {
+	Editor.args = []
+}
+
 //Editor state
 Editor.STATE_IDLE = 8
 Editor.STATE_EDITING = 9
@@ -144,6 +301,11 @@ Editor.TIMESTAMP = "Mon Aug 03 2020 22:22:10 GMT+0000 (UTC)"
 //Initialize Main
 Editor.initialize = function()
 {
+	Editor.fullscreen = false
+
+	Keyboard.initialize()
+	Mouse.initialize()
+
 	//Load settings
 	Settings.load()
 
@@ -151,10 +313,10 @@ Editor.initialize = function()
 	Editor.theme = Theme.get(Settings.general.theme)
 
 	//Set windows close event
-	if(App.gui !== undefined)
+	if(Editor.gui !== undefined)
 	{
 		//Close event
-		App.gui.Window.get().on("close", function()
+		Editor.gui.Window.get().on("close", function()
 		{
 			if(confirm("All unsaved changes to the project will be lost! Do you really wanna exit?"))
 			{
@@ -234,9 +396,9 @@ Editor.initialize = function()
 	Editor.tool = null
 
 	// Check if some .isp is passed as argument
-	for(var i = 0; i < App.args.length; i++) {
-		if (App.args[i].endsWith(".isp")) {
-			Editor.loadProgram(App.args[i])
+	for(var i = 0; i < Editor.args.length; i++) {
+		if (Editor.args[i].endsWith(".isp")) {
+			Editor.loadProgram(Editor.args[i])
 			break
 		}
 	}
@@ -247,11 +409,18 @@ Editor.initialize = function()
 	}
 
 	Editor.updateObjectViews()
+	Editor.update()
 }
 
 //Update Editor
 Editor.update = function()
 {
+	requestAnimationFrame(Editor.update)
+
+	// Update input
+	Mouse.update()
+	Keyboard.update()
+
 	//End performance measure
 	if(Editor.stats !== null)
 	{
@@ -454,6 +623,8 @@ Editor.update = function()
 	{
 		Editor.program_running.update();
 	}
+
+	Editor.render()
 }
 
 // Render stuff into screen
@@ -534,7 +705,7 @@ Editor.render = function()
 //Resize to fit window
 Editor.resize = function()
 {
-	if(!App.fullscreen)
+	if(!Editor.fullscreen)
 	{
 		Interface.updateInterface()
 	}
@@ -596,16 +767,16 @@ Editor.copyObject = function(obj)
 {
 	if(obj !== undefined)
 	{
-		if(App.clipboard !== undefined)
+		if(Editor.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(obj.toJSON()), "text")
+			Editor.clipboard.set(JSON.stringify(obj.toJSON()), "text")
 		}
 	}
 	else if(Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene))
 	{
-		if(App.clipboard !== undefined)
+		if(Editor.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
+			Editor.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
 		}
 	}
 }
@@ -615,9 +786,9 @@ Editor.cutObject = function(obj)
 {
 	if(obj !== undefined)
 	{
-		if(App.clipboard !== undefined)
+		if(Editor.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(obj.toJSON()), "text")
+			Editor.clipboard.set(JSON.stringify(obj.toJSON()), "text")
 		}
 		obj.destroy()
 		Editor.updateObjectViews()
@@ -628,9 +799,9 @@ Editor.cutObject = function(obj)
 	}
 	else if(Editor.selected_object !== null && !(Editor.selected_object instanceof Program || Editor.selected_object instanceof Scene))
 	{
-		if(App.clipboard !== undefined)
+		if(Editor.clipboard !== undefined)
 		{
-			App.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
+			Editor.clipboard.set(JSON.stringify(Editor.selected_object.toJSON()), "text")
 		}
 		Editor.selected_object.destroy()
 		Editor.updateObjectViews()
@@ -643,7 +814,7 @@ Editor.pasteObject = function(target)
 {
 	try
 	{
-		var content = App.clipboard.get("text");
+		var content = Editor.clipboard.get("text");
 		var data = JSON.parse(content);
 
 		//Create object
@@ -1072,7 +1243,7 @@ Editor.exportWebProject = function(dir)
 	/*
 	FileSystem.copyFolder("runtime", dir);
 	FileSystem.copyFolder("Engine/core", dir + "Engine/core");
-	FileSystem.copyFile("Engine/App.js", dir + "Engine/App.js");
+	FileSystem.copyFile("Engine/Editor.js", dir + "Engine/Editor.js");
 
 	FileSystem.makeDirectory(dir + "src/lib");
 	FileSystem.copyFile("Engine/Libraries/leap.min.js", dir + "Engine/Libraries/leap.min.js")
@@ -1170,7 +1341,7 @@ Editor.setState = function(state)
 		//If program uses VR set button
 		if(Editor.program_running.vr)
 		{
-			if(App.webvrAvailable())
+			if(Editor.webvrAvailable())
 			{
 				Editor.vr_effect = new THREE.VREffect(Editor.renderer)
 				
@@ -1256,6 +1427,34 @@ Editor.initializeRenderer = function(canvas)
 	Editor.gl = Editor.renderer.context
 }
 
+// Set fullscreen mode
+Editor.setFullscreen = function(fullscreen, element) {
+	Editor.fullscreen = fullscreen
+
+	if (fullscreen) {
+		if (element === undefined) {
+			element = document.body
+		}
+
+		element.requestFullscreen = element.requestFullscreen || element.mozRequestFullScreen || element.webkitRequestFullscreen || element.msRequestFullscreen
+
+		if (element.requestFullscreen) {
+			element.requestFullscreen()
+		}
+	} else {
+		document.exitFullscreen = document.exitFullscreen || document.mozCancelFullScreen || document.webkitExitFullscreen
+
+		if (document.exitFullscreen) {
+			document.exitFullscreen()
+		}
+	}
+}
+
+// Check if webvr is available
+Editor.webvravailable = function() {
+	return (navigator.getVRDisplays !== undefined)
+}
+
 // Opens a different window
 Editor.openWindow = function(options) {
 	
@@ -1267,7 +1466,6 @@ Editor.openWindow = function(options) {
 	wind.document.write(`<head><title>${title}</title></head><body oncontextmenu='return false'></body>`)
 
 	// transfer files
-	wind.document.write("<script src='Engine/App.js'></script>")
 	wind.document.write("<script src='Editor/Editor.js'></script>")
 
 	wind.document.close()
@@ -1280,6 +1478,51 @@ Editor.openWindow = function(options) {
 //Exit editor
 Editor.exit = function()
 {
-	Settings.store();
-	App.exit()
+	Settings.store()
+
+	if (Editor.gui !== undefined) {
+		Editor.gui.App.closeAllWindows()
+		Editor.gui.App.quit()
+		process.exit()
+	}
 }
+
+// Include javascript or css file in project
+function include(file, onload) {
+	if(file.endsWith(".js")) {
+		var js = document.createElement("script")
+		js.src = file
+		js.type = "text/javascript"
+		js.async = false
+
+		if(onload) {
+			js.onload = onload;
+		}
+
+		document.body.appendChild(js)
+	} else if(file.endsWith(".css")) {
+		var css = document.createElement("link")
+		css.href = file
+		css.rel = "stylesheet"
+		document.body.appendChild(css)
+	} else if(file.endsWith("*")) {
+		if(Editor.fs !== undefined) {
+			var directory = file.replace("*", "")
+			var files = Editor.fs.readdirSync(directory)
+			for(var i = 0; i < files.length; i++) {
+				include(directory + files[i])
+			}
+		}
+	} else {
+		if(Editor.fs !== undefined) {
+			var directory = file + "/"
+			try {
+				var files = Editor.fs.readdirSync(directory)
+				for(var i = 0; i < files.length; i++) {
+					include(directory + files[i])
+				}
+			}
+			catch(e){}
+		}
+	}
+} 

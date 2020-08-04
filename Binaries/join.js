@@ -150,8 +150,7 @@ include("Engine/Core/Nodes/Particles/ParticlesNodes.js")
 
 include("Engine/Core/FileSystem.js")
 
-include("Engine/App.js")
-include("Binaries/Runtime/Main.js")
+include("Binaries/Runtime/Runtime.js")
 
 writeFile("out.js", code.replace(/"use strict"/gi, "").replace(/include\(".*"\)/gi, ""))
 

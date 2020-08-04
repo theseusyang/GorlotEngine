@@ -81,7 +81,7 @@ function MaterialAsset(parent) {
 		context.addOption("Copy", function() {
 			if(self.material !== null) {
 				try {
-					App.clipboard.set(JSON.stringify(self.material.toJSON()), "text")
+					Editor.clipboard.set(JSON.stringify(self.material.toJSON()), "text")
 				}
 				catch(e){}
 			}

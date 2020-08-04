@@ -2,6 +2,10 @@
 
 function FileSystem() {}
 
+try {
+	FileSystem.fs = require("fs")
+} catch(e) {}
+
 // Read text file
 FileSystem.readFile = function(fname, sync, callback) {
 	if (sync === undefined) {
@@ -9,11 +13,11 @@ FileSystem.readFile = function(fname, sync, callback) {
 	}
 
 	// Check if mode available
-	if (App.fs !== undefined) {
+	if (FileSystem.fs !== undefined) {
 		if (sync) {
-			return App.fs.readFileSync(fname, "utf8")
+			return FileSystem.fs.readFileSync(fname, "utf8")
 		} else {
-			App.fs.readFile(fname, "utf8", callback)
+			FileSystem.fs.readFile(fname, "utf8", callback)
 		}
 	} else {
 		var file = new XMLHttpRequest()
@@ -33,8 +37,8 @@ FileSystem.readFile = function(fname, sync, callback) {
 
 // Read file as arraybuffer data
 FileSystem.readFileArrayBuffer = function(fname) {
-	if (App.fs !== undefined) {
-		var buffer = App.fs.readFileSync(fname)
+	if (FileSystem.fs !== undefined) {
+		var buffer = FileSystem.fs.readFileSync(fname)
 		var length = buffer.length
 		var array = new ArrayBuffer(length)
 		var view = new Uint8Array(array)
@@ -56,8 +60,8 @@ FileSystem.readFileArrayBuffer = function(fname) {
 
 // Read File as Base64 data
 FileSystem.readFileBase64 = function(fname) {
-	if (App.fs !== undefined) {
-		var buffer = App.fs.readFileSync(fname)
+	if (FileSystem.fs !== undefined) {
+		var buffer = FileSystem.fs.readFileSync(fname)
 		return new Buffer(buffer).toString("base64")
 	} else {
 		var file = new XMLHttpRequest()
@@ -71,8 +75,8 @@ FileSystem.readFileBase64 = function(fname) {
 
 // Write text file
 FileSystem.writeFile = function(fname, data) {
-	if (App.fs !== undefined) {
-		var stream = App.fs.createWriteStream(fname, "utf8")
+	if (FileSystem.fs !== undefined) {
+		var stream = FileSystem.fs.createWriteStream(fname, "utf8")
 		stream.write(data)
 		stream.end()
 	}
@@ -80,25 +84,25 @@ FileSystem.writeFile = function(fname, data) {
 
 // Copy file (can't be used to copy folders)
 FileSystem.copyFile = function(src, dest) {
-	if (App.fs !== undefined) {
-		App.fs.createReadStream(src).pipe(App.fs.createWriteStream(dest))
+	if (FileSystem.fs !== undefined) {
+		FileSystem.fs.createReadStream(src).pipe(FileSystem.fs.createWriteStream(dest))
 	}
 }
 
 // Make a directory (don't throw exception if directory already exists)
 FileSystem.makeDirectory = function(dir) {
-	if (App.fs !== undefined) {
+	if (FileSystem.fs !== undefined) {
 		try {
-			App.fs.mkdirSync(dir)
+			FileSystem.fs.mkdirSync(dir)
 		} catch(e) {}
 	}
 }
 
 // Returns files in directory (returns empty array in case of error)
 FileSystem.getFilesDirectory = function(dir) {
-	if (App.fs !== undefined) {
+	if (FileSystem.fs !== undefined) {
 		try {
-			return App.fs.readdirSync(dir)
+			return FileSystem.fs.readdirSync(dir)
 		} catch(e) {
 			return []
 		}
@@ -108,14 +112,14 @@ FileSystem.getFilesDirectory = function(dir) {
 
 // Copy folder and all its files (includes symbolic links)
 FileSystem.copyFolder = function(src, dest) {
-	if (App.fs !== undefined) {
+	if (FileSystem.fs !== undefined) {
 		FileSystem.makeDirectory(dest)
-		var files = App.fs.readdirSync(src)
+		var files = FileSystem.fs.readdirSync(src)
 
 		for(var i = 0; i < files.length; i++) {
 			var source = src + "/" + files[i]
 			var destination = dest + "/" + files[i]
-			var current = App.fs.statSync(source)
+			var current = FileSystem.fs.statSync(source)
 
 			// Directory
 			if (current.isDirectory()) {
@@ -123,7 +127,7 @@ FileSystem.copyFolder = function(src, dest) {
 			}
 			// Symbolic link
 			else if (current.isSymbolicLink()) {
-				App.fs.symlinkSync(App.fs.readlinkSync(source), destination)
+				FileSystem.fs.symlinkSync(FileSystem.fs.readlinkSync(source), destination)
 			}
 			// File
 			else {
