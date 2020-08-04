@@ -602,6 +602,25 @@ Interface.initialize = function() {
 	Interface.basic_form.add(plane)
 	Interface.basic_form.nextRow()
 
+	// Tetrahedron
+	var tetra = new Button(Interface.basic_form.element)
+	tetra.size.set(sizex, 45)
+	tetra.setText("Tetrahedron")
+	tetra.setCallback(() => {
+		var geometry = new THREE.TetrahedronGeometry(1, 0)
+		var model = new Mesh(geometry, Editor.default_material)
+		model.name = "tetrahedron"
+		Editor.addToScene(model)
+	})
+
+	var tetraIcon = new ImageBox(tetra.element)
+	tetraIcon.size.set(40, 40)
+	tetraIcon.setImage(Interface.file_dir + "Icons/Models/Pyramid.png")
+	tetraIcon.updateInterface()
+
+	Interface.basic_form.add(tetra)
+	Interface.basic_form.nextRow()
+
 	// ------------------------------------ Lights ------------------------------------
 	Interface.lights_form = new Form(Interface.lights_tab.element)
 	Interface.lights_form.position.set(0, 0)
