@@ -5,7 +5,7 @@ function Editor(){}
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Aug 04 2020 19:50 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Aug 04 2020 20:44 GMT+0000 (UTC)"
 
 // NWJS Modules
 try {
@@ -283,6 +283,8 @@ include("Editor/Utils/ObjectIcons.js")
 include("Editor/DragBuffer.js")
 include("Editor/Interface.js")
 include("Editor/Settings.js")
+include("Editor/History.js")
+include("Editor/Action.js")
 
 // Editor state
 Editor.STATE_IDLE = 8
