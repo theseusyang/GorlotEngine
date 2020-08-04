@@ -11,7 +11,7 @@ function Script(code)
 
 	//Script Code
 	this.func = null
-	this.setCode((code !== undefined) ? code : "// This block of code is executed one\nthis.initialize = function() {\n\n}\n\n// This block of code is executed once per frame\nthis.update = function() {\n\n}\n")
+	this.setCode((code !== undefined) ? code : "// This block of code is executed one\nthis.initialize = function() {\n\n}\n\n// This block of code is executed once per frame\nthis.update = function() {\n\n}\n\nthis.onMouseOver = function(object) {\n\n}")
 
 	this.components = []
 	this.defaultComponents = []
@@ -53,6 +53,13 @@ Script.prototype.initialize = function()
 //Update Script
 Script.prototype.update = function()
 {
+	if (this.script.onMouseOver !== undefined) {
+		var obj = this.scene.raycaster.intersectObjects(this.children, true)
+		if (obj.length > 0) {
+			this.script.onMouseOver.call(this, obj)
+		}
+	}
+
 	if (this.script.update !== undefined) {
 		this.script.update.call(this)
 	}
