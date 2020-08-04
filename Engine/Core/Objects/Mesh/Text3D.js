@@ -18,7 +18,7 @@ function Text3D(text, material, font)
 	this.bevel_thickness = false
 	this.bevel_size = 8
 
-	this.setText("text")
+	this.setText(this.text)
 
 	this.receiveShadow = true
 	this.castShadow = true

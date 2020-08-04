@@ -115,7 +115,7 @@ Program.prototype.resize = function(x, y) {
 
 // Get material by name
 Program.prototype.getMaterialByName = function(name) {
-	for(var i = 0; i < this.materials.length; i++) {
+	for(var i in this.materials.length) {
 		if (this.materials[i].name === name) {
 			return this.materials[i]
 		}
@@ -168,7 +168,7 @@ Program.prototype.addTexture = function(texture)
 
 // Get texture by name
 Program.prototype.getTextureByName = function(name) {
-	for(var i = 0; i < this.textures.length; i++) {
+	for(var i in this.textures.length) {
 		if (this.textures[i].name === name) {
 			return this.textures[i]
 		}
@@ -184,7 +184,7 @@ Program.prototype.addObject = function(object) {
 
 // Get object by name
 Program.prototype.getAssetObjectByname = function(name) {
-	for(var i = 0; i < this.asset_objects.length; i++) {
+	for(var i in this.asset_objects.length) {
 		if (this.asset_objects[i].name === name) {
 			return this.asset_objects[i]
 		}
