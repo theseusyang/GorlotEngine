@@ -75,6 +75,7 @@ include("Engine/Core/Objects/Mesh/SkinnedMesh.js")
 include("Engine/Core/Objects/Mesh/Text3D.js")
 
 include("Engine/Core/Objects/Sprite/Sprite.js")
+include("Engine/Core/Objects/Sprite/TextSprite.js")
 
 include("Engine/Core/Objects/Lights/PointLight.js")
 include("Engine/Core/Objects/Lights/SpotLight.js")
