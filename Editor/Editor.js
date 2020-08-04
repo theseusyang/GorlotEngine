@@ -5,7 +5,7 @@ function Editor(){}
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Aug 04 2020 20:44 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Aug 04 2020 21:32 GMT+0000 (UTC)"
 
 // NWJS Modules
 try {
@@ -461,66 +461,46 @@ Editor.update = function()
 		}
 	}
 
-	//Editing a scene
-	if(Editor.state === Editor.STATE_EDITING)
-	{
-		//Keyboard shortcuts
-		if(Keyboard.keyJustPressed(Keyboard.DEL))
-		{
-			Editor.deleteObject();
-		}
-		else if(Keyboard.keyPressed(Keyboard.CTRL))
-		{
-			if(Keyboard.keyJustPressed(Keyboard.C))
-			{
-				Editor.copyObject();
-			}
-			else if(Keyboard.keyJustPressed(Keyboard.V))
-			{
-				Editor.pasteObject();
-			}
-			else if(Keyboard.keyJustPressed(Keyboard.X))
-			{
-				Editor.cutObject();
-			}
-			else if(Keyboard.keyJustPressed(Keyboard.Y))
-			{
+	// Editing a scene
+	if(Editor.state === Editor.STATE_EDITING) {
+		// Keyboard shortcuts
+		if(Keyboard.keyJustPressed(Keyboard.DEL)) {
+			Editor.deleteObject()
+		} else if(Keyboard.keyPressed(Keyboard.CTRL)) {
+			if(Keyboard.keyJustPressed(Keyboard.C)) {
+				Editor.copyObject()
+			} else if(Keyboard.keyJustPressed(Keyboard.V)) {
+				Editor.pasteObject()
+			} else if(Keyboard.keyJustPressed(Keyboard.X)) {
+				Editor.cutObject()
+			} else if(Keyboard.keyJustPressed(Keyboard.Y)) {
 				Editor.redo()
-			}
-			else if(Keyboard.keyJustPressed(Keyboard.Z))
-			{
+			} else if(Keyboard.keyJustPressed(Keyboard.Z)) {
 				Editor.undo()
 			}
 		}
 
-		//Select objects
-		if(Editor.tool_mode === Editor.MODE_SELECT)
-		{
-			if(Mouse.buttonJustPressed(Mouse.LEFT) && Mouse.insideCanvas())
-			{
-				Editor.updateRaycasterFromMouse();
-				var intersects = Editor.raycaster.intersectObjects(Editor.program.scene.children, true);
-				if(intersects.length > 0)
-				{
-					Editor.selectObject(intersects[0].object);
-				}
+		// Select objects
+		if(Editor.tool_mode === Editor.MODE_SELECT) {
+			if(Mouse.buttonJustPressed(Mouse.LEFT) && Mouse.insideCanvas()) {
+				Editor.selectObjectWithMouse()
 			}
 
-			Editor.is_editing_object = false;
-		}
-		else if(Editor.selected_object !== null)
-		{
-			//Update active tool status
-			if(Editor.tool !== null)
-			{
-				Editor.is_editing_object = Editor.tool.update();
+			Editor.is_editing_object = false
+		} else if(Editor.selected_object !== null) {
+			// Update active tool
+			if(Editor.tool !== null) {
+				Editor.is_editing_object = Editor.tool.update()
 				if (Editor.is_editing_object) {
 					Editor.updateObjectPanel()
 				}
+			} else {
+				Editor.is_editing_object = false
 			}
-			else
-			{
-				Editor.is_editing_object = false;
+
+			// If mouse double clicked, select object
+			if (Mouse.buttonDoubleClicked() && Mouse.insideCanvas()) {
+				Editor.selectObjectWithMouse()
 			}
 		}
 
@@ -531,95 +511,81 @@ Editor.update = function()
 			}
 		}
 		
-		//Update object helper
-		Editor.object_helper.update();
+		// Update object helper
+		Editor.object_helper.update()
 
-		//Check if mouse is inside canvas
-		if(Mouse.insideCanvas())
-		{
-			//Lock mouse wheen camera is moving
+		// Check if mouse is inside canvas
+		if(Mouse.insideCanvas()) {
+			// Lock mouse wheen camera is moving
 			if(Settings.editor.lock_mouse) {
-				if(!Editor.is_editing_object && (Mouse.buttonJustPressed(Mouse.LEFT) || Mouse.buttonJustPressed(Mouse.RIGHT) || Mouse.buttonJustPressed(Mouse.MIDDLE)))
-				{
-					Mouse.setLock(true);
-				}
-				else if(Mouse.buttonJustReleased(Mouse.LEFT) || Mouse.buttonJustReleased(Mouse.RIGHT) || Mouse.buttonJustReleased(Mouse.MIDDLE))
-				{
-					Mouse.setLock(false);
+				if(!Editor.is_editing_object && (Mouse.buttonJustPressed(Mouse.LEFT) || Mouse.buttonJustPressed(Mouse.RIGHT) || Mouse.buttonJustPressed(Mouse.MIDDLE))) {
+					Mouse.setLock(true)
+				} else if(Mouse.buttonJustReleased(Mouse.LEFT) || Mouse.buttonJustReleased(Mouse.RIGHT) || Mouse.buttonJustReleased(Mouse.MIDDLE)) {
+					Mouse.setLock(false)
 				}
 			}
 
-			//Look camera
-			if(Mouse.buttonPressed(Mouse.LEFT) && !Editor.is_editing_object)
-			{
-				Editor.camera_rotation.x -= 0.002 * Mouse.delta.x;
-				Editor.camera_rotation.y -= 0.002 * Mouse.delta.y;
+			// Look camera
+			if(Mouse.buttonPressed(Mouse.LEFT) && !Editor.is_editing_object) {
+				Editor.camera_rotation.x -= 0.002 * Mouse.delta.x
+				Editor.camera_rotation.y -= 0.002 * Mouse.delta.y
 
-				//Limit Vertical Rotation to 90 degrees
-				var pid2 = 1.57;
-				if(Editor.camera_rotation.y < -pid2)
-				{
-					Editor.camera_rotation.y = -pid2;
-				}
-				else if(Editor.camera_rotation.y > pid2)
-				{
-					Editor.camera_rotation.y = pid2;
+				// Limit Vertical Rotation to 90 degrees
+				var pid2 = 1.57
+				if(Editor.camera_rotation.y < -pid2) {
+					Editor.camera_rotation.y = -pid2
+				} else if(Editor.camera_rotation.y > pid2) {
+					Editor.camera_rotation.y = pid2
 				}
 
-				Editor.setCameraRotation(Editor.camera_rotation, Editor.camera);
+				Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
 			}
 
-			//Move Camera on X and Z
-			else if(Mouse.buttonPressed(Mouse.RIGHT))
-			{
-				//Move speed
-				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0,0,0)) / 1000;
-				if(speed < 0.02)
-				{
-					speed = 0.02;
+			// Move Camera on X and Z
+			else if(Mouse.buttonPressed(Mouse.RIGHT)) {
+				// Move speed
+				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0,0,0)) / 1000
+				if(speed < 0.02) {
+					speed = 0.02
 				}
 
-				//Move Camera Front and Back
-				var angle_cos = Math.cos(Editor.camera_rotation.x);
-				var angle_sin = Math.sin(Editor.camera_rotation.x);
-				Editor.camera.position.z += Mouse.delta.y * speed * angle_cos;
-				Editor.camera.position.x += Mouse.delta.y * speed * angle_sin;
+				// Move Camera Front and Back
+				var angle_cos = Math.cos(Editor.camera_rotation.x)
+				var angle_sin = Math.sin(Editor.camera_rotation.x)
+				Editor.camera.position.z += Mouse.delta.y * speed * angle_cos
+				Editor.camera.position.x += Mouse.delta.y * speed * angle_sin
 
-				//Move Camera Lateral
-				var angle_cos = Math.cos(Editor.camera_rotation.x + MathUtils.pid2);
-				var angle_sin = Math.sin(Editor.camera_rotation.x + MathUtils.pid2);
-				Editor.camera.position.z += Mouse.delta.x * speed * angle_cos;
-				Editor.camera.position.x += Mouse.delta.x * speed * angle_sin;
+				// Move Camera Lateral
+				var angle_cos = Math.cos(Editor.camera_rotation.x + MathUtils.pid2)
+				var angle_sin = Math.sin(Editor.camera_rotation.x + MathUtils.pid2)
+				Editor.camera.position.z += Mouse.delta.x * speed * angle_cos
+				Editor.camera.position.x += Mouse.delta.x * speed * angle_sin
 			}
 			
-			//Move Camera on Y
+			// Move Camera on Y
 			else if(Mouse.buttonPressed(Mouse.MIDDLE))
 			{
-				Editor.camera.position.y += Mouse.delta.y * 0.1;
+				Editor.camera.position.y += Mouse.delta.y * 0.1
 			}
 
-			//Move in camera direction using mouse scroll
-			if(Mouse.wheel != 0)
-			{
-				//Move speed
-				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0,0,0))/2000;
-				speed *= Mouse.wheel;
+			// Move in camera direction using mouse scroll
+			if(Mouse.wheel != 0) {
+				// Move speed
+				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0,0,0))/2000
+				speed *= Mouse.wheel
 
-				//Limit zoom speed
-				if(speed < 0 && speed > -0.03)
-				{
-					speed = -0.03;
-				}
-				else if(speed > 0 && speed < 0.03)
-				{
-					speed = 0.03;
+				// Limit zoom speed
+				if(speed < 0 && speed > -0.03) {
+					speed = -0.03
+				} else if(speed > 0 && speed < 0.03) {
+					speed = 0.03
 				}
 
-				//Move camera
-				var direction = Editor.camera.getWorldDirection();
-				Editor.camera.position.x -= speed * direction.x;
-				Editor.camera.position.y -= speed * direction.y;
-				Editor.camera.position.z -= speed * direction.z;
+				// Move camera
+				var direction = Editor.camera.getWorldDirection()
+				Editor.camera.position.x -= speed * direction.x
+				Editor.camera.position.y -= speed * direction.y
+				Editor.camera.position.z -= speed * direction.z
 			}
 		}
 	}
@@ -1139,23 +1105,30 @@ Editor.setCameraMode = function(mode) {
 	}
 }
 
-//Set camera rotation
-Editor.setCameraRotation = function(camera_rotation, camera)
-{
-	//Calculate direction vector
-	var cos_angle_y = Math.cos(camera_rotation.y);
-	var direction = new THREE.Vector3(Math.sin(camera_rotation.x)*cos_angle_y, Math.sin(camera_rotation.y), Math.cos(camera_rotation.x)*cos_angle_y);
+// Set camera rotation
+Editor.setCameraRotation = function(camera_rotation, camera) {
+	// Calculate direction vector
+	var cos_angle_y = Math.cos(camera_rotation.y)
+	var direction = new THREE.Vector3(Math.sin(camera_rotation.x)*cos_angle_y, Math.sin(camera_rotation.y), Math.cos(camera_rotation.x)*cos_angle_y)
 
-	//Add position offset and set camera direction
-	direction.add(camera.position);
-	camera.lookAt(direction);
+	// Add position offset and set camera direction
+	direction.add(camera.position)
+	camera.lookAt(direction)
 }
 
 //Update raycaster position from editor mouse position
-Editor.updateRaycasterFromMouse = function()
-{
-	var mouse = new THREE.Vector2((Mouse.position.x/Editor.canvas.width)*2 - 1, -(Mouse.position.y/Editor.canvas.height)*2 + 1);
-	Editor.raycaster.setFromCamera(mouse, Editor.camera);
+Editor.updateRaycasterFromMouse = function() {
+	var mouse = new THREE.Vector2((Mouse.position.x/Editor.canvas.width)*2 - 1, -(Mouse.position.y/Editor.canvas.height)*2 + 1)
+	Editor.raycaster.setFromCamera(mouse, Editor.camera)
+}
+
+// Select objects with mouse
+Editor.selectObjectWithMouse = function() {
+	Editor.updateRaycasterFromMouse()
+	var intersects = Editor.raycaster.intersectObjects(Editor.program.scene.children, true)
+	if (intersects.length > 0) {
+		Editor.selectObject(intersects[0].object)
+	}
 }
 
 // Update editor raycaster with new x and y positions (normalised -1 to 1)

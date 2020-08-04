@@ -9,12 +9,6 @@ function Scene()
 	
 	this.matrixAutoUpdate = false
 
-	this.clock = new THREE.Clock()
-	this.raycaster = new THREE.Raycaster()
-
-	// Cameras
-	this.cameras = []
-
 	// Physics world
 	this.world = new CANNON.World()
 	this.world.defaultContactMaterial.contactEquationStiffness = 1e9
@@ -26,6 +20,15 @@ function Scene()
 	this.world.solver = new CANNON.SplitSolver(new CANNON.GSSolver())
 	this.world.solver.tolerance = 0.1
 	this.world.solver.iterations = 7
+
+	// Runtime objects
+	this.clock = new THREE.Clock()
+	this.raycaster = new THREE.Raycaster()
+
+	// Cameras in use
+	this.cameras = []
+
+	// Renderer canvas
 
 	this.components = []
 	this.defaultComponents = []
@@ -42,12 +45,14 @@ Scene.prototype.initialize = function()
 	{
 		this.children[i].initialize()
 	}
+
+	this.canvas = this.parent.renderer.domElement
 }
 
 //Update scene
 Scene.prototype.update = function()
 {
-	var mouse = new Vector2((Mouse.position.x/Editor.canvas.width) * 2 - 1, -(Mouse.position.y/Editor.canvas.height) * 2 + 1)
+	var mouse = new Vector2(Mouse.position.x/this.canvas.width * 2 - 1, -2 * Mouse.position.y / this.canvas.height + 1)
 
 	// for(var i = 0; i < this.cameras.length; i++) {
 		// this.raycaster.setFromCamera(mouse, this.cameras[i])
