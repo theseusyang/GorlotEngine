@@ -113,6 +113,17 @@ Program.prototype.resize = function(x, y) {
 	}
 }
 
+// Get material by name
+Program.prototype.getMaterialByName = function(name) {
+	for(var i = 0; i < this.materials.length; i++) {
+		if (this.materials[i].name === name) {
+			return this.materials[i]
+		}
+	}
+
+	return null
+}
+
 //Add material to materials list
 Program.prototype.addMaterial = function(material)
 {
@@ -155,10 +166,32 @@ Program.prototype.addTexture = function(texture)
  	this.textures[texture.uuid] = texture
 }
 
+// Get texture by name
+Program.prototype.getTextureByName = function(name) {
+	for(var i = 0; i < this.textures.length; i++) {
+		if (this.textures[i].name === name) {
+			return this.textures[i]
+		}
+	}
+
+	return null
+}
+
 // Add an object to objects list
 Program.prototype.addObject = function(object) {
 	this.asset_objects[object.uuid] = object
 }
+
+// Get object by name
+Program.prototype.getAssetObjectByname = function(name) {
+	for(var i = 0; i < this.asset_objects.length; i++) {
+		if (this.asset_objects[i].name === name) {
+			return this.asset_objects[i]
+		}
+	}
+
+	return null
+} 
 
 // Remove object from objects list
 Program.prototype.removeObject = function(object) {

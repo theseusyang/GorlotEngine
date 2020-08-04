@@ -2,7 +2,7 @@
 
 function Text3D(text, material, font)
 {
-	THREE.Mesh.call(this, new THREE.TextGeometry(text, {font: font}), material)
+	THREE.Mesh.call(this, undefined, material)
 	
 	this.name = "text"
 	this.type = "Text3D"
@@ -10,12 +10,15 @@ function Text3D(text, material, font)
 	this.scale.set(0.02, 0.02, 0.02)
 
 	this.font = font
+
 	this.text = text
 
 	this.height = 50
 	this.bevel = false
 	this.bevel_thickness = false
 	this.bevel_size = 8
+
+	this.setText("text")
 
 	this.receiveShadow = true
 	this.castShadow = true
@@ -34,7 +37,10 @@ Text3D.prototype = Object.create(THREE.Mesh.prototype)
 Text3D.prototype.setText = function(text)
 {
 	this.text = text
-	this.geometry.dispose()
+
+	if (this.geometry !== undefined) {
+		this.geometry.dispose()
+	}
 
 	var options = {
 		font: this.font,
@@ -54,7 +60,10 @@ Text3D.prototype.dispose = function()
 	{
 		this.material.dispose()
 	}
-	this.geometry.dispose()
+
+	if (this.geometry !== undefined) {
+		this.geometry.dispose()
+	}
 
 	for(var i = 0; i < this.children.length; i++)
 	{
