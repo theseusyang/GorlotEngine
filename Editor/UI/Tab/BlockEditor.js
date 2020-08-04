@@ -19,12 +19,10 @@ function BlockEditor(parent) {
 	this.element.style.position = "absolute"
 	this.element.style.pointerEvents = "auto"
 
-	// Prevent Drop event
 	this.element.ondrop = function(e) {
 		e.preventDefault()
 	}
 
-	// Prevent default when object dragged
 	this.element.ondragover = function(e) {
 		e.preventDefault()
 	}

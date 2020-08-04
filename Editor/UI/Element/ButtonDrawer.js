@@ -27,13 +27,11 @@ function ButtonDrawer(parent)
 	this.element.style.alignItems = "center";
 	this.element.style.backgroundColor = Editor.theme.button_color;
 	
-	//Prevent Drop event
 	this.element.ondrop = function(event)
 	{
 		event.preventDefault();
 	};
 
-	//Prevent deafault when object dragged over
 	this.element.ondragover = function(event)
 	{
 		event.preventDefault();

@@ -20,12 +20,10 @@ function ParticleEditor(parent) {
 	this.element.id = id
 	this.element.style.position = "absolute"
 
-	// Prevent Drop event
 	this.element.ondrop = function(e) {
 		e.preventDefault()
 	}
 
-	// Prevent default when an object is dragged over
 	this.element.ondragover = function(e) {
 		e.preventDefault()
 	}

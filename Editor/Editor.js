@@ -303,6 +303,8 @@ Editor.initialize = function()
 {
 	Editor.fullscreen = false
 
+	document.body.style.overflow = "hidden"
+
 	Keyboard.initialize()
 	Mouse.initialize()
 
@@ -947,12 +949,12 @@ Editor.updateAssetExplorer = function()
 	}
 
 	// Textures
-	// var textures = ObjectUtils.getTextures(Editor.program, Editor.program.textures)
-	// for(var i in textures) {
-		// var file = new TextureAsset(Interface.asset_explorer.element)
-		// file.setTexture(textures[i])
-		// Interface.asset_explorer.add(file)
-	// }
+	var textures = ObjectUtils.getTextures(Editor.program, Editor.program.textures)
+	for(var i in textures) {
+		var file = new TextureAsset(Interface.asset_explorer.element)
+		file.setTexture(textures[i])
+		Interface.asset_explorer.add(file)
+	}
 
 	Interface.asset_explorer.updateInterface();
 
@@ -1240,31 +1242,11 @@ Editor.loadProgram = function(fname)
 //Export web project
 Editor.exportWebProject = function(dir)
 {
-	/*
-	FileSystem.copyFolder("runtime", dir);
-	FileSystem.copyFolder("Engine/core", dir + "Engine/core");
-	FileSystem.copyFile("Engine/Editor.js", dir + "Engine/Editor.js");
-
-	FileSystem.makeDirectory(dir + "src/lib");
-	FileSystem.copyFile("Engine/Libraries/leap.min.js", dir + "Engine/Libraries/leap.min.js")
-	FileSystem.copyFile("Engine/Libraries/SPE.min.js", dir + "Engine/Libraries/SPE.min.js")
-	FileSystem.copyFile("Engine/Libraries/leap.min.js", dir + "Engine/Libraries/leap.min.js")
-	FileSystem.copyFile("Engine/Libraries/stats.min.js", dir + "Engine/Libraries/stats.min.js")
-	FileSystem.copyFile("Engine/Libraries/cannon.min.js", dir + "Engine/Libraries/cannon.min.js")
-	FileSystem.copyFile("Engine/Libraries/spine.min.js", dir + "Engine/Libraries/spine.min.js")
-	FileSystem.copyFile("Engine/Libraries/base64.min.js", dir + "Engine/Libraries/base64.min.js")
-	FileSystem.makeDirectory(dir + "Engine/Libraries/three")
-	FileSystem.copyFile("Engine/Libraries/three/three.min.js", dir + "Engine/Libraries/three/three.min.js")
-	FileSystem.makeDirectory(dir + "Engine/Libraries/three/effects")
-	FileSystem.copyFile("Engine/Libraries/three/effects/VREffect.js", dir + "Engine/Libraries/three/effects/VREffect.js")
-
-	Editor.saveProgram(dir + "/app.isp");
-	*/
 	FileSystem.makeDirectory(dir)
 	FileSystem.copyFile("Binaries/Runtime/vr.png", dir + "/vr.png")
 	FileSystem.copyFile("Binaries/Runtime/fullscreen.png", dir + "/fullscreen.png")
 	FileSystem.copyFile("Binaries/Runtime/index.html", dir + "/index.html")
-	FileSystem.copyFile("Binaries/Gorlot.js", dir + "/Gorlot.js")
+	FileSystem.copyFile("Binaries/Gorlot.min.js", dir + "/Gorlot.min.js")
 
 	Editor.saveProgram(dir + "/app.isp", true)
 }
