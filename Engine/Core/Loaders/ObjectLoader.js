@@ -608,7 +608,7 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 			break;
 
 		case "Group":
-			object = new Container();
+			object = new Empty();
 			break;
 
 		case "ObjectCaller":
@@ -628,7 +628,7 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 			break;
 
 		default:
-			object = new Container();
+			object = new Empty();
 	}
 
 	object.uuid = data.uuid;

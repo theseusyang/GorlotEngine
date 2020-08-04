@@ -867,7 +867,7 @@ Interface.initialize = function() {
 	empty.size.set(sizex, 45)
 	empty.setText("Empty")
 	empty.setCallback(() => {
-		Editor.addToScene(new Container())
+		Editor.addToScene(new Empty())
 	})
 
 	var emptyIcon = new ImageBox(empty.element)

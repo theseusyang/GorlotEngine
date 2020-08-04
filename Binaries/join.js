@@ -53,43 +53,43 @@ include("Engine/Core/Loaders/ObjectLoader.js")
 include("Engine/Core/Loaders/MaterialLoader.js")
 include("Engine/Core/Loaders/TTFLoader.js")
 
-include("Engine/Core/Objects/Device/LeapMotion.js");
-include("Engine/Core/Objects/Device/KinectDevice.js");
+include("Engine/Core/Elements/Device/LeapMotion.js");
+include("Engine/Core/Elements/Device/KinectDevice.js");
 
-include("Engine/Core/Objects/Mesh/Mesh.js")
-include("Engine/Core/Objects/Mesh/SkinnedMesh.js")
-include("Engine/Core/Objects/Mesh/Text3D.js")
+include("Engine/Core/Elements/Basic/Mesh.js")
+include("Engine/Core/Elements/Basic/SkinnedMesh.js")
+include("Engine/Core/Elements/Basic/Text3D.js")
 
-include("Engine/Core/Objects/Sprite/Sprite.js")
-include("Engine/Core/Objects/Sprite/TextSprite.js")
+include("Engine/Core/Elements/Sprite/Sprite.js")
+include("Engine/Core/Elements/Sprite/TextSprite.js")
 
-include("Engine/Core/Objects/Lights/PointLight.js");
-include("Engine/Core/Objects/Lights/SpotLight.js");
-include("Engine/Core/Objects/Lights/AmbientLight.js");
-include("Engine/Core/Objects/Lights/DirectionalLight.js");
-include("Engine/Core/Objects/Lights/HemisphereLight.js");
-include("Engine/Core/Objects/Lights/Sky.js");
+include("Engine/Core/Elements/Lighting/PointLight.js");
+include("Engine/Core/Elements/Lighting/SpotLight.js");
+include("Engine/Core/Elements/Lighting/AmbientLight.js");
+include("Engine/Core/Elements/Lighting/DirectionalLight.js");
+include("Engine/Core/Elements/Lighting/HemisphereLight.js");
+include("Engine/Core/Elements/Lighting/Sky.js");
 
-include("Engine/Core/Objects/Cameras/PerspectiveCamera.js");
-include("Engine/Core/Objects/Cameras/OrthographicCamera.js");
+include("Engine/Core/Elements/Cinematic/PerspectiveCamera.js");
+include("Engine/Core/Elements/Cinematic/OrthographicCamera.js");
 
-include("Engine/Core/Objects/Audio/AudioEmitter.js");
+include("Engine/Core/Elements/Sound/AudioEmitter.js");
 
-include("Engine/Core/Objects/Script/Script.js");
-include("Engine/Core/Objects/Script/BlockScript.js");
+include("Engine/Core/Elements/Script/Script.js");
+include("Engine/Core/Elements/Script/BlockScript.js");
 
-include("Engine/Core/Objects/Physics/PhysicsObject.js");
+include("Engine/Core/Elements/Physics/PhysicsObject.js");
 
-include("Engine/Core/Objects/Spine/SpineAnimation.js")
-include("Engine/Core/Objects/Spine/SpineTexture.js")
+include("Engine/Core/Elements/Spine/SpineAnimation.js")
+include("Engine/Core/Elements/Spine/SpineTexture.js")
 
-include("Engine/Core/Objects/Bone.js");
-include("Engine/Core/Objects/Container.js");
-include("Engine/Core/Objects/ParticleEmitter.js");
-include("Engine/Core/Objects/Program.js");
-include("Engine/Core/Objects/Scene.js");
+include("Engine/Core/Elements/Bone.js");
+include("Engine/Core/Elements/Empty.js");
+include("Engine/Core/Elements/ParticleEmitter.js");
+include("Engine/Core/Elements/Program.js");
+include("Engine/Core/Elements/Scene.js");
 
-include("Engine/Core/Objects/Special/ObjectCaller.js")
+include("Engine/Core/Elements/Special/ObjectCaller.js")
 
 include("Engine/Core/Utils/Base64Utils.js")
 include("Engine/Core/Utils/ArraybufferUtils.js")
