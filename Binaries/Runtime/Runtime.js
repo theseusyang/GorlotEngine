@@ -147,47 +147,65 @@ include("Engine/Core/Nodes/Particles/ParticlesNodes.js")
 
 include("Engine/Core/FileSystem.js")
 
-function Runtime(app) {
-	// Initialise input
-	Keyboard.initialize()
-	Mouse.initialize()
+function Runtime(canvas) {
 
-	// Gorlot program and scene
-	this.program = this.loadProgram((app !== undefined) ? app : "app.isp")
+	this.program = null
+	this.canvas_resize = null
 
-	// Renderer and canvas
-	this.canvas = document.createElement("canvas")
-	this.canvas.style.position = "absolute"
-	this.canvas.style.left = "0px"
-	this.canvas.style.top = "0px"
-	this.canvas.style.width = window.innerWidth + "px"
-	this.canvas.style.height =window.innerHeight + "px"
-	this.canvas.width = window.innerWidth
-	this.canvas.height = window.innerHeight
-	document.body.appendChild(this.canvas)
+	// Create canvas
+	if(canvas === undefined) {
+		this.canvas = document.createElement("canvas")
+		this.canvas.style.position = "absolute"
+		this.canvas.style.left = "0px"
+		this.canvas.style.top = "0px"
+		this.canvas.style.width = window.innerWidth + "px"
+		this.canvas.style.height =window.innerHeight + "px"
+		this.canvas.width = window.innerWidth
+		this.canvas.height = window.innerHeight
+		document.body.appendChild(this.canvas)
+	} else {
+		this.canvas = canvas
+	}
 
-	// VR Stuff
-	this.vr_controls = null
-	this.vr_effect = null
-
-	// Define Mouse canvas
-	Mouse.setCanvas(this.canvas)
-
-	// Set renderer
+	// WebGL renderer
 	this.renderer = new THREE.WebGLRenderer({canvas: this.canvas, antialias: true})
 	this.renderer.autoClear = false
 	this.renderer.shadowMap.enabled = true
 	this.renderer.shadowMap.type = THREE.PCFShadowMap
 	this.renderer.setPixelRatio(window.devicePixelRatio || 1.0)
 	this.renderer.setSize(this.canvas.width, this.canvas.height)
+}
+
+// Fullscreen control
+Runtime.fullscreen = false
+
+// Start Gorlot program
+Runtime.prototype.run = function() {
+
+	if (this.program === null) {
+		console.warn("Runtime: No program is loaded")
+		return
+	}
+
+	// Mouse and keyboard input
+	Keyboard.initialize()
+	Mouse.initialize()
+	Mouse.setCanvas(this.canvas)
+
+	// Virtual reality
+	if (this.program.vr) {
+		this.vr_controls = new VRControls()
+		this.vr_effect = new THREE.VREffect(this.renderer)
+	}
 
 	// Initialise program
 	this.program.default_camera = new PerspectiveCamera(60, this.canvas.width/this.canvas.height, 0.1, 1000000)
-	this.program.default_camera.position.set(0, 5, -5)
+	this.program.default_camera.position.set(0, 10, 30)
 	this.program.renderer = this.renderer
 	this.program.initialize()
 	this.program.resize(this.canvas.width, this.canvas.height)
 
+	// Update loop
 	var self = this
 	var update = function() {
 		requestAnimationFrame(update)
@@ -196,9 +214,6 @@ function Runtime(app) {
 
 	update()
 }
-
-// Fullscreen button
-Runtime.fullscreen = false
 
 // Update gorlot program
 Runtime.prototype.update = function() {
@@ -209,33 +224,13 @@ Runtime.prototype.update = function() {
 	this.program.render(this.renderer)
 }
 
-// Resize to fit window
-Runtime.prototype.resize = function() {
-	// Update canvas and renderer size
-	if(this.canvas !== null && this.renderer != null) {
-		this.canvas.style.width = window.innerWidth + "px";
-		this.canvas.style.height = window.innerHeight + "px";
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
-		this.renderer.setSize(this.canvas.width, this.canvas.height);
-		this.program.resize(this.canvas.width, this.canvas.height);
-	}
-}
-
-// Load program from file
-Runtime.prototype.loadProgram = function(fname) {
-	var loader = new ObjectLoader()
-	var data = JSON.parse(FileSystem.readFile(fname))
-	return loader.parse(data)
-}
-
-// Set on exit callback
-Runtime.prototype.setOnExit = function(callback) {
-	this.onExit = callback
-}
-
-// Exit from app
+// Exit from App
 Runtime.prototype.exit = function() {
+	if (this.program !== null) {
+		this.program.dispose()
+		this.program = null
+	}
+
 	if (this.onExit !== undefined) {
 		this.onExit()
 	}
@@ -244,6 +239,33 @@ Runtime.prototype.exit = function() {
 		Runtime.gui.App.closeAllWindows()
 		Runtime.gui.App.quit()
 	}
+}
+
+// Resize to fit window
+Runtime.prototype.resize = function() {
+	if(this.canvas !== null && this.canvas_resize) {
+		this.canvas.style.width = window.innerWidth + "px"
+		this.canvas.style.height = window.innerHeight + "px"
+		this.canvas.width = window.innerWidth
+		this.canvas.height = window.innerHeight
+	}
+
+	if (this.renderer !== undefined) {
+		this.renderer.setSize(this.canvas.width, this.canvas.height)
+		this.program.resize(this.canvas.width, this.canvas.height)
+	}
+}
+
+// Load program from file
+Runtime.prototype.loadProgram = function(fname) {
+	var loader = new ObjectLoader()
+	var data = JSON.parse(FileSystem.readFile(fname))
+	this.program =  loader.parse(data)
+}
+
+// Set on exit callback
+Runtime.prototype.setOnExit = function(callback) {
+	this.onExit = callback
 }
 
 // Set fullscreen mode

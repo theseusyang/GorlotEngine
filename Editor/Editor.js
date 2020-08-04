@@ -1,5 +1,22 @@
 "use strict"
 
+function Editor(){}
+
+// Editor version
+Editor.NAME = "Gorlot"
+Editor.VERSION = "2020.0-Alpha"
+Editor.TIMESTAMP = "Tue Aug 04 2020 19:35 GMT+0000 (UTC)"
+
+// NWJS Modules
+try {
+	Editor.fs = require("fs")
+	Editor.gui = require("nw.gui")
+	Editor.clipboard = Editor.gui.Clipboard.get()
+	Editor.args = Editor.gui.App.argv
+} catch(e) {
+	Editor.args = []
+}
+
 //External libs
 include("Engine/Libraries/three/three.js")
 include("Engine/Libraries/three/effects/VREffect.js")
@@ -266,24 +283,12 @@ include("Editor/DragBuffer.js")
 include("Editor/Interface.js")
 include("Editor/Settings.js")
 
-function Editor(){}
-
-// NWJS Modules
-try {
-	Editor.fs = require("fs")
-	Editor.gui = require("nw.gui")
-	Editor.clipboard = Editor.gui.Clipboard.get()
-	Editor.args = Editor.gui.App.argv
-} catch(e) {
-	Editor.args = []
-}
-
-//Editor state
+// Editor state
 Editor.STATE_IDLE = 8
 Editor.STATE_EDITING = 9
 Editor.STATE_TESTING = 11
 
-//Editor editing modes
+// Editor editing modes
 Editor.MODE_SELECT = 0
 Editor.MODE_MOVE = 1
 Editor.MODE_SCALE = 2
@@ -292,11 +297,6 @@ Editor.MODE_ROTATE = 3
 // Editor camera mode
 Editor.CAMERA_ORTHOGRAPHIC = 20
 Editor.CAMERA_PERSPECTIVE = 21
-
-//Editor version
-Editor.NAME = "Gorlot"
-Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Mon Aug 03 2020 22:22:10 GMT+0000 (UTC)"
 
 //Initialize Main
 Editor.initialize = function()
