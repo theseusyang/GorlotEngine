@@ -5,7 +5,7 @@ function Editor(){}
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Aug 04 2020 16:45 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Aug 04 2020 19:45 GMT+0000 (UTC)"
 
 // NWJS Modules
 try {
@@ -388,10 +388,6 @@ Editor.initialize = function() {
 	Editor.axis_helper.visible = Settings.editor.axis_enabled
 	Editor.tool_scene.add(Editor.axis_helper)
 
-	// Editor camera
-	Editor.camera_rotation = new Vector2(0, 0)
-	Editor.setCameraMode(Editor.CAMERA_PERSPECTIVE)
-
 	// Object helper container
 	Editor.object_helper = new THREE.Scene()
 	Editor.tool_scene.add(Editor.object_helper)
@@ -400,6 +396,11 @@ Editor.initialize = function() {
 	Editor.tool_container = new THREE.Scene()
 	Editor.tool_scene_top.add(Editor.tool_container)
 	Editor.tool = null
+
+	// Editor Camera
+	Editor.camera_mode = Editor.CAMERA_PERSPECTIVE
+	Editor.camera_rotation = new Vector2(0, 0)
+	Editor.setCameraMode(Editor.CAMERA_PERSPECTIVE)
 
 	// Check if some .isp is passed as argument
 	for(var i = 0; i < Editor.args.length; i++) {
@@ -489,20 +490,22 @@ Editor.update = function()
 			}
 
 			Editor.is_editing_object = false
-		} else if(Editor.selected_object !== null) {
-			// Update active tool
-			if(Editor.tool !== null) {
-				Editor.is_editing_object = Editor.tool.update()
-				if (Editor.is_editing_object) {
-					Editor.updateObjectPanel()
-				}
-			} else {
-				Editor.is_editing_object = false
-			}
-
+		} else {
 			// If mouse double clicked, select object
 			if (Mouse.buttonDoubleClicked() && Mouse.insideCanvas()) {
 				Editor.selectObjectWithMouse()
+			}
+
+			// If no object selected, update tool
+			if(Editor.selected_object !== null) {
+				if(Editor.tool !== null) {
+					Editor.is_editing_object = Editor.tool.update()
+					if (Editor.is_editing_object) {
+						Editor.updateObjectPanel()
+					}
+				} else {
+					Editor.is_editing_object = false
+				}
 			}
 		}
 
@@ -528,7 +531,7 @@ Editor.update = function()
 			}
 
 			//  Orthographic Camera (2D Mode)
-			if(Editor.camera instanceof OrthographicCamera) {
+			if(Editor.camera_mode === Editor.CAMERA_ORTHOGRAPHIC) {
 					// Move camera on x / y
 				if(Mouse.buttonPressed(Mouse.RIGHT)) {
 					var ratio = Editor.camera.size / Editor.canvas.width * 2
@@ -1005,6 +1008,13 @@ Editor.selectTool = function(tool)
 		Editor.tool.dispose()
 	}
 
+	for(var i = 0; i < Interface.tab.options.length; i++) {
+		if (Interface.tab.options[i].component instanceof SceneEditor) {
+			Interface.tab.options[i].component.updateInterface()
+			break;
+		}
+	}
+
 	if (Editor.selected_object !== null && tool !== Editor.MODE_SELECT) {
 		if(tool === Editor.MODE_MOVE)
 		{
@@ -1108,7 +1118,7 @@ Editor.resizeCamera = function() {
 Editor.setCameraMode = function(mode) {
 
 	if (mode === undefined) {
-		mode = (Editor.camera instanceof PerspectiveCamera) ? Editor.CAMERA_ORTHOGRAPHIC : Editor.CAMERA_PERSPECTIVE
+		mode = (Editor.camera_mode === Editor.CAMERA_PERSPECTIVE) ? Editor.CAMERA_ORTHOGRAPHIC : Editor.CAMERA_PERSPECTIVE
 	}
 
 	var aspect = (Editor.canvas !== null) ? Editor.canvas.width/Editor.canvas.height : 1.0
@@ -1124,6 +1134,9 @@ Editor.setCameraMode = function(mode) {
 		Editor.grid_helper.rotation.x = 0
 		Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
 	}
+
+	Editor.camera_mode = mode
+	Editor.selectTool(Editor.tool_mode)
 }
 
 // Set camera rotation
@@ -1328,14 +1341,9 @@ Editor.setState = function(state)
 				tab.show_buttons_vr = true
 
 				// Create VR switch callback
-				var vr_state = true
-				tab.vr_button.setCallback(function()
-				{
-					if(Editor.vr_effect !== null)
-					{
-						Editor.vr_effect.setFullScreen(vr_state)
-						vr_state = !vr_state
-					}
+				var vr = true
+				tab.vr_button.setCallback(function() {
+					// TODO: Change this
 				})
 			}
 		}
