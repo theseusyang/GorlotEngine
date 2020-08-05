@@ -193,14 +193,11 @@ function SceneEditor(parent)
 
 	this.tool_select_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_SELECT)
+
 		self.tool_select_button.img.style.filter = "contrast(100%)"
 		self.tool_move_button.img.style.filter = "contrast(0%)"
 		self.tool_rotate_button.img.style.filter = "contrast(0%)"
 		self.tool_scale_button.img.style.filter = "contrast(0%)"
-		self.tool_select_button.updateInterface()
-		self.tool_move_button.updateInterface()
-		self.tool_rotate_button.updateInterface()
-		self.tool_scale_button.updateInterface()
 	})
 
 	// Move tool
@@ -221,14 +218,11 @@ function SceneEditor(parent)
 
 	this.tool_move_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_MOVE)
+
 		self.tool_select_button.img.style.filter = "contrast(0%)"
 		self.tool_move_button.img.style.filter = "contrast(100%)"
 		self.tool_rotate_button.img.style.filter = "contrast(0%)"
 		self.tool_scale_button.img.style.filter = "contrast(0%)"
-		self.tool_select_button.updateInterface()
-		self.tool_move_button.updateInterface()
-		self.tool_rotate_button.updateInterface()
-		self.tool_scale_button.updateInterface()
 	})
 
 	// Rotate tool
@@ -249,14 +243,11 @@ function SceneEditor(parent)
 
 	this.tool_rotate_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_ROTATE)
+
 		self.tool_select_button.img.style.filter = "contrast(0%)"
 		self.tool_move_button.img.style.filter = "contrast(0%)"
 		self.tool_rotate_button.img.style.filter = "contrast(100%)"
 		self.tool_scale_button.img.style.filter = "contrast(0%)"
-		self.tool_select_button.updateInterface()
-		self.tool_move_button.updateInterface()
-		self.tool_rotate_button.updateInterface()
-		self.tool_scale_button.updateInterface()
 	})
 
 	// Scale tool
@@ -277,33 +268,57 @@ function SceneEditor(parent)
 
 	this.tool_scale_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_SCALE)
+
 		self.tool_select_button.img.style.filter = "contrast(0%)"
 		self.tool_move_button.img.style.filter = "contrast(0%)"
 		self.tool_rotate_button.img.style.filter = "contrast(0%)"
 		self.tool_scale_button.img.style.filter = "contrast(100%)"
-		self.tool_select_button.updateInterface()
-		self.tool_move_button.updateInterface()
-		self.tool_rotate_button.updateInterface()
-		self.tool_scale_button.updateInterface()
 	})
 
-	// Switch 2D/3D
-	this.camera_button = new ButtonImage(this.element)
-	this.camera_button.size.set(15, 15)
-	this.camera_button.setImage("Editor/Files/Icons/Camera/Camera.png")
-	this.camera_button.visible = true
-	this.camera_button.updateInterface()
+	// Switch 2D
+	this.camera_button2d = new ButtonImage(this.element)
+	this.camera_button2d.size.set(15, 15)
+	this.camera_button2d.setImage("Editor/Files/Icons/Misc/2D.png")
+	this.camera_button2d.visible = true
+	this.camera_button2d.updateInterface()
+	this.camera_button2d.img.style.filter = "contrast(0%)"
 
-	this.camera_button.element.onmouseenter = function() {
-		self.camera_button.img.style.opacity = 0.5
+	this.camera_button2d.element.onmouseenter = function() {
+		self.camera_button2d.img.style.opacity = 0.5
 	}
 
-	this.camera_button.element.onmouseleave = function() {
-		self.camera_button.img.style.opacity = 1
+	this.camera_button2d.element.onmouseleave = function() {
+		self.camera_button2d.img.style.opacity = 1
 	}
 
-	this.camera_button.setCallback(() => {
-		Editor.setCameraMode()
+	this.camera_button2d.setCallback(() => {
+		Editor.setCameraMode(Editor.CAMERA_ORTHOGRAPHIC)
+
+		self.camera_button2d.img.style.filter = "contrast(100%)"
+		self.camera_button3d.img.style.filter = "contrast(0%)"
+	})
+
+	// Switch 3D
+	this.camera_button3d = new ButtonImage(this.element)
+	this.camera_button3d.size.set(15, 15)
+	this.camera_button3d.setImage("Editor/Files/Icons/Misc/3D.png")
+	this.camera_button3d.visible = true
+	this.camera_button3d.updateInterface()
+	this.camera_button3d.img.style.filter = "contrast(100%)"
+
+	this.camera_button3d.element.onmouseenter = function() {
+		self.camera_button3d.img.style.opacity = 0.5
+	}
+
+	this.camera_button3d.element.onmouseleave = function() {
+		self.camera_button3d.img.style.opacity = 1
+	}
+
+	this.camera_button3d.setCallback(() => {
+		Editor.setCameraMode(Editor.CAMERA_PERSPECTIVE)
+
+		self.camera_button2d.img.style.filter = "contrast(0%)"
+		self.camera_button3d.img.style.filter = "contrast(100%)"
 	})
 
 	//VR button
@@ -460,30 +475,35 @@ SceneEditor.prototype.updateInterface = function()
 	this.fullscreen_button.updateInterface();
 
 	// Tools buttons
-	this.tool_select_button.position.x = this.position.x + this.size.x - this.tool_select_button.size.x - (this.tool_move_button.size.x + this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 80
+	this.tool_select_button.position.x = this.position.x + this.size.x - this.tool_select_button.size.x - (this.tool_move_button.size.x + this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 90
 	this.tool_select_button.position.y = this.position.y - this.tool_select_button.size.y + 30
 	this.tool_select_button.visible = this.visible && this.show_buttons_tools
 	this.tool_select_button.updateInterface()
 
-	this.tool_move_button.position.x =  this.position.x + this.size.x - this.tool_move_button.size.x - (this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 70 
+	this.tool_move_button.position.x =  this.position.x + this.size.x - this.tool_move_button.size.x - (this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 80 
 	this.tool_move_button.position.y = this.tool_select_button.position.y
 	this.tool_move_button.visible = this.visible && this.show_buttons_tools
 	this.tool_move_button.updateInterface()
 
-	this.tool_rotate_button.position.x = this.position.x + this.size.x - this.tool_rotate_button.size.x - this.tool_scale_button.size.x - 60
+	this.tool_rotate_button.position.x = this.position.x + this.size.x - this.tool_rotate_button.size.x - this.tool_scale_button.size.x - 70
 	this.tool_rotate_button.position.y = this.tool_select_button.position.y
 	this.tool_rotate_button.visible = this.visible && this.show_buttons_tools
 	this.tool_rotate_button.updateInterface()
 
-	this.tool_scale_button.position.x = this.position.x + this.size.x - this.tool_scale_button.size.x - 50
+	this.tool_scale_button.position.x = this.position.x + this.size.x - this.tool_scale_button.size.x - 60
 	this.tool_scale_button.position.y = this.tool_select_button.position.y
 	this.tool_scale_button.visible = this.visible && this.show_buttons_tools
 	this.tool_scale_button.updateInterface()
 
-	// Switch 2D/3D button
-	this.camera_button.position.x = this.position.x + this.size.x - 20
-	this.camera_button.position.y = this.tool_select_button.position.y
-	this.camera_button.updateInterface()
+	// Switch 2D button
+	this.camera_button2d.position.x = this.position.x + this.size.x - 40
+	this.camera_button2d.position.y = this.tool_select_button.position.y
+	this.camera_button2d.updateInterface()
+
+	// Switch 3D button
+	this.camera_button3d.position.x = this.position.y + this.size.x - 20
+	this.camera_button3d.position.y = this.tool_select_button.position.y
+	this.camera_button3d.updateInterface()
 
 	//VR button
 	this.vr_button.position.x = this.fullscreen_button.position.x - this.vr_button.size.x - 10;
