@@ -195,8 +195,6 @@ function TimeOutEvent() {
 	var tim = this.addWidget("text", "Time", this.properties.time, "time")
 	tim.width = 140
 
-	// TODO: Clear timeout
-
 	this.addOutput("On TimeOut", LiteGraph.EVENT, {...NodesHelper.slots.output.event, pos: [NodesHelper.slots.output.position["pos"][0]+20, NodesHelper.slots.output.position["pos"][1]]})
 
 	this.size = [NodesHelper.sizes.medium[0]-40, NodesHelper.sizes.medium[1]+18]

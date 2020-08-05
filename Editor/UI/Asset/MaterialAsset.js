@@ -157,9 +157,9 @@ MaterialAsset.prototype.destroy = function() {
 // Set object to file
 MaterialAsset.prototype.setMaterial = function(material) {
 	if(material instanceof THREE.Material) {
-		Editor.material_renderer.renderMaterial(material, this.image)
 		this.setText(material.name)
 		this.material = material
+		this.updateMetadata()
 	}
 }
 

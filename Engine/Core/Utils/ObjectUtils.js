@@ -2,9 +2,45 @@
 
 function ObjectUtils(){}
 
-//Get all materials in object and childs
+// Get all fonts in object and children
+ObjectUtils.getFonts = function(obj, fonts) {
+	if (fonts === undefined) {
+		fonts = []
+	}
+
+	obj.traverse((child) => {
+		if (child.font instanceof Font) {
+			if (fonts[child.font.uuid] === undefined) {
+				fonts[child.font.uuid] = child.font
+			}
+		}
+	})
+
+	return fonts
+}
+
+// Get all audio files in object and children
+ObjectUtils.getAudio = function(obj, audio) {
+	if (audio === undefined) {
+		audio = []
+	}
+
+	obj.traverse((child) => {
+		if (child.audio instanceof Audio) {
+			if (audio[child.audio.uuid] === undefined) {
+				audio[child.audio.uuid] = child.audio
+			}
+		}
+	})
+
+	return audio
+}
+
+//Get all materials in object and children
 ObjectUtils.getMaterials = function(obj, materials)
 {
+	// TODO: Change to traverse instead of recursive
+
 	//Auxiliar function to add materials
 	function add(material)
 	{
@@ -43,17 +79,19 @@ ObjectUtils.getMaterials = function(obj, materials)
 			}
 		}
 
-		//Call recursively for childs
+		//Call recursively for children
 		ObjectUtils.getMaterials(child, materials);
 	}
 
 	return materials;
 }
 
-//Get all textures in object and childs
+//Get all textures in object and children
 ObjectUtils.getTextures = function(obj, textures)
 {
-	//Auxiliar function to add textures
+	// TODO: Change to traverse instead of recursive
+
+	// Auxiliar function to add textures
 	function add(texture)
 	{
 		if(texture !== null && texture !== undefined)

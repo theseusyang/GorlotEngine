@@ -5,7 +5,7 @@ function Editor(){}
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Aug 04 2020 19:45 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Aug 04 2020 20:10 GMT+0000 (UTC)"
 
 // NWJS Modules
 try {
@@ -249,6 +249,8 @@ include("Editor/UI/Asset/Asset.js")
 include("Editor/UI/Asset/MaterialAsset.js")
 include("Editor/UI/Asset/TextureAsset.js")
 include("Editor/UI/Asset/BlockAsset.js")
+include("Editor/UI/Asset/FontAsset.js")
+include("Editor/UI/Asset/AudioAsset.js")
 
 include("Editor/Files/Style/Editor.css")
 
@@ -952,6 +954,22 @@ Editor.updateAssetExplorer = function()
 	for(var i in textures) {
 		var file = new TextureAsset(Interface.asset_explorer.element)
 		file.setTexture(textures[i])
+		Interface.asset_explorer.add(file)
+	}
+
+	// Fonts
+	var fonts = ObjectUtils.getFonts(Editor.program, Editor.program.fonts)
+	for(var i in fonts) {
+		var file = new FontAsset(Interface.asset_explorer.element)
+		file.setFont(fonts[i])
+		Interface.asset_explorer.add(file)
+	}
+
+	// Audio
+	var audio = ObjectUtils.getAudio(Editor.program, Editor.program.audio)
+	for(var i in audio) {
+		var file = new AudioAsset(Interface.asset_explorer.element)
+		file.setAudio(audio[i])
 		Interface.asset_explorer.add(file)
 	}
 

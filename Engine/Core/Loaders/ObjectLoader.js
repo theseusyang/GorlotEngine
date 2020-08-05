@@ -744,12 +744,12 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 	{
 		object.materials = materials;
 		object.asset_objects = asset_objects
-		//object.textures = textures;
+		object.textures = textures;
 		//object.geometries = geometries;
-		// object.images = images
-		// object.video = videos
-		//object.fonts = fonts
-		//object.audio = audio
+		//object.images = images
+		//object.video = videos
+		object.fonts = fonts
+		object.audio = audio
 	} else if (data.type === "Scene") {
 		for(var i = 0; i < object.cameras.length; i++) {
 			var camera = object.getCamera(object.cameras[i])
