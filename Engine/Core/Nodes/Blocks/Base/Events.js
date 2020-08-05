@@ -214,10 +214,15 @@ TimeOutEvent.prototype.onAction = function(action, data) {
 	this.addTimeout()
 }
 TimeOutEvent.prototype.addTimeout = function() {
+	var time = this.getInputData(1)
+
+	if (time === undefined)
+		time = this.properties.time
+
 	var self = this
-	var time = setTimeout(() => {
+	var timeout = setTimeout(() => {
 		self.triggerSlot(0)
-	}, parseInt(this.properties.time))
+	}, parseInt(time))
 }
 
 // Test Event

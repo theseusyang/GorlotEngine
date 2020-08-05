@@ -31,6 +31,24 @@ function BlockAsset(parent) {
 				}
 			}
 		})
+
+		context.addOption("Duplicate", () => {
+			if (self.blocks !== null) {
+				try {
+					// Object loader
+					var json = self.blocks.toJSON()
+					var loader = new ObjectLoader()
+
+					// Parse Blocks
+					var blocks = loader.parse(json)
+					blocks.uuid = THREE.Math.generateUUID()
+
+					// Add Blocks
+					Editor.program.addObject(blocks)
+					Editor.updateAssetExplorer()
+				} catch(e) {}
+			}
+		})
 	}
 
 	// Drag start
