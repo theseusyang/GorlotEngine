@@ -287,6 +287,25 @@ function SceneEditor(parent)
 		self.tool_scale_button.updateInterface()
 	})
 
+	// Switch 2D/3D
+	this.camera_button = new ButtonImage(this.element)
+	this.camera_button.size.set(15, 15)
+	this.camera_button.setImage("Editor/Files/Icons/Camera/Camera.png")
+	this.camera_button.visible = true
+	this.camera_button.updateInterface()
+
+	this.camera_button.element.onmouseenter = function() {
+		self.camera_button.img.style.opacity = 0.5
+	}
+
+	this.camera_button.element.onmouseleave = function() {
+		self.camera_button.img.style.opacity = 1
+	}
+
+	this.camera_button.setCallback(() => {
+		Editor.setCameraMode()
+	})
+
 	//VR button
 	this.vr_button = new ButtonImage(this.element);
 	this.vr_button.size.set(25, 25);
@@ -441,25 +460,30 @@ SceneEditor.prototype.updateInterface = function()
 	this.fullscreen_button.updateInterface();
 
 	// Tools buttons
-	this.tool_select_button.position.x = this.position.x + this.size.x - this.tool_select_button.size.x - (this.tool_move_button.size.x + this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 40
+	this.tool_select_button.position.x = this.position.x + this.size.x - this.tool_select_button.size.x - (this.tool_move_button.size.x + this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 80
 	this.tool_select_button.position.y = this.position.y - this.tool_select_button.size.y + 30
 	this.tool_select_button.visible = this.visible && this.show_buttons_tools
 	this.tool_select_button.updateInterface()
 
-	this.tool_move_button.position.x =  this.position.x + this.size.x - this.tool_move_button.size.x - (this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 30 
+	this.tool_move_button.position.x =  this.position.x + this.size.x - this.tool_move_button.size.x - (this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 70 
 	this.tool_move_button.position.y = this.tool_select_button.position.y
 	this.tool_move_button.visible = this.visible && this.show_buttons_tools
 	this.tool_move_button.updateInterface()
 
-	this.tool_rotate_button.position.x = this.position.x + this.size.x - this.tool_rotate_button.size.x - this.tool_scale_button.size.x - 20
+	this.tool_rotate_button.position.x = this.position.x + this.size.x - this.tool_rotate_button.size.x - this.tool_scale_button.size.x - 60
 	this.tool_rotate_button.position.y = this.tool_select_button.position.y
 	this.tool_rotate_button.visible = this.visible && this.show_buttons_tools
 	this.tool_rotate_button.updateInterface()
 
-	this.tool_scale_button.position.x = this.position.x + this.size.x - this.tool_scale_button.size.x - 10
+	this.tool_scale_button.position.x = this.position.x + this.size.x - this.tool_scale_button.size.x - 50
 	this.tool_scale_button.position.y = this.tool_select_button.position.y
 	this.tool_scale_button.visible = this.visible && this.show_buttons_tools
 	this.tool_scale_button.updateInterface()
+
+	// Switch 2D/3D button
+	this.camera_button.position.x = this.position.x + this.size.x - 20
+	this.camera_button.position.y = this.tool_select_button.position.y
+	this.camera_button.updateInterface()
 
 	//VR button
 	this.vr_button.position.x = this.fullscreen_button.position.x - this.vr_button.size.x - 10;
