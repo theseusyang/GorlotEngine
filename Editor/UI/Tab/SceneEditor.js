@@ -1,61 +1,54 @@
-"use strict";
+"use strict"
 
-function SceneEditor(parent)
-{
-	//Parent
-	if(parent === undefined)
-	{
-		this.parent = document.body;
-	}
-	else
-	{
-		this.parent = parent;
+function SceneEditor(parent) {
+	// Parent
+	if(parent === undefined) {
+		this.parent = document.body
+	} else {
+		this.parent = parent
 	}
 	
-	//ID
-	var id = "scene_editor" + SceneEditor.id;
-	SceneEditor.id++;
+	// ID
+	var id = "scene_editor" + SceneEditor.id
+	SceneEditor.id++
 
-	//Create Element
-	this.element = document.createElement("div");
-	this.element.id = id;
-	this.element.style.position = "absolute";
+	// Create Element
+	this.element = document.createElement("div")
+	this.element.id = id
+	this.element.style.position = "absolute"
 
-	//Canvas
-	this.canvas = document.createElement("canvas");
-	this.canvas.style.position = "absolute";
-	this.element.appendChild(this.canvas);
+	// Canvas
+	this.canvas = document.createElement("canvas")
+	this.canvas.style.position = "absolute"
+	this.element.appendChild(this.canvas)
 
-	//Performance meter
-	this.stats = new Stats();
-	this.stats.dom.style.position = "absolute";
-	this.stats.dom.style.left = "0px";
-	this.stats.dom.style.top = "0px";
-	this.stats.dom.style.zIndex = "0";
-	this.element.appendChild(this.stats.dom);
+	// Performance meter
+	this.stats = new Stats()
+	this.stats.dom.style.position = "absolute"
+	this.stats.dom.style.left = "0px"
+	this.stats.dom.style.top = "0px"
+	this.stats.dom.style.zIndex = "0"
+	this.element.appendChild(this.stats.dom)
 
-	//Self pointer
-	var self = this;
+	// Self pointer
+	var self = this
 
-	//Drop event
-	this.canvas.ondrop = function(event)
-	{
-		event.preventDefault();
+	// Drop event
+	this.canvas.ondrop = function(event) {
+		event.preventDefault()
 
-		if(self.scene !== null)
-		{
-			//Canvas element
-			var canvas = self.element;
-			var rect = canvas.getBoundingClientRect();
+		if(self.scene !== null) {
+			// Canvas element
+			var canvas = self.element
+			var rect = canvas.getBoundingClientRect()
 
-			//Update raycaster direction
-			var position = new THREE.Vector2(event.clientX - rect.left, event.clientY - rect.top);
-			var position_normalized = new THREE.Vector2((position.x / self.canvas.width * 2) - 1, (-2 * position.y / self.canvas.height) + 1);
-			Editor.updateRaycaster(position_normalized.x, position_normalized.y);
+			// Update raycaster direction
+			var position = new THREE.Vector2(event.clientX - rect.left, event.clientY - rect.top)
+			Editor.updateRaycaster(position.x / self.canvas.width * 2 - 1, -2 * position.y / self.canvas.height + 1)
 
-			//Get object from drag buffer
-			var uuid = event.dataTransfer.getData("uuid");
-			var dragged_object = DragBuffer.popDragElement(uuid);
+			// Get object from drag buffer
+			var uuid = event.dataTransfer.getData("uuid")
+			var dragged_object = DragBuffer.popDragElement(uuid)
 
 			// Check intersected objects
 			var intersections = Editor.raycaster.intersectObjects(self.scene.children, true)
@@ -142,40 +135,36 @@ function SceneEditor(parent)
 				}
 			}
 		}
-	};
+	}
 
-	//Prevent deafault when object dragged over
-	this.canvas.ondragover = function(event)
-	{
-		event.preventDefault();
-	};
+	// Prevent deafault when object dragged over
+	this.canvas.ondragover = function(event) {
+		event.preventDefault()
+	}
 
-	//Button
+	// Buttons
 	this.show_buttons_fullscreen = false
 	this.show_buttons_tools = false
 	this.show_buttons_vr = false
 
-	//Fullscreen button
-	this.fullscreen_button = new ButtonImage(this.element);
-	this.fullscreen_button.size.set(25, 25);
-	this.fullscreen_button.setImage("Editor/Files/Icons/Misc/Fullscreen.png");
-	this.fullscreen_button.visible = false;
-	this.fullscreen_button.updateInterface();
-	this.fullscreen_button.element.onmouseenter = function()
-	{
-		self.fullscreen_button.img.style.opacity = 0.5;
-	};
-	this.fullscreen_button.element.onmouseleave = function()
-	{
-		self.fullscreen_button.img.style.opacity = 1.0;
-	};
+	// Fullscreen button
+	this.fullscreen_button = new ButtonImage(this.element)
+	this.fullscreen_button.size.set(25, 25)
+	this.fullscreen_button.setImage("Editor/Files/Icons/Misc/Fullscreen.png")
+	this.fullscreen_button.visible = false
+	this.fullscreen_button.updateInterface()
+	this.fullscreen_button.element.onmouseenter = function() {
+		self.fullscreen_button.img.style.opacity = 0.5
+	}
+	this.fullscreen_button.element.onmouseleave = function() {
+		self.fullscreen_button.img.style.opacity = 1.0
+	}
 
-	var fullscreen = true;
-	this.fullscreen_button.setCallback(function()
-	{
-		self.setFullscreen(fullscreen);
-		fullscreen = !fullscreen;
-	});
+	var fullscreen = true
+	this.fullscreen_button.setCallback(function() {
+		self.setFullscreen(fullscreen)
+		fullscreen = !fullscreen
+	})
 
 	// Select tool
 	this.tool_select_button = new ButtonImage(this.element)
@@ -194,10 +183,7 @@ function SceneEditor(parent)
 	this.tool_select_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_SELECT)
 
-		self.tool_select_button.img.style.filter = "contrast(100%)"
-		self.tool_move_button.img.style.filter = "contrast(0%)"
-		self.tool_rotate_button.img.style.filter = "contrast(0%)"
-		self.tool_scale_button.img.style.filter = "contrast(0%)"
+		self.updateInterface()
 	})
 
 	// Move tool
@@ -219,10 +205,7 @@ function SceneEditor(parent)
 	this.tool_move_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_MOVE)
 
-		self.tool_select_button.img.style.filter = "contrast(0%)"
-		self.tool_move_button.img.style.filter = "contrast(100%)"
-		self.tool_rotate_button.img.style.filter = "contrast(0%)"
-		self.tool_scale_button.img.style.filter = "contrast(0%)"
+		self.updateInterface()
 	})
 
 	// Rotate tool
@@ -244,10 +227,7 @@ function SceneEditor(parent)
 	this.tool_rotate_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_ROTATE)
 
-		self.tool_select_button.img.style.filter = "contrast(0%)"
-		self.tool_move_button.img.style.filter = "contrast(0%)"
-		self.tool_rotate_button.img.style.filter = "contrast(100%)"
-		self.tool_scale_button.img.style.filter = "contrast(0%)"
+		self.updateInterface()
 	})
 
 	// Scale tool
@@ -269,10 +249,7 @@ function SceneEditor(parent)
 	this.tool_scale_button.setCallback(() => {
 		Editor.selectTool(Editor.MODE_SCALE)
 
-		self.tool_select_button.img.style.filter = "contrast(0%)"
-		self.tool_move_button.img.style.filter = "contrast(0%)"
-		self.tool_rotate_button.img.style.filter = "contrast(0%)"
-		self.tool_scale_button.img.style.filter = "contrast(100%)"
+		self.updateInterface()
 	})
 
 	// Switch 2D
@@ -321,160 +298,155 @@ function SceneEditor(parent)
 		self.camera_button3d.img.style.filter = "contrast(100%)"
 	})
 
-	//VR button
-	this.vr_button = new ButtonImage(this.element);
-	this.vr_button.size.set(25, 25);
-	this.vr_button.setImage("Editor/Files/Icons/Misc/VR.png");
-	this.vr_button.visible = false;
-	this.vr_button.updateInterface();
-	this.vr_button.element.onmouseenter = function()
-	{
-		self.vr_button.img.style.opacity = 0.5;
-	};
-	this.vr_button.element.onmouseleave = function()
-	{
-		self.vr_button.img.style.opacity = 1.0;
-	};
+	// VR button
+	this.vr_button = new ButtonImage(this.element)
+	this.vr_button.size.set(25, 25)
+	this.vr_button.setImage("Editor/Files/Icons/Misc/VR.png")
+	this.vr_button.visible = false
+	this.vr_button.updateInterface()
+	this.vr_button.element.onmouseenter = function() {
+		self.vr_button.img.style.opacity = 0.5
+	}
+	this.vr_button.element.onmouseleave = function() {
+		self.vr_button.img.style.opacity = 1.0
+	}
 
-	//Element atributes
-	this.fit_parent = false;
-	this.size = new THREE.Vector2(0,0);
-	this.position = new THREE.Vector2(0,0);
-	this.visible = true;
+	// Element atributes
+	this.fit_parent = false
+	this.size = new THREE.Vector2(0,0)
+	this.position = new THREE.Vector2(0,0)
+	this.visible = true
 	
-	//Scene
-	this.scene = null;
+	// Scene
+	this.scene = null
 
-	//Add element to document
-	this.parent.appendChild(this.element);
+	// Add element to document
+	this.parent.appendChild(this.element)
 }
 
-//SceneEditor counter
-SceneEditor.id = 0;
+// SceneEditor counter
+SceneEditor.id = 0
 
-//Update container object data
-SceneEditor.prototype.updateMetadata = function(container)
-{
-	if(this.scene !== null)
-	{
-		var scene = this.scene;
+// Update container object data
+SceneEditor.prototype.updateMetadata = function(container) {
+	if(this.scene !== null) {
+		var scene = this.scene
 
-		//Set container name
-		container.setName(scene.name);
+		// Set container name
+		container.setName(scene.name)
 
-		//Check if scene exists in program
-		var found = false;
-		Editor.program.traverse(function(obj)
-		{
-			if(obj.uuid === scene.uuid)
-			{
-				found = true;
+		// Check if scene exists in program
+		var found = false
+		Editor.program.traverse(function(obj) {
+			if(obj.uuid === scene.uuid) {
+				found = true
 			}
-		});
+		})
 
-		//If not found close tab
-		if(!found)
-		{
-			container.close();
+		// If not found close tab
+		if(!found) {
+			container.close()
 		}
 	}
 }
 
-//Set fullscreen mode
-SceneEditor.prototype.setFullscreen = function(value)
-{
-	//Apply fullscreen mode
-	if(value)
-	{
+// Set fullscreen mode
+SceneEditor.prototype.setFullscreen = function(value) {
+	// Apply fullscreen mode
+	if(value) {
 		// Set to fullscreen mode
-		Editor.setFullscreen(true, this.element);
+		Editor.setFullscreen(true, this.element)
 
-		this.element.style.zIndex = 10000;
-		this.position.set(0, 0);	
-		this.size.set(window.screen.width, window.screen.height);
-		this.updateInterface();
+		this.element.style.zIndex = 10000
+		this.position.set(0, 0)
+		this.size.set(window.screen.width, window.screen.height)
+		this.updateInterface()
 
-		Editor.resizeCamera();
-	}
-	else
-	{
-		// Leave fullscreen mode
-		Editor.setFullscreen(false);
+		Editor.resizeCamera()
+	} else {
+		//  Leave fullscreen mode
+		Editor.setFullscreen(false)
 	
-		//Restore elements
-		this.element.style.zIndex = 0;
-		Interface.updateInterface();
+		// Restore elements
+		this.element.style.zIndex = 0
+		Interface.updateInterface()
 	}
 }
 
-//Activate scene editor
-SceneEditor.prototype.activate = function()
-{
+// Activate scene editor
+SceneEditor.prototype.activate = function() {
 	Editor.program.scene = this.scene;
-	Editor.setPerformanceMeter(this.stats);
-	Editor.setRenderCanvas(this.canvas);
-	Editor.setState(Editor.STATE_EDITING);
-	Editor.resetEditingFlags();
-	Editor.resize();
+	Editor.setPerformanceMeter(this.stats)
+	Editor.setRenderCanvas(this.canvas)
+	Editor.setState(Editor.STATE_EDITING)
+	Editor.resetEditingFlags()
+	Editor.resize()
 }
 
-//Set scene
-SceneEditor.prototype.setScene = function(scene)
-{
-	this.scene = scene;
+// Set scene
+SceneEditor.prototype.setScene = function(scene) {
+	this.scene = scene
 }
 
-//Remove element
-SceneEditor.prototype.destroy = function()
-{
-	try
-	{
-		this.parent.removeChild(this.canvas);
+// Remove element
+SceneEditor.prototype.destroy = function() {
+	try {
+		this.parent.removeChild(this.canvas)
 	}
 	catch(e){}
 }
 
-//Update SceneEditor
+// Update SceneEditor
 SceneEditor.prototype.update = function(){}
 
-//Update division Size
-SceneEditor.prototype.updateInterface = function()
-{
-	//Fit parent
-	if(this.fit_parent)
-	{
-		this.size.x = this.parent.offsetWidth;
-		this.size.y = this.parent.offsetHeight; 
+// Update division Size
+SceneEditor.prototype.updateInterface = function() {
+	// Fit parent
+	if(this.fit_parent) {
+		this.size.x = this.parent.offsetWidth
+		this.size.y = this.parent.offsetHeight
 	}
 	
-	//Set visibilty
-	if(this.visible)
-	{
-		this.element.style.visibility = "visible";
-		this.canvas.style.visibility = "visible";
-		if(Settings.general.show_stats)
-		{
-			this.stats.dom.style.visibility = "visible";
+	// Set visibilty
+	if(this.visible) {
+		this.element.style.visibility = "visible"
+		this.canvas.style.visibility = "visible"
+
+		if(Settings.general.show_stats) {
+			this.stats.dom.style.visibility = "visible"
+		} else {
+			this.stats.dom.style.visibility = "hidden"
 		}
-		else
-		{
-			this.stats.dom.style.visibility = "hidden";
-		}
-	}
-	else
-	{
-		this.element.style.visibility = "hidden";
-		this.canvas.style.visibility = "hidden";
-		this.stats.dom.style.visibility = "hidden";
+
+	} else {
+		this.element.style.visibility = "hidden"
+		this.canvas.style.visibility = "hidden"
+		this.stats.dom.style.visibility = "hidden"
 	}
 
-	//Fullscreen button
-	this.fullscreen_button.position.x = this.position.x + this.size.x - this.fullscreen_button.size.x - 5;
-	this.fullscreen_button.position.y = this.position.y + this.size.y - this.fullscreen_button.size.y - 5;
-	this.fullscreen_button.visible = this.visible && this.show_buttons_fullscreen;
-	this.fullscreen_button.updateInterface();
+	// Fullscreen button
+	this.fullscreen_button.position.x = this.position.x + this.size.x - this.fullscreen_button.size.x - 5
+	this.fullscreen_button.position.y = this.position.y + this.size.y - this.fullscreen_button.size.y - 5
+	this.fullscreen_button.visible = this.visible && this.show_buttons_fullscreen
+	this.fullscreen_button.updateInterface()
 
 	// Tools buttons
+
+	this.tool_select_button.img.style.filter = "contrast(0%)"
+	this.tool_move_button.img.style.filter = "contrast(0%)"
+	this.tool_rotate_button.img.style.filter = "contrast(0%)"
+	this.tool_scale_button.img.style.filter = "contrast(0%)"
+
+	if (Editor.tool_mode === Editor.MODE_SELECT) {
+		this.tool_select_button.img.style.filter = "contrast(100%)"
+	} else if (Editor.tool_mode === Editor.MODE_MOVE) {
+		this.tool_move_button.img.style.filter = "contrast(100%)"
+	} else if (Editor.tool_mode === Editor.MODE_ROTATE) {
+		this.tool_rotate_button.img.style.filter = "contrast(100%)"
+	} else if (Editor.tool_mode === Editor.MODE_SCALE) {
+		this.tool_scale_button.img.style.filter = "contrast(100%)"
+	}
+
 	this.tool_select_button.position.x = this.position.x + this.size.x - this.tool_select_button.size.x - (this.tool_move_button.size.x + this.tool_rotate_button.size.x + this.tool_scale_button.size.x) - 90
 	this.tool_select_button.position.y = this.position.y - this.tool_select_button.size.y + 30
 	this.tool_select_button.visible = this.visible && this.show_buttons_tools
@@ -505,21 +477,21 @@ SceneEditor.prototype.updateInterface = function()
 	this.camera_button3d.position.y = this.tool_select_button.position.y
 	this.camera_button3d.updateInterface()
 
-	//VR button
-	this.vr_button.position.x = this.fullscreen_button.position.x - this.vr_button.size.x - 10;
-	this.vr_button.position.y = this.fullscreen_button.position.y;
-	this.vr_button.visible = this.visible && this.show_buttons_vr;
-	this.vr_button.updateInterface();
+	// VR button
+	this.vr_button.position.x = this.fullscreen_button.position.x - this.vr_button.size.x - 10
+	this.vr_button.position.y = this.fullscreen_button.position.y
+	this.vr_button.visible = this.visible && this.show_buttons_vr
+	this.vr_button.updateInterface()
 
-	//Update canvas
-	this.canvas.width = this.size.x;
-	this.canvas.height = this.size.y;
-	this.canvas.style.width = this.size.x + "px";
-	this.canvas.style.height = this.size.y + "px";
+	// Update canvas
+	this.canvas.width = this.size.x
+	this.canvas.height = this.size.y
+	this.canvas.style.width = this.size.x + "px"
+	this.canvas.style.height = this.size.y + "px"
 
-	//Update element
-	this.element.style.top = this.position.y + "px";
-	this.element.style.left = this.position.x + "px";
-	this.element.style.width = this.size.x + "px";
-	this.element.style.height = this.size.y + "px";
+	// Update element
+	this.element.style.top = this.position.y + "px"
+	this.element.style.left = this.position.x + "px"
+	this.element.style.width = this.size.x + "px"
+	this.element.style.height = this.size.y + "px"
 }
