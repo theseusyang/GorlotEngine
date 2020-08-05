@@ -2,13 +2,17 @@
 
 // Stores program changes history
 function History() {
-	this.size = 10
+	this.size = 30
 	this.actions = []
 }
 
 // Add change to program history
 History.prototype.push = function(object, parent, action) {
 	this.actions.push(new Action(object, parent, action))
+
+	if (this.actions.length > this.size) {
+		this.actions.pop()
+	}
 }
 
 // Get Last change from history

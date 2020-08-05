@@ -5,7 +5,7 @@ function Editor(){}
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Tue Aug 04 2020 21:32 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Tue Aug 04 2020 16:45 GMT+0000 (UTC)"
 
 // NWJS Modules
 try {
@@ -125,14 +125,15 @@ include("Engine/Core/Components/Component.js")
 
 include("Engine/Core/Components/Objects/AudioComponent.js")
 include("Engine/Core/Components/Objects/ElementComponent.js")
-include("Engine/Core/Components/Objects/KinectComponent.js")
-include("Engine/Core/Components/Objects/LeapComponent.js")
 include("Engine/Core/Components/Objects/ObjectComponent.js")
 include("Engine/Core/Components/Objects/PhysicsComponent.js")
 include("Engine/Core/Components/Objects/ProgramComponent.js")
 include("Engine/Core/Components/Objects/SceneComponent.js")
-include("Engine/Core/Components/Objects/TextComponent.js")
+include("Engine/Core/Components/Objects/Text3DComponent.js")
 include("Engine/Core/Components/Objects/ScriptComponent.js")
+
+include("Engine/Core/Components/Device/KinectComponent.js")
+include("Engine/Core/Components/Device/LeapComponent.js")
 
 include("Engine/Core/Components/Cameras/CameraComponent.js")
 
@@ -301,9 +302,8 @@ Editor.MODE_ROTATE = 3
 Editor.CAMERA_ORTHOGRAPHIC = 20
 Editor.CAMERA_PERSPECTIVE = 21
 
-//Initialize Main
-Editor.initialize = function()
-{
+// Initialize Main
+Editor.initialize = function() {
 	Editor.fullscreen = false
 
 	document.body.style.overflow = "hidden"
@@ -311,72 +311,69 @@ Editor.initialize = function()
 	Keyboard.initialize()
 	Mouse.initialize()
 
-	//Load settings
+	// Load settings
 	Settings.load()
 
-	//Load interface theme
+	// Load interface theme
 	Editor.theme = Theme.get(Settings.general.theme)
 
-	//Set windows close event
-	if(Editor.gui !== undefined)
-	{
-		//Close event
-		Editor.gui.Window.get().on("close", function()
-		{
-			if(confirm("All unsaved changes to the project will be lost! Do you really wanna exit?"))
-			{
+	// Set windows close event
+	if(Editor.gui !== undefined) {
+		// Close event
+		Editor.gui.Window.get().on("close", function() {
+			if(confirm("All unsaved changes to the project will be lost! Do you really wanna exit?")) {
 				Editor.exit()
 			}
 		})
 	}
 
-	//Set window title
+	// Set window title
 	document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")"
 
-	//Editor initial state
+	// Editor initial state
 	Editor.tool_mode = Editor.MODE_SELECT
 	Editor.state = Editor.STATE_EDITING
 
-	//Editor Selected object
+	// Editor Selected object
 	Editor.selected_object = null
 	Editor.is_editing_object = false
 
-	//Performance meter
+	// Performance meter
 	Editor.stats = null
 
-	//Editor program and scene
+	// History
+	Editor.history = new History()
+
+	// Editor program and scene
 	Editor.program = null
 	Editor.program_running = null
 
-	//VR effect and controls
+	// VR effect and controls
 	Editor.vr_controls = new VRControls()
 	Editor.vr_effect = null
 
-	//Renderer and canvas
+	// Renderer and canvas
 	Editor.renderer = null
-	Editor.gl = null
 	Editor.canvas = null
+	Editor.gl = null
 
-	//Material renderer for material previews
+	// Material renderer for material previews
 	Editor.material_renderer = new MaterialRenderer()
 
-	//Default resources
+	// Default resources
 	Editor.createDefaultResources()
 
-	//Initialize User Interface
+	// Initialize User Interface
 	Interface.initialize()
 
-	//Debug Elements
+	// Debug Elements
 	Editor.tool_scene = new THREE.Scene()
 	Editor.tool_scene_top = new THREE.Scene()
 
-	//Raycaster
+	// Raycaster
 	Editor.raycaster = new THREE.Raycaster();
 
-	//Editor Camera
-	Editor.setCameraMode(Editor.CAMERA_PERSPECTIVE)
-
-	//Grid and axis helpers
+	// Grid and axis helpers
 	Editor.grid_helper = new THREE.GridHelper(Settings.editor.grid_size, Math.round(Settings.editor.grid_size/Settings.editor.grid_spacing)*2, 0x888888, 0x888888)
 	Editor.grid_helper.material.depthWrite = false
 	Editor.grid_helper.material.transparent = true
@@ -391,11 +388,15 @@ Editor.initialize = function()
 	Editor.axis_helper.visible = Settings.editor.axis_enabled
 	Editor.tool_scene.add(Editor.axis_helper)
 
-	//Object helper container
+	// Editor camera
+	Editor.camera_rotation = new Vector2(0, 0)
+	Editor.setCameraMode(Editor.CAMERA_PERSPECTIVE)
+
+	// Object helper container
 	Editor.object_helper = new THREE.Scene()
 	Editor.tool_scene.add(Editor.object_helper)
 
-	//Tool container
+	// Tool container
 	Editor.tool_container = new THREE.Scene()
 	Editor.tool_scene_top.add(Editor.tool_container)
 	Editor.tool = null
@@ -408,11 +409,12 @@ Editor.initialize = function()
 		}
 	}
 
-	//Create new program
+	// Create new program
 	if(Editor.program === null) {
 		Editor.createNewProgram()
 	}
 
+	// Update views and start update loop
 	Editor.updateObjectViews()
 	Editor.update()
 }
@@ -525,67 +527,92 @@ Editor.update = function()
 				}
 			}
 
-			// Look camera
-			if(Mouse.buttonPressed(Mouse.LEFT) && !Editor.is_editing_object) {
-				Editor.camera_rotation.x -= 0.002 * Mouse.delta.x
-				Editor.camera_rotation.y -= 0.002 * Mouse.delta.y
+			//  Orthographic Camera (2D Mode)
+			if(Editor.camera instanceof OrthographicCamera) {
+					// Move camera on x / y
+				if(Mouse.buttonPressed(Mouse.RIGHT)) {
+					var ratio = Editor.camera.size / Editor.canvas.width * 2
 
-				// Limit Vertical Rotation to 90 degrees
-				var pid2 = 1.57
-				if(Editor.camera_rotation.y < -pid2) {
-					Editor.camera_rotation.y = -pid2
-				} else if(Editor.camera_rotation.y > pid2) {
-					Editor.camera_rotation.y = pid2
+					Editor.camera.position.x -= Mouse.delta.x * ratio
+					Editor.camera.position.y += Mouse.delta.y * ratio
 				}
 
-				Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
+				// Camera zoom
+				if (Mouse.wheel !== 0) {
+					Editor.camera.size += Mouse.wheel * 0.01
+
+					if (Editor.camera.size < 0.01) {
+						Editor.camera.size = 0.01
+					}
+
+					Editor.camera.updateProjectionMatrix()
+				}
 			}
 
-			// Move Camera on X and Z
-			else if(Mouse.buttonPressed(Mouse.RIGHT)) {
-				// Move speed
-				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0,0,0)) / 1000
-				if(speed < 0.02) {
-					speed = 0.02
+			// Perspective camera
+			else {
+
+				// Look camera
+				if (Mouse.buttonPressed(Mouse.LEFT) && !Editor.is_editing_object) {
+					Editor.camera_rotation.x -= 0.002 * Mouse.delta.x
+					Editor.camera_rotation.y -= 0.002 * Mouse.delta.y
+
+					// Limit vertical rotation to 90 degrees
+					var pid2 = 1.57
+					if (Editor.camera_rotation.y < -pid2) {
+						Editor.camera_rotation.y = -pid2
+					} else if (Editor.camera_rotation.y > pid2) {
+						Editor.camera_rotation.y = pid2
+					}
+
+						Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
 				}
 
-				// Move Camera Front and Back
-				var angle_cos = Math.cos(Editor.camera_rotation.x)
-				var angle_sin = Math.sin(Editor.camera_rotation.x)
-				Editor.camera.position.z += Mouse.delta.y * speed * angle_cos
-				Editor.camera.position.x += Mouse.delta.y * speed * angle_sin
+				// Move Camera on X and Z
+				else if (Mouse.buttonPressed(Mouse.RIGHT)) {
+					// Move speed
+					var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0, 0, 0)) / 1000
+					if (speed < 0.02) {
+						speed = 0.02
+					}
 
-				// Move Camera Lateral
-				var angle_cos = Math.cos(Editor.camera_rotation.x + MathUtils.pid2)
-				var angle_sin = Math.sin(Editor.camera_rotation.x + MathUtils.pid2)
-				Editor.camera.position.z += Mouse.delta.x * speed * angle_cos
-				Editor.camera.position.x += Mouse.delta.x * speed * angle_sin
-			}
-			
-			// Move Camera on Y
-			else if(Mouse.buttonPressed(Mouse.MIDDLE))
-			{
-				Editor.camera.position.y += Mouse.delta.y * 0.1
-			}
+					// Move Camera Front and Back
+					var angle_cos = Math.cos(Editor.camera_rotation.x)
+					var angle_sin = Math.sin(Editor.camera_rotation.x)
+					Editor.camera.position.z += Mouse.delta.y * speed * angle_cos
+					Editor.camera.position.x += Mouse.delta.y * speed * angle_sin
 
-			// Move in camera direction using mouse scroll
-			if(Mouse.wheel != 0) {
-				// Move speed
-				var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0,0,0))/2000
-				speed *= Mouse.wheel
-
-				// Limit zoom speed
-				if(speed < 0 && speed > -0.03) {
-					speed = -0.03
-				} else if(speed > 0 && speed < 0.03) {
-					speed = 0.03
+					// Move Camera Lateral
+					var angle_cos = Math.cos(Editor.camera_rotation.x + MathUtils.pid2)
+					var angle_sin = Math.sin(Editor.camera_rotation.x + MathUtils.pid2)
+					Editor.camera.position.z += Mouse.delta.x * speed * angle_cos
+					Editor.camera.position.x += Mouse.delta.x * speed * angle_sin
 				}
 
-				// Move camera
-				var direction = Editor.camera.getWorldDirection()
-				Editor.camera.position.x -= speed * direction.x
-				Editor.camera.position.y -= speed * direction.y
-				Editor.camera.position.z -= speed * direction.z
+				// Move Camera on Y
+				else if (Mouse.buttonPressed(Mouse.MIDDLE)) {
+					Editor.camera.position.y += Mouse.delta.y * 0.1
+				}
+
+				// Move in camera direction using mouse scroll
+				if (Mouse.wheel !== 0) {
+					// Move speed
+					var speed = Editor.camera.position.distanceTo(new THREE.Vector3(0, 0, 0)) / 2000
+					speed *= Mouse.wheel
+
+					// Limit zoom speed
+					if (speed < 0 && speed > -0.03) {
+						speed = -0.03
+					} else if (speed > 0 && speed < 0.03) {
+						speed = 0.03
+					}
+
+					// Move camera
+					var direction = Editor.camera.getWorldDirection()
+					Editor.camera.position.x -= speed * direction.x
+					Editor.camera.position.y -= speed * direction.y
+					Editor.camera.position.z -= speed * direction.z
+				}
 			}
 		}
 	}
@@ -857,12 +884,12 @@ Editor.updateObjectViews = function()
 	Editor.updateAssetExplorer()
 
 	// TODO: Remove test code
-	var delta = Date.now() - start
-	console.log("Update " + (update++) + " ObjectView: " + delta + "ms")
-	console.log("    Treeview " + tree_delta + "ms")
-	console.log("    Panel " + panel_delta + "ms")
-	console.log("    Tabs " + tabs_delta + "ms")
-	console.log("    Assets " + asset_delta + "ms\n\n")
+	//var delta = Date.now() - start
+	//console.log("Update " + (update++) + " ObjectView: " + delta + "ms")
+	//console.log("    Treeview " + tree_delta + "ms")
+	//console.log("    Panel " + panel_delta + "ms")
+	//console.log("    Tabs " + tabs_delta + "ms")
+	//console.log("    Assets " + asset_delta + "ms\n\n")
 }
 
 //Update tab names to match objects actual info
@@ -1003,50 +1030,41 @@ Editor.selectTool = function(tool)
 	}
 }
 
-//Select helper to debug selected object data
-Editor.selectObjectHelper = function()
-{
-	Editor.object_helper.removeAll();
+// Select helper to debug selected object data
+Editor.selectObjectHelper = function() {
+	Editor.object_helper.removeAll()
 
-	if(Editor.selected_object !== null)
-	{
-		//Camera
-		if(Editor.selected_object instanceof THREE.Camera)
-		{
-			Editor.object_helper.add(new THREE.CameraHelper(Editor.selected_object));
-			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Interface.file_dir + "Icons/Camera/Camera.png"));
+	if(Editor.selected_object !== null) {
+		// Camera
+		if(Editor.selected_object instanceof THREE.Camera) {
+			Editor.object_helper.add(new THREE.CameraHelper(Editor.selected_object))
+			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, Interface.file_dir + "Icons/Camera/Camera.png"))
 		}
-		//Directional light
-		else if(Editor.selected_object instanceof THREE.DirectionalLight)
-		{
-			Editor.object_helper.add(new THREE.DirectionalLightHelper(Editor.selected_object, 1));
+		// Directional light
+		else if(Editor.selected_object instanceof THREE.DirectionalLight) {
+			Editor.object_helper.add(new THREE.DirectionalLightHelper(Editor.selected_object, 1))
 		}
-		//Point light
-		else if(Editor.selected_object instanceof THREE.PointLight)
-		{
-			Editor.object_helper.add(new THREE.PointLightHelper(Editor.selected_object, 1));
+		// Point light
+		else if(Editor.selected_object instanceof THREE.PointLight) {
+			Editor.object_helper.add(new THREE.PointLightHelper(Editor.selected_object, 1))
 		}
-		//Spot light
-		else if(Editor.selected_object instanceof THREE.SpotLight)
-		{
-			Editor.object_helper.add(new THREE.SpotLightHelper(Editor.selected_object));
+		// Spot light
+		else if(Editor.selected_object instanceof THREE.SpotLight) {
+			Editor.object_helper.add(new THREE.SpotLightHelper(Editor.selected_object))
 		}
-		//Hemisphere light
-		else if(Editor.selected_object instanceof THREE.HemisphereLight)
-		{
-			Editor.object_helper.add(new THREE.HemisphereLightHelper(Editor.selected_object, 1));
+		// Hemisphere light
+		else if(Editor.selected_object instanceof THREE.HemisphereLight) {
+			Editor.object_helper.add(new THREE.HemisphereLightHelper(Editor.selected_object, 1))
 		}
-		//Particle
-		else if(Editor.selected_object instanceof ParticleEmitter)
-		{
-			Editor.object_helper.add(new ParticleEmitterHelper(Editor.selected_object));
+		// Particle
+		else if(Editor.selected_object instanceof ParticleEmitter) {
+			Editor.object_helper.add(new ParticleEmitterHelper(Editor.selected_object))
 		}
 		// Physics
-		else if(Editor.selected_object instanceof PhysicsObject)
-		{
-			Editor.object_helper.add(new PhysicsObjectHelper(Editor.selected_object));
+		else if(Editor.selected_object instanceof PhysicsObject) {
+			Editor.object_helper.add(new PhysicsObjectHelper(Editor.selected_object))
 		}
-		// Script
+		// Scripts
 		else if (Editor.selected_object instanceof Script || Editor.selected_object instanceof AudioEmitter || Editor.selected_object instanceof BlockScript) {
 			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, ObjectIcons.get(Editor.selected_object.type)))
 		}
@@ -1066,41 +1084,44 @@ Editor.selectObjectHelper = function()
 			// By default, the object caller will only have the ObjectIconHelper
 			Editor.object_helper.add(new ObjectIconHelper(Editor.selected_object, ObjectIcons.get(Editor.selected_object.obj_type)))
 		}
-		//Object 3D
-		else if(Editor.selected_object instanceof THREE.Object3D)
-		{
-			Editor.object_helper.add(new BoundingBoxHelper(Editor.selected_object, 0xFFFF00));
+		// Object 3D
+		else if(Editor.selected_object instanceof THREE.Object3D) {
+			Editor.object_helper.add(new BoundingBoxHelper(Editor.selected_object, 0xFFFF00))
 		}
 	}
 }
 
-//Resize Camera
-Editor.resizeCamera = function()
-{
-	if(Editor.canvas !== null && Editor.renderer != null)
-	{
-		Editor.renderer.setSize(Editor.canvas.width, Editor.canvas.height);
-		Editor.camera.aspect = Editor.canvas.width/Editor.canvas.height;
+// Resize Camera
+Editor.resizeCamera = function() {
+	if(Editor.canvas !== null && Editor.renderer !== null) {
+		Editor.renderer.setSize(Editor.canvas.width, Editor.canvas.height)
+		Editor.camera.aspect = Editor.canvas.width/Editor.canvas.height
 		Editor.camera.updateProjectionMatrix();
 
-		if(Editor.state === Editor.STATE_TESTING)
-		{
-			Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height);
+		if(Editor.state === Editor.STATE_TESTING) {
+			Editor.program_running.resize(Editor.canvas.width, Editor.canvas.height)
 		}
 	}
 }
 
 // Set camera mode (orthographic/perspective)
 Editor.setCameraMode = function(mode) {
+
+	if (mode === undefined) {
+		mode = (Editor.camera instanceof PerspectiveCamera) ? Editor.CAMERA_ORTHOGRAPHIC : Editor.CAMERA_PERSPECTIVE
+	}
+
+	var aspect = (Editor.canvas !== null) ? Editor.canvas.width/Editor.canvas.height : 1.0
+
 	if (mode === Editor.CAMERA_ORTHOGRAPHIC) {
-		Editor.camera = new OrthographicCamera()
-		Editor.camera.position.set(0, 3, 5)
-		Editor.camera_rotation = new THREE.Vector2(0, 0)
-		Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
+		Editor.camera = new OrthographicCamera(10, aspect, OrthographicCamera.FIXED_VERTICAL)
+		Editor.camera.position.set(0, 0, 100)
+		Editor.grid_helper.rotation.x = Math.PI / 2
 	} else if (mode === Editor.CAMERA_PERSPECTIVE) {
-		Editor.camera = new PerspectiveCamera(60, 1)
+		Editor.camera = new PerspectiveCamera(60, aspect)
 		Editor.camera.position.set(0, 10, 30)
-		Editor.camera_rotation = new THREE.Vector2(3.14, 0)
+		Editor.camera_rotation.set(3.14, 0)
+		Editor.grid_helper.rotation.x = 0
 		Editor.setCameraRotation(Editor.camera_rotation, Editor.camera)
 	}
 }
