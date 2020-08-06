@@ -24,11 +24,9 @@ function BlockAsset(parent) {
 		})
 
 		context.addOption("Delete", () => {
-			if (self.blocks !== null) {
-				if (confirm("Delete Blocks?")) {
-					Editor.program.removeObject(self.blocks)
-					Editor.updateObjectViews()
-				}
+			if (self.blocks !== null && confirm("Delete Blocks?")) {
+				Editor.program.removeObject(self.blocks)
+				Editor.updateObjectViews()
 			}
 		})
 

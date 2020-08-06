@@ -22,10 +22,8 @@ function AudioAsset(parent) {
 		})
 
 		context.addOption("Delete", () => {
-			if (self.audio !== null) {
-				if (confirm("Delete audio?")) {
-					// TODO: This
-				}
+			if (self.audio !== null && confirm("Delete audio?")) {
+				// TODO: This
 			}
 		})
 

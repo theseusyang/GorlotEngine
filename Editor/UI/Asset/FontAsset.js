@@ -22,11 +22,9 @@ function FontAsset(parent) {
 		})
 
 		context.addOption("Delete", () => {
-			if (self.font !== null) {
-				if (confirm("Delete font?")) {
-					self.font.dispose()
-					// TODO: This
-				}
+			if (self.font !== null && confirm("Delete font?")) {
+				Editor.program.removeFont(self.font, Editor.default_font)
+				Editor.updateObjectViews()
 			}
 		})
 
