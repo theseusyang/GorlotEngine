@@ -36,6 +36,25 @@ function FontAsset(parent) {
 			}
 		})
 	}
+
+	// Drag start
+	this.element.ondragstart = function(e) {
+		// Insert into drag buffer
+		if (self.font !== null) {
+			e.dataTransfer.setData("uuid", self.font.uuid)
+			DragBuffer.pushDragElement(self.font)
+		}
+
+		// To avoid camera movement
+		Mouse.updateKey(Mouse.LEFT, Key.KEY_UP)
+	}
+
+	// Drag end
+	this.element.ondragend = function(e) {
+		// Try to remove font from drag buffer
+		var uuid = e.dataTransfer.getData("uuid")
+		var obj = DragBuffer.popDragElement(uuid)
+	}
 }
 
 FontAsset.prototype = Object.create(Asset.prototype)

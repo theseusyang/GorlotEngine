@@ -112,6 +112,11 @@ function SceneEditor(parent) {
 						object.material = dragged_object
 						Editor.updateObjectViews()
 					}
+				} else if (dragged_object instanceof Font) {
+					if (object.font !== undefined) {
+						object.setFont(dragged_object)
+						Editor.updateObjectViews()
+					}
 				}
 			}
 			// Create an object caller

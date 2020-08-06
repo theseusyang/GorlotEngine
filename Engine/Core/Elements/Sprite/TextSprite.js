@@ -12,9 +12,17 @@ function TextSprite(text, font) {
 
 TextSprite.prototype = Object.create(THREE.Sprite.prototype)
 
+// Set font
+TextSprite.prototype.setFont = function(font) {
+	this.font = font
+	this.setText()
+}
+
 // Set Text
 TextSprite.prototype.setText = function(text) {
-	this.text = text
+	if (text !== undefined) {
+		this.text = text
+	}
 
 	// TODO: This
 }
