@@ -112,7 +112,15 @@ function SceneEditor(parent) {
 						object.material = dragged_object
 						Editor.updateObjectViews()
 					}
-				} else if (dragged_object instanceof Font) {
+				} else if(dragged_object instanceof THREE.Texture) {
+                    if(object instanceof THREE.Mesh) {
+                        object.material = new MeshStandardMaterial({ map: dragged_object, color: 0xffffff, roughness: 0.6, metalness: 0.2 })
+                        Editor.updateObjectViews()
+                    } else if(object instanceof THREE.Sprite) {
+                        object.material = new SpriteMaterial({ map: dragged_object, color: 0xffffff })
+                        Editor.updateObjectViews()
+                    }
+                }else if (dragged_object instanceof Font) {
 					if (object.font !== undefined) {
 						object.setFont(dragged_object)
 						Editor.updateObjectViews()

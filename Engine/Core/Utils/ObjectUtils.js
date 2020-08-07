@@ -37,13 +37,9 @@ ObjectUtils.getAudio = function(obj, audio) {
 }
 
 //Get all materials in object and children
-ObjectUtils.getMaterials = function(obj, materials)
-{
-	// TODO: Change to traverse instead of recursive
-
+ObjectUtils.getMaterials = function(obj, materials) {
 	//Auxiliar function to add materials
-	function add(material)
-	{
+	function add(material) {
 		if(materials[material.uuid] === undefined)
 		{
 			materials[material.uuid] = material;
@@ -56,15 +52,11 @@ ObjectUtils.getMaterials = function(obj, materials)
 		materials = [];
 	}
 
-	//Add materials from children and call func for them
-	for(var i = 0; i < obj.children.length; i++)
-	{
-		var child = obj.children[i];
-
-		//Check if child has material
-		if(!child.hidden && child.material !== undefined && !(child instanceof Sky || child instanceof SpineAnimation))
-		{
-			if(child.material instanceof THREE.Material)
+	// Traverse obj children
+	obj.traverse((child) => {
+		// Check if child has material
+		if(!(child.material === undefined || child.hidden || child instanceof Sky || child instanceof SpineAnimation)) {
+            if(child.material instanceof THREE.Material)
 			{
 				add(child.material);
 			}
@@ -78,23 +70,16 @@ ObjectUtils.getMaterials = function(obj, materials)
 				}
 			}
 		}
-
-		//Call recursively for children
-		ObjectUtils.getMaterials(child, materials);
-	}
+	})
 
 	return materials;
 }
 
 //Get all textures in object and children
-ObjectUtils.getTextures = function(obj, textures)
-{
-	// TODO: Change to traverse instead of recursive
-
+ObjectUtils.getTextures = function(obj, textures) {
 	// Auxiliar function to add textures
-	function add(texture)
-	{
-		if(texture !== null && texture !== undefined)
+	function add(texture) {
+		if(texture != null)
 		{
 			if(textures[texture.uuid] === undefined) {
 				textures[texture.uuid] = texture;
@@ -102,17 +87,14 @@ ObjectUtils.getTextures = function(obj, textures)
 		}
 	}
 
-	//If undefined create new array to store materials
+	// If undefined create new array to store materials
 	if(textures === undefined)
 	{
 		textures = [];
 	}
 
-	//Add textures from children and call func for them
-	for(var i = 0; i < obj.children.length; i++)
-	{
-		var child = obj.children[i];
-
+	// Add textures from children
+    obj.traverse((child) => {
 		if(child.material !== undefined)
 		{
 			var material = child.material;
@@ -131,10 +113,7 @@ ObjectUtils.getTextures = function(obj, textures)
 		{
 			add(child.group.texture);
 		}
-
-		//Call recursively for childs
-		ObjectUtils.getTextures(child, textures);
-	}
+	})
 
 	return textures;
 }
