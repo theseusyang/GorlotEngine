@@ -311,14 +311,13 @@ Interface.initialize = function() {
 		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
-				var name = file.substring(file.lastIndexOf("/") + 1, file.lastIndexOf("."))
 
 				var json = FileSystem.readFile(file)
 				var atlas = FileSystem.readFile(file.replace("json", "atlas"))
 				var path = file.substring(0, file.lastIndexOf("/"))
 
 				var animation = new SpineAnimation(json, atlas, path)
-				animation.name = name
+				animation.name = FileSystem.getFileName(file)
 
 				Editor.addToScene(animation)
 				Editor.updateObjectViews()
