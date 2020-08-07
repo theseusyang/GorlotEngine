@@ -11,6 +11,7 @@ include("Engine/Libraries/leap.min.js")
 include("Engine/Libraries/stats.min.js")
 include("Engine/Libraries/SPE.min.js")
 include("Engine/Libraries/spine.min.js")
+include("Engine/Libraries/opentype.min")
 
 include("Engine/Libraries/litegraph/litegraph.js")
 

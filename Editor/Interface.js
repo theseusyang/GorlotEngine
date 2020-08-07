@@ -562,7 +562,7 @@ Interface.initialize = function() {
 	torus.setCallback(() => {
 		var geometry = new THREE.TorusBufferGeometry(1, 0.5, 16, 96)
 		var model = new Mesh(geometry, Editor.default_material)
-		model.name = "cone"
+		model.name = "torus"
 		Editor.addToScene(model)
 	})
 	torus.updateInterface()

@@ -69,6 +69,12 @@ ObjectUtils.getMaterials = function(obj, materials) {
 					add(material_array[j]);
 				}
 			}
+
+            if(child.materials !== undefined) {
+                for(var j = 0; j < child.materials.length; i++) {
+                    add(child.materials[j])
+                }
+            }
 		}
 	})
 
