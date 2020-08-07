@@ -1101,8 +1101,17 @@ Interface.initialize = function() {
 
 	// Save Project
 	Interface.file.addOption("Save", () => {
-		Interface.saveProgram()
-	}, Interface.file_dir + "Icons/Misc/Save.png")
+        if(Editor.open_file !== null) {
+            Editor.saveProgram(undefined, false)
+        } else {
+            Interface.saveProgram()
+        }
+    }, Interface.file_dir + "Icons/Misc/Save.png")
+
+    // Save project as
+    Interface.file.addOption("Save As", () => {
+        Interface.saveProgram()()
+    }, Interface.file_dir + "Icons/Misc/Save.png")
 
 	// Load Project
 	Interface.file.addOption("Load", () => {

@@ -344,6 +344,9 @@ Editor.initialize = function() {
 	Editor.tool_mode = Editor.MODE_SELECT
 	Editor.state = Editor.STATE_EDITING
 
+    // Open file
+    Editor.open_file = null
+
 	// Editor Selected object
 	Editor.selected_object = null
 	Editor.is_editing_object = false
@@ -454,8 +457,12 @@ Editor.update = function()
 		{
 			if(Keyboard.keyJustPressed(Keyboard.S))
 			{
-				Interface.saveProgram()
-			}
+                if(Editor.open_file === null) {
+                    Interface.saveProgram()
+                } else {
+                    Editor.saveProgram(undefined, false)
+                }
+            }
 			else if(Keyboard.keyJustPressed(Keyboard.O))
 			{
 				Interface.loadProgram()
@@ -1228,7 +1235,14 @@ Editor.createNewProgram = function()
 	Editor.program.addDefaultScene(Editor.default_material);
 	Editor.resetEditingFlags();
 
-	//Remove old tabs from interface
+    // Reset open file
+    Editor.setOpenFile(null)
+
+    // Reset the folder explorer tree
+	Interface.folders_explorers.clear()
+    Editor.CURRENT_PATH = "/"
+	
+    //Remove old tabs from interface
 	if(Interface.tab !== undefined)
 	{
 		Interface.tab.clear()
@@ -1237,14 +1251,16 @@ Editor.createNewProgram = function()
 		canvas.setScene(Editor.program.scene)
 		scene.attachComponent(canvas)
 		Interface.tab.selectTab(0)
-
-		Interface.folders_explorers.clear()
 	}
 }
 
 //Save program to file
 Editor.saveProgram = function(fname, compressed)
 {
+    if(fname === undefined && Editor.open_file !== null) {
+        fname = Editor.open_file
+    }
+
 	if (compressed) {
 		var json = JSON.stringify(Editor.program.toJSON())
 	} else {
@@ -1253,6 +1269,10 @@ Editor.saveProgram = function(fname, compressed)
 	}
 
 	FileSystem.writeFile(fname, json)
+
+    if(Editor.open_file === null) {
+        Editor.setOpenFile(fname)
+    }
 }
 
 //Load program from file
@@ -1273,6 +1293,13 @@ Editor.loadProgram = function(fname)
 	//Remove old tabs from interface
 	Interface.tab.clear();
 
+    // Clears the old Folder tree
+    Interface.folders_explorers.clear()
+    Editor.CURRENT_PATH = "/"
+
+    // Set open file
+    Editor.setOpenFile(fname)
+
 	//Add new scene tab to interface
 	if(Editor.program.scene !== null)
 	{
@@ -1282,6 +1309,17 @@ Editor.loadProgram = function(fname)
 		scene.attachComponent(editor);
 		Interface.tab.selectTab(0);
 	}
+}
+
+// Set currently open file (also updates the editor title)
+Editor.setOpenFile = function(fname) {
+    Editor.open_file = (fname !== undefined) ? fname : null
+
+    if(fname === null) {
+        document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")"
+    } else {
+        document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ") (" + fname + ")"
+    }
 }
 
 //Export web project
