@@ -5,7 +5,7 @@ function Editor(){}
 // Editor version
 Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Aug 06 2020 06:48 GMT+0000 (UTC)"
+Editor.TIMESTAMP = "Fri Aug 06 2020 20:40 GMT+0000 (UTC)"
 
 Editor.CURRENT_PATH = "/"
 

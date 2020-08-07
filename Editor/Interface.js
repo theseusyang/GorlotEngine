@@ -129,6 +129,13 @@ Interface.initialize = function() {
 		Editor.updateObjectViews()
 	})
 
+    Interface.asset_new.addOption("Folder", () => {
+		var folder = new Folder()
+		folder.path = Editor.CURRENT_PATH
+		Editor.program.addFolder(folder)
+		Editor.updateAssetExplorer()
+	}, Interface.file_dir + "Icons/Misc/Folder.png")
+
 	Interface.asset_new.addOption("Class Blocks", () => {
 		var obj = new BlockScript(undefined, undefined, "class")
 		obj.name = "class"
@@ -136,13 +143,6 @@ Interface.initialize = function() {
 		Editor.program.addObject(obj)
 		Editor.updateAssetExplorer()
 	}, Interface.file_dir + "Icons/Script/Blocks.png")
-
-	Interface.asset_new.addOption("Folder", () => {
-		var folder = new Folder()
-		folder.path = Editor.CURRENT_PATH
-		Editor.program.addFolder(folder)
-		Editor.updateAssetExplorer()
-	}, Interface.file_dir + "Icons/Misc/Folder.png")
 
 	// Import a file
 	Interface.asset_file = new DropdownMenu(Interface.asset_explorer_bar.element)
