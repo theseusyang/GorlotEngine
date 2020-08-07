@@ -18,27 +18,29 @@ function FolderAsset(parent, type) {
 			if (self.folder !== null) {
 				var newName = prompt("Rename folder", self.folder.name)
 
-				for(var i = 0; i < Interface.asset_explorer.files.length; i++) {
-					var file = Interface.asset_explorer.files[i]
-
-					if (file.path === self.folder.path + self.folder.name + "/") {
-						var newPath = self.folder.path + newName + "/"
-
-						if (file.material !== undefined) {
-							file.material.setPath(newPath)
-						} else if (file.audio !== undefined) {
-							file.audio.setPath(newPath)
-						} else if (file.blocks !== undefined) {
-							file.blocks.setPath(newPath)
-						} else if (file.font !== undefined) {
-							file.font.setPath(newPath)
-						} else if (file.texture !== undefined) {
-							file.texture.setPath(newPath)
+				if(newName !== null) {
+					for(var i = 0; i < Interface.asset_explorer.files.length; i++) {
+						var file = Interface.asset_explorer.files[i]
+	
+						if (file.path === self.folder.path + self.folder.name + "/") {
+							var newPath = self.folder.path + newName + "/"
+	
+							if (file.material !== undefined) {
+								file.material.setPath(newPath)
+							} else if (file.audio !== undefined) {
+								file.audio.setPath(newPath)
+							} else if (file.blocks !== undefined) {
+								file.blocks.setPath(newPath)
+							} else if (file.font !== undefined) {
+								file.font.setPath(newPath)
+							} else if (file.texture !== undefined) {
+								file.texture.setPath(newPath)
+							}
 						}
 					}
+	
+					self.folder.name = newName
 				}
-
-				self.folder.name = newName
 
 				Editor.updateObjectViews()
 			}
@@ -46,7 +48,8 @@ function FolderAsset(parent, type) {
 
 		context.addOption("Delete", () => {
 			if (self.folder !== null && confirm("Delete folder?")) {
-				// TODO: This
+				Editor.program.removeFolder(self.folder)
+				Editor.updateObjectViews()
 			}
 		})
 	}

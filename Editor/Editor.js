@@ -890,9 +890,9 @@ Editor.updateObjectViews = function()
 	// TODO: Remove test code
 	var start = Date.now()
 
-	Editor.updateTreeView();
-	Editor.updateObjectPanel();
-	Editor.updateTabsData();
+	Editor.updateTreeView()
+	Editor.updateObjectPanel()
+	Editor.updateTabsData()
 	Editor.updateAssetExplorer()
 
 	// TODO: Remove test code
@@ -937,6 +937,7 @@ Editor.updateAssetExplorer = function()
 	// Clean asset explorer
 	Interface.asset_explorer.clear()
 	
+	Interface.folders_explorers.clear()
 	Interface.folders_explorers.update()
 
 	// Folders

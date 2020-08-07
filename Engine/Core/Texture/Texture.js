@@ -42,6 +42,13 @@ function Texture(image, mapping, wrapS, wrapT, magFilter, minFilter, format, typ
 // Super prototypes
 Texture.prototype = Object.create(THREE.Texture.prototype);
 
+// Set path
+Texture.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
+	}
+}
+
 // Dispose Texture
 Texture.prototype.dispose = function() {
 	THREE.Texture.prototype.dispose.call(this)

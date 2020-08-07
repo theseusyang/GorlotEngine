@@ -47,6 +47,13 @@ function VideoTexture(video, mapping, wrapS, wrapT, type, anisotropy)
 // Super prototypes
 VideoTexture.prototype = Object.create(THREE.Texture.prototype);
 
+// Set path
+VideoTexture.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
+	}
+}
+
 //Dispose texture
 VideoTexture.prototype.dispose = function()
 {

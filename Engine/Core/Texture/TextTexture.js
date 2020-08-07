@@ -27,6 +27,13 @@ function TextTexture(text, font, mapping, wrapS, wrapT, magFilter, minFilter, fo
 // Super prototypes
 TextTexture.prototype = Object.create(THREE.Texture.prototype)
 
+// Set path
+TextTexture.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
+	}
+}
+
 TextTexture.prototype.toJSON = function(meta) {
 	var data = THREE.Texture.prototype.toJSON.call(this, meta)
 

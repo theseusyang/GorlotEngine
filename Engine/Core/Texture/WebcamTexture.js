@@ -59,6 +59,13 @@ function WebcamTexture(mapping, wrapS, wrapT, magFilter, minFilter, type, anisot
 // Super prototypes
 WebcamTexture.prototype = Object.create(THREE.VideoTexture.prototype);
 
+// Set path
+WebcamTexture.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
+	}
+}
+
 // Dispose texture
 WebcamTexture.prototype.dispose = function() {
 	THREE.Texture.prototype.dispose.call(this)

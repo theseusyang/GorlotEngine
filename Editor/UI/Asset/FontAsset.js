@@ -28,6 +28,13 @@ function FontAsset(parent) {
 			}
 		})
 
+		context.addOption("Reverse glyphs", () => {
+			if (self.font !== null && confirm("Reverse font glyps?")) {
+				// TODO: This
+				alert("Glyph reversing is not implemented yet")
+			}
+		})
+
 		context.addOption("Copy", () => {
 			if (self.font !== null) {
 				try {
