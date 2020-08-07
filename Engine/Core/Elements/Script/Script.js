@@ -80,7 +80,9 @@ Script.prototype.setCode = function(code)
 		this.script = new(new Function(this.code))()
 	}
 	catch(e){
-		this.script = new(function(){})()
+        console.error(e)
+
+        this.script = new(function(){})()
 	}
 }
 

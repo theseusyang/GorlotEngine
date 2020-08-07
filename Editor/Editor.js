@@ -286,6 +286,7 @@ include("Editor/Helpers/ObjectIconHelper.js")
 include("Editor/Helpers/PhysicsObjectHelper.js")
 include("Editor/Helpers/BoundingBoxHelper.js")
 include("Editor/Helpers/WireframeHelper.js")
+include("Editor/Helpers/GridHelper.js")
 
 include("Editor/Utils/MaterialRenderer.js")
 include("Editor/Utils/ObjectIcons.js")
@@ -383,12 +384,9 @@ Editor.initialize = function() {
 	Editor.raycaster = new THREE.Raycaster();
 
 	// Grid and axis helpers
-	Editor.grid_helper = new THREE.GridHelper(Settings.editor.grid_size, Math.round(Settings.editor.grid_size/Settings.editor.grid_spacing)*2, 0x888888, 0x888888)
-	Editor.grid_helper.material.depthWrite = false
-	Editor.grid_helper.material.transparent = true
-	Editor.grid_helper.material.opacity = 0.3
-	Editor.grid_helper.visible = Settings.editor.grid_enabled
-	Editor.tool_scene.add(Editor.grid_helper)
+	Editor.grid_helper = new GridHelper(Settings.grid_size, Settings.editor.grid_spacing)
+    Editor.grid_helper.visible = Settings.editor.grid_enabled
+    Editor.tool_scene.add(Editor.grid_helper)
 
 	Editor.axis_helper = new THREE.AxisHelper(Settings.editor.grid_size)
 	Editor.axis_helper.material.depthWrite = false
