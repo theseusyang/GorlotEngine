@@ -2,15 +2,8 @@
 
 function ContextMenu(parent)
 {
-	//Parent
-	if(parent === undefined)
-	{
-		this.parent = document.body;
-	}
-	else
-	{
-		this.parent = parent;
-	}
+    // Parent
+    this.parent = (parent !== undefined) ? parent : document.body
 	
 	//ID
 	var id = "ctx" + Button.id;

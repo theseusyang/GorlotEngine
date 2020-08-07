@@ -3,14 +3,7 @@
 function SettingsTab(parent)
 {
 	//Parent
-	if(parent === undefined)
-	{
-		this.parent = document.body;
-	}
-	else
-	{
-		this.parent = parent;
-	}
+    this.parent = (parent !== undefined) ? parent : document.body
 	
 	//ID
 	var id = "settings" + SettingsTab.id;
@@ -44,6 +37,7 @@ function SettingsTab(parent)
 
 	//General tab
 	this.general = this.tab.addTab("General", "Editor/Files/Icons/Misc/Tool.png", false);
+    this.general.element.style.overflow = "auto"
 
 	//General form
 	this.general_form = new Form(this.general.element);
@@ -262,6 +256,7 @@ function SettingsTab(parent)
 
 	//Code tab
 	this.code = this.tab.addTab("Code", "Editor/Files/Icons/Script/Script.png", false);
+    this.code.element.style.overflow = "auto"
 	
 	//Code form
 	this.code_form = new Form(this.code.element);
