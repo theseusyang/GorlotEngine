@@ -34,6 +34,7 @@ ObjectIcons.icons["Script"] = "Editor/Files/Icons/Script/Script.png"
 ObjectIcons.icons["BlockScript"] = "Editor/Files/Icons/Script/Blocks.png"
 ObjectIcons.icons["Sprite"] = "Editor/Files/Icons/Assets/Image.png"
 ObjectIcons.icons["Text3D"] = "Editor/Files/Icons/Models/Text.png"
+ObjectIcons.icons["Points"] = "Editor/Files/Icons/Models/Points.png"
 
 //Program
 ObjectIcons.icons["Program"] = "Editor/Files/Icons/Script/Script.png"

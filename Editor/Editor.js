@@ -209,6 +209,7 @@ include("Engine/Libraries/three/loaders/PLYLoader.js")
 include("Engine/Libraries/three/loaders/VTKLoader.js")
 include("Engine/Libraries/three/loaders/AWDLoader.js")
 include("Engine/Libraries/three/loaders/TGALoader.js")
+include("Engine/Libraries/three/loaders/PCDLoader.js")
 
 include("Engine/Libraries/three/animation/Animation.js")
 include("Engine/Libraries/three/animation/AnimationHandler.js")

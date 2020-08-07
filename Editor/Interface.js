@@ -306,27 +306,26 @@ Interface.initialize = function() {
 		}, ".fbx")
 	})
 
-	// Load Spine Animation
-	Interface.asset_file.addOption("Spine Animation", () => {
-		FileSystem.chooseFile((files) => {
-			if (files.length > 0) {
-				var file = files[0].path
+    // PCD File Loader
+    import_models.addOption("PCD", () => {
+        FileSystem.chooseFile((files) => {
+            if(files.length > 0) {
+                var file = files[0].path
 
-				var json = FileSystem.readFile(file)
-				var atlas = FileSystem.readFile(file.replace("json", "atlas"))
-				var path = file.substring(0, file.lastIndexOf("/"))
+                var loader = new THREE.PCDLoader()
+                var pcd = loader.parse(FileSystem.readFileArrayBuffer(file), file)
+                pcd.name = FileSystem.getFileName(file)
+                pcd.material.name = "points"
+                Editor.addToScene(pcd)
+            }
+        }, ".pcd")
+    })
 
-				var animation = new SpineAnimation(json, atlas, path)
-				animation.name = FileSystem.getFileName(file)
-
-				Editor.addToScene(animation)
-				Editor.updateObjectViews()
-			}
-		}, ".json")
-	}, Interface.file_dir + "Icons/Animation/Spine.png")
+    // Textures menu
+    var import_texture = Interface.asset_file.addMenu("Texture", Interface.file_dir + "Icons/Assets/Image.png")
 
 	// Texture
-	Interface.asset_file.addOption("Texture", () => {
+    import_texture.addOption("Texture", () => {
 		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
@@ -343,7 +342,7 @@ Interface.initialize = function() {
 	}, Interface.file_dir + "Icons/Assets/Image.png")
 
 	// Create Text Texture
-	Interface.asset_file.addOption("Text Texture", () => {
+	import_texture.addOption("Text Texture", () => {
 		var texture = new TextTexture("abcdef", Editor.default_font)
 		var material = new MeshStandardMaterial({map: texture, roughness: 0.6, metalness: 0.2})
 		material.name = "text"
@@ -352,7 +351,7 @@ Interface.initialize = function() {
 	}, Interface.file_dir + "Icons/Assets/Image.png")
 
 	// Video Texture
-	Interface.asset_file.addOption("Video Texture", () => {
+	import_texture.addOption("Video Texture", () => {
 		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
 				var file = files[0].path
@@ -369,7 +368,7 @@ Interface.initialize = function() {
 	}, Interface.file_dir + "Icons/Assets/Video.png")
 
 	// Webcam Texture
-	Interface.asset_file.addOption("Webcam Texture", () => {
+	import_texture.addOption("Webcam Texture", () => {
 		var texture = new WebcamTexture()
 		texture.name = "webcam"
 		var material = new MeshPhongMaterial({map: texture, roughness: 0.6, metalness: 0.2})
@@ -377,6 +376,25 @@ Interface.initialize = function() {
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	}, Interface.file_dir + "Icons/Hw/Webcam.png")
+
+    // Load Spine Animation
+    Interface.asset_file.addOption("Spine Animation", () => {
+		FileSystem.chooseFile((files) => {
+			if (files.length > 0) {
+				var file = files[0].path
+
+				var json = FileSystem.readFile(file)
+				var atlas = FileSystem.readFile(file.replace("json", "atlas"))
+				var path = file.substring(0, file.lastIndexOf("/"))
+
+				var animation = new SpineAnimation(json, atlas, path)
+				animation.name = FileSystem.getFileName(file)
+
+				Editor.addToScene(animation)
+				Editor.updateObjectViews()
+			}
+		}, ".json")
+	}, Interface.file_dir + "Icons/Animation/Spine.png")
 
 	// Load font
 	Interface.asset_file.addOption("Font", () => {
