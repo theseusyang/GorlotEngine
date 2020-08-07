@@ -5,10 +5,16 @@ function BlockAsset(parent) {
 
 	// Block
 	this.blocks = null
-	this.image.src = ObjectIcons.icons["BlockScript"]
+    this.setIcon(Interface.file_dir + "Icons/Script/Blocks.png")
 
 	// Self pointer
 	var self = this
+
+    // Blocks icon
+    this.image = document.createElement("img")
+    this.image.style.position = "absolute"
+    this.image.style.top = "5px"
+    this.element.appendChild(this.image)
 
 	// Context menu event
 	this.element.oncontextmenu = function(e) {
@@ -123,7 +129,18 @@ BlockAsset.prototype.setBlocks = function(blocks) {
 // Update metadata
 BlockAsset.prototype.updateMetadata = function() {
 	if (this.blocks !== null) {
+        this.image.src = Interface.file_dir + "Icons/Script/Blocks.png"
 		this.setText(this.blocks.name)
 		this.path = this.blocks.path
 	}
+}
+
+// Update interface
+BlockAsset.prototype.updateInterface = function() {
+    Asset.prototype.updateInterface.call(this)
+
+    // Update image
+    this.image.width = this.size.x * this.scale.x
+    this.image.height = this.size.y * this.scale.y
+    this.image.style.left = ((this.size.x - (this.size.x * this.scale.x))/2) + "px"
 }

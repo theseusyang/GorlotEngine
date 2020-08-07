@@ -7,6 +7,13 @@ function FolderAsset(parent, type) {
 	var self = this
 
 	this.folder = null
+    this.setIcon(Interface.file_dir + "Icons/Misc/Folder.png")
+
+    // Folder icon
+    this.image = document.createElement("img")
+    this.image.style.position = "absolute"
+    this.image.style.top = "5px"
+    this.element.appendChild(this.image)
 
 	// Context menu event
 	this.element.oncontextmenu = function(e) {
@@ -96,4 +103,14 @@ FolderAsset.prototype.updateMetadata = function() {
 		this.setText(this.folder.name)
 		this.path = this.folder.path
 	}
+}
+
+// Update interface
+FolderAsset.prototype.updateInterface = function() {
+    Asset.prototype.updateInterface.call(this)
+
+    // Update image
+    this.image.width = this.size.x * this.scale.x
+    this.image.height = this.size.y * this.scale.y
+    this.image.style.left = ((this.size.x - (this.size.x * this.scale.x))/2) + "px"
 }

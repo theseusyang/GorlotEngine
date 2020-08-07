@@ -5,6 +5,7 @@ function MaterialAsset(parent) {
 
 	// Material
 	this.material = null
+    this.setIcon(Interface.file_dir + "Icons/Misc/Material.png")
 
 	// Self pointer
 	var self = this
@@ -12,6 +13,12 @@ function MaterialAsset(parent) {
 	// Used to store original material color on highlight
 	this.material_color = new THREE.Color(0, 0, 0)
 	this.material_highlighted = false
+
+    // Material preview
+    this.image = document.createElement("img")
+    this.image.style.position = "absolute"
+    this.image.style.top = "5px"
+    this.element.appendChild(this.image)
 
 	// Mouse over event
 	this.element.onmouseenter = function() {
@@ -191,4 +198,14 @@ MaterialAsset.prototype.updateMetadata = function() {
 		this.setText(this.material.name)
 		this.path = this.material.path
 	}
+}
+
+// Update Interface
+MaterialAsset.prototype.updateInterface = function() {
+    Asset.prototype.updateInterface.call(this)
+
+    // Update image
+    this.image.width = this.size.x * this.scale.x
+    this.image.height = this.size.y * this.scale.y
+    this.image.style.left = ((this.size.x - (this.size.x * this.scale.x))/2) + "px"
 }

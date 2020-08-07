@@ -142,6 +142,13 @@ BlockScript.prototype.dispose = function() {
 	}
 }
 
+// Set path
+BlockScript.prototype.setPath = function(path) {
+    if(path !== undefined) {
+        this.path = path
+    }
+}
+
 // Update nodes
 BlockScript.prototype.updateNodes = function(nodes) {
 	this.nodes = {}

@@ -324,7 +324,7 @@ Interface.initialize = function() {
     // Textures menu
     var import_texture = Interface.asset_file.addMenu("Texture", Interface.file_dir + "Icons/Assets/Image.png")
 
-	// Texture
+	// Image Texture
     import_texture.addOption("Texture", () => {
 		FileSystem.chooseFile((files) => {
 			if (files.length > 0) {
@@ -333,20 +333,17 @@ Interface.initialize = function() {
 
 				var texture = new Texture(new GORLOT.Image(file))
 				texture.name = name
-				var material = new MeshStandardMaterial({map: texture, roughness: 0.6, metalness: 0.2})
-				material.name = name
-				Editor.program.addMaterial(material)
+				Editor.program.addTexture(texture)
 				Editor.updateObjectViews()
 			}
 		}, "image/*")
 	}, Interface.file_dir + "Icons/Assets/Image.png")
 
-	// Create Text Texture
+	// Text Texture
 	import_texture.addOption("Text Texture", () => {
 		var texture = new TextTexture("abcdef", Editor.default_font)
-		var material = new MeshStandardMaterial({map: texture, roughness: 0.6, metalness: 0.2})
-		material.name = "text"
-		Editor.program.addMaterial(material)
+		texture.name = "text"
+        Editor.program.addTexture(texture)
 		Editor.updateObjectViews()
 	}, Interface.file_dir + "Icons/Assets/Image.png")
 
@@ -359,9 +356,7 @@ Interface.initialize = function() {
 
 				var texture = new VideoTexture(new Video(file))
 				texture.name = name
-				var material = new MeshPhongMaterial({map: texture, roughness: 0.6, metalness: 0.2})
-				material.name = name
-				Editor.program.addMaterial(material)
+				Editor.program.addTexture(texture)
 				Editor.updateObjectViews()
 			}
 		}, "video/*")
@@ -371,9 +366,7 @@ Interface.initialize = function() {
 	import_texture.addOption("Webcam Texture", () => {
 		var texture = new WebcamTexture()
 		texture.name = "webcam"
-		var material = new MeshPhongMaterial({map: texture, roughness: 0.6, metalness: 0.2})
-		material.name = "webcam"
-		Editor.program.addMaterial(material)
+		Editor.program.addTexture(texture)
 		Editor.updateObjectViews()
 	}, Interface.file_dir + "Icons/Hw/Webcam.png")
 
