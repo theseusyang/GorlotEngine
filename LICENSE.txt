@@ -1,0 +1,9 @@
+Copyright @ 2020 Gorlot Technologies <https://www.github.com/GorlotTechnologies>
+
+Gorlot counts with two licenses, once of them is employed for using, modifying, contributing and distributing the editor, and the productions made with GorlotEngine.
+
+The Gorlot Editor is licensed under the GPL-3.0 License.
+
+The GPL (General Public License) is a copyleft license, which lets you modificate, distribute, and sell as long as the code keeps opened and its license remains GPL.
+
+The productions made using GorlotEngine are licensed under the MIT license. Which lets you to deal with the code without limitations (this includes BUT NOT LIMITED TO publish your creations and keep the source code private)
