@@ -8,6 +8,7 @@ function Text3DComponent() {
 
         this.values = {
                 text: "text",
+                size: 1,
                 thickness: 50,
                 bevel: false,
                 bevelThickness: 10,
@@ -45,6 +46,21 @@ Text3DComponent.prototype.initUI = function(pos, obj) {
                 }
         })
         this.form.add(this.text)
+        this.form.nextRow()
+
+        // Size
+        this.form.addText("Size")
+        this.size = new NumberBox(this.form.element)
+        this.size.size.set(60, 18)
+        this.size.setRange(0, Number.MAX_SAFE_INTEGER)
+        this.size.setStep(0.1)
+        this.size.setOnChange(() => {
+            if(self.obj !== null) {
+                self.obj.size = self.size.getValue()
+                self.obj.setText()
+            }
+        })
+        this.form.add(this.size)
         this.form.nextRow()
 
         // Height
@@ -117,6 +133,7 @@ Text3DComponent.prototype.initUI = function(pos, obj) {
 
 Text3DComponent.prototype.updateData = function() {
         this.text.setText(this.obj.text)
+        this.size.setValue(this.obj.size)
         this.height.setValue(this.obj.height)
         this.bevel.setValue(this.obj.bevel)
         this.bevel_thickness.setValue(this.obj.bevel_thickness)
@@ -126,6 +143,7 @@ Text3DComponent.prototype.updateData = function() {
 Text3DComponent.prototype.onReset = function() {
 
         this.obj.height = this.values.thickness
+        this.obj.size = this.values.size
         this.obj.bevel = this.values.bevel
         this.obj.bevel_thickness = this.values.bevelThickness
         this.obj.bevel_size = this.values.bevelSize
