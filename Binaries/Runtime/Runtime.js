@@ -252,7 +252,7 @@ Runtime.prototype.resize = function() {
 		this.canvas.height = window.innerHeight
 	}
 
-	if (this.renderer !== undefined) {
+	if (this.renderer !== null && this.renderer !== undefined) {
 		this.renderer.setSize(this.canvas.width, this.canvas.height)
 		this.program.resize(this.canvas.width, this.canvas.height)
 	}

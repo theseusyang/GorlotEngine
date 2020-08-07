@@ -1,5 +1,6 @@
 "use strict"
 
+// Constructo from object before changes parent and change type
 function Action(object, parent, type) {
 	this.object = object.toJSON()
 	this.object.children = []
@@ -8,6 +9,7 @@ function Action(object, parent, type) {
 	this.type = type
 }
 
+// Types
 Action.ADDED = 0
 Action.REMOVED = 1
 Action.CHANGED = 2
