@@ -422,11 +422,16 @@ Interface.initialize = function() {
 			if (files.length > 0) {
 				var file = files[0].path
 
-				var audio = new AudioEmitter(new Audio(file))
+				var audio = new Audio(new Audio(file))
 				audio.name = FileSystem.getFileName(file)
 
-				Editor.addToScene(audio)
-				Editor.updateObjectViews()
+				Editor.program.addAudio(audio)
+
+                var emitter = new AudioEmitter(audio)
+                emitter.name = audio.name
+                Editor.addToScene(emitter)
+
+                Editor.updateObjectViews()
 			}
 		}, "audio/*")
 	}, Interface.file_dir + "Icons/Assets/Audio.png")

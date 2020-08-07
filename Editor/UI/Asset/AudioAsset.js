@@ -23,7 +23,8 @@ function AudioAsset(parent) {
 
 		context.addOption("Delete", () => {
 			if (self.audio !== null && confirm("Delete audio?")) {
-				// TODO: This
+                Editor.program.removeAudio(self.audio, Editor.default_audio)
+                Editor.updateObjectViews()
 			}
 		})
 

@@ -9,7 +9,8 @@ function Text3DComponent() {
         this.values = {
                 text: "text",
                 size: 1,
-                thickness: 50,
+                curveSegments: 15,
+                thickness: 0.5,
                 bevel: false,
                 bevelThickness: 10,
                 bevelSize: 8
@@ -61,7 +62,6 @@ Text3DComponent.prototype.initUI = function(pos, obj) {
             }
         })
         this.form.add(this.size)
-        this.form.nextRow()
 
         // Height
         this.form.addText("Thickness")
@@ -76,6 +76,21 @@ Text3DComponent.prototype.initUI = function(pos, obj) {
                 }
         })
         this.form.add(this.height)
+        this.form.nextRow()
+
+        // Curve segments
+        this.form.addText("Curve Segments")
+        this.curve_segments = new NumberBox(this.form.element)
+        this.curve_segments.size.set(60, 18)
+        this.curve_segments.setRange(0, Number.MAX_SAFE_INTEGER)
+        this.curve_segments.setStep(1.0)
+        this.curve_segments.setOnChange(() => {
+            if(self.obj !== null) {
+                self.obj.curve_segments = self.curve_segments
+                self.obj.setText()
+            }
+        })
+        this.form.add(this.curve_segments)
         this.form.nextRow()
 
         // Bevel
@@ -135,6 +150,7 @@ Text3DComponent.prototype.updateData = function() {
         this.text.setText(this.obj.text)
         this.size.setValue(this.obj.size)
         this.height.setValue(this.obj.height)
+        this.curve_segments.setValue(this.obj.curve_segments)
         this.bevel.setValue(this.obj.bevel)
         this.bevel_thickness.setValue(this.obj.bevel_thickness)
         this.bevel_size.setValue(this.obj.bevel_size)
@@ -144,6 +160,7 @@ Text3DComponent.prototype.onReset = function() {
 
         this.obj.height = this.values.thickness
         this.obj.size = this.values.size
+        this.obj.curve_segments = this.values.curveSegments
         this.obj.bevel = this.values.bevel
         this.obj.bevel_thickness = this.values.bevelThickness
         this.obj.bevel_size = this.values.bevelSize

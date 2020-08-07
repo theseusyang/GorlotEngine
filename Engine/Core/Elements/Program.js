@@ -261,6 +261,23 @@ Program.prototype.addAudio = function(audio) {
 	}
 }
 
+// Remove audio
+Program.prototype.removeAudio = function(audio, default_audio) {
+    if(default_audio === undefined) {
+        default_audio = new Audio()
+    }
+
+    if(audio instanceof Audio) {
+        delete this.audio[audio.uuid]
+
+        this.traverse((child) => {
+            if(child.audio !== undefined && child.audio.uuid === audio.uuid) {
+                // TODO: Set default audio
+            }
+        })
+    }
+}
+
 // Add an object to objects list
 Program.prototype.addObject = function(object) {
 	this.asset_objects[object.uuid] = object
