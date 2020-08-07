@@ -10,7 +10,7 @@ THREE.Texture.prototype.toJSON = function(meta) {
 	// Serialise texture data
 	var data = {
 		metadata: {
-			version: Editor.VERSION,
+			version: GORLOT.VERSION,
 			type: "Texture"
 		},
 

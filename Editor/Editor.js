@@ -2,11 +2,6 @@
 
 function Editor(){}
 
-// Editor version
-Editor.NAME = "Gorlot"
-Editor.VERSION = "2020.0-Alpha"
-Editor.TIMESTAMP = "Fri Aug 06 2020 20:40 GMT+0000 (UTC)"
-
 Editor.CURRENT_PATH = "/"
 
 // NWJS Modules
@@ -19,7 +14,10 @@ try {
 	Editor.args = []
 }
 
-//External libs
+// Gorlot global
+include("Engine/Gorlot.js")
+
+// Runtime dependencies
 include("Engine/Libraries/three/three.js")
 include("Engine/Libraries/three/effects/VREffect.js")
 include("Engine/Libraries/cannon.min.js")
@@ -27,10 +25,11 @@ include("Engine/Libraries/leap.min.js")
 include("Engine/Libraries/stats.min.js")
 include("Engine/Libraries/SPE.min.js")
 include("Engine/Libraries/spine.min.js")
+include("Engine/Libraries/opentype.min.js")
 
 include("Engine/Libraries/litegraph/litegraph.js")
 
-//Internal modules
+// Runtime internal modules
 include("Engine/Core/THREE/Three.js")
 include("Engine/Core/THREE/Object3D.js")
 include("Engine/Core/THREE/Vector3.js")
@@ -46,8 +45,6 @@ include("Engine/Input/Keyboard.js")
 include("Engine/Input/Mouse.js")
 
 include("Engine/Core/WebVR/VRControls.js")
-
-include("Engine/Core/Namespace.js")
 
 include("Engine/Core/Resources/Font.js")
 include("Engine/Core/Resources/Video.js")
@@ -192,7 +189,6 @@ include("Engine/Libraries/codemirror/mode/glsl.js")
 include("Engine/Libraries/codemirror/theme/*")
 
 include("Engine/Libraries/jscolor.min.js")
-include("Engine/Libraries/opentype.min.js")
 include("Engine/Libraries/quickhull.js")
 
 include("Engine/Libraries/litegraph/litegraph.css")
@@ -339,7 +335,7 @@ Editor.initialize = function() {
 	}
 
 	// Set window title
-	document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")"
+	document.title = GORLOT.NAME + " " + GORLOT.VERSION + " (" + GORLOT.TIMESTAMP + ")"
 
 	// Editor initial state
 	Editor.tool_mode = Editor.MODE_SELECT
@@ -1317,9 +1313,9 @@ Editor.setOpenFile = function(fname) {
     Editor.open_file = (fname !== undefined) ? fname : null
 
     if(fname === null) {
-        document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ")"
+        document.title = GORLOT.NAME + " " + GORLOT.VERSION + " (" + GORLOT.TIMESTAMP + ")"
     } else {
-        document.title = Editor.NAME + " " + Editor.VERSION + " (" + Editor.TIMESTAMP + ") (" + fname + ")"
+        document.title = GORLOT.NAME + " " + GORLOT.VERSION + " (" + GORLOT.TIMESTAMP + ") (" + fname + ")"
     }
 }
 

@@ -82,7 +82,7 @@ THREE.Object3D.prototype.toJSON = function(meta, resourceAccess, recursive)
 
 		output.metadata =
 		{
-			version: Editor.VERSION,
+			version: GORLOT.VERSION,
 			type: "GorlotProgram"
 		}
 	}

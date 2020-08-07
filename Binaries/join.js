@@ -3,6 +3,9 @@
 var path = "../"
 var code = ""
 
+// Gorlot Global
+include("Engine/Gorlot.js")
+
 // External Libraries
 include("Engine/Libraries/three/three.js")
 include("Engine/Libraries/three/effects/VREffect.js")
