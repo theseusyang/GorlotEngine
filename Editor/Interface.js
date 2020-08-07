@@ -17,9 +17,23 @@ Interface.initialize = function() {
 	Interface.asset_explorer_div.resize_size_min = 100
 	Interface.asset_explorer_div.resize_size_max = 400
 
+	// Asset split
+	Interface.asset_split = new DualDivisionResizable(Interface.asset_explorer_div.element)
+	Interface.asset_split.orientation = DualDivisionResizable.HORIZONTAL
+	Interface.asset_split.tab_position = 0.12
+	Interface.asset_split.setOnResize(() => {
+		Interface.asset_split.updateInterface()
+		Interface.folders_explorers.updateInterface()
+		Interface.asset_explorer.updateInterface()
+	})
+
+	// Folders explorer
+	Interface.folders_explorers = new FolderTree(Interface.asset_split.div_a)
+
 	// Asset Explorer
-	Interface.asset_explorer = new AssetExplorer(Interface.asset_explorer_div.element)
+	Interface.asset_explorer = new AssetExplorer(Interface.asset_split.div_b)
 	Interface.asset_explorer.files_size.set(Settings.general.file_preview_size, Settings.general.file_preview_size)
+	Interface.asset_explorer.fit_parent = true
 
 	// Asset Explorer menu bar
 	Interface.asset_explorer_bar = new Bar(Interface.asset_explorer_div.element)
@@ -53,6 +67,7 @@ Interface.initialize = function() {
 	asset_material.addOption("Standard Material", () => {
 		var material = new MeshStandardMaterial()
 		material.name = "standard"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
@@ -60,6 +75,7 @@ Interface.initialize = function() {
 	asset_material.addOption("Phong Material", () => {
 		var material = new MeshPhongMaterial()
 		material.name = "phong"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
@@ -67,6 +83,7 @@ Interface.initialize = function() {
 	asset_material.addOption("Basic Material", () => {
 		var material = new MeshBasicMaterial()
 		material.name = "basic"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
@@ -74,13 +91,15 @@ Interface.initialize = function() {
 	asset_material.addOption("Lambert Material", () => {
 		var material = new MeshLambertMaterial()
 		material.name = "lambert"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
 
 	asset_material.addOption("Sprite Material", () => {
-		var material = new THREE.SpriteMaterial({color: 0xffffff})
+		var material = new SpriteMaterial({color: 0xffffff})
 		material.name = "sprite"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
@@ -89,6 +108,7 @@ Interface.initialize = function() {
 	asset_material_others.addOption("Shader Material", () => {
 		var material = new MeshShaderMaterial()
 		material.name = "shader"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
@@ -96,6 +116,7 @@ Interface.initialize = function() {
 	asset_material_others.addOption("Normal Material", () => {
 		var material = new MeshNormalMaterial()
 		material.name = "normal"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
@@ -103,6 +124,7 @@ Interface.initialize = function() {
 	asset_material_others.addOption("Depth Material", () => {
 		var material = new MeshDepthMaterial()
 		material.name = "depth"
+		material.path = Editor.CURRENT_PATH
 		Editor.program.addMaterial(material)
 		Editor.updateObjectViews()
 	})
@@ -110,9 +132,17 @@ Interface.initialize = function() {
 	Interface.asset_new.addOption("Class Blocks", () => {
 		var obj = new BlockScript(undefined, undefined, "class")
 		obj.name = "class"
+		obj.path = Editor.CURRENT_PATH
 		Editor.program.addObject(obj)
 		Editor.updateAssetExplorer()
 	}, Interface.file_dir + "Icons/Script/Blocks.png")
+
+	Interface.asset_new.addOption("Folder", () => {
+		var folder = new Folder()
+		folder.path = Editor.CURRENT_PATH
+		Editor.program.addFolder(folder)
+		Editor.updateAssetExplorer()
+	}, Interface.file_dir + "Icons/Misc/Folder.png")
 
 	// Import a file
 	Interface.asset_file = new DropdownMenu(Interface.asset_explorer_bar.element)
@@ -1234,6 +1264,7 @@ Interface.update = function() {
 	Interface.explorer.update()
 	Interface.asset_explorer_div.update()
 	Interface.explorer_resizable.update()
+	Interface.asset_split.update()
 	Interface.tab.update()
 }
 
@@ -1270,10 +1301,12 @@ Interface.updateInterface = function() {
 	Interface.asset_explorer_bar.size.x = Interface.asset_explorer_div.size.x
 	Interface.asset_explorer_bar.updateInterface()
 
-	Interface.asset_explorer.size.x = Interface.asset_explorer_div.size.x
-	Interface.asset_explorer.position.y = Interface.asset_explorer_bar.size.y
-	Interface.asset_explorer.size.y = Interface.asset_explorer_div.size.y - Interface.asset_explorer.position.y
-	Interface.asset_explorer.updateInterface()
+	Interface.asset_split.size.x = Interface.asset_explorer_div.size.x
+	Interface.asset_split.position.y = Interface.asset_explorer_bar.size.y
+	Interface.asset_split.size.y = Interface.asset_explorer_div.size.y - Interface.asset_explorer.position.y
+	Interface.asset_split.updateInterface()
+
+	Interface.folders_explorers.updateInterface()
 
 	// ------------------------------------ Left Div ------------------------------------
 	Interface.left_div.position.set(0, Interface.top_bar.size.y)

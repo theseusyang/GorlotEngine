@@ -72,5 +72,6 @@ FontAsset.prototype.updateMetadata = function() {
 	if (this.font !== null) {
 		this.image.src = Interface.file_dir + "Icons/Assets/Font.png"
 		this.setText(this.font.name)
+		this.path = this.font.path
 	}
 }

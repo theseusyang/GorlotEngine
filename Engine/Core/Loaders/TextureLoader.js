@@ -65,6 +65,8 @@ TextureLoader.prototype.parse = function(json, onLoad) {
 	texture.anisotropy = json.anisotropy
 	texture.flipY = json.flipY
 
+	if (json.path !== undefined) texture.path = json.path
+
 	if (onLoad !== undefined) {
 		onLoad(texture)
 	}

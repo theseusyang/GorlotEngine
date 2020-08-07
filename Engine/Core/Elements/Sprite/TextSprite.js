@@ -1,7 +1,7 @@
 "use strict"
 
 function TextSprite(text, font) {
-	THREE.Sprite.call(this, new THREE.SpriteMaterial({color: 0xffffff}))
+	THREE.Sprite.call(this, new SpriteMaterial({color: 0xffffff}))
 
 	this.name = "sprite"
 	this.type = "TextSprite"

@@ -35,7 +35,7 @@ ObjectLoader.prototype.parse = function(json, onLoad)
 	var textures = this.parseTextures(json.textures, images, videos);
 	var materials = this.parseMaterials(json.materials, textures);
 	var asset_objects = this.parseAssetObjects(json.asset_objects)
-	var object = this.parseObject(json.object, geometries, materials, textures, audio, fonts, asset_objects);
+	var object = this.parseObject(json.object, geometries, materials, textures, audio, fonts, asset_objects)
 
 	if(json.animations)
 	{
@@ -208,13 +208,13 @@ ObjectLoader.prototype.parseAnimations = function(json)
 ObjectLoader.prototype.parseImages = function(json)
 {
 	var loader = new ImageLoader()
-	var images = [];
+	var images = []
 
 	if(json !== undefined)
 	{
 		for(var i = 0; i < json.length; i++)
 		{
-			images[json[i].uuid] = loader.parse(json[i]);
+			images[json[i].uuid] = loader.parse(json[i])
 		}
 	}
 
@@ -646,6 +646,10 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 		object.folded = data.folded;
 	}
 
+	if (data.path !== undefined) {
+		object.path = data.path
+	}
+
 	//Get or generate tranformation matrix if necessary
 	if(data.matrix !== undefined)
 	{
@@ -742,9 +746,21 @@ ObjectLoader.prototype.parseObject = function(data, geometries, materials, textu
 	//LOD objects
 	if(data.type === "Program")
 	{
-		object.materials = materials;
+		object.materials = materials
 		object.asset_objects = asset_objects
-		object.textures = textures;
+		object.textures = textures
+
+		var folders = []
+		for(var i = 0; i < data.folders.length; i++) {
+			var folder = new Folder(data.folders[i].name)
+			folder.uuid = data.folders[i].uuid
+			folder.path = data.folders[i].path
+			
+			folders[folder.uuid] = folder
+			//folders[data.folders[i].uuid] = data.folders[i]
+		}
+		object.folders = folders
+
 		//object.geometries = geometries;
 		//object.images = images
 		//object.video = videos

@@ -24,6 +24,8 @@ FontLoader.prototype.parse = function(json) {
 		font.encoding = json.encoding
 		font.data = json.data
 
+		if (json.path !== undefined) font.path = json.path
+
 		return font
 	} else {
 		return new Font(json)

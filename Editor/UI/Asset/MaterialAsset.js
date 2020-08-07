@@ -189,5 +189,6 @@ MaterialAsset.prototype.updateMetadata = function() {
 	if(this.material !== null) {
 		Editor.material_renderer.renderMaterial(this.material, this.image)
 		this.setText(this.material.name)
+		this.path = this.material.path
 	}
 }

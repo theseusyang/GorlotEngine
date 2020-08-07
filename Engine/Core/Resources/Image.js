@@ -7,6 +7,8 @@ GORLOT.Image = function(url)
 	this.uuid = THREE.Math.generateUUID()
 	this.type = "Image"
 
+	this.path = "/"
+
 	this.format = ""
 	this.encoding = ""
 	this.data = null
@@ -31,6 +33,12 @@ GORLOT.Image = function(url)
 			this.format = "url"
 			this.data = url
 		}
+	}
+}
+
+GORLOT.Image.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
 	}
 }
 
@@ -92,6 +100,7 @@ GORLOT.Image.prototype.toJSON = function(meta)
 	data.encoding = this.encoding
 	data.format = this.format
 	data.data = this.data
+	data.path = this.path
 
 	meta.images[this.uuid] = data
 

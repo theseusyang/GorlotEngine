@@ -60,6 +60,8 @@ function Asset(parent)
 
 	//Add element to document
 	this.parent.appendChild(this.element);
+
+	this.path = "/"
 }
 
 //Asset ID counter

@@ -7,6 +7,8 @@ Editor.NAME = "Gorlot"
 Editor.VERSION = "2020.0-Alpha"
 Editor.TIMESTAMP = "Thu Aug 06 2020 06:40 GMT+0000 (UTC)"
 
+Editor.CURRENT_PATH = "/"
+
 // NWJS Modules
 try {
 	Editor.fs = require("fs")
@@ -51,6 +53,7 @@ include("Engine/Core/Resources/Font.js")
 include("Engine/Core/Resources/Video.js")
 include("Engine/Core/Resources/Audio.js")
 include("Engine/Core/Resources/Image.js")
+include("Engine/Core/Resources/Folder.js")
 
 include("Engine/Core/Texture/TextTexture.js")
 include("Engine/Core/Texture/VideoTexture.js")
@@ -118,6 +121,7 @@ include("Engine/Core/Assets/Materials/MeshNormalMaterial.js")
 include("Engine/Core/Assets/Materials/MeshPhongMaterial.js")
 include("Engine/Core/Assets/Materials/MeshShaderMaterial.js")
 include("Engine/Core/Assets/Materials/MeshStandardMaterial.js")
+include("Engine/Core/Assets/Materials/SpriteMaterial.js")
 
 // Default Components
 include("Engine/Core/Components/Panel.js")
@@ -241,6 +245,8 @@ include("Editor/UI/TabGroup.js")
 include("Editor/UI/TabElement.js")
 include("Editor/UI/TreeView.js")
 include("Editor/UI/TreeElement.js")
+include("Editor/UI/FolderTree.js")
+include("Editor/UI/FolderElement.js")
 include("Editor/UI/TabButton.js")
 include("Editor/UI/ContextMenu.js")
 include("Editor/UI/AssetExplorer.js")
@@ -251,6 +257,7 @@ include("Editor/UI/Asset/TextureAsset.js")
 include("Editor/UI/Asset/BlockAsset.js")
 include("Editor/UI/Asset/FontAsset.js")
 include("Editor/UI/Asset/AudioAsset.js")
+include("Editor/UI/Asset/FolderAsset.js")
 
 include("Editor/Files/Style/Editor.css")
 
@@ -927,17 +934,26 @@ Editor.updateAssetExplorer = function()
 	// TODO: Remove test code
 	var start = Date.now()
 
-	//Clean asset explorer
-	Interface.asset_explorer.clear();
+	// Clean asset explorer
+	Interface.asset_explorer.clear()
 	
+	Interface.folders_explorers.update()
+
+	// Folders
+	var folders = Editor.program.folders
+	for(var i in folders) {
+		var file = new FolderAsset(Interface.asset_explorer.element)
+		file.setFolder(folders[i])
+		Interface.asset_explorer.add(file)
+	}
+
 	// Materials
 	var materials = ObjectUtils.getMaterials(Editor.program, Editor.program.materials)
 
-	for(var i in materials)
-	{
-		var file = new MaterialAsset(Interface.asset_explorer.element);
-		file.setMaterial(materials[i]);
-		Interface.asset_explorer.add(file);
+	for(var i in materials) {
+		var file = new MaterialAsset(Interface.asset_explorer.element)
+		file.setMaterial(materials[i])
+		Interface.asset_explorer.add(file)
 	}
 
 	// Objects
@@ -973,7 +989,7 @@ Editor.updateAssetExplorer = function()
 		Interface.asset_explorer.add(file)
 	}
 
-	Interface.asset_explorer.updateInterface();
+	Interface.asset_explorer.updateInterface()
 
 	// TODO: Remove test code
 	asset_delta = Date.now() - start
@@ -1216,12 +1232,14 @@ Editor.createNewProgram = function()
 	//Remove old tabs from interface
 	if(Interface.tab !== undefined)
 	{
-		Interface.tab.clear();
-		var scene = Interface.tab.addTab("scene", Interface.file_dir + "Icons/Tab/Scene.png", true);
-		var canvas = new SceneEditor(scene.element);
-		canvas.setScene(Editor.program.scene);
-		scene.attachComponent(canvas);
-		Interface.tab.selectTab(0);
+		Interface.tab.clear()
+		var scene = Interface.tab.addTab("scene", Interface.file_dir + "Icons/Tab/Scene.png", true)
+		var canvas = new SceneEditor(scene.element)
+		canvas.setScene(Editor.program.scene)
+		scene.attachComponent(canvas)
+		Interface.tab.selectTab(0)
+
+		Interface.folders_explorers.clear()
 	}
 }
 

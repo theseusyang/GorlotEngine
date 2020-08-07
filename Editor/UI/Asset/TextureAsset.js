@@ -39,6 +39,25 @@ function TextureAsset(parent) {
 			}
 		})
 	}
+
+	// Drag start
+	this.element.ondragstart = function(e) {
+		// Insert texture into drag buffer
+		if (self.texture !== null) {
+			e.dataTransfer.setData("uuid", self.texture.uuid)
+			DragBuffer.pushDragElement(self.texture)
+		}
+
+		// To avoid camera movement
+		Mouse.updateKey(Mouse.LEFT, Key.KEY_UP)
+	}
+
+	// Drag end (called after ondrop)
+	this.element.ondragend = function(e) {
+		// Try to remove texture from drag buffer
+		var uuid = e.dataTransfer.getData("uuid")
+		var obj = DragBuffer.popDragElement(uuid)
+	}
 }
 
 TextureAsset.prototype = Object.create(Asset.prototype)
@@ -56,5 +75,6 @@ TextureAsset.prototype.updateMetadata = function() {
 	if(this.texture !== null) {
 		this.image.src = this.texture.image.src
 		this.setText(this.texture.name)
+		this.path = this.texture.path
 	}
 }

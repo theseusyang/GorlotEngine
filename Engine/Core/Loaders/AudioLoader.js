@@ -22,5 +22,7 @@ AudioLoader.prototype.parse = function(json) {
 	audio.encoding = json.encoding
 	audio.data = ArraybufferUtils.fromBase64(json.data)
 
+	if (json.path !== undefined) audio.path = json.path
+
 	return audio
 }

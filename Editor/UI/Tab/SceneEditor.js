@@ -73,7 +73,7 @@ function SceneEditor(parent) {
 					} else if (object instanceof THREE.Sprite) {
 						// Create new material with selected image
 						var texture = new Texture(file.path)
-						var material = new THREE.SpriteMaterial({map: texture, color: 0xffffff})
+						var material = new SpriteMaterial({map: texture, color: 0xffffff})
 						material.name = file.name
 						object.material = material
 
@@ -92,7 +92,7 @@ function SceneEditor(parent) {
 						Editor.updateObjectViews()
 					} else if (object instanceof THREE.Sprite) {
 						var texture = new VideoTexture(file.path)
-						var material = new THREE.SpriteMaterial({map: texture, color: 0xffffff})
+						var material = new SpriteMaterial({map: texture, color: 0xffffff})
 						material.name = file.name
 						Editor.updateObjectViews()
 					}
@@ -102,7 +102,7 @@ function SceneEditor(parent) {
 			else if (intersections.length > 0 && dragged_object !== null) {
 				var object = intersections[0].object
 
-				if (dragged_object instanceof THREE.SpriteMaterial) {
+				if (dragged_object instanceof SpriteMaterial) {
 					if (object instanceof THREE.Sprite) {
 						object.material = dragged_object
 						Editor.updateObjectViews()

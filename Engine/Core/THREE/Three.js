@@ -11,13 +11,12 @@ var Raycaster = THREE.Raycaster;
 
 //Materials
 var Material = THREE.Material
-var LineBasicMaterial = THREE.LineBasicMaterial;
-var LineDashedMaterial = THREE.LineDashedMaterial;
-var MeshPhysicalMaterial = THREE.MeshPhysicalMaterial;
-var MultiMaterial = THREE.MultiMaterial;
-var PointsMaterial = THREE.PointsMaterial;
-var RawShaderMaterial = THREE.RawShaderMaterial;
-var SpriteMaterial = THREE.SpriteMaterial;
+var LineBasicMaterial = THREE.LineBasicMaterial
+var LineDashedMaterial = THREE.LineDashedMaterial
+var MeshPhysicalMaterial = THREE.MeshPhysicalMaterial
+var MultiMaterial = THREE.MultiMaterial
+var PointsMaterial = THREE.PointsMaterial
+var RawShaderMaterial = THREE.RawShaderMaterial
 
 //Math
 var Box2 = THREE.Box2;

@@ -52,10 +52,9 @@ MaterialLoader.prototype = {
 			var material = new MeshStandardMaterial()
 		} else if (type === "MeshLambertMaterial") {
 			var material = new MeshLambertMaterial()
-		}/*else if (type === "SpriteMaterial") {
+		}else if (type === "SpriteMaterial") {
 			var material = new SpriteMaterial()
-			TODO: This
-		}*/ else if (type === "ShaderMaterial") {
+		} else if (type === "ShaderMaterial") {
 			var material = new MeshShaderMaterial()
 		} else if (type === "MeshNormalMaterial") {
 			var material = new MeshNormalMaterial()
@@ -65,6 +64,8 @@ MaterialLoader.prototype = {
 			console.log("Unregistered material in \"MaterialLoader\": " + json.type)
 			var material = new THREE[json.type]
 		}
+
+		if (json.path !== undefined) material.path = json.path
 
 		if ( json.uuid !== undefined ) material.uuid = json.uuid;
 		if ( json.name !== undefined ) material.name = json.name;

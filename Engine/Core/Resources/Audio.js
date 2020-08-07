@@ -6,14 +6,22 @@ function Audio(url) {
 	this.uuid = THREE.Math.generateUUID()
 	this.type = "Audio"
 
-        this.format = ""
-        this.encoding = ""
-        this.data = null
+	this.path = "/"
+
+    this.format = ""
+    this.encoding = ""
+    this.data = null
 
 	if (url !== undefined) {
 		this.data = FileSystem.readFileArrayBuffer(url)
 		this.encoding = url.split(".").pop().toLowerCase()
 		this.format = "arraybuffer"
+	}
+}
+
+Audio.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
 	}
 }
 
@@ -32,6 +40,7 @@ Audio.prototype.toJSON = function(meta) {
 	data.encoding = this.encoding
 	data.data = Base64Utils.fromArrayBuffer(this.data)
 	data.format = "base64"
+	data.path = this.path
 
 	meta.audio[this.uuid] = data
 

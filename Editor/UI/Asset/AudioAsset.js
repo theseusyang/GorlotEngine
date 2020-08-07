@@ -35,6 +35,25 @@ function AudioAsset(parent) {
 			}
 		})
 	}
+
+	// Drag start
+	this.element.ondragstart = function(e) {
+		// Insert audio into drag buffer
+		if (self.audio !== null) {
+			e.dataTransfer.setData("uuid", self.audio.uuid)
+			DragBuffer.pushDragElement(self.audio)
+		}
+
+		// To avoid camera movement
+		Mouse.updateKey(Mouse.LEFT, Key.KEY_UP)
+	}
+
+	// Drag end
+	this.element.ondragend = function(e) {
+		// Try to remove audio from drag buffer
+		var uuid = e.dataTransfer.getData("uuid")
+		var obj = DragBuffer.popDragElement(uuid)
+	}
 }
 
 AudioAsset.prototype = Object.create(Asset.prototype)
@@ -52,5 +71,6 @@ AudioAsset.prototype.updateMetadata = function() {
 	if (this.audio !== null) {
 		this.image.src = Interface.file_dir + "Icons/Assets/Audio.png"
 		this.setText(this.audio.name)
+		this.path = this.audio.path
 	}
 }

@@ -19,7 +19,8 @@ function Texture(image, mapping, wrapS, wrapT, magFilter, minFilter, format, typ
 	// Name
 	this.name = "texture"
 	this.category = "Image"
-	
+	this.path = "/"
+
 	// Set image source
 	this.image.src = this.img.data
 	this.image.onload = function() {
@@ -55,6 +56,7 @@ Texture.prototype.toJSON = function(meta)
 	var image = this.img.toJSON(meta)
 
 	data.image = image.uuid
+	data.path = this.path
 
 	return data
 }

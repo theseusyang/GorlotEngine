@@ -38,6 +38,7 @@ function Program(name)
 	this.textures = []
 	this.geometries = []
 	this.asset_objects = []
+	this.folders = []
 
 	// Default value
 	this.default_scene = null
@@ -137,11 +138,11 @@ Program.prototype.addMaterial = function(material)
 Program.prototype.removeMaterial = function(material, default_material, default_material_sprite)
 {
 	if (default_material === undefined) {
-		default_material = new THREE.MeshBasicMaterial()
+		default_material = new MeshBasicMaterial()
 	}
 
 	if (default_material_sprite === undefined) {
-		default_material_sprite = new THREE.SpriteMaterial()
+		default_material_sprite = new SpriteMaterial()
 	}
 
 	if(material instanceof THREE.Material)
@@ -261,6 +262,13 @@ Program.prototype.addAudio = function(audio) {
 // Add an object to objects list
 Program.prototype.addObject = function(object) {
 	this.asset_objects[object.uuid] = object
+}
+
+// Adds a folder
+Program.prototype.addFolder = function(folder) {
+	if(folder instanceof Folder) {
+		this.folders[folder.uuid] = folder
+	}
 }
 
 // Get object by name
@@ -468,15 +476,21 @@ Program.prototype.toJSON = function(meta, export_resources)
 		}
 	});
 
-	//Program info
+	// Program info
 	data.object.author = this.author
 	data.object.description = this.description
 	data.object.version = this.version
 
-	//Hardware flags
+	// Hardware flags
 	data.object.lock_pointer = this.lock_pointer
 
-	//VR flags
+	// Folders
+	data.object.folders = []
+	for(var i in this.folders) {
+		data.object.folders.push(this.folders[i].toJSON())
+	}
+
+	// VR flags
 	data.object.vr = this.vr
 	data.object.vr_scale = this.vr_scale
 

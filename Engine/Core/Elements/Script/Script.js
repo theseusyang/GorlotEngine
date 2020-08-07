@@ -4,6 +4,7 @@ function Script(code)
 	
 	this.type = "Script"
 	this.name = "script"
+	this.path = "/"
 
 	//Program and scene pointers
 	this.program = null
@@ -89,6 +90,7 @@ Script.prototype.toJSON = function(meta)
 	var data = THREE.Object3D.prototype.toJSON.call(this, meta)
 
 	data.object.code = this.code
+	data.object.path = this.path
 
 	return data
 }

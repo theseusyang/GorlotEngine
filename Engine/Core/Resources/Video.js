@@ -10,11 +10,20 @@ function Video(url) {
 	this.encoding = ""
 	this.data = ""
 
+	this.path = "/"
+
 	if (url !== undefined) {
 		this.encoding = url.split(".").pop().toLowerCase()
 		this.data = "data:video/" + this.encoding + ";base64," + FileSystem.readFileBase64(url)
 		this.format = "base64"
     }
+}
+
+// Set path
+Video.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
+	}
 }
 
 // Create JSON description
@@ -32,6 +41,7 @@ Video.prototype.toJSON = function(meta) {
 	data.encoding = this.encoding
     data.format = this.format
     data.data = this.data
+    data.path = this.path
 
 	meta.videos[this.uuid] = data
 

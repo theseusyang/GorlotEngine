@@ -7,6 +7,8 @@ function BlockScript(nodes, uuid, obj_type)
 	this.obj_uuid = (uuid !== undefined) ? uuid : this.uuid
 	this.blocks_type = (obj_type !== undefined) ? obj_type : "scene"
 
+	this.path = "/"
+
 	this.nodes = {
 		config: {
 			blocks: "Blocks",
@@ -154,6 +156,7 @@ BlockScript.prototype.toJSON = function(meta) {
 	delete this.nodes.config.scene
 
 	data.object.nodes = this.nodes
+	data.object.path = this.path
 
 	return data
 }

@@ -6,9 +6,11 @@ function Font(url) {
 	this.uuid = THREE.Math.generateUUID()
 	this.type = "Font"
 
-        this.format = ""
-        this.encoding = ""
-        this.data = null
+	this.path = "/"
+
+    this.format = ""
+    this.encoding = ""
+    this.data = null
 
 	if (url !== undefined) {
 		if (typeof url === "object") {
@@ -35,6 +37,12 @@ function Font(url) {
 
 Font.prototype.isFont = true
 
+Font.prototype.setPath = function(path) {
+	if (path !== undefined) {
+		this.path = path
+	}
+}
+
 // Create JSON description
 Font.prototype.toJSON = function(meta) {
 
@@ -48,8 +56,9 @@ Font.prototype.toJSON = function(meta) {
 	data.uuid = this.uuid
 	data.encoding = this.encoding
 	data.type = this.type
-        data.format = this.format
+	data.format = this.format
 	data.data = this.data
+	data.path = this.path
 
 	meta.fonts[this.uuid] = data
 

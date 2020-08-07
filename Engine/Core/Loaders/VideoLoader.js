@@ -20,6 +20,7 @@ VideoLoader.prototype.parse = function(json, onLoad) {
 	video.format = json.uuid
 	video.encoding = json.encoding
 	video.data = json.data
+	if (json.path !== undefined) video.path = json.path
 
 	return video
 }

@@ -35,7 +35,7 @@ function TreeView(parent) {
 	// Object
 	this.obj = null
 	
-	// Childs
+	// Children
 	this.up = null
 	this.children = []
 

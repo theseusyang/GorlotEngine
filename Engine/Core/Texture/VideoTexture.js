@@ -18,6 +18,7 @@ function VideoTexture(video, mapping, wrapS, wrapT, type, anisotropy)
 	// Name
 	this.name = "video"
 	this.category = "Video"
+	this.path = "/"
 
 	// Controls
 	this.autoplay = true
@@ -67,6 +68,7 @@ VideoTexture.prototype.toJSON = function(meta) {
 	data.video = video.uuid
 	data.loop = this.loop
 	data.autoplay = this.autoplay
+	data.path = this.path
 
 	return data
 }

@@ -16,6 +16,7 @@ function TextTexture(text, font, mapping, wrapS, wrapT, magFilter, minFilter, fo
 
 	this.name = "text"
 	this.category = "Text"
+	this.path = "/"
 
 	this.text = "text"
 	this.font = font
@@ -25,3 +26,11 @@ function TextTexture(text, font, mapping, wrapS, wrapT, magFilter, minFilter, fo
 
 // Super prototypes
 TextTexture.prototype = Object.create(THREE.Texture.prototype)
+
+TextTexture.prototype.toJSON = function(meta) {
+	var data = THREE.Texture.prototype.toJSON.call(this, meta)
+
+	data.path = this.path
+
+	return data
+}

@@ -41,7 +41,7 @@ MaterialRenderer.prototype.setSize = function(x, y)
 //Render material to internal canvas and copy image to html image element
 MaterialRenderer.prototype.renderMaterial = function(material, img)
 {
-	if(material instanceof THREE.SpriteMaterial)
+	if(material instanceof SpriteMaterial)
 	{
 		this.sprite.material = material;
 		this.sprite.visible = true;

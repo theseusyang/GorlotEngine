@@ -37,6 +37,7 @@ include("Engine/Core/Resources/Font.js")
 include("Engine/Core/Resources/Video.js")
 include("Engine/Core/Resources/Audio.js")
 include("Engine/Core/Resources/Image.js")
+include("Engine/Core/Resources/Folder.js")
 
 include("Engine/Core/Texture/TextTexture.js");
 include("Engine/Core/Texture/VideoTexture.js");
@@ -104,6 +105,7 @@ include("Engine/Core/Assets/Materials/MeshNormalMaterial.js")
 include("Engine/Core/Assets/Materials/MeshPhongMaterial.js")
 include("Engine/Core/Assets/Materials/MeshShaderMaterial.js")
 include("Engine/Core/Assets/Materials/MeshStandardMaterial.js")
+include("Engine/Core/Assets/Materials/SpriteMaterial.js")
 
 // Default Components
 include("Engine/Core/Components/Panel.js")

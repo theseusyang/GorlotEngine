@@ -64,11 +64,11 @@ AssetExplorer.prototype.clear = function()
 //Add file to explorer
 AssetExplorer.prototype.add = function(file)
 {
-	file.setParent(this.element);
-	file.size.copy(this.files_size);
-	file.updateInterface();
+	file.setParent(this.element)
+	file.size.copy(this.files_size)
+	file.updateInterface()
 
-	this.files.push(file);
+	this.files.push(file)
 }
 
 //Remove element
@@ -105,19 +105,31 @@ AssetExplorer.prototype.updateInterface = function()
 	}
 
 	//Update file position
-	var files_per_row = Math.floor(this.files.length / ((this.files.length * (this.files_size.x+this.files_spacing)) / this.size.x));
-	for(var i = 0; i < this.files.length; i++)
-	{
-		var row = Math.floor(i / files_per_row);
-		var col = i % files_per_row;
-		this.files[i].position.x = (col * this.files_size.x) + ((col+1) * this.files_spacing);
-		this.files[i].position.y = (row * this.files_size.y) + ((row+1) * this.files_spacing);
-		this.files[i].updateInterface();
+	var files = []
+	for(var i = 0; i < this.files.length; i++) {
+		if (this.files[i].path === Editor.CURRENT_PATH) {
+			this.files[i].visible = true
+			this.files[i].updateInterface()
+
+			files.push(this.files[i])
+		} else {
+			this.files[i].visible = false
+			this.files[i].updateInterface()
+		}
+	}
+
+	var files_per_row = Math.floor(files.length / ((files.length * (this.files_size.x+this.files_spacing)) / this.size.x))
+	for(var i = 0; i < files.length; i++) {
+		var row = Math.floor(i / files_per_row)
+		var col = i % files_per_row
+		files[i].position.x = (col * this.files_size.x) + ((col+1) * this.files_spacing)
+		files[i].position.y = (row * this.files_size.y) + ((row+1) * this.files_spacing)
+		files[i].updateInterface()
 	}
 
 	//Update element
-	this.element.style.top = this.position.y + "px";
-	this.element.style.left = this.position.x + "px";
-	this.element.style.width = this.size.x + "px";
-	this.element.style.height = this.size.y + "px";
+	this.element.style.top = this.position.y + "px"
+	this.element.style.left = this.position.x + "px"
+	this.element.style.width = this.size.x + "px"
+	this.element.style.height = this.size.y + "px"
 }

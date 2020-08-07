@@ -116,6 +116,7 @@ BlockAsset.prototype.setBlocks = function(blocks) {
 	if (blocks instanceof BlockScript) {
 		this.setText(blocks.name)
 		this.blocks = blocks
+		this.updateMetadata()
 	}
 }
 
@@ -123,5 +124,6 @@ BlockAsset.prototype.setBlocks = function(blocks) {
 BlockAsset.prototype.updateMetadata = function() {
 	if (this.blocks !== null) {
 		this.setText(this.blocks.name)
+		this.path = this.blocks.path
 	}
 }
